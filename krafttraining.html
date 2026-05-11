@@ -2,9 +2,11 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Krafttraining">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%230f1115'/%3E%3Ctext x='90' y='120' text-anchor='middle' font-family='-apple-system' font-size='110' fill='%23f59e0b' font-weight='bold'%3E▮%3C/text%3E%3C/svg%3E">
 <title>Krafttraining</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
@@ -33,7 +35,6 @@
   --text-dim: #555;
   --text-faint: #888;
   --accent: #d97706;
-  --accent-dim: #92580a;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
@@ -43,25 +44,26 @@ html, body {
   font-size: 16px; -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-body { padding-bottom: 72px; min-height: 100vh; }
+body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); min-height: 100vh; }
 h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
-h1 { font-size: 28px; }
-h2 { font-size: 22px; }
-h3 { font-size: 17px; }
+h1 { font-size: 26px; }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
 header {
   position: sticky; top: 0; z-index: 50;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
-  padding: 12px 20px 10px;
+  padding: calc(8px + env(safe-area-inset-top)) 16px 8px;
   display: flex; justify-content: space-between; align-items: center;
 }
-header .title { font-weight: 700; font-size: 20px; letter-spacing: -0.01em; }
+header .title { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
 header .accent { color: var(--accent); }
 header .theme-btn {
   background: none; border: none; color: var(--text-dim);
-  font-size: 20px; cursor: pointer; padding: 4px 8px;
+  font-size: 18px; cursor: pointer; padding: 6px 8px;
+  font-family: inherit;
 }
-main { padding: 16px 16px 20px; max-width: 700px; margin: 0 auto; }
+main { padding: 12px 12px 16px; max-width: 700px; margin: 0 auto; }
 .tab-section { display: none; }
 .tab-section.active { display: block; animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -71,39 +73,39 @@ nav.bottom-nav {
   background: var(--bg-elev);
   border-top: 1px solid var(--border);
   display: flex; justify-content: space-around;
-  padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+  padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
 }
 nav.bottom-nav button {
   flex: 1; background: none; border: none; color: var(--text-faint);
-  font-size: 11px; cursor: pointer; padding: 6px 4px;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 10px; cursor: pointer; padding: 4px 2px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
   font-family: inherit;
 }
 nav.bottom-nav button.active { color: var(--accent); }
-nav.bottom-nav button .icon { font-size: 22px; line-height: 1; }
+nav.bottom-nav button .icon { font-size: 18px; line-height: 1; }
 
 .card {
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
 }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.card-title { font-weight: 600; font-size: 16px; }
-.card-sub { color: var(--text-dim); font-size: 13px; margin-top: 2px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+.card-title { font-weight: 600; font-size: 15px; }
+.card-sub { color: var(--text-dim); font-size: 12px; margin-top: 2px; line-height: 1.4; }
 
 .btn {
   background: var(--accent); color: #0a0a0a; border: none;
-  padding: 12px 20px; border-radius: var(--radius-sm);
-  font-size: 16px; font-weight: 600; cursor: pointer;
+  padding: 11px 16px; border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 600; cursor: pointer;
   font-family: inherit; min-height: 44px;
 }
 .btn:active { transform: scale(0.98); }
 .btn-secondary { background: var(--bg-elev2); color: var(--text); }
 .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
 .btn-danger { background: var(--warning); color: #fff; }
-.btn-small { padding: 8px 14px; font-size: 14px; min-height: 36px; }
+.btn-small { padding: 7px 12px; font-size: 13px; min-height: 36px; }
 .btn-full { width: 100%; }
 .btn-row { display: flex; gap: 8px; }
 .btn-row .btn { flex: 1; }
@@ -111,165 +113,218 @@ nav.bottom-nav button .icon { font-size: 22px; line-height: 1; }
 input[type="text"], input[type="number"], select, textarea {
   background: var(--bg-elev2); color: var(--text);
   border: 1px solid var(--border); border-radius: var(--radius-sm);
-  padding: 10px 12px; font-size: 16px; width: 100%;
-  font-family: inherit; min-height: 44px;
+  padding: 9px 11px; font-size: 16px; width: 100%;
+  font-family: inherit; min-height: 42px;
 }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
-label { display: block; font-size: 13px; color: var(--text-dim); margin: 12px 0 4px; }
+label { display: block; font-size: 12px; color: var(--text-dim); margin: 10px 0 4px; }
 
 .exercise-block {
   background: var(--bg-elev); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 14px; margin-bottom: 12px;
+  border-radius: var(--radius); padding: 12px; margin-bottom: 10px;
 }
-.exercise-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.exercise-name { font-weight: 600; font-size: 17px; }
-.exercise-meta { color: var(--text-dim); font-size: 13px; margin-top: 3px; }
-.exercise-last { color: var(--text-faint); font-size: 12px; margin-top: 2px; }
-.exercise-actions { display: flex; gap: 6px; }
+.exercise-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+.exercise-name { font-weight: 600; font-size: 16px; line-height: 1.25; }
+.exercise-meta { color: var(--text-dim); font-size: 12px; margin-top: 3px; }
+.exercise-last { color: var(--text-faint); font-size: 11px; margin-top: 2px; line-height: 1.4; }
+.exercise-actions { display: flex; gap: 5px; flex-shrink: 0; }
 .icon-btn {
   background: var(--bg-elev2); border: 1px solid var(--border); color: var(--text-dim);
-  width: 32px; height: 32px; border-radius: 8px; cursor: pointer; padding: 0;
-  font-size: 14px; display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 7px; cursor: pointer; padding: 0;
+  font-size: 13px; display: flex; align-items: center; justify-content: center;
 }
 
 .sets-grid {
-  display: grid; grid-template-columns: 30px 1fr 1fr 44px; gap: 8px;
-  align-items: center; margin-top: 8px;
+  display: grid; grid-template-columns: 24px 1fr 1fr; gap: 6px;
+  align-items: center; margin-top: 6px;
 }
+.sets-grid.with-time { grid-template-columns: 24px 1fr auto; }
 .sets-grid .header-cell {
-  font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
+  font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
 }
-.set-num { color: var(--text-dim); font-weight: 600; font-size: 14px; text-align: center; }
-.set-input { padding: 8px 10px; font-size: 15px; text-align: center; min-height: 40px; }
-.set-input.done { background: rgba(34,197,94,0.1); border-color: var(--success); }
-.set-check {
-  width: 44px; height: 40px; border: 1px solid var(--border); background: var(--bg-elev2);
-  border-radius: var(--radius-sm); cursor: pointer; font-size: 18px; color: var(--text-faint);
-  display: flex; align-items: center; justify-content: center;
+.set-num { color: var(--text-dim); font-weight: 600; font-size: 13px; text-align: center; }
+.set-input { padding: 8px 9px; font-size: 16px; text-align: center; min-height: 42px; }
+.set-input.filled { background: rgba(34,197,94,0.12); border-color: var(--success); }
+.set-input.skipped { opacity: 0.4; }
+.timer-btn-small {
+  background: var(--bg-elev2); border: 1px solid var(--border); color: var(--accent);
+  padding: 0 12px; height: 42px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px;
+  font-family: inherit; white-space: nowrap;
 }
-.set-check.done { background: var(--success); color: #fff; border-color: var(--success); }
 
 .suggest {
   font-size: 12px; color: var(--accent); margin-top: 6px;
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: flex-start; gap: 5px; line-height: 1.4;
 }
 .suggest.warn { color: var(--warning); }
 .suggest.info { color: var(--info); }
+.suggest.success { color: var(--success); }
 
 .badge {
-  display: inline-block; padding: 3px 9px; border-radius: 99px;
-  font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+  display: inline-block; padding: 3px 8px; border-radius: 99px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap;
 }
 .badge-hyp { background: rgba(245,158,11,0.15); color: var(--accent); }
-.badge-kraft { background: rgba(239,68,68,0.15); color: var(--warning); }
+.badge-ik { background: rgba(239,68,68,0.15); color: var(--warning); }
 .badge-deload { background: rgba(59,130,246,0.15); color: var(--info); }
 .badge-kraftaus { background: rgba(34,197,94,0.15); color: var(--success); }
 
 .empty {
-  text-align: center; padding: 40px 20px; color: var(--text-dim);
+  text-align: center; padding: 36px 16px; color: var(--text-dim);
 }
 .empty h3 { color: var(--text); margin-bottom: 8px; }
 
 .modal-bg {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-  display: none; z-index: 200; align-items: center; justify-content: center; padding: 20px;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+  display: none; z-index: 200; align-items: flex-end; justify-content: center;
+  padding: 0;
 }
 .modal-bg.show { display: flex; }
 .modal {
-  background: var(--bg-elev); border-radius: var(--radius);
-  max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;
-  padding: 20px; border: 1px solid var(--border);
+  background: var(--bg-elev); border-radius: var(--radius) var(--radius) 0 0;
+  max-width: 600px; width: 100%; max-height: 92vh; overflow-y: auto;
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  border: 1px solid var(--border); border-bottom: none;
 }
-.modal h2 { margin-bottom: 16px; }
+.modal h2 { margin-bottom: 12px; padding-right: 30px; }
 .modal-close {
-  background: none; border: none; color: var(--text-dim); font-size: 24px;
-  cursor: pointer; float: right; line-height: 1; padding: 0;
+  position: absolute; right: 8px; top: 8px;
+  background: none; border: none; color: var(--text-dim); font-size: 22px;
+  cursor: pointer; line-height: 1; padding: 6px 10px;
+}
+@media (min-width: 600px) {
+  .modal-bg { align-items: center; padding: 20px; }
+  .modal { border-radius: var(--radius); border-bottom: 1px solid var(--border); padding: 20px; }
 }
 
 .toast {
-  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  position: fixed; bottom: 86px; left: 50%; transform: translateX(-50%);
   background: var(--bg-elev2); color: var(--text);
-  padding: 12px 20px; border-radius: 99px; font-size: 14px;
+  padding: 11px 18px; border-radius: 99px; font-size: 13px;
   border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.4);
   z-index: 300; opacity: 0; transition: opacity 0.3s;
-  pointer-events: none; max-width: 90vw;
+  pointer-events: none; max-width: 90vw; white-space: nowrap;
 }
 .toast.show { opacity: 1; }
 
-.day-tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.day-tabs { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
 .day-tab {
-  padding: 8px 14px; border-radius: 99px;
+  padding: 7px 12px; border-radius: 99px;
   background: var(--bg-elev2); border: 1px solid var(--border);
-  color: var(--text-dim); cursor: pointer; font-size: 14px; font-weight: 500;
+  color: var(--text-dim); cursor: pointer; font-size: 13px; font-weight: 500;
   font-family: inherit;
 }
 .day-tab.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
 
 .timer-display {
-  font-size: 56px; font-weight: 700; text-align: center;
-  font-variant-numeric: tabular-nums; padding: 20px;
-  color: var(--accent);
+  font-size: 60px; font-weight: 700; text-align: center;
+  font-variant-numeric: tabular-nums; padding: 24px 0;
+  color: var(--accent); letter-spacing: -0.02em;
 }
 .timer-controls { display: flex; gap: 10px; justify-content: center; }
 
-.chart-wrap { position: relative; height: 250px; margin-top: 12px; }
-.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+.chart-wrap { position: relative; height: 220px; margin-top: 10px; }
+.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
 .stat-item {
   background: var(--bg-elev2); border-radius: var(--radius-sm);
-  padding: 12px; text-align: center;
+  padding: 10px 8px; text-align: center;
 }
-.stat-value { font-size: 22px; font-weight: 700; color: var(--accent); }
-.stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+.stat-value { font-size: 19px; font-weight: 700; color: var(--accent); }
+.stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 3px; }
 
 .volume-bar {
   height: 8px; background: var(--bg-elev2); border-radius: 4px;
-  overflow: hidden; margin-top: 6px; position: relative;
+  overflow: hidden; margin-top: 5px; position: relative;
 }
 .volume-fill {
   height: 100%; background: var(--accent); transition: width 0.3s;
 }
 .volume-marks {
-  position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border);
+  position: absolute; top: 0; bottom: 0; width: 2px;
 }
+.volume-mark-mev { background: rgba(255,255,255,0.4); }
+.volume-mark-mav { background: rgba(255,255,255,0.6); }
 
 .checkbox-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 12px; background: var(--bg-elev2); border-radius: var(--radius-sm);
-  margin-bottom: 6px; cursor: pointer;
+  padding: 11px 12px; background: var(--bg-elev2); border-radius: var(--radius-sm);
+  margin-bottom: 5px; cursor: pointer;
 }
-.checkbox-row input { width: auto; min-height: auto; margin: 0; transform: scale(1.3); }
-.checkbox-row label { margin: 0; color: var(--text); font-size: 15px; cursor: pointer; flex: 1; }
+.checkbox-row input { width: auto; min-height: auto; margin: 0; transform: scale(1.2); }
+.checkbox-row label { margin: 0; color: var(--text); font-size: 14px; cursor: pointer; flex: 1; }
 
-.help-text { font-size: 12px; color: var(--text-faint); margin-top: 4px; line-height: 1.5; }
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.help-text { font-size: 11px; color: var(--text-faint); margin-top: 4px; line-height: 1.5; }
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
 
 .phase-indicator {
   background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.04));
   border: 1px solid rgba(245,158,11,0.3);
-  border-radius: var(--radius); padding: 14px; margin-bottom: 14px;
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px;
 }
-.phase-indicator .phase-name { font-weight: 700; font-size: 18px; }
-.phase-indicator .phase-week { color: var(--text-dim); font-size: 13px; margin-top: 2px; }
-.phase-indicator .progress { display: flex; gap: 4px; margin-top: 10px; }
+.phase-indicator .phase-name { font-weight: 700; font-size: 17px; }
+.phase-indicator .phase-week { color: var(--text-dim); font-size: 12px; margin-top: 2px; }
+.phase-indicator .progress { display: flex; gap: 3px; margin-top: 8px; }
 .phase-indicator .progress-dot {
   flex: 1; height: 4px; background: var(--bg-elev2); border-radius: 2px;
 }
 .phase-indicator .progress-dot.done { background: var(--accent); }
-.phase-indicator .progress-dot.current { background: var(--accent); opacity: 0.6; }
+.phase-indicator .progress-dot.current { background: var(--accent); opacity: 0.55; }
+.phase-indicator .rir-hint {
+  margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(245,158,11,0.18);
+  font-size: 12px; color: var(--text);
+}
+.phase-indicator .rir-value {
+  color: var(--accent); font-weight: 700; font-size: 14px;
+}
 
 .wizard-step { display: none; }
 .wizard-step.active { display: block; }
 .wizard-progress {
-  display: flex; gap: 4px; margin-bottom: 20px;
+  display: flex; gap: 3px; margin-bottom: 16px;
 }
 .wizard-progress .step {
   flex: 1; height: 3px; background: var(--bg-elev2); border-radius: 2px;
 }
 .wizard-progress .step.done, .wizard-progress .step.current { background: var(--accent); }
 
-@media (max-width: 380px) {
-  .sets-grid { grid-template-columns: 24px 1fr 1fr 40px; gap: 6px; }
-  h1 { font-size: 24px; }
+.meso-card {
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px 12px; margin-bottom: 8px; background: var(--bg-elev2);
+  display: flex; align-items: center; gap: 10px;
+}
+.meso-card.current { border-color: var(--accent); background: rgba(245,158,11,0.08); }
+.meso-card.future { opacity: 0.7; }
+.meso-card .meso-info { flex: 1; }
+.meso-card .meso-label { font-weight: 600; font-size: 14px; }
+.meso-card .meso-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+.compare-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.compare-row:last-child { border-bottom: none; }
+.compare-row .compare-name { font-weight: 500; font-size: 14px; flex: 1; }
+.compare-row .compare-vals { font-size: 13px; color: var(--text-dim); }
+.compare-row .compare-trend { font-size: 16px; margin-left: 8px; }
+.compare-row .compare-trend.up { color: var(--success); }
+.compare-row .compare-trend.flat { color: var(--text-faint); }
+.compare-row .compare-trend.down { color: var(--warning); }
+
+.field-row { display: flex; gap: 8px; }
+.field-row > * { flex: 1; }
+
+.muscle-list {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;
+}
+.muscle-list .mt {
+  font-size: 10px; padding: 2px 8px; border-radius: 99px;
+  background: var(--bg-elev2); color: var(--text-dim);
+}
+
+@media (max-width: 360px) {
+  h1 { font-size: 22px; }
+  .exercise-name { font-size: 15px; }
+  .set-input { font-size: 15px; padding: 7px 8px; }
 }
 </style>
 </head>
@@ -277,40 +332,15 @@ label { display: block; font-size: 13px; color: var(--text-dim); margin: 12px 0 
 
 <header>
   <div class="title"><span class="accent">▮</span> Krafttraining</div>
-  <button class="theme-btn" id="themeBtn" title="Theme wechseln">◐</button>
+  <button class="theme-btn" id="themeBtn" title="Theme">◐</button>
 </header>
 
 <main>
-
-<!-- TAB: HEUTE -->
-<section class="tab-section active" id="tab-today">
-  <div id="today-content"></div>
-</section>
-
-<!-- TAB: PLAN -->
-<section class="tab-section" id="tab-plan">
-  <h1 style="margin-bottom: 14px;">Plan</h1>
-  <div id="plan-content"></div>
-</section>
-
-<!-- TAB: STATISTIK -->
-<section class="tab-section" id="tab-stats">
-  <h1 style="margin-bottom: 14px;">Statistik</h1>
-  <div id="stats-content"></div>
-</section>
-
-<!-- TAB: ZYKLUS -->
-<section class="tab-section" id="tab-cycle">
-  <h1 style="margin-bottom: 14px;">Zyklus</h1>
-  <div id="cycle-content"></div>
-</section>
-
-<!-- TAB: SETUP -->
-<section class="tab-section" id="tab-setup">
-  <h1 style="margin-bottom: 14px;">Einstellungen</h1>
-  <div id="setup-content"></div>
-</section>
-
+  <section class="tab-section active" id="tab-today"><div id="today-content"></div></section>
+  <section class="tab-section" id="tab-plan"><h1 style="margin-bottom: 12px;">Plan</h1><div id="plan-content"></div></section>
+  <section class="tab-section" id="tab-stats"><h1 style="margin-bottom: 12px;">Statistik</h1><div id="stats-content"></div></section>
+  <section class="tab-section" id="tab-cycle"><h1 style="margin-bottom: 12px;">Zyklus</h1><div id="cycle-content"></div></section>
+  <section class="tab-section" id="tab-setup"><h1 style="margin-bottom: 12px;">Einstellungen</h1><div id="setup-content"></div></section>
 </main>
 
 <nav class="bottom-nav">
@@ -328,140 +358,186 @@ label { display: block; font-size: 13px; color: var(--text-dim); margin: 12px 0 
 <div class="toast" id="toast"></div>
 
 <script>
-// =====================================================================
-// KONSTANTEN UND ÜBUNGSBIBLIOTHEK
-// =====================================================================
-const STORAGE_KEY = 'krafttraining_v1';
-const MUSCLE_GROUPS = ['brust', 'rücken', 'schultern', 'bizeps', 'trizeps', 'beine', 'po', 'bauch', 'core'];
+// ============================================================
+// KONSTANTEN
+// ============================================================
+const STORAGE_KEY = 'krafttraining_v2';
+const OLD_STORAGE_KEY = 'krafttraining_v1';
+
+const MUSCLE_GROUPS = ['brust', 'rücken', 'schultern', 'bizeps', 'trizeps', 'quads', 'beinbeuger', 'po', 'waden', 'bauch', 'core'];
 const MUSCLE_LABELS = {
   brust: 'Brust', rücken: 'Rücken', schultern: 'Schultern',
-  bizeps: 'Bizeps', trizeps: 'Trizeps', beine: 'Beine',
-  po: 'Po', bauch: 'Bauch', core: 'Core'
+  bizeps: 'Bizeps', trizeps: 'Trizeps',
+  quads: 'Quads', beinbeuger: 'Beinbeuger', po: 'Po', waden: 'Waden',
+  bauch: 'Bauch', core: 'Core'
 };
-// MAV-Bereiche (Sätze pro Muskelgruppe pro Woche) für Hypertrophie
+// Volumen-Empfehlungen nach Pauls Dokument (Sätze/Woche)
 const MAV_RANGES = {
-  brust: [10, 20], rücken: [10, 20], schultern: [8, 16],
-  bizeps: [8, 16], trizeps: [8, 16], beine: [10, 20],
-  po: [6, 16], bauch: [6, 16], core: [6, 16]
+  brust: [12, 20], rücken: [14, 24], schultern: [14, 24],
+  bizeps: [10, 18], trizeps: [10, 18],
+  quads: [10, 18], beinbeuger: [8, 16], po: [8, 16], waden: [12, 25],
+  bauch: [6, 15], core: [6, 15]
 };
 
+// Phasen-Definitionen mit RIR-Wochenprogression (klassisch wissenschaftlich)
+const PHASE_DEFS = {
+  kraftausdauer: {
+    label: 'Kraftausdauer',
+    badge: 'badge-kraftaus',
+    repsRange: [15, 20],
+    intensityPct: [0.55, 0.65],
+    baseSets: 2,
+    weeklyRIR: { 1: '4-5', 2: '3-4', 3: '2-3', 4: '2-3', 5: '1-2' },
+    description: 'Vorbereitung der passiven Strukturen (Sehnen/Bänder) und der Stoffwechselkapazität. 15–20 Wdh bei ca. 55–65% 1RM, kurze Pausen (45–60s).'
+  },
+  hypertrophie: {
+    label: 'Hypertrophie',
+    badge: 'badge-hyp',
+    repsRange: [8, 12],
+    intensityPct: [0.70, 0.80],
+    baseSets: 3,
+    weeklyRIR: { 1: '3-4', 2: '2-3', 3: '1-2', 4: '0-1', 5: '0-1' },
+    description: 'Klassischer Muskelaufbau-Bereich. 8–12 Wdh bei 70–80% 1RM, 60–90s Pause. Double Progression: erst Reps an die Obergrenze, dann Gewicht.'
+  },
+  ik: {
+    label: 'Maximalkraft / IK',
+    badge: 'badge-ik',
+    repsRange: [3, 6],
+    intensityPct: [0.85, 0.95],
+    baseSets: 4,
+    weeklyRIR: { 1: '3', 2: '2', 3: '1-2', 4: '1', 5: '0-1' },
+    description: 'Intramuskuläre Koordination, neuronale Anpassung. 3–6 Wdh bei 85–95% 1RM, 3–5 Min Pause. Saubere Technik!'
+  },
+  deload: {
+    label: 'Deload',
+    badge: 'badge-deload',
+    repsRange: [8, 10],
+    intensityPct: [0.50, 0.60],
+    baseSets: 2,
+    weeklyRIR: { 1: '4-6' },
+    description: 'Aktive Erholung. Volumen ca. 50% reduziert, Gewicht 50–60% des Arbeitsgewichts. Ermüdung abbauen, Fitness erhalten.'
+  }
+};
+
+// ============================================================
+// ÜBUNGSBIBLIOTHEK
+// ============================================================
 const EXERCISE_LIBRARY = [
-  { id: 'brustpresse', name: 'Brustpresse', equipment: 'Maschine', muscles: ['brust'], secondary: ['trizeps', 'schultern'], type: 'reps', alternatives: ['bankdruecken_lh', 'bankdruecken_kh', 'butterfly_machine'] },
-  { id: 'bankdruecken_lh', name: 'Bankdrücken (Langhantel)', equipment: 'Langhantel', muscles: ['brust'], secondary: ['trizeps', 'schultern'], type: 'reps', alternatives: ['brustpresse', 'bankdruecken_kh', 'schraegbank_lh'] },
-  { id: 'bankdruecken_kh', name: 'Bankdrücken (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['brust'], secondary: ['trizeps', 'schultern'], type: 'reps', alternatives: ['bankdruecken_lh', 'brustpresse'] },
-  { id: 'schraegbank_lh', name: 'Schrägbankdrücken (Langhantel)', equipment: 'Langhantel', muscles: ['brust'], secondary: ['schultern', 'trizeps'], type: 'reps', alternatives: ['bankdruecken_lh', 'schraegbank_kh'] },
-  { id: 'schraegbank_kh', name: 'Schrägbankdrücken (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['brust'], secondary: ['schultern', 'trizeps'], type: 'reps', alternatives: ['schraegbank_lh'] },
-  { id: 'butterfly_machine', name: 'Butterfly (Maschine)', equipment: 'Maschine', muscles: ['brust'], type: 'reps', alternatives: ['butterfly_cable', 'brustpresse'] },
-  { id: 'butterfly_cable', name: 'Butterfly (Kabelzug)', equipment: 'Kabelzug', muscles: ['brust'], type: 'reps', alternatives: ['butterfly_machine', 'bankdruecken_kh'] },
-  { id: 'dips', name: 'Dips', equipment: 'Eigengewicht', muscles: ['brust', 'trizeps'], secondary: ['schultern'], type: 'reps', alternatives: ['brustpresse', 'trizeps_machine'] },
+  // Brust
+  { id: 'brustpresse', name: 'Brustpresse', equipment: 'Maschine', muscles: ['brust'], secondary: ['trizeps', 'schultern'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['bankdruecken_lh', 'bankdruecken_kh', 'butterfly_machine'] },
+  { id: 'bankdruecken_lh', name: 'Bankdrücken (Langhantel)', equipment: 'Langhantel', muscles: ['brust'], secondary: ['trizeps', 'schultern'], type: 'reps', isCompound: true, alternatives: ['brustpresse', 'bankdruecken_kh', 'schraegbank_lh'] },
+  { id: 'bankdruecken_kh', name: 'Bankdrücken (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['brust'], secondary: ['trizeps', 'schultern'], type: 'reps', isCompound: true, alternatives: ['bankdruecken_lh', 'brustpresse'] },
+  { id: 'schraegbank_lh', name: 'Schrägbankdrücken (Langhantel)', equipment: 'Langhantel', muscles: ['brust'], secondary: ['schultern', 'trizeps'], type: 'reps', isCompound: true, alternatives: ['bankdruecken_lh', 'schraegbank_kh'] },
+  { id: 'schraegbank_kh', name: 'Schrägbankdrücken (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['brust'], secondary: ['schultern', 'trizeps'], type: 'reps', isCompound: true, alternatives: ['schraegbank_lh'] },
+  { id: 'butterfly_machine', name: 'Butterfly (Maschine)', equipment: 'Maschine', muscles: ['brust'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['butterfly_cable', 'brustpresse'] },
+  { id: 'butterfly_cable', name: 'Butterfly (Kabelzug)', equipment: 'Kabelzug', muscles: ['brust'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['butterfly_machine', 'bankdruecken_kh'] },
+  { id: 'dips', name: 'Dips', equipment: 'Eigengewicht', muscles: ['brust', 'trizeps'], secondary: ['schultern'], type: 'reps', isCompound: true, bodyweight: true, alternatives: ['brustpresse'] },
 
-  { id: 'rueckenmaschine', name: 'Rückenmaschine', equipment: 'Maschine', muscles: ['rücken'], type: 'reps', alternatives: ['latzug', 'rudern_machine', 'pullups'] },
-  { id: 'latzug', name: 'Latzug', equipment: 'Kabelzug', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', alternatives: ['pullups', 'rueckenmaschine'] },
-  { id: 'pullups', name: 'Klimmzüge / Pull-ups', equipment: 'Eigengewicht', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', alternatives: ['latzug', 'rueckenmaschine'] },
-  { id: 'rudern_machine', name: 'Rudern (Maschine)', equipment: 'Maschine', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', alternatives: ['rudern_cable', 'rudern_lh'] },
-  { id: 'rudern_cable', name: 'Rudern (Kabelzug)', equipment: 'Kabelzug', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', alternatives: ['rudern_machine', 'rudern_lh'] },
-  { id: 'rudern_lh', name: 'Rudern (Langhantel)', equipment: 'Langhantel', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', alternatives: ['rudern_cable', 'rudern_kh'] },
-  { id: 'rudern_kh', name: 'Rudern (Kurzhantel einarmig)', equipment: 'Kurzhanteln', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', alternatives: ['rudern_cable', 'rudern_lh'] },
-  { id: 'kreuzheben', name: 'Kreuzheben', equipment: 'Langhantel', muscles: ['rücken', 'beine'], secondary: ['po', 'core'], type: 'reps', alternatives: ['rudern_lh'] },
+  // Rücken
+  { id: 'rueckenmaschine', name: 'Rückenmaschine', equipment: 'Maschine', muscles: ['rücken'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['latzug', 'rudern_machine', 'pullups'] },
+  { id: 'latzug', name: 'Latzug', equipment: 'Kabelzug', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['pullups', 'rueckenmaschine'] },
+  { id: 'pullups', name: 'Klimmzüge', equipment: 'Eigengewicht', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', isCompound: true, bodyweight: true, alternatives: ['latzug', 'rueckenmaschine'] },
+  { id: 'rudern_machine', name: 'Rudern (Maschine)', equipment: 'Maschine', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['rudern_cable', 'rudern_lh'] },
+  { id: 'rudern_cable', name: 'Rudern (Kabelzug)', equipment: 'Kabelzug', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['rudern_machine', 'rudern_lh'] },
+  { id: 'rudern_lh', name: 'Rudern (Langhantel)', equipment: 'Langhantel', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', isCompound: true, alternatives: ['rudern_cable', 'rudern_kh'] },
+  { id: 'rudern_kh', name: 'Rudern (Kurzhantel)', equipment: 'Kurzhanteln', muscles: ['rücken'], secondary: ['bizeps'], type: 'reps', isCompound: true, alternatives: ['rudern_cable'] },
+  { id: 'kreuzheben', name: 'Kreuzheben', equipment: 'Langhantel', muscles: ['rücken', 'beinbeuger'], secondary: ['po', 'core'], type: 'reps', isCompound: true, alternatives: ['rdl'] },
 
-  { id: 'schulterdruecken_lh', name: 'Schulterdrücken (Langhantel)', equipment: 'Langhantel', muscles: ['schultern'], secondary: ['trizeps'], type: 'reps', alternatives: ['schulterdruecken_kh', 'schulterdruecken_machine'] },
-  { id: 'schulterdruecken_kh', name: 'Schulterdrücken (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['schultern'], secondary: ['trizeps'], type: 'reps', alternatives: ['schulterdruecken_lh', 'schulterdruecken_machine'] },
-  { id: 'schulterdruecken_machine', name: 'Schulterdrücken (Maschine)', equipment: 'Maschine', muscles: ['schultern'], secondary: ['trizeps'], type: 'reps', alternatives: ['schulterdruecken_kh'] },
-  { id: 'seitheben_kh', name: 'Seitheben (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['schultern'], type: 'reps', alternatives: ['seitheben_cable', 'seitheben_machine'] },
-  { id: 'seitheben_cable', name: 'Seitheben (Kabelzug)', equipment: 'Kabelzug', muscles: ['schultern'], type: 'reps', alternatives: ['seitheben_kh'] },
-  { id: 'seitheben_machine', name: 'Seitheben (Maschine)', equipment: 'Maschine', muscles: ['schultern'], type: 'reps', alternatives: ['seitheben_kh'] },
-  { id: 'reverse_butterfly', name: 'Reverse Butterfly', equipment: 'Maschine', muscles: ['schultern', 'rücken'], type: 'reps', alternatives: ['facepulls'] },
-  { id: 'facepulls', name: 'Face Pulls', equipment: 'Kabelzug', muscles: ['schultern', 'rücken'], type: 'reps', alternatives: ['reverse_butterfly'] },
+  // Schultern
+  { id: 'schulterdruecken_lh', name: 'Schulterdrücken (LH)', equipment: 'Langhantel', muscles: ['schultern'], secondary: ['trizeps'], type: 'reps', isCompound: true, alternatives: ['schulterdruecken_kh', 'schulterdruecken_machine'] },
+  { id: 'schulterdruecken_kh', name: 'Schulterdrücken (KH)', equipment: 'Kurzhanteln', muscles: ['schultern'], secondary: ['trizeps'], type: 'reps', isCompound: true, alternatives: ['schulterdruecken_lh', 'schulterdruecken_machine'] },
+  { id: 'schulterdruecken_machine', name: 'Schulterdrücken (Maschine)', equipment: 'Maschine', muscles: ['schultern'], secondary: ['trizeps'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['schulterdruecken_kh'] },
+  { id: 'seitheben_kh', name: 'Seitheben (KH)', equipment: 'Kurzhanteln', muscles: ['schultern'], type: 'reps', isIsolation: true, alternatives: ['seitheben_cable', 'seitheben_machine'] },
+  { id: 'seitheben_cable', name: 'Seitheben (Kabelzug)', equipment: 'Kabelzug', muscles: ['schultern'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['seitheben_kh'] },
+  { id: 'seitheben_machine', name: 'Seitheben (Maschine)', equipment: 'Maschine', muscles: ['schultern'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['seitheben_kh'] },
+  { id: 'reverse_butterfly', name: 'Reverse Butterfly', equipment: 'Maschine', muscles: ['schultern', 'rücken'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['facepulls'] },
+  { id: 'facepulls', name: 'Face Pulls', equipment: 'Kabelzug', muscles: ['schultern', 'rücken'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['reverse_butterfly'] },
 
-  { id: 'bizepsmaschine', name: 'Bizepsmaschine', equipment: 'Maschine', muscles: ['bizeps'], type: 'reps', alternatives: ['bizeps_curl_kh', 'bizeps_cable'] },
-  { id: 'bizeps_curl_kh', name: 'Bizepscurl (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['bizeps'], type: 'reps', alternatives: ['bizepsmaschine', 'bizeps_cable', 'hammer_curl'] },
-  { id: 'bizeps_curl_lh', name: 'Bizepscurl (Langhantel/SZ)', equipment: 'Langhantel', muscles: ['bizeps'], type: 'reps', alternatives: ['bizeps_curl_kh', 'bizeps_cable'] },
-  { id: 'bizeps_cable', name: 'Bizepscurl (Kabelzug)', equipment: 'Kabelzug', muscles: ['bizeps'], type: 'reps', alternatives: ['bizepsmaschine', 'bizeps_curl_kh'] },
-  { id: 'hammer_curl', name: 'Hammer-Curls (Kurzhanteln)', equipment: 'Kurzhanteln', muscles: ['bizeps'], type: 'reps', alternatives: ['bizeps_curl_kh'] },
+  // Bizeps
+  { id: 'bizepsmaschine', name: 'Bizepsmaschine', equipment: 'Maschine', muscles: ['bizeps'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['bizeps_curl_kh', 'bizeps_cable'] },
+  { id: 'bizeps_curl_kh', name: 'Bizepscurl (KH)', equipment: 'Kurzhanteln', muscles: ['bizeps'], type: 'reps', isIsolation: true, alternatives: ['bizepsmaschine', 'bizeps_cable', 'hammer_curl'] },
+  { id: 'bizeps_curl_lh', name: 'Bizepscurl (LH/SZ)', equipment: 'Langhantel', muscles: ['bizeps'], type: 'reps', isIsolation: true, alternatives: ['bizeps_curl_kh', 'bizeps_cable'] },
+  { id: 'bizeps_cable', name: 'Bizepscurl (Kabel)', equipment: 'Kabelzug', muscles: ['bizeps'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['bizepsmaschine', 'bizeps_curl_kh'] },
+  { id: 'hammer_curl', name: 'Hammer-Curls', equipment: 'Kurzhanteln', muscles: ['bizeps'], type: 'reps', isIsolation: true, alternatives: ['bizeps_curl_kh'] },
 
-  { id: 'trizepsmaschine', name: 'Trizepsmaschine', equipment: 'Maschine', muscles: ['trizeps'], type: 'reps', alternatives: ['trizeps_cable', 'trizeps_kh'] },
-  { id: 'trizeps_cable', name: 'Trizeps (Kabelzug)', equipment: 'Kabelzug', muscles: ['trizeps'], type: 'reps', alternatives: ['trizepsmaschine', 'trizeps_kh'] },
-  { id: 'trizeps_kh', name: 'Trizepsdrücken (Kurzhantel)', equipment: 'Kurzhanteln', muscles: ['trizeps'], type: 'reps', alternatives: ['trizepsmaschine', 'trizeps_cable'] },
-  { id: 'french_press', name: 'French Press (SZ-Stange)', equipment: 'Langhantel', muscles: ['trizeps'], type: 'reps', alternatives: ['trizepsmaschine'] },
+  // Trizeps
+  { id: 'trizepsmaschine', name: 'Trizepsmaschine', equipment: 'Maschine', muscles: ['trizeps'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['trizeps_cable', 'trizeps_kh'] },
+  { id: 'trizeps_cable', name: 'Trizeps (Kabelzug)', equipment: 'Kabelzug', muscles: ['trizeps'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['trizepsmaschine', 'trizeps_kh'] },
+  { id: 'trizeps_kh', name: 'Trizepsdrücken (KH)', equipment: 'Kurzhanteln', muscles: ['trizeps'], type: 'reps', isIsolation: true, alternatives: ['trizepsmaschine', 'trizeps_cable'] },
+  { id: 'french_press', name: 'French Press', equipment: 'Langhantel', muscles: ['trizeps'], type: 'reps', isIsolation: true, alternatives: ['trizepsmaschine'] },
 
-  { id: 'beinpresse', name: 'Beinpresse', equipment: 'Maschine', muscles: ['beine'], secondary: ['po'], type: 'reps', alternatives: ['kniebeuge_lh', 'beinstrecker'] },
-  { id: 'kniebeuge_lh', name: 'Kniebeuge (Langhantel)', equipment: 'Langhantel', muscles: ['beine'], secondary: ['po', 'core'], type: 'reps', alternatives: ['beinpresse', 'hackschmidt'] },
-  { id: 'hackschmidt', name: 'Hackenschmidt-Maschine', equipment: 'Maschine', muscles: ['beine'], secondary: ['po'], type: 'reps', alternatives: ['beinpresse', 'kniebeuge_lh'] },
-  { id: 'beinstrecker', name: 'Beinstrecker', equipment: 'Maschine', muscles: ['beine'], type: 'reps', alternatives: ['beinpresse'] },
-  { id: 'beinbeuger', name: 'Beinbeuger', equipment: 'Maschine', muscles: ['beine'], type: 'reps', alternatives: ['rdl'] },
-  { id: 'rdl', name: 'Rumänisches Kreuzheben', equipment: 'Langhantel', muscles: ['beine', 'po'], secondary: ['rücken'], type: 'reps', alternatives: ['beinbeuger', 'hipthrust'] },
-  { id: 'wadenheben', name: 'Wadenheben', equipment: 'Maschine', muscles: ['beine'], type: 'reps' },
-  { id: 'hipthrust', name: 'Hip Thrust', equipment: 'Langhantel', muscles: ['po'], secondary: ['beine'], type: 'reps', alternatives: ['glute_bridge'] },
-  { id: 'glute_bridge', name: 'Glute Bridge', equipment: 'Eigengewicht', muscles: ['po'], type: 'reps', alternatives: ['hipthrust'] },
+  // Beine
+  { id: 'kniebeuge_lh', name: 'Kniebeuge (Langhantel)', equipment: 'Langhantel', muscles: ['quads'], secondary: ['po', 'core', 'beinbeuger'], type: 'reps', isCompound: true, alternatives: ['beinpresse', 'hackschmidt'] },
+  { id: 'beinpresse', name: 'Beinpresse', equipment: 'Maschine', muscles: ['quads'], secondary: ['po'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['kniebeuge_lh', 'hackschmidt'] },
+  { id: 'hackschmidt', name: 'Hackenschmidt-Maschine', equipment: 'Maschine', muscles: ['quads'], secondary: ['po'], type: 'reps', isCompound: true, hasMaxWeight: true, alternatives: ['beinpresse', 'kniebeuge_lh'] },
+  { id: 'walking_lunges', name: 'Walking Lunges', equipment: 'Kurzhanteln', muscles: ['quads'], secondary: ['po', 'beinbeuger'], type: 'reps', isCompound: true, alternatives: ['kniebeuge_lh', 'beinpresse'] },
+  { id: 'beinstrecker', name: 'Beinstrecker', equipment: 'Maschine', muscles: ['quads'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['beinpresse'] },
+  { id: 'beinbeuger', name: 'Beinbeuger', equipment: 'Maschine', muscles: ['beinbeuger'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['rdl'] },
+  { id: 'rdl', name: 'Rumänisches Kreuzheben', equipment: 'Langhantel', muscles: ['beinbeuger', 'po'], secondary: ['rücken'], type: 'reps', isCompound: true, alternatives: ['beinbeuger', 'hipthrust'] },
+  { id: 'wadenheben', name: 'Wadenheben', equipment: 'Maschine', muscles: ['waden'], type: 'reps', isIsolation: true, hasMaxWeight: true },
+  { id: 'hipthrust', name: 'Hip Thrust', equipment: 'Langhantel', muscles: ['po'], secondary: ['beinbeuger'], type: 'reps', isCompound: true, alternatives: ['glute_bridge'] },
+  { id: 'glute_bridge', name: 'Glute Bridge', equipment: 'Eigengewicht', muscles: ['po'], type: 'reps', bodyweight: true, alternatives: ['hipthrust'] },
 
-  { id: 'bauchmaschine', name: 'Bauchmaschine', equipment: 'Maschine', muscles: ['bauch'], type: 'reps', alternatives: ['crunches', 'beinheben'] },
-  { id: 'crunches', name: 'Crunches', equipment: 'Eigengewicht', muscles: ['bauch'], type: 'reps', alternatives: ['bauchmaschine', 'beinheben'] },
-  { id: 'beinheben', name: 'Beinheben (hängend)', equipment: 'Eigengewicht', muscles: ['bauch'], secondary: ['core'], type: 'reps', alternatives: ['crunches', 'bauchmaschine'] },
-  { id: 'plank', name: 'Plank', equipment: 'Eigengewicht', muscles: ['core'], secondary: ['bauch'], type: 'time', alternatives: ['side_plank'] },
-  { id: 'side_plank', name: 'Seitlicher Plank', equipment: 'Eigengewicht', muscles: ['core'], type: 'time', alternatives: ['plank'] }
+  // Bauch / Core
+  { id: 'bauchmaschine', name: 'Bauchmaschine', equipment: 'Maschine', muscles: ['bauch'], type: 'reps', isIsolation: true, hasMaxWeight: true, alternatives: ['crunches', 'beinheben'] },
+  { id: 'crunches', name: 'Crunches', equipment: 'Eigengewicht', muscles: ['bauch'], type: 'reps', bodyweight: true, alternatives: ['bauchmaschine', 'beinheben'] },
+  { id: 'beinheben', name: 'Beinheben (hängend)', equipment: 'Eigengewicht', muscles: ['bauch'], secondary: ['core'], type: 'reps', bodyweight: true, alternatives: ['crunches', 'bauchmaschine'] },
+  { id: 'plank', name: 'Plank', equipment: 'Eigengewicht', muscles: ['core'], secondary: ['bauch'], type: 'time', bodyweight: true, alternatives: ['side_plank'] },
+  { id: 'side_plank', name: 'Seitlicher Plank', equipment: 'Eigengewicht', muscles: ['core'], type: 'time', bodyweight: true, alternatives: ['plank'] }
 ];
 
-function getExerciseDef(id) {
-  return EXERCISE_LIBRARY.find(e => e.id === id);
+function getExerciseDef(id) { return EXERCISE_LIBRARY.find(e => e.id === id); }
+function getExerciseInfo(id) {
+  return getExerciseDef(id) || (DATA.customExercises && DATA.customExercises[id]) || null;
+}
+function getExerciseDisplayName(id) {
+  const e = getExerciseInfo(id);
+  return e ? e.name : id;
 }
 
-// =====================================================================
-// STANDARD-DATENSATZ (Pauls Pläne und Historie)
-// =====================================================================
+// ============================================================
+// HISTORIE PARSER
+// ============================================================
 function parseHistoryString(str, multiply = 1) {
-  // Wandelt einen Komma-getrennten String wie "35, 40, 40/45, 50sl"
-  // in Trainings-Einträge um. Jeder Eintrag = ein Training mit Gewicht(en).
-  // Reps sind nicht bekannt (außer "105x19" Notation).
   const entries = str.split(',').map(s => s.trim()).filter(s => s && s !== '/');
   const result = [];
-  entries.forEach((entry, idx) => {
+  entries.forEach(entry => {
     let weights = [];
     let reps = null;
     let note = '';
     let clean = entry.replace(/citrullin/gi, '').trim();
-
     if (clean.match(/(slow|sl)$/i)) {
       note = 'slow';
       clean = clean.replace(/\s*(slow|sl)\s*$/i, '').trim();
     }
-    // "105x19" Notation
     const repMatch = clean.match(/^([\d,.]+)x(\d+)$/);
     if (repMatch) {
       weights = [parseFloat(repMatch[1].replace(',', '.')) * multiply];
       reps = parseInt(repMatch[2]);
     } else if (clean.match(/^1x/)) {
-      // "1x30" = 1 Satz mit 30
       const m = clean.match(/^1x([\d,.]+)$/);
-      if (m) { weights = [parseFloat(m[1].replace(',', '.')) * multiply]; }
+      if (m) weights = [parseFloat(m[1].replace(',', '.')) * multiply];
     } else if (clean.includes('/')) {
-      // mehrere Sätze mit unterschiedlichen Gewichten
       weights = clean.split('/').map(w => parseFloat(w.replace(',', '.')) * multiply).filter(w => !isNaN(w));
     } else {
       const w = parseFloat(clean.replace(',', '.'));
       if (!isNaN(w)) weights = [w * multiply];
     }
-    if (weights.length > 0) {
-      result.push({ weights, reps, note });
-    }
+    if (weights.length > 0) result.push({ weights, reps, note });
   });
   return result;
 }
 
 function buildInitialData() {
-  // Verteilung historischer Daten über Zeit: jedes Training = 1 Eintrag,
-  // wir verteilen sie rückwirkend (z.B. 1-3 Trainings pro Woche)
   const today = new Date();
-  const trainingsPerWeek = 2.5;
 
   function spreadHistory(parsed, exerciseId, defaultSets = 3) {
     const entries = [];
-    // Startdatum = heute minus (Anzahl * 2.8 Tage zurück)
-    const totalDays = Math.ceil(parsed.length / trainingsPerWeek) * 7;
+    const trainingsPerWeek = 2.5;
     parsed.forEach((p, idx) => {
       const daysAgo = Math.round((parsed.length - 1 - idx) * (7 / trainingsPerWeek));
       const d = new Date(today);
       d.setDate(d.getDate() - daysAgo);
-      // Sätze: wenn p.weights weniger als defaultSets, fülle mit dem ersten Gewicht auf
       const sets = [];
       const numSets = Math.max(p.weights.length, defaultSets);
       for (let i = 0; i < numSets; i++) {
@@ -470,10 +546,9 @@ function buildInitialData() {
       }
       entries.push({
         date: d.toISOString().slice(0, 10),
-        exerciseId,
-        sets,
+        exerciseId, sets,
         note: p.note || '',
-        legacy: true // Markierung für Pre-App-Daten
+        legacy: true
       });
     });
     return entries;
@@ -481,7 +556,6 @@ function buildInitialData() {
 
   const history = [];
 
-  // Plan A - Maschinen
   history.push(...spreadHistory(parseHistoryString(
     "35, 35, 40, 40, 40, 40, 40/45, 45, 50, 50, 50, 45, 50, 50, 55, 55, 55, 55, 60, 60, 60, 60/65, 65/70, 70/65, 70, 75, 75, 75/70, 75, 60/65, 65, 70/65, 65, 65, 70, 70, 70, 70/65, 65, 65, 65, 60, 65, 70, 55, 60, 60, 65, 65, 30/35, 45, 55, 60, 60, 60, 65/60, 50, 50/55, 50, 55, 60, 60, 60, 60, 55, 60/65, 65, 65, 70/65, 70, 75/70, 70, 75/70, 75/70, 70/75, 75, 75, 80/75, 80/75, 80/75, 80, 75/80, 80/75, 80/75, 80/75, 80/75, 80, 80, 80, 85/80, 84/80, 85/80, 85/80, 80, 80/75, 80, 80, 85/80, 80, 80"
   ), 'brustpresse'));
@@ -506,10 +580,8 @@ function buildInitialData() {
     "75/80, 80, 80, 80, 85, 80, 70, 75, 80, 35, 35/45, 50/60, 65/70, 75, 75, 80, 70, 75, 90/85, 95, 80/75, 80/75, 80, 85, 85, 75, 85, 85"
   ), 'bauchmaschine'));
 
-  // Plan B - Freihantel/Kabel; Bankdrücken-Werte verdoppelt (waren pro Seite)
   history.push(...spreadHistory(parseHistoryString(
-    "5, 5, 10, 10, 10, 10, 12.5, 12.5, 15, 15, 15, 15/17.5, 17.5, 17.5, 17.5, 15, 15, 17.5, 17.5, 17.5, 15, 15, 15, 15, 10, 10, 10/15, 15, 15, 15, 15/17.5, 15/17.5, 17.5, 17.5, 20, 20, 20/17.5",
-    2 // *2 weil pro Seite notiert
+    "5, 5, 10, 10, 10, 10, 12.5, 12.5, 15, 15, 15, 15/17.5, 17.5, 17.5, 17.5, 15, 15, 17.5, 17.5, 17.5, 15, 15, 15, 15, 10, 10, 10/15, 15, 15, 15, 15/17.5, 15/17.5, 17.5, 17.5, 20, 20, 20/17.5", 2
   ), 'bankdruecken_lh'));
 
   history.push(...spreadHistory(parseHistoryString(
@@ -524,67 +596,84 @@ function buildInitialData() {
     "25/30, 30, 30/35, 35, 35/40, 40, 45, 50/45, 50, 50/55/50, 55/50, 55, 55, 50, 50, 55, 55, 55, 50, 45, 50, 45, 50/45, 30, 35, 35/40, 40, 40/45, 45, 45/50, 50, 50/55, 55, 55, 60/55, 60/55, 60/55, 60/55, 60/55, 65/60, 55"
   ), 'trizeps_cable'));
 
-  // Plan A: Soll-Werte basierend auf letzten Daten (ca. 8-12 Wdh)
   const plans = {
     A: {
       name: 'Plan A (Maschinen)',
       exercises: [
-        { exerciseId: 'brustpresse', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 75 },
-        { exerciseId: 'rueckenmaschine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 110 },
-        { exerciseId: 'butterfly_machine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 70 },
-        { exerciseId: 'bizepsmaschine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 50 },
-        { exerciseId: 'trizepsmaschine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 105 },
-        { exerciseId: 'bauchmaschine', targetSets: 3, targetRepsMin: 10, targetRepsMax: 15, currentWeight: 80 }
+        { exerciseId: 'walking_lunges', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 10 },
+        { exerciseId: 'brustpresse', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 75, maxWeight: null },
+        { exerciseId: 'rueckenmaschine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 110, maxWeight: null },
+        { exerciseId: 'butterfly_machine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 70, maxWeight: null },
+        { exerciseId: 'bizepsmaschine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 50, maxWeight: null },
+        { exerciseId: 'trizepsmaschine', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 105, maxWeight: null },
+        { exerciseId: 'bauchmaschine', targetSets: 3, targetRepsMin: 10, targetRepsMax: 15, currentWeight: 80, maxWeight: null }
       ]
     },
     B: {
       name: 'Plan B (Freihantel & Kabel)',
       exercises: [
+        { exerciseId: 'kniebeuge_lh', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 40 },
         { exerciseId: 'bankdruecken_lh', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 55 },
-        { exerciseId: 'pullups', targetSets: 3, targetRepsMin: 6, targetRepsMax: 12, currentWeight: 0, bodyweight: true },
-        { exerciseId: 'butterfly_cable', targetSets: 3, targetRepsMin: 10, targetRepsMax: 15, currentWeight: 30 },
-        { exerciseId: 'bizeps_cable', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 50 },
-        { exerciseId: 'trizeps_cable', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 55 },
+        { exerciseId: 'pullups', targetSets: 3, targetRepsMin: 5, targetRepsMax: 12, currentWeight: 0 },
+        { exerciseId: 'butterfly_cable', targetSets: 3, targetRepsMin: 10, targetRepsMax: 15, currentWeight: 30, maxWeight: null },
+        { exerciseId: 'bizeps_cable', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 50, maxWeight: null },
+        { exerciseId: 'trizeps_cable', targetSets: 3, targetRepsMin: 8, targetRepsMax: 12, currentWeight: 55, maxWeight: null },
         { exerciseId: 'plank', targetSets: 3, targetSeconds: 120, currentWeight: 0 }
       ]
     }
   };
 
   return {
-    version: 1,
+    version: 2,
     settings: {
       theme: 'dark',
       plateauThreshold: 3,
       defaultIncrement: 2.5,
-      bodyweightKg: 75
+      bodyweightKg: 75,
+      mesoLength: 6
+    },
+    macro: {
+      name: 'Klassisch wissenschaftlich',
+      mesoSequence: ['kraftausdauer', 'hypertrophie', 'ik'],
+      currentMesoIndex: 1, // Hypertrophie als Startphase, weil Paul seit Jahren im Hypertrophie-Bereich trainiert
+      startDate: today.toISOString().slice(0, 10)
     },
     cycle: {
       type: 'fullbody',
       frequency: 3,
-      days: [1, 3, 5], // Mo, Mi, Fr
+      days: [1, 3, 5],
       rotation: 'AB',
       activePlans: ['A', 'B'],
-      mesoLengthWeeks: 5, // 4 schwer + 1 deload
-      currentWeek: 1,
-      currentPhase: 'hypertrophie',
-      mesoStart: today.toISOString().slice(0, 10),
-      phaseSequence: ['hypertrophie', 'hypertrophie', 'hypertrophie', 'kraft', 'deload'],
-      volumeProgression: 'akkumulation' // akkumulation | linear | dup | none
+      currentMeso: {
+        phase: 'hypertrophie',
+        startDate: today.toISOString().slice(0, 10),
+        lengthWeeks: 6,
+        currentWeek: 1
+      },
+      mesoHistory: []
     },
     plans,
     customExercises: {},
     history,
-    nextPlanIndex: 0
+    lastDeloadCheck: null
   };
 }
 
-// =====================================================================
+// ============================================================
 // STORAGE
-// =====================================================================
+// ============================================================
 function loadData() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
+      // ggf. Migration v1 → v2
+      const old = localStorage.getItem(OLD_STORAGE_KEY);
+      if (old) {
+        try {
+          const parsed = JSON.parse(old);
+          return migrateV1(parsed);
+        } catch (e) {}
+      }
       const initial = buildInitialData();
       saveData(initial);
       return initial;
@@ -595,48 +684,42 @@ function loadData() {
     return buildInitialData();
   }
 }
+
+function migrateV1(old) {
+  const fresh = buildInitialData();
+  if (old.history) fresh.history = old.history;
+  if (old.plans) fresh.plans = old.plans;
+  if (old.settings) Object.assign(fresh.settings, old.settings);
+  saveData(fresh);
+  return fresh;
+}
+
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 let DATA = loadData();
 
-// =====================================================================
-// HILFSFUNKTIONEN
-// =====================================================================
+// ============================================================
+// HILFEN
+// ============================================================
 function fmtDate(iso) {
-  const d = new Date(iso);
-  const opts = { weekday: 'short', day: 'numeric', month: 'short' };
-  return d.toLocaleDateString('de-DE', opts);
+  return new Date(iso).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
 }
 function fmtDateLong(iso) {
   return new Date(iso).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 function fmtWeight(w) {
-  return w === null || w === undefined ? '-' : (Number.isInteger(w) ? w.toString() : w.toFixed(1));
+  if (w === null || w === undefined || isNaN(w)) return '-';
+  return Number.isInteger(w) ? w.toString() : w.toFixed(1);
 }
-function fmtTime(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
+function fmtTime(sec) {
+  const m = Math.floor(sec / 60), s = sec % 60;
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 function calcE1RM(weight, reps) {
-  // Epley-Formel
   if (!weight || !reps) return null;
+  // Epley
   return weight * (1 + 0.0333 * reps);
-}
-function getExerciseDisplayName(exerciseId) {
-  const def = getExerciseDef(exerciseId);
-  if (def) return def.name;
-  const custom = DATA.customExercises[exerciseId];
-  if (custom) return custom.name;
-  return exerciseId;
-}
-function getExerciseInfo(exerciseId) {
-  const def = getExerciseDef(exerciseId);
-  if (def) return def;
-  const custom = DATA.customExercises[exerciseId];
-  if (custom) return custom;
-  return null;
 }
 function showToast(msg, duration = 2500) {
   const t = document.getElementById('toast');
@@ -645,7 +728,7 @@ function showToast(msg, duration = 2500) {
   setTimeout(() => t.classList.remove('show'), duration);
 }
 function showModal(html) {
-  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-content').innerHTML = `<button class="modal-close" onclick="closeModal()">×</button>` + html;
   document.getElementById('modal-bg').classList.add('show');
 }
 function closeModal() {
@@ -655,9 +738,9 @@ document.getElementById('modal-bg').addEventListener('click', e => {
   if (e.target.id === 'modal-bg') closeModal();
 });
 
-// =====================================================================
+// ============================================================
 // TAB-NAVIGATION
-// =====================================================================
+// ============================================================
 function switchTab(name) {
   document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -674,7 +757,6 @@ document.querySelectorAll('.nav-btn').forEach(b => {
   b.addEventListener('click', () => switchTab(b.dataset.tab));
 });
 
-// Theme-Toggle
 document.getElementById('themeBtn').addEventListener('click', () => {
   const cur = document.body.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : 'dark';
@@ -684,38 +766,76 @@ document.getElementById('themeBtn').addEventListener('click', () => {
 });
 document.body.setAttribute('data-theme', DATA.settings.theme || 'dark');
 
-// =====================================================================
-// PERIODISIERUNGS-LOGIK
-// =====================================================================
-function getPhaseInfo(phase) {
-  const phases = {
-    hypertrophie: { label: 'Hypertrophie', repsMin: 8, repsMax: 12, badge: 'badge-hyp', sets: 3, restSec: 75 },
-    kraft: { label: 'Maximalkraft / IK', repsMin: 3, repsMax: 6, badge: 'badge-kraft', sets: 4, restSec: 180 },
-    kraftausdauer: { label: 'Kraftausdauer', repsMin: 15, repsMax: 20, badge: 'badge-kraftaus', sets: 2, restSec: 45 },
-    deload: { label: 'Deload', repsMin: 8, repsMax: 10, badge: 'badge-deload', sets: 2, restSec: 90, intensityFactor: 0.6 }
-  };
-  return phases[phase] || phases.hypertrophie;
+// ============================================================
+// PHASEN- & ZYKLUS-LOGIK
+// ============================================================
+function getCurrentPhase() {
+  return DATA.cycle.currentMeso.phase;
 }
-function getCurrentSetsForExercise(exercise) {
-  // Berücksichtigt Volumen-Progression und aktuelle Phase
-  const phase = getPhaseInfo(DATA.cycle.currentPhase);
-  const baseSets = exercise.targetSets || phase.sets;
-  if (DATA.cycle.volumeProgression === 'akkumulation' && DATA.cycle.currentPhase !== 'deload') {
-    // Wochen 1: baseSets, Wochen 2-3: baseSets, Woche 4: baseSets+1
-    const week = DATA.cycle.currentWeek;
-    if (week >= 4) return baseSets + 1;
-    return baseSets;
-  }
-  if (DATA.cycle.currentPhase === 'deload') return Math.max(1, baseSets - 1);
+function getCurrentPhaseDef() {
+  const phase = getCurrentPhase();
+  return PHASE_DEFS[phase] || PHASE_DEFS.hypertrophie;
+}
+function getCurrentWeek() {
+  return DATA.cycle.currentMeso.currentWeek;
+}
+function getMesoLength() {
+  return DATA.cycle.currentMeso.lengthWeeks;
+}
+function isDeloadWeek() {
+  return getCurrentWeek() >= getMesoLength();
+}
+function getEffectivePhase() {
+  // Wenn Deload-Woche, gib 'deload' zurück
+  return isDeloadWeek() ? 'deload' : getCurrentPhase();
+}
+function getEffectivePhaseDef() {
+  return PHASE_DEFS[getEffectivePhase()];
+}
+function getWeeklyRIR() {
+  const phase = getEffectivePhase();
+  const def = PHASE_DEFS[phase];
+  if (phase === 'deload') return def.weeklyRIR[1];
+  const wk = getCurrentWeek();
+  return def.weeklyRIR[Math.min(wk, 5)] || '2-3';
+}
+function getWeeklyTargetSets(exercise) {
+  const phaseDef = getEffectivePhaseDef();
+  const baseSets = exercise.targetSets || phaseDef.baseSets;
+  if (isDeloadWeek()) return Math.max(1, baseSets - 1);
+  // Volumen-Akkumulation: Woche 4-5 ein Satz mehr
+  if (getCurrentWeek() >= 4) return baseSets + 1;
   return baseSets;
 }
+function getEffectiveRepsRange(exercise) {
+  if (isDeloadWeek()) {
+    return [exercise.targetRepsMin || 8, exercise.targetRepsMax || 10];
+  }
+  const phase = getCurrentPhase();
+  const phaseDef = PHASE_DEFS[phase];
+  // Wenn die Phase einen festen Rep-Bereich hat, der vom Übungs-Standard abweicht (z.B. Kraftausdauer 15-20)
+  // dann nehme den Phasen-Bereich
+  if (phase === 'kraftausdauer') return [15, 20];
+  if (phase === 'ik') return [3, 6];
+  return [exercise.targetRepsMin || 8, exercise.targetRepsMax || 12];
+}
+function getNextMesoPhase() {
+  const idx = DATA.macro.currentMesoIndex;
+  const next = (idx + 1) % DATA.macro.mesoSequence.length;
+  return DATA.macro.mesoSequence[next];
+}
+function getPrevMesoPhase() {
+  const hist = DATA.cycle.mesoHistory;
+  if (hist.length === 0) return null;
+  return hist[hist.length - 1].phase;
+}
 
-// =====================================================================
+// ============================================================
 // PROGRESSION & PLATEAU
-// =====================================================================
-function getLastWorkout(exerciseId, excludeDate = null) {
+// ============================================================
+function getLastWorkout(exerciseId) {
   const entries = DATA.history
-    .filter(h => h.exerciseId === exerciseId && (excludeDate === null || h.date !== excludeDate))
+    .filter(h => h.exerciseId === exerciseId)
     .sort((a, b) => b.date.localeCompare(a.date));
   return entries[0] || null;
 }
@@ -725,159 +845,233 @@ function getRecentWorkouts(exerciseId, count) {
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, count);
 }
-function getMaxRepsForWeight(workout, weight) {
-  if (!workout || !workout.sets) return 0;
-  const matching = workout.sets.filter(s => s.weight === weight && s.reps);
-  return matching.length === 0 ? 0 : Math.max(...matching.map(s => s.reps));
-}
-function getBestWeight(workout) {
-  if (!workout || !workout.sets) return 0;
-  return Math.max(...workout.sets.map(s => s.weight || 0));
+function getBestE1RM(exerciseId) {
+  const records = DATA.history.filter(h => h.exerciseId === exerciseId && !h.legacy);
+  let best = 0;
+  records.forEach(r => {
+    (r.sets || []).forEach(s => {
+      const e = calcE1RM(s.weight, s.reps);
+      if (e && e > best) best = e;
+    });
+  });
+  return best;
 }
 
 function progressionSuggestion(exerciseId, exercise) {
-  // Double Progression: Letzte Trainingseinheit ansehen
-  // Wenn alle Sätze am oberen Rep-Limit: Gewicht erhöhen
-  // Wenn unter Limit: Reps erhöhen, gleiches Gewicht
-  const last = getLastWorkout(exerciseId);
-  if (!last || !last.sets || last.sets.length === 0 || last.legacy) {
-    return { weight: exercise.currentWeight, action: 'startgewicht', text: 'Startgewicht' };
-  }
   const def = getExerciseInfo(exerciseId);
-  if (def && def.type === 'time') {
-    // Plank: längste Zeit aus dem letzten Training
-    const maxTime = Math.max(...last.sets.map(s => s.reps || 0));
-    const target = exercise.targetSeconds || 120;
-    if (maxTime >= target) {
-      return { weight: 0, action: 'time_up', text: `Letztes Mal ${maxTime}s, Ziel ${target}s erreicht. Ziel um 15s erhöhen?` };
-    }
-    return { weight: 0, action: 'time_hold', text: `Ziel: ${target}s pro Satz halten` };
-  }
+  if (!def) return { weight: exercise.currentWeight, text: '' };
 
-  const repsMax = exercise.targetRepsMax || 12;
-  const repsMin = exercise.targetRepsMin || 8;
+  const last = getLastWorkout(exerciseId);
+  const isTime = def.type === 'time';
+  const isBW = def.bodyweight;
   const inc = DATA.settings.defaultIncrement || 2.5;
+  const [repsMin, repsMax] = getEffectiveRepsRange(exercise);
+  const phase = getEffectivePhase();
+  const rir = getWeeklyRIR();
 
-  // Bei Plateau-Check: arbeite mit dem letzten genutzten Gewicht
-  const lastWeight = getBestWeight(last);
-  const minRepsLast = Math.min(...last.sets.filter(s => s.weight === lastWeight && s.reps).map(s => s.reps));
-
-  if (!isFinite(minRepsLast) || minRepsLast === 0) {
-    return { weight: lastWeight || exercise.currentWeight, action: 'unknown', text: 'Setze beim letzten Gewicht an' };
+  if (isTime) {
+    const lastSets = last && last.sets ? last.sets : [];
+    const lastTimes = lastSets.map(s => s.reps || 0);
+    const maxTime = lastTimes.length ? Math.max(...lastTimes) : 0;
+    const target = exercise.targetSeconds || 120;
+    if (last && maxTime >= target) {
+      return { weight: 0, text: `Letztes Mal max ${maxTime}s, Ziel erreicht. Versuch ${target + 15}s.` };
+    }
+    return { weight: 0, text: `Ziel: ${target}s halten · RIR ${rir}` };
   }
 
-  // Alle Sätze haben repsMax oder mehr erreicht → hochgehen
-  if (minRepsLast >= repsMax) {
-    return {
-      weight: lastWeight + inc,
-      action: 'increase_weight',
-      text: `Letztes Mal alle Sätze ≥${repsMax} Wdh: Gewicht um ${inc} kg erhöhen`
-    };
+  // Deload-Logik: 60% des bisherigen Arbeitsgewichts
+  if (phase === 'deload') {
+    const ref = last && !last.legacy ? Math.max(...last.sets.map(s => s.weight || 0)) : exercise.currentWeight;
+    const w = Math.round(ref * 0.6 / 0.5) * 0.5;
+    return { weight: w, text: `Deload: ~60% (${w} kg) · RIR ${rir}` };
   }
-  return {
-    weight: lastWeight,
-    action: 'increase_reps',
-    text: `Versuch: ${lastWeight} kg × ${minRepsLast + 1}+ Wdh`
-  };
+
+  // Phasenwechsel: Gewicht aus e1RM neu berechnen
+  // Wenn die Phase neu gestartet ist (Woche 1) und vorige Phase anders war, e1RM-basiert kalkulieren
+  if (getCurrentWeek() === 1 && last && !last.legacy) {
+    // Letzte Phase aus mesoHistory
+    const lastMeso = DATA.cycle.mesoHistory[DATA.cycle.mesoHistory.length - 1];
+    if (lastMeso && lastMeso.phase !== phase) {
+      const e1rm = getBestE1RM(exerciseId);
+      if (e1rm > 0) {
+        const phaseDef = PHASE_DEFS[phase];
+        const targetPct = (phaseDef.intensityPct[0] + phaseDef.intensityPct[1]) / 2;
+        const w = Math.round(e1rm * targetPct / 0.5) * 0.5;
+        return { weight: w, text: `Phasenstart (${phaseDef.label}): ${w} kg, ${repsMin}-${repsMax} Wdh · RIR ${rir}` };
+      }
+    }
+  }
+
+  if (!last || last.legacy) {
+    return { weight: exercise.currentWeight, text: `Startgewicht ${exercise.currentWeight} kg · RIR ${rir}` };
+  }
+
+  const validSets = last.sets.filter(s => s.weight !== null && s.reps);
+  if (validSets.length === 0) {
+    return { weight: exercise.currentWeight, text: `Startgewicht · RIR ${rir}` };
+  }
+
+  // Letztes Arbeitsgewicht
+  const lastWeight = Math.max(...validSets.map(s => s.weight));
+  const repsAtLast = validSets.filter(s => s.weight === lastWeight).map(s => s.reps);
+  const minReps = Math.min(...repsAtLast);
+
+  // Maschinen-Limit prüfen
+  const maxW = exercise.maxWeight;
+  const atMax = maxW !== null && maxW !== undefined && lastWeight >= maxW;
+
+  // Double Progression
+  if (minReps >= repsMax) {
+    if (atMax) {
+      return { weight: lastWeight, text: `Max-Gewicht (${maxW} kg) erreicht. Reps halten, Variation einbauen oder Übung wechseln.`, isWarn: true };
+    }
+    const nextW = lastWeight + inc;
+    if (maxW && nextW > maxW) {
+      return { weight: maxW, text: `Steigerung auf ${maxW} kg (Maschinen-Max) · ${repsMin}-${repsMax} Wdh · RIR ${rir}` };
+    }
+    return { weight: nextW, text: `Letztes Mal alle Sätze ≥${repsMax} Wdh. Heute: ${nextW} kg, ${repsMin}-${repsMax} Wdh · RIR ${rir}` };
+  }
+  return { weight: lastWeight, text: `${lastWeight} kg × ${minReps + 1}+ Wdh anstreben · RIR ${rir}` };
 }
 
 function detectPlateau(exerciseId) {
-  // Plateau, wenn die letzten N Trainings keine Verbesserung in Gewicht oder Reps zeigen
   const threshold = DATA.settings.plateauThreshold || 3;
   const recent = getRecentWorkouts(exerciseId, threshold + 1).filter(w => !w.legacy);
   if (recent.length < threshold) return null;
-
-  // best e1RM pro Training
   const e1rms = recent.map(w => {
     if (!w.sets) return 0;
-    return Math.max(...w.sets.map(s => calcE1RM(s.weight, s.reps) || 0));
+    return Math.max(0, ...w.sets.map(s => calcE1RM(s.weight, s.reps) || 0));
   });
-  // Wenn das aktuellste e1RM nicht höher als der Max der vorherigen
   const current = e1rms[0];
   const prev = e1rms.slice(1, threshold + 1);
+  if (prev.length === 0) return null;
   const maxPrev = Math.max(...prev);
-
-  if (current <= maxPrev * 1.005) { // 0.5% Toleranz
-    return {
-      type: 'plateau',
-      message: `Seit ${threshold} Trainings kein Fortschritt`,
-      sessions: recent.length
-    };
+  if (current <= maxPrev * 1.005) {
+    return { type: 'plateau', sessions: threshold };
   }
   return null;
 }
 
-function plateauSuggestions(exerciseId) {
+function intelligentExerciseAdvice(exerciseId, exercise) {
+  // Mehrstufige Heuristiken
   const def = getExerciseInfo(exerciseId);
-  const altIds = (def && def.alternatives) || [];
-  const alternatives = altIds.map(id => getExerciseInfo(id)).filter(Boolean);
-  return {
-    options: [
-      {
-        type: 'force_increase',
-        label: 'Trotzdem Gewicht erhöhen',
-        desc: 'Reps fallen lassen, dann mit Double Progression hocharbeiten'
-      },
-      {
-        type: 'variation',
-        label: 'Variation einbauen',
-        desc: 'Tempo (z.B. 3s exzentrisch), kürzere Pausen, vollerer ROM'
-      },
-      {
-        type: 'change_exercise',
-        label: 'Übung wechseln',
-        desc: alternatives.length ? 'Alternative aus Bibliothek wählen' : 'Andere Übung für die gleiche Muskelgruppe',
-        alternatives
-      },
-      {
-        type: 'deload',
-        label: 'Deload-Woche einlegen',
-        desc: 'Volumen halbieren, danach frisch starten'
-      }
-    ]
-  };
+  if (!def) return [];
+  const advice = [];
+
+  // 1. Maschinen-Max erreicht
+  if (exercise.maxWeight && exercise.currentWeight >= exercise.maxWeight) {
+    advice.push({
+      type: 'max_reached',
+      msg: `Maschinen-Max erreicht (${exercise.maxWeight} kg). Variante: Tempo verlangsamen (3s exzentrisch) oder zu einer Alternative wechseln.`
+    });
+  }
+
+  // 2. Lange am gleichen Gewicht (3+ Trainings)
+  const plateau = detectPlateau(exerciseId);
+  if (plateau) {
+    if (def.isIsolation) {
+      advice.push({
+        type: 'plateau_iso',
+        msg: 'Isolationsübung stagniert. Reps an die Obergrenze oder Tempo verlangsamen sind häufig effektiver als Gewichtssteigerung.'
+      });
+    } else if (def.isCompound) {
+      advice.push({
+        type: 'plateau_compound',
+        msg: 'Grundübung stagniert. Prüfe Schlaf, Kalorienzufuhr und Pausenzeiten (bei Hypertrophie 60-90s, bei IK 3-5 Min).'
+      });
+    }
+  }
+
+  return advice;
 }
 
-// =====================================================================
+// ============================================================
+// VOLUMEN-BERECHNUNG
+// ============================================================
+function calcWeeklyVolume(weekOffset = 0) {
+  const today = new Date();
+  const weekStart = new Date(today);
+  const day = today.getDay() || 7;
+  weekStart.setDate(today.getDate() - day + 1 + (weekOffset * 7));
+  const ws = weekStart.toISOString().slice(0, 10);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 7);
+  const we = weekEnd.toISOString().slice(0, 10);
+
+  const vol = {};
+  MUSCLE_GROUPS.forEach(m => vol[m] = 0);
+
+  DATA.history.filter(h => h.date >= ws && h.date < we && !h.legacy).forEach(h => {
+    const def = getExerciseInfo(h.exerciseId);
+    if (!def || !h.sets) return;
+    const sets = h.sets.length;
+    (def.muscles || []).forEach(m => vol[m] = (vol[m] || 0) + sets);
+    (def.secondary || []).forEach(m => vol[m] = (vol[m] || 0) + sets * 0.5);
+  });
+  return vol;
+}
+
+function planVolumeAnalysis() {
+  // Geschätztes Wochenvolumen anhand des Plans und der Frequenz
+  const vol = {};
+  MUSCLE_GROUPS.forEach(m => vol[m] = 0);
+  const freq = DATA.cycle.frequency;
+  const plans = DATA.cycle.activePlans;
+  const plansPerWeek = freq / plans.length;
+  plans.forEach(pk => {
+    const plan = DATA.plans[pk];
+    if (!plan) return;
+    plan.exercises.forEach(ex => {
+      const def = getExerciseInfo(ex.exerciseId);
+      if (!def) return;
+      const sets = ex.targetSets || 3;
+      (def.muscles || []).forEach(m => vol[m] = (vol[m] || 0) + sets * plansPerWeek);
+      (def.secondary || []).forEach(m => vol[m] = (vol[m] || 0) + sets * 0.5 * plansPerWeek);
+    });
+  });
+  return vol;
+}
+
+// ============================================================
 // HEUTE-TAB
-// =====================================================================
+// ============================================================
+let currentWorkoutDraft = null;
+
 function getTodaysPlan() {
-  // Bestimmt, welcher Plan heute dran ist, basierend auf letztem Training + Rotation
-  if (DATA.cycle.rotation === 'same') {
-    return DATA.cycle.activePlans[0];
-  }
-  // Schaue, was zuletzt trainiert wurde
+  if (DATA.cycle.rotation === 'same') return DATA.cycle.activePlans[0];
   const completed = DATA.history.filter(h => !h.legacy).sort((a, b) => b.date.localeCompare(a.date));
-  if (completed.length === 0) {
-    return DATA.cycle.activePlans[0];
-  }
-  // Bestimme letzten Plan: anhand der Übungen
-  const last = completed[0];
+  if (completed.length === 0) return DATA.cycle.activePlans[0];
+  // Suche letzten Plan
+  const lastDate = completed[0].date;
+  const lastEntries = completed.filter(c => c.date === lastDate);
   let lastPlan = null;
-  for (const planKey of DATA.cycle.activePlans) {
-    if (DATA.plans[planKey] && DATA.plans[planKey].exercises.some(e => e.exerciseId === last.exerciseId)) {
-      lastPlan = planKey;
+  for (const pk of DATA.cycle.activePlans) {
+    const plan = DATA.plans[pk];
+    if (!plan) continue;
+    const exIds = plan.exercises.map(e => e.exerciseId);
+    if (lastEntries.some(e => exIds.includes(e.exerciseId))) {
+      lastPlan = pk;
       break;
     }
   }
   if (!lastPlan) return DATA.cycle.activePlans[0];
-  // Nächster in der Rotation
+  // Wenn letztes Training heute war, bleibe beim gleichen Plan
+  const today = new Date().toISOString().slice(0, 10);
+  if (lastDate === today) return lastPlan;
   const idx = DATA.cycle.activePlans.indexOf(lastPlan);
   return DATA.cycle.activePlans[(idx + 1) % DATA.cycle.activePlans.length];
 }
 
-let currentWorkoutDraft = null; // {date, planId, exercises: [{exerciseId, sets:[{weight,reps,done}]}]}
-
 function initWorkoutDraft(planKey, force = false) {
   const today = new Date().toISOString().slice(0, 10);
-  if (currentWorkoutDraft && currentWorkoutDraft.date === today && currentWorkoutDraft.planId === planKey && !force) {
-    return;
-  }
-  // Versuche, einen heutigen Draft aus localStorage zu laden
+  if (currentWorkoutDraft && currentWorkoutDraft.date === today && currentWorkoutDraft.planId === planKey && !force) return;
   const draftKey = `kr_draft_${today}_${planKey}`;
-  const saved = localStorage.getItem(draftKey);
-  if (saved && !force) {
-    try { currentWorkoutDraft = JSON.parse(saved); return; } catch (e) {}
+  if (!force) {
+    const saved = localStorage.getItem(draftKey);
+    if (saved) {
+      try { currentWorkoutDraft = JSON.parse(saved); return; } catch (e) {}
+    }
   }
   const plan = DATA.plans[planKey];
   if (!plan) return;
@@ -887,139 +1081,163 @@ function initWorkoutDraft(planKey, force = false) {
     exercises: plan.exercises.map(ex => {
       const def = getExerciseInfo(ex.exerciseId);
       const isTime = def && def.type === 'time';
-      const sets = [];
-      const n = getCurrentSetsForExercise(ex);
       const sug = progressionSuggestion(ex.exerciseId, ex);
+      const sets = [];
+      const n = getWeeklyTargetSets(ex);
       for (let i = 0; i < n; i++) {
-        sets.push({
-          weight: isTime ? 0 : (sug.weight || ex.currentWeight),
-          reps: null,
-          done: false
-        });
+        sets.push({ weight: isTime ? null : (sug.weight || ex.currentWeight), reps: null });
       }
       return { exerciseId: ex.exerciseId, sets };
     })
   };
+  saveWorkoutDraft();
 }
-
 function saveWorkoutDraft() {
   if (!currentWorkoutDraft) return;
-  const k = `kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`;
-  localStorage.setItem(k, JSON.stringify(currentWorkoutDraft));
+  localStorage.setItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`, JSON.stringify(currentWorkoutDraft));
 }
 
 function renderToday() {
   const todayStr = new Date().toISOString().slice(0, 10);
-  const planKey = getTodaysPlan();
-  initWorkoutDraft(planKey);
-
-  if (!DATA.plans[planKey]) {
+  if (!DATA.cycle.activePlans.length || !DATA.plans[DATA.cycle.activePlans[0]]) {
     document.getElementById('today-content').innerHTML = `
       <div class="empty">
         <h3>Kein Plan eingerichtet</h3>
-        <p>Geh in die Einstellungen und starte einen neuen Zyklus.</p>
+        <p style="margin-bottom:16px;">Geh in die Einstellungen und starte einen neuen Zyklus.</p>
         <button class="btn" onclick="switchTab('setup')">Zum Setup</button>
       </div>`;
     return;
   }
-
+  const planKey = getTodaysPlan();
+  initWorkoutDraft(planKey);
   const plan = DATA.plans[planKey];
-  const phase = getPhaseInfo(DATA.cycle.currentPhase);
+  const phaseDef = getEffectivePhaseDef();
+  const rir = getWeeklyRIR();
+  const mesoLen = getMesoLength();
+  const week = getCurrentWeek();
 
   let html = `
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
-      <div>
-        <div style="color:var(--text-dim); font-size:13px;">${fmtDateLong(todayStr)}</div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; gap:10px;">
+      <div style="flex:1; min-width:0;">
+        <div style="color:var(--text-dim); font-size:12px;">${fmtDateLong(todayStr)}</div>
         <h1 style="margin-top:2px;">${plan.name}</h1>
       </div>
-      <div style="text-align:right;">
-        <span class="badge ${phase.badge}">${phase.label}</span>
-        <div style="color:var(--text-faint); font-size:12px; margin-top:4px;">Woche ${DATA.cycle.currentWeek}/${DATA.cycle.mesoLengthWeeks}</div>
+      <div style="text-align:right; flex-shrink:0;">
+        <span class="badge ${phaseDef.badge}">${phaseDef.label}</span>
+        <div style="color:var(--text-faint); font-size:11px; margin-top:4px;">W${week}/${mesoLen}</div>
       </div>
+    </div>
+
+    <div class="phase-indicator" style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="phase-name">${phaseDef.label}</div>
+        <div style="font-size:12px; color:var(--text-dim);">Woche ${week} von ${mesoLen}</div>
+      </div>
+      <div class="progress">${Array.from({length: mesoLen}, (_, i) => {
+        const cls = i+1 < week ? 'done' : (i+1 === week ? 'current' : '');
+        return `<div class="progress-dot ${cls}"></div>`;
+      }).join('')}</div>
+      <div class="rir-hint">Heute: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh als Richtwert</div>
     </div>
   `;
 
-  // Plan-Wechsel-Buttons
   if (DATA.cycle.activePlans.length > 1) {
     html += `<div class="day-tabs">`;
     DATA.cycle.activePlans.forEach(pk => {
-      html += `<button class="day-tab ${pk === planKey ? 'active' : ''}" onclick="switchPlanToday('${pk}')">${DATA.plans[pk].name}</button>`;
+      html += `<button class="day-tab ${pk === planKey ? 'active' : ''}" onclick="switchPlanToday('${pk}')">${DATA.plans[pk].name.split('(')[0].trim()}</button>`;
     });
     html += `</div>`;
   }
 
-  // Übungen
   plan.exercises.forEach((ex, exIdx) => {
     const def = getExerciseInfo(ex.exerciseId);
     if (!def) return;
     const isTime = def.type === 'time';
+    const isBW = def.bodyweight;
     const draftEx = currentWorkoutDraft.exercises[exIdx];
+    if (!draftEx) return;
     const last = getLastWorkout(ex.exerciseId);
-    const plateau = detectPlateau(ex.exerciseId);
     const sug = progressionSuggestion(ex.exerciseId, ex);
+    const advice = intelligentExerciseAdvice(ex.exerciseId, ex);
 
     let lastSummary = 'Erstes Training';
     if (last) {
       if (last.legacy) {
-        lastSummary = `Vorher (kein Reps-Eintrag): ${last.sets.map(s => fmtWeight(s.weight)).join('/')} kg`;
+        const w = Math.max(0, ...last.sets.map(s => s.weight || 0));
+        lastSummary = `Vorher: zuletzt ${fmtWeight(w)} kg (Wdh unbekannt)`;
       } else if (isTime) {
-        lastSummary = `Letztes Mal: ${last.sets.map(s => fmtTime(s.reps || 0)).join(', ')}`;
+        lastSummary = `Letztes Mal: ${last.sets.map(s => fmtTime(s.reps || 0)).join(' · ')}`;
       } else {
-        lastSummary = `Letztes Mal: ` + last.sets.map(s => `${fmtWeight(s.weight)}×${s.reps || '?'}`).join(', ');
+        lastSummary = 'Letztes Mal: ' + last.sets.map(s => `${fmtWeight(s.weight)}${isBW ? '' : 'kg'}×${s.reps || '?'}`).join(' · ');
       }
     }
 
-    const targetStr = isTime ? `${ex.targetSets || 3} × ${ex.targetSeconds || 120}s` :
-      `${draftEx.sets.length} × ${ex.targetRepsMin}-${ex.targetRepsMax}`;
+    const [repsMin, repsMax] = getEffectiveRepsRange(ex);
+    const targetStr = isTime ? `${draftEx.sets.length}×${ex.targetSeconds || 120}s` :
+      `${draftEx.sets.length}×${repsMin}-${repsMax}`;
 
     html += `
       <div class="exercise-block">
         <div class="exercise-head">
           <div style="flex:1; min-width:0;">
             <div class="exercise-name">${def.name}</div>
-            <div class="exercise-meta">${targetStr} · ${def.equipment}</div>
+            <div class="exercise-meta">${targetStr} · ${def.equipment}${isBW ? ' · Eigengewicht' : ''}</div>
             <div class="exercise-last">${lastSummary}</div>
           </div>
           <div class="exercise-actions">
-            <button class="icon-btn" onclick="showSwapExercise(${exIdx})" title="Übung wechseln">⇄</button>
-            <button class="icon-btn" onclick="addSet(${exIdx})" title="Satz hinzufügen">+</button>
+            <button class="icon-btn" onclick="showSwapExercise(${exIdx})" title="Wechseln">⇄</button>
+            <button class="icon-btn" onclick="addSetToDraft(${exIdx})" title="Satz +">+</button>
           </div>
         </div>
     `;
 
-    if (plateau && !isTime) {
-      html += `<div class="suggest warn">⚠ ${plateau.message} · <a href="#" onclick="showPlateauHelp('${ex.exerciseId}');return false;" style="color:inherit;text-decoration:underline;">Hilfe</a></div>`;
-    }
-    if (sug && sug.text && !plateau) {
-      html += `<div class="suggest">→ ${sug.text}</div>`;
+    if (advice.length > 0) {
+      advice.forEach(a => {
+        html += `<div class="suggest warn">⚠ ${a.msg} · <a href="#" onclick="showPlateauHelp('${ex.exerciseId}');return false;" style="color:inherit;text-decoration:underline;">Hilfe</a></div>`;
+      });
+    } else if (sug.text) {
+      html += `<div class="suggest${sug.isWarn ? ' warn' : ''}">→ ${sug.text}</div>`;
     }
 
+    // Sets-Grid
     if (isTime) {
-      // Plank: Timer pro Satz
-      html += `<div class="sets-grid" style="grid-template-columns: 30px 1fr 1fr 44px;">`;
-      html += `<div class="header-cell">#</div><div class="header-cell">Zeit (s)</div><div class="header-cell">Timer</div><div class="header-cell"></div>`;
+      html += `<div class="sets-grid with-time">`;
+      html += `<div class="header-cell">#</div><div class="header-cell">Zeit (s)</div><div class="header-cell"></div>`;
       draftEx.sets.forEach((s, si) => {
+        const filled = (s.reps !== null && s.reps !== undefined);
         html += `
           <div class="set-num">${si + 1}</div>
-          <input class="set-input ${s.done ? 'done' : ''}" type="number" value="${s.reps || ''}" placeholder="${ex.targetSeconds || 120}" 
+          <input class="set-input ${filled ? 'filled' : ''}" type="number" value="${s.reps !== null ? s.reps : ''}" placeholder="${ex.targetSeconds || 120}" 
                  onchange="updateSet(${exIdx},${si},'reps',this.value)" inputmode="numeric">
-          <button class="btn btn-secondary btn-small" onclick="startPlankTimer(${exIdx},${si})">▶ Start</button>
-          <button class="set-check ${s.done ? 'done' : ''}" onclick="toggleDone(${exIdx},${si})">✓</button>
+          <button class="timer-btn-small" onclick="startPlankTimer(${exIdx},${si})">▶ Timer</button>
+        `;
+      });
+      html += `</div>`;
+    } else if (isBW) {
+      // Bodyweight: nur Reps-Feld, kein Gewicht
+      html += `<div class="sets-grid" style="grid-template-columns: 24px 1fr;">`;
+      html += `<div class="header-cell">#</div><div class="header-cell">Wdh</div>`;
+      draftEx.sets.forEach((s, si) => {
+        const filled = s.reps !== null && s.reps !== undefined;
+        html += `
+          <div class="set-num">${si + 1}</div>
+          <input class="set-input ${filled ? 'filled' : ''}" type="number" value="${s.reps !== null ? s.reps : ''}" placeholder="${repsMin}-${repsMax}" 
+                 onchange="updateSet(${exIdx},${si},'reps',this.value)" inputmode="numeric">
         `;
       });
       html += `</div>`;
     } else {
       html += `<div class="sets-grid">`;
-      html += `<div class="header-cell">#</div><div class="header-cell">kg</div><div class="header-cell">Wdh</div><div class="header-cell"></div>`;
+      html += `<div class="header-cell">#</div><div class="header-cell">kg</div><div class="header-cell">Wdh</div>`;
       draftEx.sets.forEach((s, si) => {
+        const filled = (s.weight !== null && s.weight !== undefined) && (s.reps !== null && s.reps !== undefined);
         const placeholder = sug.weight ? fmtWeight(sug.weight) : '';
         html += `
           <div class="set-num">${si + 1}</div>
-          <input class="set-input ${s.done ? 'done' : ''}" type="number" step="0.5" value="${s.weight || ''}" placeholder="${placeholder}" 
+          <input class="set-input ${filled ? 'filled' : ''}" type="number" step="0.5" value="${s.weight !== null ? s.weight : ''}" placeholder="${placeholder}" 
                  onchange="updateSet(${exIdx},${si},'weight',this.value)" inputmode="decimal">
-          <input class="set-input ${s.done ? 'done' : ''}" type="number" value="${s.reps || ''}" placeholder="${ex.targetRepsMin}-${ex.targetRepsMax}" 
+          <input class="set-input ${filled ? 'filled' : ''}" type="number" value="${s.reps !== null ? s.reps : ''}" placeholder="${repsMin}-${repsMax}" 
                  onchange="updateSet(${exIdx},${si},'reps',this.value)" inputmode="numeric">
-          <button class="set-check ${s.done ? 'done' : ''}" onclick="toggleDone(${exIdx},${si})">✓</button>
         `;
       });
       html += `</div>`;
@@ -1029,9 +1247,9 @@ function renderToday() {
   });
 
   html += `
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 18px;">
       <button class="btn btn-full" onclick="finishWorkout()">Training abschließen</button>
-      <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="resetDraft()">Eingaben zurücksetzen</button>
+      <button class="btn btn-ghost btn-full btn-small" style="margin-top:8px;" onclick="resetDraft()">Eingaben zurücksetzen</button>
     </div>
   `;
 
@@ -1039,161 +1257,320 @@ function renderToday() {
 }
 
 function switchPlanToday(planKey) {
+  if (currentWorkoutDraft && (currentWorkoutDraft.exercises.some(e => e.sets.some(s => s.reps || s.weight)))) {
+    if (!confirm('Es gibt bereits Eingaben. Wirklich Plan wechseln und Eingaben verwerfen?')) return;
+  }
+  // Aktuellen Draft löschen
+  if (currentWorkoutDraft) {
+    localStorage.removeItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`);
+  }
+  currentWorkoutDraft = null;
   initWorkoutDraft(planKey, true);
   renderToday();
 }
 function updateSet(exIdx, setIdx, field, value) {
+  if (!currentWorkoutDraft) return;
   const v = field === 'weight' ? parseFloat(value) : parseInt(value);
-  currentWorkoutDraft.exercises[exIdx].sets[setIdx][field] = isNaN(v) ? null : v;
+  currentWorkoutDraft.exercises[exIdx].sets[setIdx][field] = (value === '' || isNaN(v)) ? null : v;
   saveWorkoutDraft();
 }
-function toggleDone(exIdx, setIdx) {
-  const s = currentWorkoutDraft.exercises[exIdx].sets[setIdx];
-  s.done = !s.done;
-  saveWorkoutDraft();
-  renderToday();
-}
-function addSet(exIdx) {
+function addSetToDraft(exIdx) {
+  if (!currentWorkoutDraft) return;
   const last = currentWorkoutDraft.exercises[exIdx].sets.slice(-1)[0] || {};
-  currentWorkoutDraft.exercises[exIdx].sets.push({
-    weight: last.weight || 0, reps: null, done: false
-  });
+  currentWorkoutDraft.exercises[exIdx].sets.push({ weight: last.weight !== undefined ? last.weight : null, reps: null });
   saveWorkoutDraft();
   renderToday();
 }
 function resetDraft() {
-  if (!confirm('Wirklich alle Eingaben des heutigen Trainings zurücksetzen?')) return;
-  const k = `kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`;
-  localStorage.removeItem(k);
+  if (!currentWorkoutDraft) return;
+  if (!confirm('Alle Eingaben des heutigen Trainings zurücksetzen?')) return;
+  localStorage.removeItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`);
   currentWorkoutDraft = null;
   renderToday();
 }
 
 function finishWorkout() {
   if (!currentWorkoutDraft) return;
-  // Filtere abgeschlossene Sätze
-  const finished = currentWorkoutDraft.exercises
-    .map(ex => ({
-      exerciseId: ex.exerciseId,
-      sets: ex.sets.filter(s => (s.weight !== null && s.weight !== undefined) || s.reps),
-      date: currentWorkoutDraft.date
-    }))
-    .filter(ex => ex.sets.length > 0);
+  const finished = currentWorkoutDraft.exercises.map(ex => {
+    const def = getExerciseInfo(ex.exerciseId);
+    const isBW = def && def.bodyweight;
+    // Akzeptiere Sätze, in denen Reps eingetragen sind (Bodyweight) oder Gewicht UND Reps (normal)
+    const validSets = ex.sets.filter(s => {
+      if (isBW || (def && def.type === 'time')) return s.reps !== null && s.reps !== undefined;
+      return (s.weight !== null && s.weight !== undefined) && (s.reps !== null && s.reps !== undefined);
+    }).map(s => ({ weight: isBW ? 0 : s.weight, reps: s.reps }));
+    return { exerciseId: ex.exerciseId, sets: validSets };
+  }).filter(ex => ex.sets.length > 0);
+
   if (finished.length === 0) {
-    showToast('Keine Sätze eingetragen');
+    showToast('Keine vollständigen Sätze eingetragen');
     return;
   }
-  // Speichere jeden Eintrag in die History
+
+  // Zusammenfassung vorbereiten und anzeigen
+  showWorkoutSummary(finished);
+}
+
+function showWorkoutSummary(finished) {
+  const comparison = finished.map(ex => {
+    const def = getExerciseInfo(ex.exerciseId);
+    // Vorheriges (nicht-legacy) Training
+    const recent = DATA.history.filter(h => h.exerciseId === ex.exerciseId && !h.legacy).sort((a, b) => b.date.localeCompare(a.date));
+    const last = recent[0] || null;
+
+    let trend = 'flat';
+    let comparedText = '';
+    if (def.type === 'time') {
+      const maxNow = Math.max(...ex.sets.map(s => s.reps || 0));
+      const maxLast = last ? Math.max(...last.sets.map(s => s.reps || 0)) : 0;
+      if (maxNow > maxLast) trend = 'up';
+      else if (maxNow < maxLast) trend = 'down';
+      comparedText = last ? `${maxNow}s vs ${maxLast}s` : `${maxNow}s (erstes Mal)`;
+    } else if (def.bodyweight) {
+      const sumNow = ex.sets.reduce((a, s) => a + (s.reps || 0), 0);
+      const sumLast = last ? last.sets.reduce((a, s) => a + (s.reps || 0), 0) : 0;
+      if (sumNow > sumLast) trend = 'up';
+      else if (sumNow < sumLast) trend = 'down';
+      comparedText = last ? `${sumNow} Wdh vs ${sumLast}` : `${sumNow} Wdh (erstes Mal)`;
+    } else {
+      const e1Now = Math.max(0, ...ex.sets.map(s => calcE1RM(s.weight, s.reps) || 0));
+      const e1Last = last ? Math.max(0, ...last.sets.map(s => calcE1RM(s.weight, s.reps) || 0)) : 0;
+      if (e1Now > e1Last * 1.005) trend = 'up';
+      else if (e1Now < e1Last * 0.995) trend = 'down';
+      else trend = 'flat';
+      const maxWNow = Math.max(...ex.sets.map(s => s.weight || 0));
+      const maxRepsNow = Math.max(...ex.sets.filter(s => s.weight === maxWNow).map(s => s.reps));
+      comparedText = last ? `${maxWNow}kg×${maxRepsNow} · e1RM ${fmtWeight(e1Now)} vs ${fmtWeight(e1Last)}` : `${maxWNow}kg×${maxRepsNow} (erstes Mal)`;
+    }
+    return { def, trend, comparedText, sets: ex.sets };
+  });
+
+  const trendIcons = { up: '↑', flat: '→', down: '↓' };
+  const trendCounts = { up: 0, flat: 0, down: 0 };
+  comparison.forEach(c => trendCounts[c.trend]++);
+
+  let html = `<h2>Training abgeschlossen</h2>
+    <p style="color:var(--text-dim); margin-bottom:14px; font-size:13px;">
+      ${trendCounts.up} Steigerungen · ${trendCounts.flat} unverändert · ${trendCounts.down} Rückschritte
+    </p>
+    <div class="card" style="margin-bottom:14px;">`;
+  comparison.forEach(c => {
+    html += `
+      <div class="compare-row">
+        <div style="flex:1; min-width:0;">
+          <div class="compare-name">${c.def.name}</div>
+          <div class="compare-vals">${c.comparedText}</div>
+        </div>
+        <div class="compare-trend ${c.trend}">${trendIcons[c.trend]}</div>
+      </div>
+    `;
+  });
+  html += `</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeModal()">Zurück</button>
+      <button class="btn" onclick="confirmFinishWorkout()">Speichern</button>
+    </div>`;
+  showModal(html);
+  // Daten im Modal-State zwischenspeichern
+  window._pendingWorkout = finished;
+}
+
+function confirmFinishWorkout() {
+  const finished = window._pendingWorkout;
+  if (!finished) return;
   finished.forEach(ex => {
     DATA.history.push({
-      date: ex.date,
+      date: currentWorkoutDraft.date,
       exerciseId: ex.exerciseId,
-      sets: ex.sets.map(s => ({ weight: s.weight, reps: s.reps }))
+      sets: ex.sets
     });
   });
-  // Lösche Draft
-  const k = `kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`;
-  localStorage.removeItem(k);
-  // Check ob Woche zu Ende? Phase wechseln?
+
+  // Aktuelles Arbeitsgewicht in Plan-Konfig aktualisieren (für Vorschläge)
+  const plan = DATA.plans[currentWorkoutDraft.planId];
+  if (plan) {
+    finished.forEach(ex => {
+      const planEx = plan.exercises.find(p => p.exerciseId === ex.exerciseId);
+      if (planEx) {
+        const maxW = Math.max(0, ...ex.sets.map(s => s.weight || 0));
+        if (maxW > 0) planEx.currentWeight = maxW;
+      }
+    });
+  }
+
+  localStorage.removeItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`);
   advanceCycleIfNeeded();
   saveData(DATA);
   currentWorkoutDraft = null;
+  window._pendingWorkout = null;
+  closeModal();
   showToast('Training gespeichert ✓');
   switchTab('stats');
 }
 
 function advanceCycleIfNeeded() {
-  // Zähle Trainings pro Woche; wenn frequency erreicht, gehe zur nächsten Woche
   const today = new Date();
   const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - today.getDay() + 1); // Montag
-  const wsStr = weekStart.toISOString().slice(0, 10);
-  const trainingsThisWeek = new Set(
-    DATA.history.filter(h => h.date >= wsStr && !h.legacy).map(h => h.date)
-  ).size;
-  if (trainingsThisWeek >= DATA.cycle.frequency) {
-    // Nächste Woche/Phase
-    if (DATA.cycle.currentWeek >= DATA.cycle.mesoLengthWeeks) {
-      // Mesozyklus zu Ende, neuer beginnt
-      DATA.cycle.currentWeek = 1;
-      DATA.cycle.currentPhase = DATA.cycle.phaseSequence[0];
-      DATA.cycle.mesoStart = new Date().toISOString().slice(0, 10);
-      showToast('Neuer Mesozyklus startet!', 3500);
+  const day = today.getDay() || 7;
+  weekStart.setDate(today.getDate() - day + 1);
+  const ws = weekStart.toISOString().slice(0, 10);
+  const trainingDates = new Set(DATA.history.filter(h => h.date >= ws && !h.legacy).map(h => h.date));
+  if (trainingDates.size >= DATA.cycle.frequency) {
+    if (DATA.cycle.currentMeso.currentWeek >= DATA.cycle.currentMeso.lengthWeeks) {
+      finishMesoAndAdvance();
     } else {
-      DATA.cycle.currentWeek += 1;
-      DATA.cycle.currentPhase = DATA.cycle.phaseSequence[DATA.cycle.currentWeek - 1] || DATA.cycle.currentPhase;
+      DATA.cycle.currentMeso.currentWeek += 1;
     }
   }
+}
+
+function finishMesoAndAdvance() {
+  // Aktuellen Meso in die History
+  DATA.cycle.mesoHistory.push({
+    phase: DATA.cycle.currentMeso.phase,
+    startDate: DATA.cycle.currentMeso.startDate,
+    endDate: new Date().toISOString().slice(0, 10),
+    weeks: DATA.cycle.currentMeso.lengthWeeks
+  });
+  // Nächste Phase aus Makrozyklus
+  DATA.macro.currentMesoIndex = (DATA.macro.currentMesoIndex + 1) % DATA.macro.mesoSequence.length;
+  const nextPhase = DATA.macro.mesoSequence[DATA.macro.currentMesoIndex];
+  DATA.cycle.currentMeso = {
+    phase: nextPhase,
+    startDate: new Date().toISOString().slice(0, 10),
+    lengthWeeks: DATA.settings.mesoLength || 6,
+    currentWeek: 1
+  };
+  showToast(`Neuer Mesozyklus: ${PHASE_DEFS[nextPhase].label}`, 3500);
 }
 
 function showSwapExercise(exIdx) {
   const ex = DATA.plans[currentWorkoutDraft.planId].exercises[exIdx];
   const def = getExerciseInfo(ex.exerciseId);
   if (!def) return;
-  const alts = (def.alternatives || []).map(id => getExerciseInfo(id)).filter(Boolean);
+  const altIds = def.alternatives || [];
+  const recommendedAlts = altIds.map(id => getExerciseInfo(id)).filter(Boolean);
+  const otherCandidates = EXERCISE_LIBRARY.filter(e =>
+    e.id !== def.id && !altIds.includes(e.id) && e.muscles.some(m => def.muscles.includes(m))
+  ).slice(0, 12);
+
   let html = `
     <h2>Übung wechseln</h2>
-    <p style="color:var(--text-dim); margin-bottom:14px;">Aktuell: <strong>${def.name}</strong></p>
-    <h3 style="margin-bottom:8px;">Alternativen für ${def.muscles.map(m => MUSCLE_LABELS[m]).join(', ')}:</h3>
+    <p style="color:var(--text-dim); margin-bottom:12px; font-size:13px;">Aktuell: <strong>${def.name}</strong></p>
   `;
-  if (alts.length === 0) {
-    html += `<p style="color:var(--text-faint);">Keine Alternativen hinterlegt. Wähle aus der Bibliothek:</p>`;
+  if (recommendedAlts.length > 0) {
+    html += `<h3 style="margin-bottom:6px;">Empfohlen</h3>`;
+    recommendedAlts.forEach(c => {
+      html += `<button class="btn btn-secondary btn-full" style="margin-bottom:5px;text-align:left;" onclick="askSwapMode(${exIdx},'${c.id}','${c.name.replace(/'/g, "\\'")}')">${c.name}<br><span style="color:var(--text-faint); font-size:11px;">${c.equipment}</span></button>`;
+    });
   }
-  // Alle Übungen mit überlappender Muskelgruppe
-  const candidates = EXERCISE_LIBRARY.filter(e =>
-    e.id !== def.id && e.muscles.some(m => def.muscles.includes(m))
-  ).slice(0, 12);
-  candidates.forEach(c => {
-    html += `<button class="btn btn-secondary btn-full" style="margin-bottom:6px;text-align:left;" onclick="swapExercise(${exIdx},'${c.id}')">${c.name} <span style="color:var(--text-faint); font-size:12px;">· ${c.equipment}</span></button>`;
-  });
-  html += `<button class="btn btn-ghost btn-full" style="margin-top:14px;" onclick="closeModal()">Abbrechen</button>`;
+  if (otherCandidates.length > 0) {
+    html += `<h3 style="margin:14px 0 6px;">Weitere</h3>`;
+    otherCandidates.forEach(c => {
+      html += `<button class="btn btn-secondary btn-full" style="margin-bottom:5px;text-align:left;" onclick="askSwapMode(${exIdx},'${c.id}','${c.name.replace(/'/g, "\\'")}')">${c.name}<br><span style="color:var(--text-faint); font-size:11px;">${c.equipment}</span></button>`;
+    });
+  }
   showModal(html);
 }
-function swapExercise(exIdx, newId) {
-  // Plan-Übung tauschen
-  const plan = DATA.plans[currentWorkoutDraft.planId];
-  plan.exercises[exIdx].exerciseId = newId;
-  // Draft neu initialisieren für diese Übung
+
+function askSwapMode(exIdx, newId, newName) {
+  let html = `
+    <h2>Wechsel zu ${newName}</h2>
+    <p style="color:var(--text-dim); margin-bottom:14px; font-size:13px;">Wie willst du den Wechsel anwenden?</p>
+    <button class="btn btn-full" style="margin-bottom:8px;" onclick="swapForToday(${exIdx},'${newId}')">Nur für heute</button>
+    <button class="btn btn-secondary btn-full" style="margin-bottom:8px;" onclick="swapPermanent(${exIdx},'${newId}')">Dauerhaft im Plan ersetzen</button>
+    <button class="btn btn-ghost btn-full" onclick="closeModal()">Abbrechen</button>
+  `;
+  showModal(html);
+}
+
+function swapForToday(exIdx, newId) {
+  const oldEx = DATA.plans[currentWorkoutDraft.planId].exercises[exIdx];
   const def = getExerciseInfo(newId);
   const isTime = def && def.type === 'time';
-  const sug = progressionSuggestion(newId, plan.exercises[exIdx]);
-  const n = getCurrentSetsForExercise(plan.exercises[exIdx]);
+  const isBW = def && def.bodyweight;
+  // Verwende dieselben Soll-Werte wie der ersetzte Eintrag (oder Standards)
+  const tempEx = {
+    exerciseId: newId,
+    targetSets: oldEx.targetSets || 3,
+    targetRepsMin: oldEx.targetRepsMin || 8,
+    targetRepsMax: oldEx.targetRepsMax || 12,
+    targetSeconds: isTime ? (oldEx.targetSeconds || 60) : undefined,
+    currentWeight: isBW ? 0 : (oldEx.currentWeight || 0)
+  };
+  const sug = progressionSuggestion(newId, tempEx);
   const sets = [];
+  const n = getWeeklyTargetSets(tempEx);
   for (let i = 0; i < n; i++) {
-    sets.push({ weight: isTime ? 0 : (sug.weight || plan.exercises[exIdx].currentWeight || 0), reps: null, done: false });
+    sets.push({ weight: isTime ? null : (isBW ? null : (sug.weight || tempEx.currentWeight)), reps: null });
   }
   currentWorkoutDraft.exercises[exIdx] = { exerciseId: newId, sets };
-  saveData(DATA);
   saveWorkoutDraft();
   closeModal();
   renderToday();
-  showToast(`Gewechselt zu ${def.name}`);
+  showToast('Heute getauscht');
+}
+
+function swapPermanent(exIdx, newId) {
+  const plan = DATA.plans[currentWorkoutDraft.planId];
+  const def = getExerciseInfo(newId);
+  const isTime = def && def.type === 'time';
+  const isBW = def && def.bodyweight;
+  const oldEx = plan.exercises[exIdx];
+  plan.exercises[exIdx] = {
+    exerciseId: newId,
+    targetSets: oldEx.targetSets || 3,
+    targetRepsMin: oldEx.targetRepsMin || 8,
+    targetRepsMax: oldEx.targetRepsMax || 12,
+    targetSeconds: isTime ? (oldEx.targetSeconds || 60) : undefined,
+    currentWeight: isBW ? 0 : (oldEx.currentWeight || 0),
+    maxWeight: null
+  };
+  saveData(DATA);
+  swapForToday(exIdx, newId); // dasselbe für heute übernehmen
+  showToast('Dauerhaft im Plan ersetzt');
 }
 
 function showPlateauHelp(exerciseId) {
   const def = getExerciseInfo(exerciseId);
-  const sug = plateauSuggestions(exerciseId);
-  let html = `<h2>Plateau bei ${def.name}</h2>
-    <p style="color:var(--text-dim); margin-bottom:14px;">Wissenschaftlich fundierte Optionen, geordnet nach Aufwand:</p>`;
-  sug.options.forEach((opt, i) => {
-    html += `
-      <div class="card" style="margin-bottom:10px;">
-        <div class="card-title">${i+1}. ${opt.label}</div>
-        <div style="color:var(--text-dim); font-size:13px; margin-top:4px;">${opt.desc}</div>
-      `;
-    if (opt.type === 'change_exercise' && opt.alternatives && opt.alternatives.length) {
-      html += `<div style="margin-top:10px;">`;
-      opt.alternatives.forEach(alt => {
-        html += `<button class="btn btn-secondary btn-small" style="margin:3px 4px 0 0;" onclick="swapExerciseFromPlan('${exerciseId}','${alt.id}')">→ ${alt.name}</button>`;
-      });
-      html += `</div>`;
-    }
-    if (opt.type === 'deload') {
-      html += `<button class="btn btn-small" style="margin-top:10px;" onclick="triggerDeload()">Deload-Woche jetzt starten</button>`;
-    }
+  if (!def) return;
+  const advice = intelligentExerciseAdvice(exerciseId, DATA.plans[currentWorkoutDraft.planId].exercises.find(e => e.exerciseId === exerciseId) || {});
+  const altIds = def.alternatives || [];
+  const alternatives = altIds.map(id => getExerciseInfo(id)).filter(Boolean);
+
+  let html = `<h2>Hilfe bei ${def.name}</h2>`;
+  if (advice.length > 0) {
+    html += `<div class="card" style="margin-bottom:10px; background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.3);">`;
+    advice.forEach(a => {
+      html += `<div style="font-size:13px; margin-bottom:6px;">${a.msg}</div>`;
+    });
     html += `</div>`;
-  });
-  html += `<button class="btn btn-ghost btn-full" style="margin-top:14px;" onclick="closeModal()">Schließen</button>`;
+  }
+
+  html += `<div class="card" style="margin-bottom:10px;">
+    <div class="card-title">Option 1: Variation einbauen</div>
+    <div style="font-size:13px; color:var(--text-dim); margin-top:6px; line-height:1.5;">
+      Tempo verlangsamen (3 Sekunden exzentrisch), kürzere Pausen (45-60s statt 90s), volleren Bewegungsumfang nutzen, oder Pause-Reps am Ende.
+    </div>
+  </div>`;
+
+  if (alternatives.length > 0) {
+    html += `<div class="card" style="margin-bottom:10px;">
+      <div class="card-title">Option 2: Alternative Übung</div>`;
+    alternatives.forEach(alt => {
+      html += `<button class="btn btn-secondary btn-small" style="margin:6px 6px 0 0;" onclick="swapExerciseFromPlan('${exerciseId}','${alt.id}')">→ ${alt.name}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<div class="card" style="margin-bottom:10px;">
+    <div class="card-title">Option 3: Vorgezogenen Deload</div>
+    <div style="font-size:13px; color:var(--text-dim); margin-top:6px; line-height:1.5;">
+      Eine Woche mit reduziertem Volumen (50%) und Intensität (60%). Danach frisch durchstarten.
+    </div>
+    <button class="btn btn-small" style="margin-top:10px;" onclick="triggerDeload()">Deload jetzt starten</button>
+  </div>`;
+
   showModal(html);
 }
 
@@ -1206,19 +1583,25 @@ function swapExerciseFromPlan(oldId, newId) {
   });
   if (found) saveData(DATA);
   closeModal();
+  if (currentWorkoutDraft) {
+    localStorage.removeItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`);
+  }
   currentWorkoutDraft = null;
   switchTab('today');
   showToast('Übung im Plan ersetzt');
 }
 
 function triggerDeload() {
-  DATA.cycle.currentPhase = 'deload';
-  DATA.cycle.currentWeek = DATA.cycle.mesoLengthWeeks;
+  // Sofortige Deload-Woche: setze currentWeek = mesoLength
+  DATA.cycle.currentMeso.currentWeek = DATA.cycle.currentMeso.lengthWeeks;
   saveData(DATA);
   closeModal();
-  showToast('Deload-Woche aktiviert');
+  if (currentWorkoutDraft) {
+    localStorage.removeItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`);
+  }
   currentWorkoutDraft = null;
   renderToday();
+  showToast('Deload-Woche aktiviert');
 }
 
 // Plank-Timer
@@ -1228,7 +1611,7 @@ function startPlankTimer(exIdx, setIdx) {
   const html = `
     <h2>Plank-Timer</h2>
     <div class="timer-display" id="plank-display">0:00</div>
-    <p style="text-align:center; color:var(--text-dim);">Auf "Stopp" tippen, wenn du nicht mehr kannst.</p>
+    <p style="text-align:center; color:var(--text-dim); font-size:13px; margin-bottom:14px;">Auf "Stopp" tippen, wenn du nicht mehr kannst.</p>
     <div class="timer-controls">
       <button class="btn btn-danger" onclick="stopPlankTimer(${exIdx},${setIdx})">Stopp</button>
       <button class="btn btn-ghost" onclick="cancelPlankTimer()">Abbrechen</button>
@@ -1249,7 +1632,6 @@ function stopPlankTimer(exIdx, setIdx) {
   clearInterval(plankTimer);
   plankTimer = null;
   currentWorkoutDraft.exercises[exIdx].sets[setIdx].reps = sec;
-  currentWorkoutDraft.exercises[exIdx].sets[setIdx].done = true;
   saveWorkoutDraft();
   closeModal();
   renderToday();
@@ -1260,17 +1642,44 @@ function cancelPlankTimer() {
   closeModal();
 }
 
-// =====================================================================
+// ============================================================
 // PLAN-TAB
-// =====================================================================
+// ============================================================
 function renderPlan() {
-  let html = '';
+  const planVol = planVolumeAnalysis();
+  let analysisHtml = '';
+  const issues = [];
+  MUSCLE_GROUPS.forEach(m => {
+    const sets = planVol[m] || 0;
+    const [min, max] = MAV_RANGES[m];
+    if (sets > 0 && sets < min) {
+      issues.push(`${MUSCLE_LABELS[m]}: nur ${sets.toFixed(1)} Sätze/Woche (Ziel ${min}-${max})`);
+    }
+    if (sets === 0) {
+      issues.push(`${MUSCLE_LABELS[m]}: 0 Sätze/Woche (Ziel ${min}-${max})`);
+    }
+  });
+  // Push/Pull-Imbalance
+  if (planVol.brust > 0 && planVol.rücken > 0 && planVol.brust > planVol.rücken * 1.4) {
+    issues.push(`Push/Pull-Imbalance: Brust ${planVol.brust.toFixed(1)} vs Rücken ${planVol.rücken.toFixed(1)} (Faktor >1.4)`);
+  }
+  if (issues.length > 0) {
+    analysisHtml = `<div class="card" style="background:rgba(239,68,68,0.06); border-color:rgba(239,68,68,0.25);">
+      <div class="card-title" style="color:var(--warning);">⚠ Plan-Analyse</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-top:8px; line-height:1.6;">
+        ${issues.map(i => '· ' + i).join('<br>')}
+      </div>
+      <div class="help-text" style="margin-top:8px;">Ergänze Übungen für diese Muskelgruppen, um wissenschaftlich empfohlene Volumenbereiche zu erreichen.</div>
+    </div>`;
+  }
+
+  let html = analysisHtml;
   DATA.cycle.activePlans.forEach(pk => {
     const plan = DATA.plans[pk];
     if (!plan) return;
     html += `<div class="card">
       <div class="card-header">
-        <div>
+        <div style="flex:1; min-width:0;">
           <div class="card-title">${plan.name}</div>
           <div class="card-sub">${plan.exercises.length} Übungen</div>
         </div>
@@ -1280,22 +1689,25 @@ function renderPlan() {
       const def = getExerciseInfo(ex.exerciseId);
       if (!def) return;
       const isTime = def.type === 'time';
-      const target = isTime ? `${ex.targetSets || 3} × ${ex.targetSeconds || 120}s` :
-        `${ex.targetSets} × ${ex.targetRepsMin}-${ex.targetRepsMax}`;
+      const isBW = def.bodyweight;
+      const target = isTime ? `${ex.targetSets || 3}×${ex.targetSeconds || 120}s` :
+        `${ex.targetSets || 3}×${ex.targetRepsMin || 8}-${ex.targetRepsMax || 12}`;
+      const weightInfo = isBW ? 'Eigengewicht' : (isTime ? '' : `Start ${ex.currentWeight || 0} kg`);
+      const maxInfo = ex.maxWeight ? ` · Max ${ex.maxWeight} kg` : '';
       html += `
-        <div style="padding:12px 0; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <div style="padding:10px 0; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:8px;">
           <div style="flex:1; min-width:0;">
-            <div style="font-weight:600;">${def.name}</div>
-            <div style="font-size:13px; color:var(--text-dim);">${target}${isTime ? '' : ' · Start: ' + ex.currentWeight + ' kg'}</div>
+            <div style="font-weight:600; font-size:14px;">${def.name}</div>
+            <div style="font-size:12px; color:var(--text-dim); margin-top:2px;">${target}${weightInfo ? ' · ' + weightInfo : ''}${maxInfo}</div>
           </div>
-          <div style="display:flex; gap:6px;">
+          <div style="display:flex; gap:5px; flex-shrink:0;">
             <button class="icon-btn" onclick="editPlanExercise('${pk}',${idx})">✎</button>
             <button class="icon-btn" onclick="removePlanExercise('${pk}',${idx})">×</button>
           </div>
         </div>
       `;
     });
-    html += `<button class="btn btn-ghost btn-full" style="margin-top:10px;" onclick="addPlanExercise('${pk}')">+ Übung hinzufügen</button>`;
+    html += `<button class="btn btn-ghost btn-full btn-small" style="margin-top:10px;" onclick="addPlanExercise('${pk}')">+ Übung hinzufügen</button>`;
     html += `</div>`;
   });
   document.getElementById('plan-content').innerHTML = html;
@@ -1318,56 +1730,66 @@ function removePlanExercise(pk, idx) {
 function editPlanExercise(pk, idx) {
   const ex = DATA.plans[pk].exercises[idx];
   const def = getExerciseInfo(ex.exerciseId);
-  const isTime = def && def.type === 'time';
-  let html = `
-    <h2>${def.name}</h2>
+  if (!def) return;
+  const isTime = def.type === 'time';
+  const isBW = def.bodyweight;
+  let html = `<h2>${def.name}</h2>
     <label>Anzahl Sätze (Soll)</label>
-    <input type="number" id="ed-sets" value="${ex.targetSets || 3}" min="1" max="8">
-  `;
+    <input type="number" id="ed-sets" value="${ex.targetSets || 3}" min="1" max="8">`;
   if (isTime) {
     html += `<label>Ziel-Zeit pro Satz (Sekunden)</label>
       <input type="number" id="ed-time" value="${ex.targetSeconds || 120}">`;
   } else {
-    html += `<label>Wdh-Bereich (z.B. 8-12)</label>
-      <div style="display:flex; gap:8px;">
+    html += `<label>Wiederholungs-Bereich</label>
+      <div class="field-row">
         <input type="number" id="ed-rmin" value="${ex.targetRepsMin || 8}" placeholder="min">
         <input type="number" id="ed-rmax" value="${ex.targetRepsMax || 12}" placeholder="max">
-      </div>
-      <label>Aktuelles Arbeitsgewicht (kg)</label>
-      <input type="number" id="ed-weight" step="0.5" value="${ex.currentWeight || 0}">`;
+      </div>`;
+    if (!isBW) {
+      html += `<label>Aktuelles Arbeitsgewicht (kg)</label>
+        <input type="number" id="ed-weight" step="0.5" value="${ex.currentWeight || 0}">`;
+      if (def.hasMaxWeight) {
+        html += `<label>Maschinen-Limit (kg, leer = kein Limit)</label>
+          <input type="number" id="ed-max" step="0.5" value="${ex.maxWeight || ''}" placeholder="z.B. 120">
+          <div class="help-text">Wenn dieses Gewicht erreicht ist, schlägt die App keine weiteren Steigerungen vor und empfiehlt Variation oder Übungswechsel.</div>`;
+      }
+    }
   }
-  html += `
-    <div class="btn-row" style="margin-top:16px;">
-      <button class="btn" onclick="savePlanExercise('${pk}',${idx},${isTime})">Speichern</button>
+  html += `<div class="btn-row" style="margin-top:16px;">
+      <button class="btn" onclick="savePlanExercise('${pk}',${idx},${isTime},${isBW},${!!def.hasMaxWeight})">Speichern</button>
       <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
-    </div>
-  `;
+    </div>`;
   showModal(html);
 }
-function savePlanExercise(pk, idx, isTime) {
+function savePlanExercise(pk, idx, isTime, isBW, hasMax) {
   const ex = DATA.plans[pk].exercises[idx];
-  ex.targetSets = parseInt(document.getElementById('ed-sets').value);
+  ex.targetSets = parseInt(document.getElementById('ed-sets').value) || 3;
   if (isTime) {
-    ex.targetSeconds = parseInt(document.getElementById('ed-time').value);
+    ex.targetSeconds = parseInt(document.getElementById('ed-time').value) || 60;
   } else {
-    ex.targetRepsMin = parseInt(document.getElementById('ed-rmin').value);
-    ex.targetRepsMax = parseInt(document.getElementById('ed-rmax').value);
-    ex.currentWeight = parseFloat(document.getElementById('ed-weight').value);
+    ex.targetRepsMin = parseInt(document.getElementById('ed-rmin').value) || 8;
+    ex.targetRepsMax = parseInt(document.getElementById('ed-rmax').value) || 12;
+    if (!isBW) {
+      ex.currentWeight = parseFloat(document.getElementById('ed-weight').value) || 0;
+      if (hasMax) {
+        const m = document.getElementById('ed-max').value;
+        ex.maxWeight = (m === '' || isNaN(parseFloat(m))) ? null : parseFloat(m);
+      }
+    }
   }
   saveData(DATA);
   closeModal();
   renderPlan();
 }
-
 function addPlanExercise(pk) {
-  // Übungsbibliothek nach Muskelgruppen
-  let html = `<h2>Übung hinzufügen</h2><label>Filter nach Muskelgruppe</label>
+  let html = `<h2>Übung hinzufügen</h2>
+    <label>Filter nach Muskelgruppe</label>
     <select id="ex-filter" onchange="filterAddEx('${pk}')">
       <option value="">Alle</option>
       ${MUSCLE_GROUPS.map(m => `<option value="${m}">${MUSCLE_LABELS[m]}</option>`).join('')}
     </select>
-    <div id="ex-list" style="margin-top:12px; max-height:50vh; overflow-y:auto;"></div>
-    <button class="btn btn-ghost btn-full" style="margin-top:14px;" onclick="closeModal()">Abbrechen</button>`;
+    <div id="ex-list" style="margin-top:10px; max-height:50vh; overflow-y:auto;"></div>
+    <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal()">Abbrechen</button>`;
   showModal(html);
   filterAddEx(pk);
 }
@@ -1376,18 +1798,15 @@ function filterAddEx(pk) {
   const list = EXERCISE_LIBRARY.filter(e => !filter || e.muscles.includes(filter));
   let html = '';
   list.forEach(e => {
-    html += `<button class="btn btn-secondary btn-full" style="margin-bottom:5px; text-align:left;" onclick="confirmAddEx('${pk}','${e.id}')">${e.name} <span style="color:var(--text-faint); font-size:12px;">· ${e.equipment}</span></button>`;
+    html += `<button class="btn btn-secondary btn-full" style="margin-bottom:4px; text-align:left; padding:8px 10px;" onclick="confirmAddEx('${pk}','${e.id}')">${e.name}<br><span style="color:var(--text-faint); font-size:11px;">${e.equipment}</span></button>`;
   });
   document.getElementById('ex-list').innerHTML = html;
 }
 function confirmAddEx(pk, exId) {
   const def = getExerciseInfo(exId);
   const isTime = def.type === 'time';
-  const newEx = {
-    exerciseId: exId,
-    targetSets: 3,
-    currentWeight: 0
-  };
+  const isBW = def.bodyweight;
+  const newEx = { exerciseId: exId, targetSets: 3, currentWeight: 0, maxWeight: null };
   if (isTime) newEx.targetSeconds = 60;
   else { newEx.targetRepsMin = 8; newEx.targetRepsMax = 12; }
   DATA.plans[pk].exercises.push(newEx);
@@ -1396,34 +1815,28 @@ function confirmAddEx(pk, exId) {
   renderPlan();
 }
 
-// =====================================================================
+// ============================================================
 // STATISTIK-TAB
-// =====================================================================
+// ============================================================
 let currentChart = null;
-let currentVolumeChart = null;
-
 function renderStats() {
-  // Welche Übungen wurden trainiert?
-  const trained = new Set(DATA.history.map(h => h.exerciseId));
-  const exerciseIds = Array.from(trained);
+  const trainedSet = new Set(DATA.history.map(h => h.exerciseId));
+  const exerciseIds = Array.from(trainedSet);
   exerciseIds.sort((a, b) => getExerciseDisplayName(a).localeCompare(getExerciseDisplayName(b)));
 
   let html = `
     <div class="card">
       <div class="card-title">Wochenvolumen pro Muskelgruppe</div>
-      <div class="card-sub">Sätze diese Woche · MAV-Zielzone (Hypertrophie)</div>
-      <div id="volume-summary" style="margin-top:14px;"></div>
+      <div class="card-sub">Sätze in der aktuellen Kalenderwoche · Zielbereich nach Pauls Quellen</div>
+      <div id="volume-summary" style="margin-top:12px;"></div>
     </div>
     <div class="card">
       <div class="card-title">Übungs-Verlauf</div>
       <label>Übung wählen</label>
       <select id="stats-exercise" onchange="renderExerciseChart()">
-  `;
-  exerciseIds.forEach(id => {
-    html += `<option value="${id}">${getExerciseDisplayName(id)}</option>`;
-  });
-  html += `</select>
-      <div id="stats-stats" class="stat-grid" style="margin-top:14px;"></div>
+        ${exerciseIds.map(id => `<option value="${id}">${getExerciseDisplayName(id)}</option>`).join('')}
+      </select>
+      <div id="stats-stats" class="stat-grid" style="margin-top:12px;"></div>
       <div class="chart-wrap"><canvas id="exerciseChart"></canvas></div>
     </div>
   `;
@@ -1433,41 +1846,25 @@ function renderStats() {
 }
 
 function renderVolumeSummary() {
-  // Berechne Sätze pro Muskelgruppe diese Woche
-  const today = new Date();
-  const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - today.getDay() + 1);
-  const ws = weekStart.toISOString().slice(0, 10);
-  const volumeByMuscle = {};
-  MUSCLE_GROUPS.forEach(m => volumeByMuscle[m] = 0);
-  DATA.history.filter(h => h.date >= ws && !h.legacy).forEach(h => {
-    const def = getExerciseInfo(h.exerciseId);
-    if (!def) return;
-    const sets = h.sets ? h.sets.length : 0;
-    def.muscles.forEach(m => { volumeByMuscle[m] = (volumeByMuscle[m] || 0) + sets; });
-    if (def.secondary) {
-      def.secondary.forEach(m => { volumeByMuscle[m] = (volumeByMuscle[m] || 0) + sets * 0.5; });
-    }
-  });
-
+  const vol = calcWeeklyVolume(0);
   let html = '';
   MUSCLE_GROUPS.forEach(m => {
-    const sets = Math.round(volumeByMuscle[m] * 10) / 10;
-    const [mevMin, mevMax] = MAV_RANGES[m] || [10, 20];
-    const pct = Math.min(100, (sets / mevMax) * 100);
-    let color = 'var(--text-dim)';
-    if (sets >= mevMin && sets <= mevMax) color = 'var(--success)';
-    else if (sets > mevMax) color = 'var(--warning)';
+    const sets = Math.round(vol[m] * 10) / 10;
+    const [min, max] = MAV_RANGES[m];
+    const pct = Math.min(100, (sets / max) * 100);
+    let color = 'var(--text-faint)';
+    if (sets >= min && sets <= max) color = 'var(--success)';
+    else if (sets > max) color = 'var(--warning)';
     else if (sets > 0) color = 'var(--accent)';
     html += `
       <div style="margin-bottom:10px;">
-        <div style="display:flex; justify-content:space-between; font-size:13px;">
-          <span>${MUSCLE_LABELS[m]}</span>
-          <span style="color:${color}; font-weight:600;">${sets} Sätze <span style="color:var(--text-faint); font-weight:normal;">/ Ziel ${mevMin}–${mevMax}</span></span>
+        <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center;">
+          <span style="font-weight:500;">${MUSCLE_LABELS[m]}</span>
+          <span style="color:${color}; font-weight:600;">${sets} <span style="color:var(--text-faint); font-weight:normal;">/ ${min}-${max}</span></span>
         </div>
         <div class="volume-bar">
           <div class="volume-fill" style="width:${pct}%; background:${color};"></div>
-          <div class="volume-marks" style="left:${(mevMin/mevMax)*100}%;"></div>
+          <div class="volume-marks volume-mark-mev" style="left:${Math.min(100, (min/max)*100)}%;"></div>
         </div>
       </div>
     `;
@@ -1478,15 +1875,11 @@ function renderVolumeSummary() {
 function renderExerciseChart() {
   const exId = document.getElementById('stats-exercise').value;
   if (!exId) return;
-
-  // Daten sammeln
-  const records = DATA.history
-    .filter(h => h.exerciseId === exId)
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const records = DATA.history.filter(h => h.exerciseId === exId).sort((a, b) => a.date.localeCompare(b.date));
   if (records.length === 0) return;
-
   const def = getExerciseInfo(exId);
   const isTime = def && def.type === 'time';
+  const isBW = def && def.bodyweight;
 
   const labels = records.map(r => r.date);
   const maxWeight = records.map(r => r.sets ? Math.max(...r.sets.map(s => s.weight || 0)) : 0);
@@ -1495,25 +1888,25 @@ function renderExerciseChart() {
     const best = r.sets.map(s => calcE1RM(s.weight, s.reps)).filter(x => x);
     return best.length > 0 ? Math.max(...best) : null;
   });
-  const volume = records.map(r => {
-    if (!r.sets) return 0;
-    return r.sets.reduce((sum, s) => sum + ((s.weight || 0) * (s.reps || 0)), 0);
-  });
   const maxTime = isTime ? records.map(r => r.sets ? Math.max(...r.sets.map(s => s.reps || 0)) : 0) : null;
+  const maxReps = isBW ? records.map(r => r.sets ? Math.max(...r.sets.map(s => s.reps || 0)) : 0) : null;
 
-  // Stats
   const allWeights = records.flatMap(r => (r.sets || []).map(s => s.weight)).filter(x => x);
-  const lastReal = records.filter(r => !r.legacy).slice(-1)[0];
   const allE1 = e1rm.filter(x => x);
   let statsHtml = '';
   if (isTime) {
     statsHtml = `
       <div class="stat-item"><div class="stat-value">${maxTime.length ? Math.max(...maxTime) : 0}s</div><div class="stat-label">Bestzeit</div></div>
-      <div class="stat-item"><div class="stat-value">${records.length}</div><div class="stat-label">Sessions</div></div>
+      <div class="stat-item"><div class="stat-value">${records.filter(r => !r.legacy).length}</div><div class="stat-label">Sessions</div></div>
+    `;
+  } else if (isBW) {
+    statsHtml = `
+      <div class="stat-item"><div class="stat-value">${maxReps.length ? Math.max(...maxReps) : 0}</div><div class="stat-label">Max Wdh</div></div>
+      <div class="stat-item"><div class="stat-value">${records.filter(r => !r.legacy).length}</div><div class="stat-label">Sessions</div></div>
     `;
   } else {
     statsHtml = `
-      <div class="stat-item"><div class="stat-value">${fmtWeight(Math.max(...allWeights, 0))} kg</div><div class="stat-label">Bestes Gewicht</div></div>
+      <div class="stat-item"><div class="stat-value">${fmtWeight(Math.max(0, ...allWeights))} kg</div><div class="stat-label">Bestes Gewicht</div></div>
       <div class="stat-item"><div class="stat-value">${allE1.length ? fmtWeight(Math.max(...allE1)) + ' kg' : '-'}</div><div class="stat-label">Bestes e1RM</div></div>
       <div class="stat-item"><div class="stat-value">${records.length}</div><div class="stat-label">Sessions</div></div>
       <div class="stat-item"><div class="stat-value">${records.filter(r => !r.legacy).length}</div><div class="stat-label">In App</div></div>
@@ -1521,7 +1914,6 @@ function renderExerciseChart() {
   }
   document.getElementById('stats-stats').innerHTML = statsHtml;
 
-  // Chart
   if (currentChart) currentChart.destroy();
   const ctx = document.getElementById('exerciseChart').getContext('2d');
   const isDark = document.body.getAttribute('data-theme') === 'dark';
@@ -1530,244 +1922,298 @@ function renderExerciseChart() {
 
   const datasets = [];
   if (isTime) {
-    datasets.push({
-      label: 'Zeit (s)',
-      data: maxTime,
-      borderColor: '#f59e0b',
-      backgroundColor: 'rgba(245,158,11,0.1)',
-      tension: 0.2,
-      pointRadius: 3
-    });
+    datasets.push({ label: 'Zeit (s)', data: maxTime, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.2, pointRadius: 2 });
+  } else if (isBW) {
+    datasets.push({ label: 'Max Wdh', data: maxReps, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.2, pointRadius: 2 });
   } else {
-    datasets.push({
-      label: 'Max. Gewicht',
-      data: maxWeight,
-      borderColor: '#f59e0b',
-      backgroundColor: 'rgba(245,158,11,0.1)',
-      tension: 0.2,
-      pointRadius: 2
-    });
+    datasets.push({ label: 'Max Gewicht', data: maxWeight, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.2, pointRadius: 2 });
     if (allE1.length > 0) {
-      datasets.push({
-        label: 'e1RM (geschätzt)',
-        data: e1rm,
-        borderColor: '#22c55e',
-        backgroundColor: 'rgba(34,197,94,0.1)',
-        tension: 0.2,
-        pointRadius: 2,
-        borderDash: [4, 4]
-      });
+      datasets.push({ label: 'e1RM', data: e1rm, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', tension: 0.2, pointRadius: 2, borderDash: [4, 4] });
     }
   }
-
   currentChart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets },
+    type: 'line', data: { labels, datasets },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { labels: { color: textColor, boxWidth: 14, font: { size: 11 } } },
-        tooltip: {
-          callbacks: {
-            title: items => fmtDate(items[0].label),
-            label: ctx => `${ctx.dataset.label}: ${fmtWeight(ctx.parsed.y)}${isTime ? 's' : ' kg'}`
-          }
-        }
+        legend: { labels: { color: textColor, boxWidth: 12, font: { size: 11 } } },
+        tooltip: { callbacks: {
+          title: items => fmtDate(items[0].label),
+          label: ctx => `${ctx.dataset.label}: ${fmtWeight(ctx.parsed.y)}${isTime ? 's' : (isBW ? '' : ' kg')}`
+        }}
       },
       scales: {
-        x: {
-          ticks: { color: textColor, maxTicksLimit: 8, callback: function(v, i) { return fmtDate(labels[i]); } },
-          grid: { color: gridColor }
-        },
-        y: {
-          ticks: { color: textColor },
-          grid: { color: gridColor }
-        }
+        x: { ticks: { color: textColor, maxTicksLimit: 6, callback: function(v, i) { return fmtDate(labels[i]); } }, grid: { color: gridColor } },
+        y: { ticks: { color: textColor }, grid: { color: gridColor } }
       }
     }
   });
 }
 
-// =====================================================================
+// ============================================================
 // ZYKLUS-TAB
-// =====================================================================
+// ============================================================
 function renderCycle() {
-  const phase = getPhaseInfo(DATA.cycle.currentPhase);
-  const ml = DATA.cycle.mesoLengthWeeks;
-  const cw = DATA.cycle.currentWeek;
+  const phase = getCurrentPhase();
+  const effPhase = getEffectivePhase();
+  const phaseDef = PHASE_DEFS[effPhase];
+  const week = getCurrentWeek();
+  const mesoLen = getMesoLength();
+  const rir = getWeeklyRIR();
+
+  // Macro-Übersicht
+  const seq = DATA.macro.mesoSequence;
+  const curIdx = DATA.macro.currentMesoIndex;
+  const prevPhase = getPrevMesoPhase();
+  const nextPhaseId = getNextMesoPhase();
+
   let progressHtml = '';
-  for (let i = 1; i <= ml; i++) {
-    const cls = i < cw ? 'done' : (i === cw ? 'current' : '');
+  for (let i = 1; i <= mesoLen; i++) {
+    const cls = i < week ? 'done' : (i === week ? 'current' : '');
     progressHtml += `<div class="progress-dot ${cls}"></div>`;
   }
 
-  let phaseList = '';
-  DATA.cycle.phaseSequence.forEach((p, i) => {
-    const pi = getPhaseInfo(p);
-    const isNow = i === (cw - 1);
-    phaseList += `
-      <div style="display:flex; align-items:center; gap:10px; padding:8px 0;">
-        <div style="width:24px; text-align:center; color:var(--text-dim); font-weight:600;">${i+1}</div>
-        <span class="badge ${pi.badge}">${pi.label}</span>
-        ${isNow ? '<span style="color:var(--accent); font-size:12px;">← jetzt</span>' : ''}
-      </div>
-    `;
-  });
-
   let html = `
     <div class="phase-indicator">
-      <div class="phase-name">${phase.label}</div>
-      <div class="phase-week">Woche ${cw} von ${ml} · ${DATA.cycle.frequency}× pro Woche</div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="phase-name">${phaseDef.label}</div>
+        <span class="badge ${phaseDef.badge}">Woche ${week}/${mesoLen}</span>
+      </div>
+      <div class="phase-week">${DATA.cycle.frequency}× pro Woche</div>
       <div class="progress">${progressHtml}</div>
+      <div class="rir-hint">Diese Woche: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh</div>
     </div>
 
     <div class="card">
-      <div class="card-title">Aktueller Mesozyklus</div>
-      <div class="card-sub">Start: ${fmtDateLong(DATA.cycle.mesoStart)}</div>
-      <div style="margin-top:14px;">${phaseList}</div>
+      <div class="card-title">Makrozyklus: ${DATA.macro.name}</div>
+      <div class="card-sub">Start: ${fmtDateLong(DATA.macro.startDate)}</div>
+      <div style="margin-top:14px;">
+  `;
+
+  // Voriger Mesozyklus
+  if (prevPhase) {
+    const d = PHASE_DEFS[prevPhase];
+    const last = DATA.cycle.mesoHistory[DATA.cycle.mesoHistory.length - 1];
+    html += `
+      <div class="meso-card future">
+        <div style="font-size:11px; color:var(--text-faint); width:60px;">VORHER</div>
+        <div class="meso-info">
+          <div class="meso-label">${d.label}</div>
+          <div class="meso-meta">${last ? fmtDate(last.startDate) + ' bis ' + fmtDate(last.endDate) : 'abgeschlossen'}</div>
+        </div>
+        <span class="badge ${d.badge}">✓</span>
+      </div>
+    `;
+  }
+
+  // Aktueller
+  const curDef = PHASE_DEFS[phase];
+  html += `
+    <div class="meso-card current">
+      <div style="font-size:11px; color:var(--accent); width:60px; font-weight:700;">AKTUELL</div>
+      <div class="meso-info">
+        <div class="meso-label">${curDef.label}</div>
+        <div class="meso-meta">seit ${fmtDate(DATA.cycle.currentMeso.startDate)} · Woche ${week}/${mesoLen}</div>
+      </div>
+      <span class="badge ${curDef.badge}">${curDef.repsRange[0]}-${curDef.repsRange[1]}</span>
+    </div>
+  `;
+
+  // Nächster
+  if (nextPhaseId) {
+    const d = PHASE_DEFS[nextPhaseId];
+    html += `
+      <div class="meso-card future">
+        <div style="font-size:11px; color:var(--text-faint); width:60px;">NÄCHSTER</div>
+        <div class="meso-info">
+          <div class="meso-label">${d.label}</div>
+          <div class="meso-meta">${d.repsRange[0]}-${d.repsRange[1]} Wdh, ${Math.round(d.intensityPct[0]*100)}-${Math.round(d.intensityPct[1]*100)}% 1RM</div>
+        </div>
+        <span class="badge ${d.badge}">→</span>
+      </div>
+    `;
+  }
+
+  html += `</div>
       <div class="btn-row" style="margin-top:14px;">
         <button class="btn btn-secondary btn-small" onclick="advanceWeek()">Eine Woche vor</button>
         <button class="btn btn-ghost btn-small" onclick="backWeek()">Zurück</button>
       </div>
+      <button class="btn btn-ghost btn-full btn-small" style="margin-top:6px;" onclick="startNewMeso()">Mesozyklus jetzt beenden</button>
     </div>
 
     <div class="card">
-      <div class="card-title">Schwerpunkt diese Woche</div>
-      <div class="card-sub" style="margin-bottom:10px;">${phase.label} · ${phase.repsMin}–${phase.repsMax} Wdh · ~${phase.restSec}s Pause</div>
-      <p style="font-size:14px; color:var(--text-dim); line-height:1.5;">
-        ${getPhaseDescription(DATA.cycle.currentPhase)}
-      </p>
+      <div class="card-title">Schwerpunkt</div>
+      <div class="card-sub" style="margin-bottom:8px;">${effPhase === 'deload' ? 'Deload' : curDef.label} · ~${phaseDef.intensityPct ? Math.round(phaseDef.intensityPct[0]*100) + '-' + Math.round(phaseDef.intensityPct[1]*100) + '% 1RM' : ''}</div>
+      <p style="font-size:13px; color:var(--text-dim); line-height:1.5;">${phaseDef.description}</p>
     </div>
 
     <div class="card">
-      <div class="card-title">Periodisierungsmodell</div>
-      <div class="card-sub" style="margin-bottom:10px;">Aktuell: ${getProgressionLabel(DATA.cycle.volumeProgression)}</div>
-      <p style="font-size:13px; color:var(--text-dim); line-height:1.5;">
-        Im Setup-Tab kannst du das Modell wechseln.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Neuer Mesozyklus</div>
-      <p style="font-size:13px; color:var(--text-dim); margin-bottom:12px;">Beendet den aktuellen Zyklus und startet neu mit Woche 1.</p>
-      <button class="btn btn-secondary" onclick="startNewMeso()">Neuen Mesozyklus starten</button>
+      <div class="card-title">Wie fühlst du dich?</div>
+      <div class="card-sub" style="margin-bottom:10px;">Autoregulierter Check: bei hoher Ermüdung wird ein vorgezogener Deload empfohlen.</div>
+      <button class="btn btn-secondary btn-full btn-small" onclick="showDeloadCheck()">Check starten</button>
     </div>
   `;
+
+  // Historie
+  if (DATA.cycle.mesoHistory.length > 0) {
+    html += `<div class="card"><div class="card-title">Abgeschlossene Mesozyklen</div><div style="margin-top:10px;">`;
+    DATA.cycle.mesoHistory.slice(-6).reverse().forEach(h => {
+      const d = PHASE_DEFS[h.phase];
+      html += `<div class="meso-card" style="margin-bottom:6px; opacity:0.8;">
+        <div class="meso-info">
+          <div class="meso-label" style="font-size:13px;">${d ? d.label : h.phase}</div>
+          <div class="meso-meta">${fmtDate(h.startDate)} bis ${fmtDate(h.endDate)} (${h.weeks} Wo)</div>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
   document.getElementById('cycle-content').innerHTML = html;
 }
 
-function getPhaseDescription(phase) {
-  const d = {
-    hypertrophie: 'Klassische Muskelaufbau-Phase: 8–12 Wdh bei ca. 65–80% 1RM, 60–90 Sekunden Pause. Double Progression: erst Reps an die Obergrenze steigern, dann Gewicht erhöhen.',
-    kraft: 'Maximalkraft / Intramuskuläre Koordination: 3–6 Wdh bei 85–95% 1RM, 3–5 Minuten Pause. Fokus auf saubere Technik mit schweren Gewichten.',
-    kraftausdauer: 'Höherer Wdh-Bereich: 15–20 Wdh bei 50–60% 1RM, kurze Pausen. Schont passive Strukturen und bereitet auf Hypertrophie vor.',
-    deload: 'Erholungswoche: Volumen auf 40–60% reduzieren, Gewichte etwas niedriger. Aktive Regeneration für Muskeln, Sehnen, Bänder und Nervensystem.'
-  };
-  return d[phase] || '';
-}
-
-function getProgressionLabel(p) {
-  return {
-    akkumulation: 'Volumen-Akkumulation (4+1)',
-    linear: 'Linear progressiv',
-    dup: 'Wellenförmig (DUP)',
-    none: 'Keine Periodisierung'
-  }[p] || p;
-}
-
 function advanceWeek() {
-  if (DATA.cycle.currentWeek >= DATA.cycle.mesoLengthWeeks) {
-    startNewMeso();
-    return;
+  if (DATA.cycle.currentMeso.currentWeek >= DATA.cycle.currentMeso.lengthWeeks) {
+    if (confirm('Mesozyklus zu Ende. Zum nächsten wechseln?')) finishMesoAndAdvance();
+  } else {
+    DATA.cycle.currentMeso.currentWeek += 1;
   }
-  DATA.cycle.currentWeek += 1;
-  DATA.cycle.currentPhase = DATA.cycle.phaseSequence[DATA.cycle.currentWeek - 1] || DATA.cycle.currentPhase;
   saveData(DATA);
   renderCycle();
-  showToast(`Woche ${DATA.cycle.currentWeek}`);
 }
 function backWeek() {
-  if (DATA.cycle.currentWeek <= 1) return;
-  DATA.cycle.currentWeek -= 1;
-  DATA.cycle.currentPhase = DATA.cycle.phaseSequence[DATA.cycle.currentWeek - 1] || DATA.cycle.currentPhase;
-  saveData(DATA);
-  renderCycle();
+  if (DATA.cycle.currentMeso.currentWeek > 1) {
+    DATA.cycle.currentMeso.currentWeek -= 1;
+    saveData(DATA);
+    renderCycle();
+  }
 }
 function startNewMeso() {
-  if (!confirm('Neuen Mesozyklus starten? Die Phasen-Sequenz aus dem Setup wird verwendet.')) return;
-  DATA.cycle.currentWeek = 1;
-  DATA.cycle.currentPhase = DATA.cycle.phaseSequence[0];
-  DATA.cycle.mesoStart = new Date().toISOString().slice(0, 10);
+  if (!confirm('Aktuellen Mesozyklus beenden und zum nächsten in der Makro-Sequenz wechseln?')) return;
+  finishMesoAndAdvance();
   saveData(DATA);
   renderCycle();
-  showToast('Neuer Mesozyklus läuft');
 }
 
-// =====================================================================
+// ============================================================
+// DELOAD-CHECK
+// ============================================================
+function showDeloadCheck() {
+  const questions = [
+    'Schlafqualität diese Woche',
+    'Motivation für Training',
+    'Energie / allgemeines Wohlbefinden',
+    'Pump beim letzten Training',
+    'Gelenke und Sehnen (1 = Schmerzen, 5 = top)',
+    'Muskelermüdung (1 = dauerhaft schwer, 5 = frisch)'
+  ];
+  let html = `<h2>Wie geht es dir?</h2>
+    <p style="color:var(--text-dim); font-size:13px; margin-bottom:14px;">Bewerte jeden Punkt von 1 (schlecht) bis 5 (top).</p>`;
+  questions.forEach((q, i) => {
+    html += `<label style="margin-top:14px; font-size:14px; color:var(--text);">${q}</label>
+      <div style="display:flex; gap:5px; margin-top:6px;">
+        ${[1,2,3,4,5].map(v => `<button class="day-tab" data-q="${i}" data-v="${v}" onclick="selectScore(${i},${v})" style="flex:1;">${v}</button>`).join('')}
+      </div>`;
+  });
+  html += `<div class="btn-row" style="margin-top:18px;">
+    <button class="btn" onclick="evalDeloadCheck(${questions.length})">Auswerten</button>
+    <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
+  </div>`;
+  showModal(html);
+  window._deloadScores = {};
+}
+function selectScore(q, v) {
+  window._deloadScores[q] = v;
+  document.querySelectorAll(`button[data-q="${q}"]`).forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.v) === v);
+  });
+}
+function evalDeloadCheck(numQuestions) {
+  const scores = window._deloadScores || {};
+  if (Object.keys(scores).length < numQuestions) {
+    alert('Bitte alle Punkte bewerten.');
+    return;
+  }
+  const total = Object.values(scores).reduce((a, b) => a + b, 0);
+  const avg = total / numQuestions;
+  let msg = '', recommendation = '';
+  if (avg >= 4) {
+    msg = `Sehr gut (${avg.toFixed(1)}/5). Mach weiter wie geplant.`;
+  } else if (avg >= 3) {
+    msg = `Solide (${avg.toFixed(1)}/5). Achte auf Schlaf und Ernährung, aber kein Deload nötig.`;
+  } else if (avg >= 2.5) {
+    msg = `Anzeichen von Ermüdung (${avg.toFixed(1)}/5). Wenn es nächste Woche nicht besser wird, denk an einen Deload.`;
+  } else {
+    msg = `Deutliche Ermüdung (${avg.toFixed(1)}/5). Empfehlung: vorgezogene Deload-Woche.`;
+    recommendation = `<button class="btn" style="margin-top:10px;" onclick="triggerDeload(); closeModal();">Deload-Woche jetzt starten</button>`;
+  }
+  DATA.lastDeloadCheck = { date: new Date().toISOString().slice(0, 10), avg };
+  saveData(DATA);
+  let html = `<h2>Auswertung</h2>
+    <p style="font-size:14px; margin-bottom:14px; line-height:1.5;">${msg}</p>
+    ${recommendation}
+    <button class="btn btn-ghost btn-full" style="margin-top:10px;" onclick="closeModal()">Schließen</button>`;
+  showModal(html);
+}
+
+// ============================================================
 // SETUP-TAB
-// =====================================================================
+// ============================================================
 function renderSetup() {
   let html = `
     <div class="card">
       <div class="card-title">Neuer Trainingszyklus</div>
-      <div class="card-sub" style="margin-bottom:12px;">Konfiguriere Frequenz, Periodisierung und Pläne neu.</div>
+      <div class="card-sub" style="margin-bottom:12px;">Frequenz, Tage, Rotation und Makrozyklus neu konfigurieren.</div>
       <button class="btn" onclick="openWizard()">Setup-Wizard starten</button>
     </div>
 
     <div class="card">
-      <div class="card-title">Periodisierungsmodell</div>
-      <label>Modell</label>
-      <select id="set-progression" onchange="updateSetting('volumeProgression', this.value, 'cycle')">
-        <option value="akkumulation" ${DATA.cycle.volumeProgression === 'akkumulation' ? 'selected' : ''}>Volumen-Akkumulation (4 Wochen + Deload)</option>
-        <option value="linear" ${DATA.cycle.volumeProgression === 'linear' ? 'selected' : ''}>Linear progressiv</option>
-        <option value="dup" ${DATA.cycle.volumeProgression === 'dup' ? 'selected' : ''}>Wellenförmig (DUP)</option>
-        <option value="none" ${DATA.cycle.volumeProgression === 'none' ? 'selected' : ''}>Keine (feste Sätze)</option>
+      <div class="card-title">Mesozyklus-Länge</div>
+      <label>Wochen pro Mesozyklus (inkl. Deload-Woche)</label>
+      <select onchange="DATA.settings.mesoLength=parseInt(this.value); DATA.cycle.currentMeso.lengthWeeks=parseInt(this.value); saveData(DATA); showToast('Gespeichert');">
+        <option value="5" ${DATA.settings.mesoLength===5?'selected':''}>5 Wochen (4 + Deload)</option>
+        <option value="6" ${DATA.settings.mesoLength===6?'selected':''}>6 Wochen (5 + Deload)</option>
+        <option value="7" ${DATA.settings.mesoLength===7?'selected':''}>7 Wochen (6 + Deload)</option>
+        <option value="8" ${DATA.settings.mesoLength===8?'selected':''}>8 Wochen (7 + Deload)</option>
       </select>
-      <div class="help-text">Akkumulation steigert das Volumen über 3-4 Wochen, dann eine Deload. Klassiker für Hypertrophie.</div>
     </div>
 
     <div class="card">
       <div class="card-title">Plateau-Erkennung</div>
       <label>Hinweis nach X Trainings ohne Steigerung</label>
-      <input type="number" id="set-plateau" value="${DATA.settings.plateauThreshold}" min="2" max="6" 
-             onchange="updateSetting('plateauThreshold', parseInt(this.value), 'settings'); renderToday();">
+      <input type="number" value="${DATA.settings.plateauThreshold}" min="2" max="6" 
+             onchange="DATA.settings.plateauThreshold=parseInt(this.value); saveData(DATA);">
     </div>
 
     <div class="card">
       <div class="card-title">Gewichts-Inkrement</div>
       <label>Standard-Schritt für Gewichtserhöhung (kg)</label>
-      <input type="number" id="set-inc" value="${DATA.settings.defaultIncrement}" step="0.5" min="0.5"
-             onchange="updateSetting('defaultIncrement', parseFloat(this.value), 'settings')">
+      <input type="number" step="0.5" min="0.5" value="${DATA.settings.defaultIncrement}"
+             onchange="DATA.settings.defaultIncrement=parseFloat(this.value); saveData(DATA);">
     </div>
 
     <div class="card">
       <div class="card-title">Daten</div>
       <div class="btn-row" style="margin-bottom:8px;">
         <button class="btn btn-secondary btn-small" onclick="exportData()">JSON exportieren</button>
-        <button class="btn btn-secondary btn-small" onclick="importData()">JSON importieren</button>
+        <button class="btn btn-secondary btn-small" onclick="importData()">Importieren</button>
       </div>
       <button class="btn btn-ghost btn-small btn-full" onclick="confirmReset()">Alle Daten zurücksetzen</button>
     </div>
 
     <div class="card">
-      <div class="card-title">App-Info</div>
+      <div class="card-title">Statistik</div>
       <div style="font-size:13px; color:var(--text-dim); line-height:1.7;">
-        ${DATA.history.length} Einträge in der Historie<br>
+        ${DATA.history.length} Einträge gesamt<br>
         ${DATA.history.filter(h => !h.legacy).length} davon in der App eingetragen<br>
-        Daten liegen ausschließlich lokal in diesem Browser (localStorage).
+        ${DATA.cycle.mesoHistory.length} abgeschlossene Mesozyklen<br>
+        Daten liegen lokal im Browser (localStorage).
       </div>
     </div>
   `;
   document.getElementById('setup-content').innerHTML = html;
-}
-
-function updateSetting(key, value, scope) {
-  if (scope === 'settings') DATA.settings[key] = value;
-  else if (scope === 'cycle') DATA.cycle[key] = value;
-  saveData(DATA);
-  showToast('Gespeichert');
 }
 
 function exportData() {
@@ -1786,37 +2232,35 @@ function importData() {
   input.onchange = e => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
+    const r = new FileReader();
+    r.onload = ev => {
       try {
-        const newData = JSON.parse(ev.target.result);
+        const nd = JSON.parse(ev.target.result);
         if (!confirm('Aktuelle Daten überschreiben?')) return;
-        DATA = newData;
+        DATA = nd;
         saveData(DATA);
         showToast('Daten importiert');
         switchTab('today');
-      } catch (err) {
-        alert('Fehler beim Import: ' + err.message);
-      }
+      } catch (err) { alert('Fehler: ' + err.message); }
     };
-    reader.readAsText(file);
+    r.readAsText(file);
   };
   input.click();
 }
 function confirmReset() {
-  if (!confirm('Alle Daten löschen und neu starten? Das kann nicht rückgängig gemacht werden.')) return;
-  if (!confirm('Wirklich sicher?')) return;
+  if (!confirm('Alle Daten löschen und neu starten? Das ist endgültig.')) return;
+  if (!confirm('Sicher? Auch deine Historie geht verloren.')) return;
   localStorage.removeItem(STORAGE_KEY);
-  // Auch alle Drafts löschen
   Object.keys(localStorage).filter(k => k.startsWith('kr_draft_')).forEach(k => localStorage.removeItem(k));
   DATA = loadData();
   switchTab('today');
-  showToast('Daten zurückgesetzt');
+  showToast('Zurückgesetzt');
 }
 
-// =====================================================================
+// ============================================================
 // SETUP-WIZARD
-// =====================================================================
+// ============================================================
+const WIZARD_STEPS = 5;
 let wizardStep = 0;
 let wizardData = {};
 function openWizard() {
@@ -1826,54 +2270,43 @@ function openWizard() {
     frequency: DATA.cycle.frequency,
     days: [...DATA.cycle.days],
     rotation: DATA.cycle.rotation,
-    volumeProgression: DATA.cycle.volumeProgression,
-    activePlans: [...DATA.cycle.activePlans]
+    macroName: 'Klassisch wissenschaftlich',
+    macroSeq: 'kraftausdauer,hypertrophie,ik'
   };
   showWizardStep();
 }
-const WIZARD_STEPS = 5;
 function showWizardStep() {
   const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
   let progress = '';
   for (let i = 0; i < WIZARD_STEPS; i++) {
     progress += `<div class="step ${i < wizardStep ? 'done' : (i === wizardStep ? 'current' : '')}"></div>`;
   }
-
   let content = '';
-
   if (wizardStep === 0) {
     content = `
       <h2>Trainingsart</h2>
-      <p style="color:var(--text-dim); margin-bottom:14px;">Wie strukturierst du dein Training?</p>
-      <div class="checkbox-row" onclick="wizSelectType('fullbody')">
-        <input type="radio" name="type" ${wizardData.type === 'fullbody' ? 'checked' : ''}>
-        <label>Ganzkörper-Training</label>
-      </div>
-      <div class="checkbox-row" onclick="wizSelectType('split2')">
-        <input type="radio" name="type" ${wizardData.type === 'split2' ? 'checked' : ''}>
-        <label>2er-Split</label>
-      </div>
-      <div class="checkbox-row" onclick="wizSelectType('split3')">
-        <input type="radio" name="type" ${wizardData.type === 'split3' ? 'checked' : ''}>
-        <label>3er-Split</label>
-      </div>
+      <p style="color:var(--text-dim); margin-bottom:12px; font-size:13px;">Wie strukturierst du dein Training?</p>
+      ${[['fullbody','Ganzkörper'],['split2','2er-Split'],['split3','3er-Split']].map(o => `
+        <div class="checkbox-row" onclick="wizSelect('type','${o[0]}')">
+          <input type="radio" ${wizardData.type === o[0] ? 'checked' : ''}>
+          <label>${o[1]}</label>
+        </div>`).join('')}
     `;
   } else if (wizardStep === 1) {
     content = `
       <h2>Frequenz</h2>
-      <p style="color:var(--text-dim); margin-bottom:14px;">Wie oft pro Woche?</p>
+      <p style="color:var(--text-dim); margin-bottom:12px; font-size:13px;">Wie oft pro Woche?</p>
       ${[2,3,4].map(n => `
-        <div class="checkbox-row" onclick="wizSelectFreq(${n})">
-          <input type="radio" name="freq" ${wizardData.frequency === n ? 'checked' : ''}>
+        <div class="checkbox-row" onclick="wizSelect('frequency',${n})">
+          <input type="radio" ${wizardData.frequency === n ? 'checked' : ''}>
           <label>${n}× pro Woche</label>
-        </div>
-      `).join('')}
+        </div>`).join('')}
     `;
   } else if (wizardStep === 2) {
     content = `
       <h2>Trainingstage</h2>
-      <p style="color:var(--text-dim); margin-bottom:8px;">Welche Tage sind dein Standard? (kannst du jederzeit flexibel verschieben)</p>
-      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">
+      <p style="color:var(--text-dim); margin-bottom:8px; font-size:13px;">Welche Tage sind dein Standard? Du kannst sie jederzeit verschieben.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;">
         ${dayLabels.map((d, i) => `
           <button class="day-tab ${wizardData.days.includes(i+1) ? 'active' : ''}" onclick="wizToggleDay(${i+1})">${d}</button>
         `).join('')}
@@ -1883,55 +2316,40 @@ function showWizardStep() {
   } else if (wizardStep === 3) {
     content = `
       <h2>Plan-Rotation</h2>
-      <p style="color:var(--text-dim); margin-bottom:14px;">Wenn du mehrmals/Woche trainierst:</p>
-      <div class="checkbox-row" onclick="wizSelectRot('same')">
-        <input type="radio" name="rot" ${wizardData.rotation === 'same' ? 'checked' : ''}>
-        <label>Jedes Training gleich (nur Plan A)</label>
-      </div>
-      <div class="checkbox-row" onclick="wizSelectRot('AB')">
-        <input type="radio" name="rot" ${wizardData.rotation === 'AB' ? 'checked' : ''}>
-        <label>Wechsel A → B (zwei Pläne)</label>
-      </div>
-      <div class="checkbox-row" onclick="wizSelectRot('ABC')">
-        <input type="radio" name="rot" ${wizardData.rotation === 'ABC' ? 'checked' : ''}>
-        <label>Wechsel A → B → C (drei Pläne)</label>
-      </div>
+      <p style="color:var(--text-dim); margin-bottom:12px; font-size:13px;">Wenn du mehrmals/Woche trainierst:</p>
+      ${[['same','Jedes Training gleich (nur Plan A)'],['AB','Wechsel A → B'],['ABC','Wechsel A → B → C']].map(o => `
+        <div class="checkbox-row" onclick="wizSelect('rotation','${o[0]}')">
+          <input type="radio" ${wizardData.rotation === o[0] ? 'checked' : ''}>
+          <label>${o[1]}</label>
+        </div>`).join('')}
     `;
   } else if (wizardStep === 4) {
     content = `
-      <h2>Periodisierung</h2>
-      <p style="color:var(--text-dim); margin-bottom:14px;">Wie soll dein Mesozyklus aufgebaut sein?</p>
-      <div class="checkbox-row" onclick="wizSelectProg('akkumulation')">
-        <input type="radio" name="prog" ${wizardData.volumeProgression === 'akkumulation' ? 'checked' : ''}>
-        <label>Volumen-Akkumulation (4 Wochen Aufbau + 1 Deload)</label>
-      </div>
-      <div class="checkbox-row" onclick="wizSelectProg('linear')">
-        <input type="radio" name="prog" ${wizardData.volumeProgression === 'linear' ? 'checked' : ''}>
-        <label>Linear: Hypertrophie → Kraft → Deload</label>
-      </div>
-      <div class="checkbox-row" onclick="wizSelectProg('dup')">
-        <input type="radio" name="prog" ${wizardData.volumeProgression === 'dup' ? 'checked' : ''}>
-        <label>DUP: täglich wechselnd (Hypertrophie / Kraft / Kraftausdauer)</label>
-      </div>
-      <div class="checkbox-row" onclick="wizSelectProg('none')">
-        <input type="radio" name="prog" ${wizardData.volumeProgression === 'none' ? 'checked' : ''}>
-        <label>Keine: 3 Sätze fix, Double Progression</label>
-      </div>
+      <h2>Makrozyklus</h2>
+      <p style="color:var(--text-dim); margin-bottom:12px; font-size:13px;">Reihenfolge der Mesozyklen:</p>
+      ${[
+        ['kraftausdauer,hypertrophie,ik','Klassisch: Kraftausdauer → Hypertrophie → IK'],
+        ['hypertrophie,hypertrophie,hypertrophie,ik','Hypertrophie-Fokus: 3× Hypertrophie → IK'],
+        ['hypertrophie','Nur Hypertrophie + Deload-Wochen'],
+        ['kraftausdauer,hypertrophie','Reduziert: Kraftausdauer → Hypertrophie']
+      ].map(o => `
+        <div class="checkbox-row" onclick="wizSelect('macroSeq','${o[0]}')">
+          <input type="radio" ${wizardData.macroSeq === o[0] ? 'checked' : ''}>
+          <label>${o[1]}</label>
+        </div>`).join('')}
     `;
   }
-
   const html = `
     <div class="wizard-progress">${progress}</div>
     ${content}
-    <div class="btn-row" style="margin-top:20px;">
+    <div class="btn-row" style="margin-top:18px;">
       ${wizardStep > 0 ? '<button class="btn btn-ghost" onclick="wizPrev()">Zurück</button>' : '<button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>'}
       <button class="btn" onclick="wizNext()">${wizardStep === WIZARD_STEPS - 1 ? 'Fertigstellen' : 'Weiter'}</button>
     </div>
   `;
   showModal(html);
 }
-function wizSelectType(t) { wizardData.type = t; showWizardStep(); }
-function wizSelectFreq(n) { wizardData.frequency = n; showWizardStep(); }
+function wizSelect(key, val) { wizardData[key] = val; showWizardStep(); }
 function wizToggleDay(d) {
   const i = wizardData.days.indexOf(d);
   if (i >= 0) wizardData.days.splice(i, 1);
@@ -1939,57 +2357,42 @@ function wizToggleDay(d) {
   wizardData.days.sort((a, b) => a - b);
   showWizardStep();
 }
-function wizSelectRot(r) { wizardData.rotation = r; showWizardStep(); }
-function wizSelectProg(p) { wizardData.volumeProgression = p; showWizardStep(); }
 function wizPrev() { wizardStep--; showWizardStep(); }
 function wizNext() {
   if (wizardStep < WIZARD_STEPS - 1) { wizardStep++; showWizardStep(); }
-  else { finishWizard(); }
+  else finishWizard();
 }
 function finishWizard() {
-  // Anwenden
   DATA.cycle.type = wizardData.type;
   DATA.cycle.frequency = wizardData.frequency;
   DATA.cycle.days = wizardData.days;
   DATA.cycle.rotation = wizardData.rotation;
-  DATA.cycle.volumeProgression = wizardData.volumeProgression;
-
-  // Aktive Pläne basierend auf Rotation
   if (wizardData.rotation === 'same') DATA.cycle.activePlans = ['A'];
   else if (wizardData.rotation === 'AB') DATA.cycle.activePlans = ['A', 'B'];
   else if (wizardData.rotation === 'ABC') {
     DATA.cycle.activePlans = ['A', 'B', 'C'];
-    if (!DATA.plans.C) {
-      DATA.plans.C = { name: 'Plan C', exercises: [] };
-    }
+    if (!DATA.plans.C) DATA.plans.C = { name: 'Plan C', exercises: [] };
   }
-
-  // Phasen-Sequenz nach Modell
-  if (wizardData.volumeProgression === 'akkumulation') {
-    DATA.cycle.phaseSequence = ['hypertrophie', 'hypertrophie', 'hypertrophie', 'hypertrophie', 'deload'];
-    DATA.cycle.mesoLengthWeeks = 5;
-  } else if (wizardData.volumeProgression === 'linear') {
-    DATA.cycle.phaseSequence = ['kraftausdauer', 'hypertrophie', 'hypertrophie', 'kraft', 'deload'];
-    DATA.cycle.mesoLengthWeeks = 5;
-  } else if (wizardData.volumeProgression === 'dup') {
-    DATA.cycle.phaseSequence = ['hypertrophie', 'hypertrophie', 'hypertrophie', 'hypertrophie', 'deload'];
-    DATA.cycle.mesoLengthWeeks = 5;
-  } else {
-    DATA.cycle.phaseSequence = ['hypertrophie', 'hypertrophie', 'hypertrophie', 'hypertrophie'];
-    DATA.cycle.mesoLengthWeeks = 4;
-  }
-  DATA.cycle.currentWeek = 1;
-  DATA.cycle.currentPhase = DATA.cycle.phaseSequence[0];
-  DATA.cycle.mesoStart = new Date().toISOString().slice(0, 10);
+  DATA.macro.mesoSequence = wizardData.macroSeq.split(',');
+  DATA.macro.currentMesoIndex = 0;
+  DATA.macro.name = wizardData.macroSeq.includes(',') ? 'Klassisch' : 'Hypertrophie';
+  DATA.macro.startDate = new Date().toISOString().slice(0, 10);
+  DATA.cycle.currentMeso = {
+    phase: DATA.macro.mesoSequence[0],
+    startDate: new Date().toISOString().slice(0, 10),
+    lengthWeeks: DATA.settings.mesoLength || 6,
+    currentWeek: 1
+  };
+  DATA.cycle.mesoHistory = [];
   saveData(DATA);
   closeModal();
   showToast('Zyklus gestartet');
   switchTab('today');
 }
 
-// =====================================================================
+// ============================================================
 // START
-// =====================================================================
+// ============================================================
 renderToday();
 </script>
 </body>
