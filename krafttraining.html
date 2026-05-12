@@ -61,6 +61,15 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 .suggest{font-size:12px;color:var(--accent);margin-top:6px;display:flex;align-items:flex-start;gap:5px;line-height:1.4}
 .suggest.warn{color:var(--warning)}
 .suggest.info{color:var(--info)}
+.last-info{background:var(--bg-elev2);border-radius:6px;padding:7px 10px;margin:8px 0 4px;font-size:12px;color:var(--text-dim);line-height:1.5}
+.last-info .lbl{font-weight:700;color:var(--text);font-size:10px;text-transform:uppercase;letter-spacing:0.06em;margin-right:6px}
+.last-info .val{color:var(--text)}
+.today-rec{background:rgba(245,158,11,0.1);border-left:3px solid var(--accent);border-radius:6px;padding:8px 10px;margin:4px 0 10px;font-size:13px;color:var(--text);line-height:1.5}
+.today-rec .lbl{color:var(--accent);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;margin-right:6px}
+.today-rec .target-row{display:flex;gap:12px;margin-top:4px;font-size:13px;font-weight:600;flex-wrap:wrap}
+.today-rec .target-row .item{color:var(--text)}
+.today-rec.warn{background:rgba(239,68,68,0.08);border-left-color:var(--warning)}
+.today-rec.warn .lbl{color:var(--warning)}
 .badge{display:inline-block;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:600;letter-spacing:0.02em;white-space:nowrap}
 .badge-hyp{background:rgba(245,158,11,0.15);color:var(--accent)}
 .badge-maxkraft{background:rgba(239,68,68,0.15);color:var(--warning)}
@@ -173,13 +182,13 @@ const MUSCLE_LABELS={brust:'Brust',rücken:'Rücken',schultern:'Schultern',bizep
 // Volumen-Empfehlungen (Sätze/Woche) - moderate Werte für Fortgeschrittene
 const MAV_RANGES={brust:[12,16],rücken:[12,16],schultern:[12,16],bizeps:[8,14],trizeps:[8,14],quads:[12,16],beinbeuger:[8,14],po:[8,14],waden:[8,14],bauch:[6,12],core:[6,12]};
 const PHASE_DEFS={
-  hypertrophie:{label:'Hypertrophie',badge:'badge-hyp',color:'#f59e0b',repsRange:[8,12],intensityPct:[0.70,0.80],weeklyRIR:{1:'3-4',2:'2-3',3:'1-2',4:'0-1',5:'0-1',6:'0-1',7:'0-1',8:'0-1'},description:'Klassischer Muskelaufbau. 8-12 Wdh bei 70-80% 1RM, 60-90s Pause. Volumen progressiv von MEV bis MRV steigern, RIR über Wochen senken.',pauseSec:90},
-  maxkraft:{label:'Maximalkraft',badge:'badge-maxkraft',color:'#ef4444',repsRange:[3,6],intensityPct:[0.85,0.95],weeklyRIR:{1:'3',2:'2',3:'1-2',4:'1',5:'0-1',6:'0-1'},description:'Neuronale Resensibilisierung. 3-6 Wdh bei 85-95% 1RM, 3-5 Min Pause. Macht dich für den nächsten Hypertrophie-Block stärker.',pauseSec:240},
-  kraftausdauer:{label:'Kraftausdauer',badge:'badge-kraftaus',color:'#22c55e',repsRange:[15,20],intensityPct:[0.55,0.65],weeklyRIR:{1:'4-5',2:'3-4',3:'2-3',4:'1-2',5:'1-2'},description:'Stoffwechselkapazität und Bindegewebe. 15-20 Wdh bei 55-65% 1RM, kurze Pausen (45-60s).',pauseSec:60},
-  deload:{label:'Deload',badge:'badge-deload',color:'#3b82f6',repsRange:[8,10],intensityPct:[0.50,0.60],weeklyRIR:{1:'4-6'},description:'Aktive Erholung. Volumen ca. 50% reduziert, Gewicht 50-60% des Arbeitsgewichts. Ermüdung abbauen, Fitness erhalten.',pauseSec:120}
+  hypertrophie:{label:'Hypertrophie · Akkumulation',shortLabel:'Hypertrophie',badge:'badge-hyp',color:'#f59e0b',repsRange:[8,12],intensityPct:[0.70,0.80],weeklyRIR:{1:'3-4',2:'2-3',3:'1-2',4:'0-1',5:'0-1',6:'0-1',7:'0-1',8:'0-1'},description:'Akkumulationsblock. Aufbau-Phase mit hohem Volumen (Volumen steigt MEV → MRV) und moderater Intensität. 8-12 Wdh bei 70-80% 1RM, 60-90s Pause. RIR fällt von 3-4 in Woche 1 auf 0-1 in der Peak-Woche. Hauptarbeit für Muskelaufbau.',pauseSec:90},
+  maxkraft:{label:'Maximalkraft · Transmutation',shortLabel:'Maxkraft',badge:'badge-maxkraft',color:'#ef4444',repsRange:[3,6],intensityPct:[0.85,0.95],weeklyRIR:{1:'3',2:'2',3:'1-2',4:'1',5:'0-1',6:'0-1'},description:'Transmutationsblock. Wandelt die Hypertrophie-Basis in spezifische Kraft. 3-6 Wdh bei 85-95% 1RM, 3-5 Min Pause, niedriges Volumen, RPE 7.5-9. Macht dich für den nächsten Aufbau-Block stärker, sodass du dort schwerere Gewichte für 10 Wdh bewegen kannst.',pauseSec:240},
+  kraftausdauer:{label:'Kraftausdauer · Variation',shortLabel:'Kraftausdauer',badge:'badge-kraftaus',color:'#22c55e',repsRange:[15,20],intensityPct:[0.55,0.65],weeklyRIR:{1:'4-5',2:'3-4',3:'2-3',4:'1-2',5:'1-2'},description:'Variations- und Erhaltungsphase. 15-20 Wdh bei 55-65% 1RM, kurze Pausen (45-60s). Bindegewebe und Stoffwechselkapazität, gleichzeitig Abbau systemischer Ermüdung. Kurz halten (2-3 Wochen), dann zurück zur Akkumulation.',pauseSec:60},
+  deload:{label:'Deload',shortLabel:'Deload',badge:'badge-deload',color:'#3b82f6',repsRange:[8,10],intensityPct:[0.50,0.60],weeklyRIR:{1:'4-6'},description:'Aktive Erholung. Volumen ca. 50% reduziert, Gewicht 50-60% des Arbeitsgewichts. Ermüdung abbauen, Fitness erhalten. Eingebaut als jeweils letzte Woche jedes Mesozyklus.',pauseSec:120}
 };
 const PERIODIZATION_PRESETS={
-  block:{label:'Block-Periodisierung (modern, empfohlen)',description:'Längere Hypertrophie-Blöcke mit kurzen Kraft-Blöcken dazwischen. Goldstandard für Fortgeschrittene laut aktueller Forschung (Schoenfeld, Israetel).',blocks:[{phase:'hypertrophie',weeks:6},{phase:'maxkraft',weeks:3},{phase:'hypertrophie',weeks:6},{phase:'maxkraft',weeks:3},{phase:'kraftausdauer',weeks:3}]},
+  block:{label:'Block-Periodisierung (modern, empfohlen)',description:'Drei-Phasen-Modell: Akkumulation (Volumen-Aufbau) → Transmutation (Kraft-Spezifität) → Variation/Erhaltung. Zyklisch wiederholt. Goldstandard für Fortgeschrittene laut Schoenfeld, Israetel, Issurin. Volumen sinkt von Block zu Block, Intensität steigt.',blocks:[{phase:'hypertrophie',weeks:5},{phase:'maxkraft',weeks:3},{phase:'hypertrophie',weeks:4},{phase:'maxkraft',weeks:3},{phase:'kraftausdauer',weeks:2}]},
   linear:{label:'Lineare Periodisierung (klassisch)',description:'Stufenweise von Kraftausdauer über Hypertrophie zu Maximalkraft. Gut planbar, einfach. Eher für Anfänger und mittlere Trainierende.',blocks:[{phase:'kraftausdauer',weeks:3},{phase:'hypertrophie',weeks:4},{phase:'maxkraft',weeks:3}]},
   undulating:{label:'Wellige Periodisierung (DUP)',description:'Kurze, oft wechselnde Blöcke. Mehr Abwechslung, weniger Stagnation, aber Fortschritte schwerer messbar.',blocks:[{phase:'hypertrophie',weeks:2},{phase:'maxkraft',weeks:2},{phase:'hypertrophie',weeks:2},{phase:'kraftausdauer',weeks:2}]}
 };
@@ -193,7 +202,7 @@ const EXERCISE_LIBRARY=[
 {id:'butterfly_machine',name:'Butterfly (Maschine)',equipment:'Maschine',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['butterfly_cable','brustpresse']},
 {id:'butterfly_cable',name:'Butterfly (Kabelzug)',equipment:'Kabelzug',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['butterfly_machine','bankdruecken_kh']},
 {id:'dips',name:'Dips',equipment:'Eigengewicht',muscles:['brust','trizeps'],secondary:['schultern'],type:'reps',isCompound:true,bodyweight:true,alternatives:['brustpresse']},
-{id:'rueckenmaschine',name:'Rückenmaschine',equipment:'Maschine',muscles:['rücken'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['latzug','rudern_machine','pullups']},
+{id:'rueckenmaschine',name:'Rückenzug-Maschine',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['latzug','rudern_machine','pullups']},
 {id:'latzug',name:'Latzug',equipment:'Kabelzug',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['pullups','rueckenmaschine']},
 {id:'pullups',name:'Klimmzüge',equipment:'Eigengewicht',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,bodyweight:true,alternatives:['latzug','rueckenmaschine']},
 {id:'rudern_machine',name:'Rudern (Maschine)',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['rudern_cable','rudern_lh']},
@@ -214,8 +223,8 @@ const EXERCISE_LIBRARY=[
 {id:'bizeps_curl_lh',name:'Bizepscurl (LH/SZ)',equipment:'Langhantel',muscles:['bizeps'],type:'reps',isIsolation:true,alternatives:['bizeps_curl_kh','bizeps_cable']},
 {id:'bizeps_cable',name:'Bizepscurl (Kabel)',equipment:'Kabelzug',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['bizepsmaschine','bizeps_curl_kh']},
 {id:'hammer_curl',name:'Hammer-Curls',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,alternatives:['bizeps_curl_kh']},
-{id:'trizepsmaschine',name:'Trizepsmaschine',equipment:'Maschine',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['trizeps_cable','trizeps_kh']},
-{id:'trizeps_cable',name:'Trizeps (Kabel)',equipment:'Kabelzug',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['trizepsmaschine','trizeps_kh']},
+{id:'trizepsmaschine',name:'Dipmaschine (sitzend)',equipment:'Maschine',muscles:['trizeps'],secondary:['brust'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['trizeps_cable','trizeps_kh']},
+{id:'trizeps_cable',name:'Rope Pushdowns',equipment:'Kabelzug',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['trizepsmaschine','trizeps_kh']},
 {id:'trizeps_kh',name:'Trizepsdrücken (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,alternatives:['trizepsmaschine','trizeps_cable']},
 {id:'french_press',name:'French Press',equipment:'Langhantel',muscles:['trizeps'],type:'reps',isIsolation:true,alternatives:['trizepsmaschine']},
 {id:'kniebeuge_lh',name:'Kniebeuge (LH)',equipment:'Langhantel',muscles:['quads'],secondary:['po','core','beinbeuger'],type:'reps',isCompound:true,alternatives:['beinpresse','hackschmidt']},
@@ -280,22 +289,22 @@ function buildInitialData(){
   history.push(...spread(parseHistoryString("25/30, 30, 30/35, 35, 35/40, 40, 45, 50/45, 50, 50/55/50, 55/50, 55, 55, 50, 50, 55, 55, 55, 50, 45, 50, 45, 50/45, 30, 35, 35/40, 40, 40/45, 45, 45/50, 50, 50/55, 55, 55, 60/55, 60/55, 60/55, 60/55, 60/55, 65/60, 55"),'trizeps_cable'));
   const plans={
     A:{name:'Plan A (Maschinen)',exercises:[
-      {exerciseId:'walking_lunges',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:10},
       {exerciseId:'brustpresse',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:75,maxWeight:null},
       {exerciseId:'rueckenmaschine',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:110,maxWeight:null},
       {exerciseId:'butterfly_machine',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:70,maxWeight:null},
       {exerciseId:'bizepsmaschine',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:50,maxWeight:null},
       {exerciseId:'trizepsmaschine',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:105,maxWeight:null},
-      {exerciseId:'bauchmaschine',targetSets:3,targetRepsMin:10,targetRepsMax:15,currentWeight:80,maxWeight:null}
+      {exerciseId:'bauchmaschine',targetSets:3,targetRepsMin:10,targetRepsMax:15,currentWeight:80,maxWeight:null},
+      {exerciseId:'walking_lunges',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:10}
     ]},
     B:{name:'Plan B (Freihantel & Kabel)',exercises:[
-      {exerciseId:'kniebeuge_lh',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:40},
       {exerciseId:'bankdruecken_lh',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:55},
       {exerciseId:'pullups',targetSets:3,targetRepsMin:5,targetRepsMax:12,currentWeight:0},
       {exerciseId:'butterfly_cable',targetSets:3,targetRepsMin:10,targetRepsMax:15,currentWeight:30,maxWeight:null},
       {exerciseId:'bizeps_cable',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:50,maxWeight:null},
       {exerciseId:'trizeps_cable',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:55,maxWeight:null},
-      {exerciseId:'plank',targetSets:3,targetSeconds:120,currentWeight:0}
+      {exerciseId:'plank',targetSets:3,targetSeconds:120,currentWeight:0},
+      {exerciseId:'kniebeuge_lh',targetSets:3,targetRepsMin:8,targetRepsMax:12,currentWeight:40}
     ]}
   };
   return{
@@ -307,7 +316,42 @@ function buildInitialData(){
   };
 }
 // ===== STORAGE & HELPERS =====
-function loadData(){try{let raw=localStorage.getItem(STORAGE_KEY);if(!raw){const initial=buildInitialData();saveData(initial);return initial;}return JSON.parse(raw);}catch(e){console.error('Load fehlgeschlagen',e);return buildInitialData();}}
+function loadData(){try{let raw=localStorage.getItem(STORAGE_KEY);if(!raw){const initial=buildInitialData();saveData(initial);return initial;}const d=JSON.parse(raw);return migrateData(d);}catch(e){console.error('Load fehlgeschlagen',e);return buildInitialData();}}
+function migrateData(d){
+  // Migration: Beine + Bauch/Core ans Ende sortieren (einmalig)
+  if(!d._migratedReorder){
+    const legMuscles=['quads','beinbeuger','po','waden'];
+    const coreMuscles=['bauch','core'];
+    Object.keys(d.plans||{}).forEach(pk=>{
+      const plan=d.plans[pk];if(!plan||!plan.exercises)return;
+      const main=[],core=[],legs=[];
+      plan.exercises.forEach(ex=>{
+        const def=EXERCISE_LIBRARY.find(e=>e.id===ex.exerciseId);
+        if(!def){main.push(ex);return;}
+        const isLegs=(def.muscles||[]).some(m=>legMuscles.includes(m));
+        const isCore=(def.muscles||[]).some(m=>coreMuscles.includes(m));
+        if(isLegs)legs.push(ex);
+        else if(isCore)core.push(ex);
+        else main.push(ex);
+      });
+      plan.exercises=[...main,...core,...legs];
+    });
+    d._migratedReorder=true;
+    saveData(d);
+  }
+  // Migration: neue Block-Sequenz (3 Hauptphasen-Modell)
+  if(d.macro&&d.macro.preset==='block'&&!d._migratedBlocks){
+    const newBlocks=JSON.parse(JSON.stringify(PERIODIZATION_PRESETS.block.blocks));
+    // Nur ersetzen, wenn aktuell der alte 5-Block-Aufbau aktiv ist
+    if(d.macro.blocks&&d.macro.blocks.length===5&&d.macro.blocks[0].weeks===6){
+      d.macro.blocks=newBlocks;
+      d.macro.currentBlockIndex=Math.min(d.macro.currentBlockIndex||0,newBlocks.length-1);
+    }
+    d._migratedBlocks=true;
+    saveData(d);
+  }
+  return d;
+}
 function saveData(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
 let DATA=loadData();
 function fmtDate(iso){return new Date(iso).toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'});}
@@ -319,6 +363,17 @@ function calcTonnage(sets){if(!sets)return 0;return sets.reduce((sum,s)=>sum+(s.
 function showToast(msg,duration=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),duration);}
 function showModal(html){document.getElementById('modal-content').innerHTML=`<button class="modal-close" onclick="closeModal()">×</button>`+html;document.getElementById('modal-bg').classList.add('show');}
 function closeModal(){document.getElementById('modal-bg').classList.remove('show');}
+function showConfirm(msg,onYes,btnText){
+  const txt=btnText||'Bestätigen';
+  const html=`<h2 style="margin-bottom:14px;">Bestätigung</h2>
+    <p style="font-size:14px;line-height:1.5;margin-bottom:18px;color:var(--text);">${msg}</p>
+    <div class="btn-row">
+      <button class="btn" id="confirm-yes">${txt}</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
+    </div>`;
+  showModal(html);
+  document.getElementById('confirm-yes').onclick=function(){closeModal();onYes();};
+}
 document.getElementById('modal-bg').addEventListener('click',e=>{if(e.target.id==='modal-bg')closeModal();});
 // ===== TAB NAV =====
 function switchTab(name){
@@ -365,9 +420,33 @@ function getVolumeFactor(){
   const ratio=(wk-1)/(totalAcc-1);
   return 0.85+ratio*0.3;
 }
+// Additives Schema: Volumen variiert über Phase und Woche
+// Hypertrophie: MEV (Wo1) → MAV → MRV (Peak) → Deload
+// Maxkraft: leichtes Tapering (Wo1 etwas mehr, danach konstant) → Deload
+// Kraftausdauer: konstant → Deload
+function computeTargetSets(base,phase,wk,totalWeeks,deload){
+  if(deload)return Math.max(1,base-1);
+  const accumWeeks=totalWeeks-1; // letzte Woche ist immer Deload
+  if(phase==='hypertrophie'){
+    // Linear hochfahren von MEV (base) bis MRV (base+2): pro Woche +1, gedeckelt bei +2
+    if(accumWeeks<=1)return base;
+    return Math.min(base+(wk-1),base+2);
+  }
+  if(phase==='maxkraft'){
+    if(wk===1)return base+1;                  // Anfang etwas mehr Volumen
+    return base;                              // danach konstant, Intensität trägt
+  }
+  if(phase==='kraftausdauer')return base;
+  return base;
+}
 function getWeeklyTargetSets(exercise){
-  const baseSets=exercise.targetSets||3;
-  return Math.max(1,Math.round(baseSets*getVolumeFactor()));
+  const base=exercise.targetSets||3;
+  let sets=computeTargetSets(base,getCurrentPhase(),getCurrentWeek(),getMesoLength(),isDeloadWeek());
+  // Plateau-Volumen-Boost: +1 Satz, nur in Hypertrophie, nur in den ersten 2 Wochen, nicht in Deload
+  if(exercise.exerciseId&&getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()<=2){
+    if(detectPlateau(exercise.exerciseId))sets+=1;
+  }
+  return sets;
 }
 function getEffectiveRepsRange(exercise){
   if(isDeloadWeek())return[exercise.targetRepsMin||8,Math.min((exercise.targetRepsMax||12),10)];
@@ -381,17 +460,31 @@ function getNextBlockPhase(){
   const next=(DATA.macro.currentBlockIndex+1)%blocks.length;
   return blocks[next];
 }
+// History-Index für Performance (filtert nicht mehr 700+ Einträge bei jedem Aufruf)
+let _historyByExerciseId=null;
+function buildHistoryIndex(){
+  _historyByExerciseId={};
+  DATA.history.forEach(h=>{
+    if(!_historyByExerciseId[h.exerciseId])_historyByExerciseId[h.exerciseId]=[];
+    _historyByExerciseId[h.exerciseId].push(h);
+  });
+  Object.values(_historyByExerciseId).forEach(arr=>arr.sort((a,b)=>b.date.localeCompare(a.date)));
+}
+function invalidateHistoryIndex(){_historyByExerciseId=null;}
 function getLastWorkout(exerciseId){
-  const entries=DATA.history.filter(h=>h.exerciseId===exerciseId).sort((a,b)=>b.date.localeCompare(a.date));
-  return entries[0]||null;
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const arr=_historyByExerciseId[exerciseId];
+  return arr&&arr.length?arr[0]:null;
 }
 function getRecentWorkouts(exerciseId,count){
-  return DATA.history.filter(h=>h.exerciseId===exerciseId).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,count);
+  if(!_historyByExerciseId)buildHistoryIndex();
+  return(_historyByExerciseId[exerciseId]||[]).slice(0,count);
 }
 function getBestE1RM(exerciseId){
-  const records=DATA.history.filter(h=>h.exerciseId===exerciseId&&!h.legacy);
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const records=(_historyByExerciseId[exerciseId]||[]).filter(h=>!h.legacy);
   let best=0;
-  records.forEach(r=>{(r.sets||[]).forEach(s=>{const e=calcE1RM(s.weight,s.reps);if(e&&e>best)best=e;});});
+  records.forEach(r=>(r.sets||[]).forEach(s=>{const e=calcE1RM(s.weight,s.reps);if(e&&e>best)best=e;}));
   return best;
 }
 function progressionSuggestion(exerciseId,exercise){
@@ -424,7 +517,7 @@ function progressionSuggestion(exerciseId,exercise){
         const phaseDef=PHASE_DEFS[phase];
         const targetPct=(phaseDef.intensityPct[0]+phaseDef.intensityPct[1])/2;
         const w=Math.round(e1rm*targetPct/0.5)*0.5;
-        return{weight:w,text:`Neuer ${phaseDef.label}-Block: ${w} kg, ${repsMin}-${repsMax} Wdh · RIR ${rir}`};
+        return{weight:w,text:`Neuer ${phaseDef.shortLabel||phaseDef.label}-Block: ${w} kg, ${repsMin}-${repsMax} Wdh · RIR ${rir}`};
       }
     }
   }
@@ -438,6 +531,12 @@ function progressionSuggestion(exerciseId,exercise){
     return{weight:0,text:`Ziel: ${Math.ceil(avgReps+1)}+ Wdh pro Satz · RIR ${rir}`};
   }
   const lastWeight=Math.max(...validSets.map(s=>s.weight));
+  // Rückschritt-Erkennung: zwei Trainings in Folge mit e1RM-Drop >= 2%
+  const regression=detectRegression(exerciseId);
+  if(regression&&phase!=='deload'){
+    const reducedW=Math.round(lastWeight*0.95/0.5)*0.5;
+    return{weight:reducedW,text:`Trend nach unten (-${regression.drop.toFixed(1)} kg e1RM über 2 Trainings). Erholung prüfen: Schlaf, Ernährung, Stress. Heute: ${reducedW} kg (-5%).`,isWarn:true};
+  }
   const setsAtMax=validSets.filter(s=>s.weight===lastWeight);
   const repsAtMax=setsAtMax.map(s=>s.reps);
   const minReps=Math.min(...repsAtMax);
@@ -477,6 +576,37 @@ function detectPlateau(exerciseId){
   if(current<=maxPrev*1.005)return{type:'plateau',sessions:threshold};
   return null;
 }
+// Rückschritt: zwei Trainings in Folge mit e1RM-Drop >= 2%
+function detectRegression(exerciseId){
+  const recent=getRecentWorkouts(exerciseId,3).filter(w=>!w.legacy);
+  if(recent.length<3)return null;
+  const e1rms=recent.map(w=>w.sets?Math.max(0,...w.sets.map(s=>calcE1RM(s.weight,s.reps)||0)):0);
+  if(e1rms[0]<=0||e1rms[1]<=0||e1rms[2]<=0)return null;
+  if(e1rms[0]<e1rms[1]*0.98 && e1rms[1]<e1rms[2]*0.98){
+    return{type:'regression',drop:e1rms[2]-e1rms[0]};
+  }
+  return null;
+}
+// Muskelgruppen mit >=2 stagnierenden Übungen
+function detectMuscleGroupStagnation(){
+  const stagnated={};
+  const seen=new Set();
+  Object.values(DATA.plans||{}).forEach(plan=>{
+    (plan.exercises||[]).forEach(ex=>{
+      if(seen.has(ex.exerciseId))return;
+      seen.add(ex.exerciseId);
+      if(!detectPlateau(ex.exerciseId))return;
+      const def=getExerciseInfo(ex.exerciseId);
+      if(!def)return;
+      (def.muscles||[]).forEach(m=>{
+        if(!stagnated[m])stagnated[m]={count:0,exercises:[]};
+        stagnated[m].count++;
+        stagnated[m].exercises.push(def.name);
+      });
+    });
+  });
+  return Object.entries(stagnated).filter(function(e){return e[1].count>=2;}).map(function(e){return{muscle:e[0],count:e[1].count,exercises:e[1].exercises};});
+}
 function intelligentExerciseAdvice(exerciseId,exercise){
   const def=getExerciseInfo(exerciseId);
   if(!def)return[];
@@ -486,7 +616,9 @@ function intelligentExerciseAdvice(exerciseId,exercise){
   }
   const plateau=detectPlateau(exerciseId);
   if(plateau){
-    if(def.isIsolation)advice.push({type:'plateau',msg:'Isolation stagniert. Eher Reps anziehen, ROM voll, Tempo langsamer als Gewicht hoch.'});
+    const inHypBoost=getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()<=2;
+    if(inHypBoost)advice.push({type:'volume',msg:'Plateau erkannt: heute +1 Satz, um den Reiz zu erhöhen.'});
+    else if(def.isIsolation)advice.push({type:'plateau',msg:'Isolation stagniert. Eher Reps anziehen, ROM voll, Tempo langsamer als Gewicht hoch.'});
     else if(def.isCompound)advice.push({type:'plateau',msg:'Grundübung stagniert. Prüfe Schlaf, Protein, Pausen. Falls über 2 Mesozyklen: Variante wechseln.'});
   }
   return advice;
@@ -567,10 +699,10 @@ function initWorkoutDraft(planKey,force=false){
     exercises:plan.exercises.map(ex=>{
       const def=getExerciseInfo(ex.exerciseId);
       const isTime=def&&def.type==='time',isBW=def&&def.bodyweight;
-      const sug=progressionSuggestion(ex.exerciseId,ex);
       const sets=[];
       const n=getWeeklyTargetSets(ex);
-      for(let i=0;i<n;i++)sets.push({weight:isTime?null:(isBW?0:(sug.weight||ex.currentWeight||0)),reps:null});
+      // Felder bleiben leer - Vorschlag wird über dem Set-Grid prominent angezeigt
+      for(let i=0;i<n;i++)sets.push({weight:null,reps:null});
       return{exerciseId:ex.exerciseId,originalExerciseId:ex.exerciseId,targetSets:ex.targetSets||3,targetRepsMin:ex.targetRepsMin||8,targetRepsMax:ex.targetRepsMax||12,targetSeconds:ex.targetSeconds||null,currentWeight:ex.currentWeight||0,maxWeight:ex.maxWeight||null,sets};
     })
   };
@@ -603,7 +735,7 @@ function renderToday(){
         <h1 style="margin-top:2px;">${plan.name}</h1>
       </div>
       <div style="text-align:right;flex-shrink:0;">
-        <span class="badge ${phaseDef.badge}">${phaseDef.label}</span>
+        <span class="badge ${phaseDef.badge}">${phaseDef.shortLabel||phaseDef.label}</span>
         <div style="color:var(--text-faint);font-size:11px;margin-top:4px;">W${week}/${mesoLen}</div>
       </div>
     </div>
@@ -614,6 +746,13 @@ function renderToday(){
       </div>
       <div class="rir-hint">Heute: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh · Pause ~${phaseDef.pauseSec}s</div>
     </div>`;
+  // Muskelgruppen-Stagnation als Hinweis-Card (nur bei erkannter Stagnation)
+  const muscleStagnation=detectMuscleGroupStagnation();
+  if(muscleStagnation.length>0){
+    muscleStagnation.forEach(function(s){
+      html+=`<div class="suggest warn" style="margin-bottom:10px;">⚠ <strong>${s.muscle}</strong> stagniert: ${s.count} Übungen ohne Fortschritt (${s.exercises.join(', ')}). Erwäge Übungswechsel oder vorgezogenen Deload.</div>`;
+    });
+  }
   if(DATA.cycle.activePlans.length>1){
     html+=`<div class="day-tabs">`;
     DATA.cycle.activePlans.forEach(pk=>{
@@ -630,30 +769,65 @@ function renderToday(){
     const advice=intelligentExerciseAdvice(draftEx.exerciseId,draftEx);
     const isSwapped=draftEx.originalExerciseId&&draftEx.originalExerciseId!==draftEx.exerciseId;
     const originalName=isSwapped?getExerciseDisplayName(draftEx.originalExerciseId):null;
-    let lastSummary='Erstes Training';
+    let lastSummary='Erstes Training mit dieser Übung';
+    let lastDateText='';
     if(last){
-      if(last.legacy){const w=Math.max(0,...last.sets.map(s=>s.weight||0));lastSummary=`Vorher: zuletzt ${fmtWeight(w)} kg`;}
-      else if(isTime)lastSummary=`Letztes Mal: ${last.sets.map(s=>fmtTime(s.reps||0)).join(' · ')}`;
-      else lastSummary='Letztes Mal: '+last.sets.map(s=>`${fmtWeight(s.weight)}${isBW?'':'kg'}×${s.reps||'?'}`).join(' · ');
+      if(last.legacy){
+        const w=Math.max(0,...last.sets.map(s=>s.weight||0));
+        lastSummary=`zuletzt ${fmtWeight(w)} kg`;
+        lastDateText='aus deinen alten Daten';
+      } else if(isTime){
+        lastSummary=last.sets.map(s=>fmtTime(s.reps||0)).join(' · ');
+        lastDateText=fmtDate(last.date);
+      } else if(isBW){
+        lastSummary=last.sets.map(s=>`${s.reps||'?'} Wdh`).join(' · ');
+        lastDateText=fmtDate(last.date);
+      } else {
+        lastSummary=last.sets.map(s=>`${fmtWeight(s.weight)} kg × ${s.reps||'?'}`).join(' · ');
+        lastDateText=fmtDate(last.date);
+      }
     }
     const[repsMin,repsMax]=getEffectiveRepsRange(draftEx);
     const targetStr=isTime?`${draftEx.sets.length}×${draftEx.targetSeconds||120}s`:`${draftEx.sets.length}×${repsMin}-${repsMax}`;
+    // Heute-Empfehlung in target-row aufbereiten
+    let targetSets=draftEx.sets.length;
+    let recItems=[];
+    if(isTime){
+      recItems.push(`<span class="item">${targetSets} Sätze</span>`);
+      recItems.push(`<span class="item">${draftEx.targetSeconds||120}s pro Satz</span>`);
+    } else if(isBW){
+      recItems.push(`<span class="item">${targetSets} Sätze</span>`);
+      recItems.push(`<span class="item">${repsMin}-${repsMax} Wdh</span>`);
+    } else {
+      const recW=sug.weight!==undefined&&sug.weight!==null&&sug.weight>0?fmtWeight(sug.weight)+' kg':'-';
+      recItems.push(`<span class="item">${recW}</span>`);
+      recItems.push(`<span class="item">${targetSets} Sätze</span>`);
+      recItems.push(`<span class="item">${repsMin}-${repsMax} Wdh</span>`);
+    }
+    recItems.push(`<span class="item" style="color:var(--text-dim);font-weight:500;">RIR ${getWeeklyRIR()}</span>`);
     html+=`<div class="exercise-block">
       <div class="exercise-head">
         <div style="flex:1;min-width:0;">
           <div class="exercise-name">${def.name}${isSwapped?' <span style="font-size:10px;color:var(--info);font-weight:normal;">↔ statt '+originalName+'</span>':''}</div>
           <div class="exercise-meta">${targetStr} · ${def.equipment}${isBW?' · Eigengewicht':''}</div>
-          <div class="exercise-last">${lastSummary}</div>
         </div>
         <div class="exercise-actions">
           <button class="icon-btn" onclick="showSwapExercise(${exIdx})" title="Wechseln">⇄</button>
           <button class="icon-btn" onclick="addSetToDraft(${exIdx})" title="Satz +">+</button>
         </div>
       </div>`;
+    // Letztes Mal
+    if(last){
+      html+=`<div class="last-info"><span class="lbl">Letztes Mal${lastDateText?' ('+lastDateText+')':''}:</span><span class="val">${lastSummary}</span></div>`;
+    } else {
+      html+=`<div class="last-info"><span class="val" style="color:var(--text-faint);">${lastSummary}</span></div>`;
+    }
+    // Heute-Empfehlung
+    const recCls=sug.isWarn?' warn':'';
+    html+=`<div class="today-rec${recCls}"><div><span class="lbl">Heute:</span>${sug.text?`<span style="font-size:12px;color:var(--text-dim);">${sug.text}</span>`:''}</div><div class="target-row">${recItems.join('')}</div></div>`;
+    // Warn-Hinweise (Plateau etc.)
     if(advice.length>0){
       advice.forEach(a=>{html+=`<div class="suggest warn">⚠ ${a.msg} · <a href="#" onclick="showPlateauHelp('${draftEx.exerciseId}');return false;" style="color:inherit;text-decoration:underline;">Hilfe</a></div>`;});
-    }else if(sug.text){
-      html+=`<div class="suggest${sug.isWarn?' warn':''}">→ ${sug.text}</div>`;
     }
     if(isTime){
       html+=`<div class="sets-grid with-time"><div class="header-cell">#</div><div class="header-cell">Zeit (s)</div><div class="header-cell"></div>`;
@@ -731,8 +905,9 @@ function addSetToDraft(exIdx){
 }
 function resetDraft(){
   if(!currentWorkoutDraft)return;
-  if(!confirm('Alle Eingaben des heutigen Trainings zurücksetzen?'))return;
-  clearWorkoutDraft();currentWorkoutDraft=null;renderToday();
+  showConfirm('Alle Eingaben des heutigen Trainings zurücksetzen?',function(){
+    clearWorkoutDraft();currentWorkoutDraft=null;renderToday();
+  },'Zurücksetzen');
 }
 // ===== TRAINING ABSCHLIESSEN + ZUSAMMENFASSUNG =====
 function finishWorkout(){
@@ -906,6 +1081,7 @@ function confirmFinishWorkout(){
     });
   }
   clearWorkoutDraft();
+  invalidateHistoryIndex();
   advanceCycleIfNeeded();
   saveData(DATA);
   currentWorkoutDraft=null;
@@ -916,22 +1092,31 @@ function confirmFinishWorkout(){
 }
 function advanceCycleIfNeeded(){
   const today=new Date();
-  const weekStart=new Date(today);
-  const day=today.getDay()||7;
-  weekStart.setDate(today.getDate()-day+1);
-  const ws=weekStart.toISOString().slice(0,10);
-  const trainingDates=new Set(DATA.history.filter(h=>h.date>=ws&&!h.legacy).map(h=>h.date));
-  if(trainingDates.size>=DATA.cycle.frequency){
-    if(DATA.cycle.currentMeso.currentWeek>=DATA.cycle.currentMeso.lengthWeeks)finishMesoAndAdvance();
-    else DATA.cycle.currentMeso.currentWeek+=1;
+  const todayStr=today.toISOString().slice(0,10);
+  const meso=DATA.cycle.currentMeso;
+  // Referenzdatum der aktuellen Mesozyklus-Woche: lastWeekAdvance, Fallback startDate
+  const weekRefStr=meso.lastWeekAdvance||meso.startDate;
+  const weekRef=new Date(weekRefStr);
+  const daysSinceAdvance=Math.floor((today-weekRef)/86400000);
+  // Trainings seit letztem Vorrücken zählen
+  const trainingDates=new Set(DATA.history.filter(h=>h.date>=weekRefStr&&!h.legacy).map(h=>h.date));
+  // Hybrid-Bedingung:
+  // (a) Geplante Frequenz erreicht → klassisch vorrücken
+  // (b) Mindestens 7 Tage vergangen UND mindestens 1 Training → robust vorrücken
+  const shouldAdvance=(trainingDates.size>=DATA.cycle.frequency) || (daysSinceAdvance>=7 && trainingDates.size>=1);
+  if(shouldAdvance){
+    meso.lastWeekAdvance=todayStr;
+    if(meso.currentWeek>=meso.lengthWeeks)finishMesoAndAdvance();
+    else meso.currentWeek+=1;
   }
 }
 function finishMesoAndAdvance(){
   DATA.cycle.mesoHistory.push({phase:DATA.cycle.currentMeso.phase,startDate:DATA.cycle.currentMeso.startDate,endDate:new Date().toISOString().slice(0,10),weeks:DATA.cycle.currentMeso.lengthWeeks});
   DATA.macro.currentBlockIndex=(DATA.macro.currentBlockIndex+1)%DATA.macro.blocks.length;
   const nextBlock=DATA.macro.blocks[DATA.macro.currentBlockIndex];
-  DATA.cycle.currentMeso={phase:nextBlock.phase,startDate:new Date().toISOString().slice(0,10),lengthWeeks:nextBlock.weeks,currentWeek:1};
-  showToast(`Neuer Block: ${PHASE_DEFS[nextBlock.phase].label} (${nextBlock.weeks} Wo)`,3500);
+  const todayStr=new Date().toISOString().slice(0,10);
+  DATA.cycle.currentMeso={phase:nextBlock.phase,startDate:todayStr,lengthWeeks:nextBlock.weeks,currentWeek:1,lastWeekAdvance:todayStr};
+  showToast(`Neuer Block: ${PHASE_DEFS[nextBlock.phase].shortLabel||PHASE_DEFS[nextBlock.phase].label} (${nextBlock.weeks} Wo)`,3500);
 }
 // ===== ÜBUNGS-TAUSCH =====
 function showSwapExercise(exIdx){
@@ -975,7 +1160,7 @@ function swapForToday(exIdx,newId){
   const sug=progressionSuggestion(newId,tempEx);
   const sets=[];
   const n=getWeeklyTargetSets(tempEx);
-  for(let i=0;i<n;i++)sets.push({weight:isTime?null:(isBW?0:(sug.weight||startWeight)),reps:null});
+  for(let i=0;i<n;i++)sets.push({weight:null,reps:null});
   currentWorkoutDraft.exercises[exIdx]={exerciseId:newId,originalExerciseId:oldDraftEx.originalExerciseId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:startWeight,maxWeight:null,sets};
   saveWorkoutDraft();
   closeModal();
@@ -998,7 +1183,7 @@ function swapPermanent(exIdx,newId){
   const sug=progressionSuggestion(newId,tempEx);
   const sets=[];
   const n=getWeeklyTargetSets(tempEx);
-  for(let i=0;i<n;i++)sets.push({weight:isTime?null:(isBW?0:(sug.weight||tempEx.currentWeight)),reps:null});
+  for(let i=0;i<n;i++)sets.push({weight:null,reps:null});
   currentWorkoutDraft.exercises[exIdx]={exerciseId:newId,originalExerciseId:newId,targetSets:tempEx.targetSets,targetRepsMin:tempEx.targetRepsMin,targetRepsMax:tempEx.targetRepsMax,targetSeconds:tempEx.targetSeconds,currentWeight:tempEx.currentWeight,maxWeight:null,sets};
   saveData(DATA);
   saveWorkoutDraft();
@@ -1071,25 +1256,43 @@ function cancelPlankTimer(){if(plankTimer)clearInterval(plankTimer);plankTimer=n
 // ===== PLAN-TAB =====
 function renderPlan(){
   const planVol=planVolumeAnalysis();
-  let analysisHtml='';
-  const issues=[];
-  MUSCLE_GROUPS.forEach(m=>{
-    const sets=planVol[m]||0;
+  // Volumen-Übersicht: alle Muskelgruppen mit Balken
+  let volumeOverviewHtml=`<div class="card">
+    <div class="card-title">Plan-Volumen (Sätze/Woche)</div>
+    <div class="card-sub">Bei ${DATA.cycle.frequency}× Training pro Woche · Zielbereich für Hypertrophie</div>
+    <div style="margin-top:12px;">`;
+  // Sortiere nach Volumen absteigend für sinnvolle Reihenfolge
+  const sorted=MUSCLE_GROUPS.slice().sort((a,b)=>(planVol[b]||0)-(planVol[a]||0));
+  sorted.forEach(m=>{
+    const sets=Math.round((planVol[m]||0)*10)/10;
     const[min,max]=MAV_RANGES[m];
-    if(sets>0&&sets<min)issues.push(`${MUSCLE_LABELS[m]}: ${sets.toFixed(1)} Sätze/Woche (Ziel ${min}-${max})`);
-    if(sets===0)issues.push(`${MUSCLE_LABELS[m]}: 0 Sätze/Woche (Ziel ${min}-${max})`);
-  });
-  if(planVol.brust>0&&planVol.rücken>0&&planVol.brust>planVol.rücken*1.4){
-    issues.push(`Push/Pull: Brust ${planVol.brust.toFixed(1)} vs Rücken ${planVol.rücken.toFixed(1)}`);
-  }
-  if(issues.length>0){
-    analysisHtml=`<div class="card" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.25);">
-      <div class="card-title" style="color:var(--warning);">⚠ Plan-Analyse</div>
-      <div style="font-size:13px;color:var(--text-dim);margin-top:8px;line-height:1.6;">${issues.map(i=>'· '+i).join('<br>')}</div>
-      <div class="help-text" style="margin-top:8px;">Ergänze Übungen für diese Muskelgruppen.</div>
+    let color='var(--text-faint)';
+    let statusIcon='';
+    if(sets===0){color='var(--text-faint)';statusIcon='';}
+    else if(sets<min){color='var(--warning)';statusIcon='⚠ ';}
+    else if(sets>max){color='var(--warning)';statusIcon='↑ ';}
+    else{color='var(--success)';statusIcon='✓ ';}
+    const pct=Math.min(100,(sets/(max+2))*100);
+    volumeOverviewHtml+=`<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;align-items:center;">
+        <span style="font-weight:500;">${statusIcon}${MUSCLE_LABELS[m]}</span>
+        <span style="color:${color};font-weight:600;">${sets} <span style="color:var(--text-faint);font-weight:normal;">/ ${min}-${max}</span></span>
+      </div>
+      <div class="volume-bar">
+        <div class="volume-fill" style="width:${pct}%;background:${color};"></div>
+        <div class="volume-marks" style="left:${(min/(max+2))*100}%;"></div>
+        <div class="volume-marks" style="left:${(max/(max+2))*100}%;background:rgba(255,255,255,0.25);"></div>
+      </div>
     </div>`;
+  });
+  volumeOverviewHtml+=`</div>`;
+  // Auch Push/Pull-Hinweis
+  if(planVol.brust>0&&planVol.rücken>0&&planVol.brust>planVol.rücken*1.4){
+    volumeOverviewHtml+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(239,68,68,0.08);border-left:3px solid var(--warning);border-radius:6px;font-size:12px;color:var(--text-dim);">⚠ Push/Pull-Verhältnis: Brust ${planVol.brust.toFixed(1)} vs Rücken ${planVol.rücken.toFixed(1)} – mehr Rücken einbauen.</div>`;
   }
-  let html=analysisHtml;
+  volumeOverviewHtml+=`<div class="help-text" style="margin-top:8px;">✓ im Soll · ⚠ unter MEV oder über MRV · Die zwei Markierungen im Balken zeigen MEV (Untergrenze) und MRV (Obergrenze).</div>`;
+  volumeOverviewHtml+=`</div>`;
+  let html=volumeOverviewHtml;
   DATA.cycle.activePlans.forEach(pk=>{
     const plan=DATA.plans[pk];
     if(!plan)return;
@@ -1128,9 +1331,10 @@ function editPlanName(pk){
   if(name&&name.trim()){DATA.plans[pk].name=name.trim();saveData(DATA);renderPlan();}
 }
 function removePlanExercise(pk,idx){
-  if(!confirm('Übung aus dem Plan entfernen?'))return;
-  DATA.plans[pk].exercises.splice(idx,1);
-  saveData(DATA);renderPlan();
+  showConfirm('Übung aus dem Plan entfernen?',function(){
+    DATA.plans[pk].exercises.splice(idx,1);
+    saveData(DATA);renderPlan();
+  },'Entfernen');
 }
 function editPlanExercise(pk,idx){
   const ex=DATA.plans[pk].exercises[idx];
@@ -1296,20 +1500,20 @@ function renderCycle(){
 
   // Wochen-Beschreibungen je nach Phase
   function getWeekDescription(weekNum,totalWeeks,phaseId){
-    if(weekNum>=totalWeeks)return{label:'Deload',sub:'Volumen ~50%, Intensität 60%',rir:PHASE_DEFS.deload.weeklyRIR[1]};
-    const def=PHASE_DEFS[phaseId];
-    const ratio=(weekNum-1)/(totalWeeks-2||1);
+    const isDeload=weekNum>=totalWeeks;
+    const def=PHASE_DEFS[isDeload?'deload':phaseId];
     let label;
-    if(weekNum===1)label='Einstieg (MEV)';
+    if(isDeload)label='Deload';
+    else if(weekNum===1)label='Einstieg (MEV)';
     else if(weekNum===totalWeeks-1)label='Peak (MRV)';
-    else if(ratio<0.4)label='Akkumulation';
-    else if(ratio<0.7)label='Hochbelastung';
-    else label='Overreach';
-    const baseSets=3;
-    const factor=phaseId==='maxkraft'?1:(0.85+ratio*0.3);
-    const sets=Math.round(baseSets*factor);
-    const rirWk=def.weeklyRIR[Math.min(weekNum,Object.keys(def.weeklyRIR).length)]||'2-3';
-    return{label,sub:`~${sets} Sätze/Übung · ${def.repsRange[0]}-${def.repsRange[1]} Wdh`,rir:`RIR ${rirWk}`};
+    else if(phaseId==='hypertrophie')label='Akkumulation';
+    else if(phaseId==='maxkraft')label='Spezifische Kraft';
+    else label='Variation';
+    // Realistische Sätze-Anzeige bei typischer Basis von 3 Sätzen pro Übung
+    const sets=computeTargetSets(3,phaseId,weekNum,totalWeeks,isDeload);
+    const repsRange=def.repsRange;
+    const rirWk=isDeload?PHASE_DEFS.deload.weeklyRIR[1]:(def.weeklyRIR[Math.min(weekNum,Object.keys(def.weeklyRIR).length)]||'2-3');
+    return{label,sub:`${sets} Sätze/Übung · ${repsRange[0]}-${repsRange[1]} Wdh`,rir:`RIR ${rirWk}`};
   }
 
   let weekTimeline='<div class="week-timeline">';
@@ -1349,7 +1553,7 @@ function renderCycle(){
 
   <div class="card">
     <div class="card-title">Aktueller Schwerpunkt</div>
-    <div class="card-sub" style="margin-bottom:8px;">${effPhase==='deload'?'Deload':curPhaseDef.label} · ~${Math.round(curPhaseDef.intensityPct[0]*100)}-${Math.round(curPhaseDef.intensityPct[1]*100)}% 1RM · Pause ${curPhaseDef.pauseSec}s</div>
+    <div class="card-sub" style="margin-bottom:8px;">${effPhase==='deload'?'Deload':(curPhaseDef.shortLabel||curPhaseDef.label)} · ~${Math.round(curPhaseDef.intensityPct[0]*100)}-${Math.round(curPhaseDef.intensityPct[1]*100)}% 1RM · Pause ${curPhaseDef.pauseSec}s</div>
     <p style="font-size:13px;color:var(--text-dim);line-height:1.5;">${phaseDef.description}</p>
   </div>`;
 
@@ -1361,7 +1565,7 @@ function renderCycle(){
   blocks.forEach((b,i)=>{
     const w=(b.weeks/totalWeeks)*100;
     const cls=i<DATA.macro.currentBlockIndex?'done':(i===DATA.macro.currentBlockIndex?'current':'future');
-    macroBar+=`<div class="macro-segment ${cls}" style="background:${PHASE_DEFS[b.phase].color};width:${w}%;" title="${PHASE_DEFS[b.phase].label} ${b.weeks}w">${b.weeks}w</div>`;
+    macroBar+=`<div class="macro-segment ${cls}" style="background:${PHASE_DEFS[b.phase].color};width:${w}%;" title="${PHASE_DEFS[b.phase].shortLabel||PHASE_DEFS[b.phase].label} ${b.weeks}w">${b.weeks}w</div>`;
   });
   macroBar+='</div>';
   html+=`<div class="card">
@@ -1369,7 +1573,7 @@ function renderCycle(){
     <div class="card-sub">${presetLabel}</div>
     ${macroBar}
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px;font-size:11px;">
-      ${blocks.map((b,i)=>{const d=PHASE_DEFS[b.phase];const marker=i===DATA.macro.currentBlockIndex?'▸ ':(i<DATA.macro.currentBlockIndex?'✓ ':'');return `<div style="display:flex;align-items:center;gap:4px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${d.color};"></span><span>${marker}${d.label} (${b.weeks}w)</span></div>`;}).join('')}
+      ${blocks.map((b,i)=>{const d=PHASE_DEFS[b.phase];const marker=i===DATA.macro.currentBlockIndex?'▸ ':(i<DATA.macro.currentBlockIndex?'✓ ':'');return `<div style="display:flex;align-items:center;gap:4px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${d.color};"></span><span>${marker}${d.shortLabel||d.label} (${b.weeks}w)</span></div>`;}).join('')}
     </div>
   </div>
 
@@ -1377,6 +1581,19 @@ function renderCycle(){
     <div class="card-title">Wie fühlst du dich?</div>
     <div class="card-sub" style="margin-bottom:10px;">Autoregulierter Check: bei hoher Ermüdung wird ein vorgezogener Deload empfohlen.</div>
     <button class="btn btn-secondary btn-full btn-small" onclick="showDeloadCheck()">Check starten</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Abkürzungen kurz erklärt</div>
+    <div style="font-size:13px;line-height:1.7;color:var(--text-dim);margin-top:8px;">
+      <div style="margin-bottom:6px;"><strong style="color:var(--text);">RIR</strong> · <em>Reps in Reserve</em>. Wie viele Wdh du am Satzende noch im Tank lassen sollst. RIR 2 = du hättest noch 2 Wdh geschafft. RIR 0 = bis zum Muskelversagen.</div>
+      <div style="margin-bottom:6px;"><strong style="color:var(--text);">MEV</strong> · <em>Minimum Effective Volume</em>. Niedrigste Sätze-Zahl pro Woche, die noch einen Trainingsreiz auslöst. Startpunkt eines Mesozyklus.</div>
+      <div style="margin-bottom:6px;"><strong style="color:var(--text);">MRV</strong> · <em>Maximum Recoverable Volume</em>. Höchste Sätze-Zahl, von der du dich noch erholst. Endpunkt vor dem Deload.</div>
+      <div style="margin-bottom:6px;"><strong style="color:var(--text);">e1RM</strong> · <em>estimated 1RM</em>. Geschätztes Maximalgewicht aus Gewicht und Wdh. Formel: w × (1 + 0,0333 × reps).</div>
+      <div style="margin-bottom:6px;"><strong style="color:var(--text);">Akkumulation</strong> · Aufbau-Block mit hohem Volumen und moderater Intensität (= Hypertrophie-Phase).</div>
+      <div style="margin-bottom:6px;"><strong style="color:var(--text);">Transmutation</strong> · Kraft-Block, der die Aufbau-Basis in spezifische Kraft umwandelt (= Maximalkraft-Phase).</div>
+      <div><strong style="color:var(--text);">Deload</strong> · Aktive Erholungswoche am Ende jedes Mesozyklus. Volumen ca. 50%, Intensität ca. 60%.</div>
+    </div>
   </div>`;
 
   if(DATA.cycle.mesoHistory.length>0){
@@ -1384,7 +1601,7 @@ function renderCycle(){
     DATA.cycle.mesoHistory.slice(-6).reverse().forEach(h=>{
       const d=PHASE_DEFS[h.phase];
       html+=`<div style="padding:8px 10px;background:var(--bg-elev2);border-radius:var(--radius-sm);margin-bottom:6px;font-size:12px;">
-        <div style="font-weight:600;">${d?d.label:h.phase} <span style="color:var(--text-faint);font-weight:normal;">(${h.weeks} Wo)</span></div>
+        <div style="font-weight:600;">${d?(d.shortLabel||d.label):h.phase} <span style="color:var(--text-faint);font-weight:normal;">(${h.weeks} Wo)</span></div>
         <div style="color:var(--text-faint);font-size:11px;margin-top:2px;">${fmtDate(h.startDate)} bis ${fmtDate(h.endDate)}</div>
       </div>`;
     });
@@ -1405,8 +1622,9 @@ function backWeek(){
   }
 }
 function startNewMeso(){
-  if(!confirm('Aktuellen Mesozyklus beenden und zum nächsten Block wechseln?'))return;
-  finishMesoAndAdvance();saveData(DATA);renderCycle();
+  showConfirm('Aktuellen Mesozyklus beenden und zum nächsten Block wechseln?',function(){
+    finishMesoAndAdvance();saveData(DATA);renderCycle();
+  },'Beenden');
 }
 // Deload-Check
 function showDeloadCheck(){
@@ -1459,7 +1677,7 @@ function renderSetup(){
       <select onchange="changePeriodization(this.value)">${presetOptions}</select>
       <div class="help-text" style="margin-top:8px;line-height:1.5;">${currentPreset?currentPreset.description:''}</div>
       <div style="margin-top:10px;font-size:12px;color:var(--text-dim);">
-        <strong>Block-Folge:</strong> ${currentPreset?currentPreset.blocks.map(b=>`${PHASE_DEFS[b.phase].label} (${b.weeks}w)`).join(' → '):''}
+        <strong>Block-Folge:</strong> ${currentPreset?currentPreset.blocks.map(b=>`${PHASE_DEFS[b.phase].shortLabel||PHASE_DEFS[b.phase].label} (${b.weeks}w)`).join(' → '):''}
       </div>
       <button class="btn btn-ghost btn-small" style="margin-top:10px;" onclick="confirmReapplyPreset()">Auswahl anwenden (Reset Zyklus)</button>
     </div>
@@ -1509,28 +1727,33 @@ function changePeriodization(val){
   renderSetup();
 }
 function confirmReapplyPreset(){
-  if(!confirm('Block-Folge des aktuellen Modells übernehmen? Aktueller Mesozyklus wird abgeschlossen und neu mit dem ersten Block gestartet.'))return;
-  const preset=PERIODIZATION_PRESETS[DATA.macro.preset];
-  if(!preset)return;
-  // Aktuellen Meso archivieren
-  if(DATA.cycle.currentMeso&&DATA.cycle.currentMeso.startDate){
-    DATA.cycle.mesoHistory.push({phase:DATA.cycle.currentMeso.phase,startDate:DATA.cycle.currentMeso.startDate,endDate:new Date().toISOString().slice(0,10),weeks:DATA.cycle.currentMeso.lengthWeeks});
-  }
-  DATA.macro.blocks=JSON.parse(JSON.stringify(preset.blocks));
-  DATA.macro.currentBlockIndex=0;
-  DATA.macro.startDate=new Date().toISOString().slice(0,10);
-  const firstBlock=DATA.macro.blocks[0];
-  DATA.cycle.currentMeso={phase:firstBlock.phase,startDate:new Date().toISOString().slice(0,10),lengthWeeks:firstBlock.weeks,currentWeek:1};
-  saveData(DATA);
-  showToast('Periodisierung übernommen');
-  switchTab('cycle');
+  showConfirm('Block-Folge des aktuellen Modells übernehmen? Aktueller Mesozyklus wird abgeschlossen und neu mit dem ersten Block gestartet.',function(){
+    const preset=PERIODIZATION_PRESETS[DATA.macro.preset];
+    if(!preset)return;
+    // Aktuellen Meso archivieren
+    if(DATA.cycle.currentMeso&&DATA.cycle.currentMeso.startDate){
+      DATA.cycle.mesoHistory.push({phase:DATA.cycle.currentMeso.phase,startDate:DATA.cycle.currentMeso.startDate,endDate:new Date().toISOString().slice(0,10),weeks:DATA.cycle.currentMeso.lengthWeeks});
+    }
+    DATA.macro.blocks=JSON.parse(JSON.stringify(preset.blocks));
+    DATA.macro.currentBlockIndex=0;
+    DATA.macro.startDate=new Date().toISOString().slice(0,10);
+    const firstBlock=DATA.macro.blocks[0];
+    const todayStr=new Date().toISOString().slice(0,10);
+    DATA.cycle.currentMeso={phase:firstBlock.phase,startDate:todayStr,lengthWeeks:firstBlock.weeks,currentWeek:1,lastWeekAdvance:todayStr};
+    saveData(DATA);
+    showToast('Periodisierung übernommen');
+    switchTab('cycle');
+  },'Übernehmen');
 }
 function exportData(){
-  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'});
+  const data=JSON.stringify(DATA,null,2);
+  const blob=new Blob([data],{type:'application/json'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=`krafttraining_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();URL.revokeObjectURL(url);
+  const filename=`krafttraining_${new Date().toISOString().slice(0,10)}.json`;
+  showModal(`<h2 style="margin-bottom:14px;">Daten exportieren</h2>
+    <p style="font-size:14px;line-height:1.5;margin-bottom:18px;color:var(--text);">Tippe auf den Button, um die JSON-Datei zu speichern.</p>
+    <a class="btn btn-full" href="${url}" download="${filename}" style="text-decoration:none;text-align:center;display:block;">Datei herunterladen</a>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Schließen</button>`);
 }
 function importData(){
   const input=document.createElement('input');
@@ -1538,17 +1761,26 @@ function importData(){
   input.onchange=e=>{
     const file=e.target.files[0];if(!file)return;
     const r=new FileReader();
-    r.onload=ev=>{try{const nd=JSON.parse(ev.target.result);if(!confirm('Aktuelle Daten überschreiben?'))return;DATA=nd;saveData(DATA);showToast('Daten importiert');switchTab('today');}catch(err){alert('Fehler: '+err.message);}};
+    r.onload=ev=>{
+      try{
+        const nd=JSON.parse(ev.target.result);
+        showConfirm('Aktuelle Daten überschreiben?',function(){
+          DATA=nd;saveData(DATA);showToast('Daten importiert');switchTab('today');
+        },'Überschreiben');
+      }catch(err){alert('Fehler: '+err.message);}
+    };
     r.readAsText(file);
   };
   input.click();
 }
 function confirmReset(){
-  if(!confirm('Alle Daten löschen und neu starten? Das ist endgültig.'))return;
-  if(!confirm('Sicher? Auch deine Historie geht verloren.'))return;
-  localStorage.removeItem(STORAGE_KEY);
-  Object.keys(localStorage).filter(k=>k.startsWith('kr_draft_')).forEach(k=>localStorage.removeItem(k));
-  DATA=loadData();switchTab('today');showToast('Zurückgesetzt');
+  showConfirm('Alle Daten löschen und neu starten? Das ist endgültig.',function(){
+    showConfirm('Sicher? Auch deine Historie geht verloren.',function(){
+      localStorage.removeItem(STORAGE_KEY);
+      Object.keys(localStorage).filter(k=>k.startsWith('kr_draft_')).forEach(k=>localStorage.removeItem(k));
+      DATA=loadData();switchTab('today');showToast('Zurückgesetzt');
+    },'Endgültig löschen');
+  },'Weiter');
 }
 // Setup-Wizard
 const WIZARD_STEPS=4;
