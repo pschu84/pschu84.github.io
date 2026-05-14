@@ -217,56 +217,95 @@ const PERIODIZATION_PRESETS={
   undulating:{label:'Wellige Periodisierung (DUP)',description:'Kurze, oft wechselnde Blöcke. Mehr Abwechslung, weniger Stagnation, aber Fortschritte schwerer messbar.',blocks:[{phase:'hypertrophie',weeks:2},{phase:'maxkraft',weeks:2},{phase:'hypertrophie',weeks:2},{phase:'kraftausdauer',weeks:2}]}
 };
 // ===== ÜBUNGSBIBLIOTHEK =====
+// movement: 'push' (drücken) | 'pull' (ziehen) | 'legs' | 'core'
+// bodyPart: 'upper' | 'lower' | 'core'
+// priority: 1=Grundübung, 2=Wichtige Hilfsübung, 3=Optional
 const EXERCISE_LIBRARY=[
-{id:'brustpresse',name:'Brustpresse',equipment:'Maschine',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['bankdruecken_lh','bankdruecken_kh','butterfly_machine']},
-{id:'bankdruecken_lh',name:'Bankdrücken (LH)',equipment:'Langhantel',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,alternatives:['brustpresse','bankdruecken_kh','schraegbank_lh']},
-{id:'bankdruecken_kh',name:'Bankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,alternatives:['bankdruecken_lh','brustpresse']},
-{id:'schraegbank_lh',name:'Schrägbankdrücken (LH)',equipment:'Langhantel',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,alternatives:['bankdruecken_lh','schraegbank_kh']},
-{id:'schraegbank_kh',name:'Schrägbankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,alternatives:['schraegbank_lh']},
-{id:'butterfly_machine',name:'Butterfly (Maschine)',equipment:'Maschine',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['butterfly_cable','brustpresse']},
-{id:'butterfly_cable',name:'Butterfly (Kabelzug)',equipment:'Kabelzug',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['butterfly_machine','bankdruecken_kh']},
-{id:'dips',name:'Dips',equipment:'Eigengewicht',muscles:['brust','trizeps'],secondary:['schultern'],type:'reps',isCompound:true,bodyweight:true,alternatives:['brustpresse']},
-{id:'rueckenmaschine',name:'Rückenzug-Maschine',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['latzug','rudern_machine','pullups']},
-{id:'latzug',name:'Latzug',equipment:'Kabelzug',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['pullups','rueckenmaschine']},
-{id:'pullups',name:'Klimmzüge',equipment:'Eigengewicht',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,bodyweight:true,alternatives:['latzug','rueckenmaschine']},
-{id:'rudern_machine',name:'Rudern (Maschine)',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['rudern_cable','rudern_lh']},
-{id:'rudern_cable',name:'Rudern (Kabelzug)',equipment:'Kabelzug',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['rudern_machine','rudern_lh']},
-{id:'rudern_lh',name:'Rudern (LH)',equipment:'Langhantel',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,alternatives:['rudern_cable','rudern_kh']},
-{id:'rudern_kh',name:'Rudern (KH)',equipment:'Kurzhanteln',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,alternatives:['rudern_cable']},
-{id:'kreuzheben',name:'Kreuzheben',equipment:'Langhantel',muscles:['rücken','beinbeuger'],secondary:['po','core'],type:'reps',isCompound:true,alternatives:['rdl']},
-{id:'schulterdruecken_lh',name:'Schulterdrücken (LH)',equipment:'Langhantel',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,alternatives:['schulterdruecken_kh','schulterdruecken_machine']},
-{id:'schulterdruecken_kh',name:'Schulterdrücken (KH)',equipment:'Kurzhanteln',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,alternatives:['schulterdruecken_lh','schulterdruecken_machine']},
-{id:'schulterdruecken_machine',name:'Schulterdrücken (Maschine)',equipment:'Maschine',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['schulterdruecken_kh']},
-{id:'seitheben_kh',name:'Seitheben (KH)',equipment:'Kurzhanteln',muscles:['schultern'],type:'reps',isIsolation:true,alternatives:['seitheben_cable','seitheben_machine']},
-{id:'seitheben_cable',name:'Seitheben (Kabel)',equipment:'Kabelzug',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['seitheben_kh']},
-{id:'seitheben_machine',name:'Seitheben (Maschine)',equipment:'Maschine',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['seitheben_kh']},
-{id:'reverse_butterfly',name:'Reverse Butterfly',equipment:'Maschine',muscles:['schultern','rücken'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['facepulls']},
-{id:'facepulls',name:'Face Pulls',equipment:'Kabelzug',muscles:['schultern','rücken'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['reverse_butterfly']},
-{id:'bizepsmaschine',name:'Bizepsmaschine',equipment:'Maschine',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['bizeps_curl_kh','bizeps_cable']},
-{id:'bizeps_curl_kh',name:'Bizepscurl (KH)',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,alternatives:['bizepsmaschine','bizeps_cable','hammer_curl']},
-{id:'bizeps_curl_lh',name:'Bizepscurl (LH/SZ)',equipment:'Langhantel',muscles:['bizeps'],type:'reps',isIsolation:true,alternatives:['bizeps_curl_kh','bizeps_cable']},
-{id:'bizeps_cable',name:'Bizepscurl (Kabel)',equipment:'Kabelzug',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['bizepsmaschine','bizeps_curl_kh']},
-{id:'hammer_curl',name:'Hammer-Curls',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,alternatives:['bizeps_curl_kh']},
-{id:'trizepsmaschine',name:'Dipmaschine (sitzend)',equipment:'Maschine',muscles:['trizeps'],secondary:['brust'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['trizeps_cable','trizeps_kh']},
-{id:'trizeps_cable',name:'Rope Pushdowns',equipment:'Kabelzug',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['trizepsmaschine','trizeps_kh']},
-{id:'trizeps_kh',name:'Trizepsdrücken (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,alternatives:['trizepsmaschine','trizeps_cable']},
-{id:'french_press',name:'French Press',equipment:'Langhantel',muscles:['trizeps'],type:'reps',isIsolation:true,alternatives:['trizepsmaschine']},
-{id:'kniebeuge_lh',name:'Kniebeuge',equipment:'Eigengewicht',muscles:['quads'],secondary:['po','core','beinbeuger'],type:'reps',isCompound:true,bodyweight:true,allowAddedWeight:true,alternatives:['beinpresse','hackschmidt']},
-{id:'beinpresse',name:'Beinpresse',equipment:'Maschine',muscles:['quads'],secondary:['po'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['kniebeuge_lh','hackschmidt']},
-{id:'hackschmidt',name:'Hackenschmidt',equipment:'Maschine',muscles:['quads'],secondary:['po'],type:'reps',isCompound:true,hasMaxWeight:true,alternatives:['beinpresse','kniebeuge_lh']},
-{id:'walking_lunges',name:'Walking Lunges',equipment:'Eigengewicht',muscles:['quads'],secondary:['po','beinbeuger'],type:'reps',isCompound:true,bodyweight:true,allowAddedWeight:true,alternatives:['kniebeuge_lh','beinpresse']},
-{id:'beinstrecker',name:'Beinstrecker',equipment:'Maschine',muscles:['quads'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['beinpresse']},
-{id:'beinbeuger',name:'Beinbeuger',equipment:'Maschine',muscles:['beinbeuger'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['rdl']},
-{id:'rdl',name:'Rumänisches Kreuzheben',equipment:'Langhantel',muscles:['beinbeuger','po'],secondary:['rücken'],type:'reps',isCompound:true,alternatives:['beinbeuger','hipthrust']},
-{id:'wadenheben',name:'Wadenheben',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true},
-{id:'hipthrust',name:'Hip Thrust',equipment:'Langhantel',muscles:['po'],secondary:['beinbeuger'],type:'reps',isCompound:true,alternatives:['glute_bridge']},
-{id:'glute_bridge',name:'Glute Bridge',equipment:'Eigengewicht',muscles:['po'],type:'reps',bodyweight:true,alternatives:['hipthrust']},
-{id:'hyperextensions',name:'Hyperextensions',equipment:'Hyperextension-Bank',muscles:['rücken'],secondary:['po','beinbeuger'],type:'reps',bodyweight:true,allowAddedWeight:true,alternatives:['rdl','kreuzheben']},
-{id:'bauchmaschine',name:'Bauchmaschine',equipment:'Maschine',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,alternatives:['crunches','beinheben']},
-{id:'crunches',name:'Crunches',equipment:'Eigengewicht',muscles:['bauch'],type:'reps',bodyweight:true,alternatives:['bauchmaschine','beinheben']},
-{id:'beinheben',name:'Beinheben (hängend)',equipment:'Eigengewicht',muscles:['bauch'],secondary:['core'],type:'reps',bodyweight:true,alternatives:['crunches','bauchmaschine']},
-{id:'plank',name:'Plank',equipment:'Eigengewicht',muscles:['core'],secondary:['bauch'],type:'time',bodyweight:true,alternatives:['side_plank']},
-{id:'side_plank',name:'Seitlicher Plank',equipment:'Eigengewicht',muscles:['core'],type:'time',bodyweight:true,alternatives:['plank']}
+// BRUST (push/upper)
+{id:'bankdruecken_lh',name:'Bankdrücken (LH)',equipment:'Langhantel',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['brustpresse','bankdruecken_kh','schraegbank_lh']},
+{id:'bankdruecken_kh',name:'Bankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['bankdruecken_lh','brustpresse']},
+{id:'brustpresse',name:'Brustpresse',equipment:'Maschine',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['bankdruecken_lh','bankdruecken_kh','butterfly_machine']},
+{id:'schraegbank_lh',name:'Schrägbankdrücken (LH)',equipment:'Langhantel',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['bankdruecken_lh','schraegbank_kh']},
+{id:'schraegbank_kh',name:'Schrägbankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['schraegbank_lh']},
+{id:'negativ_bankdruecken',name:'Negativ-Bankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['bankdruecken_kh']},
+{id:'dips',name:'Dips',equipment:'Eigengewicht',muscles:['brust','trizeps'],secondary:['schultern'],type:'reps',isCompound:true,bodyweight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['brustpresse']},
+{id:'butterfly_machine',name:'Butterfly (Maschine)',equipment:'Maschine',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable','brustpresse']},
+{id:'butterfly_cable',name:'Butterfly (Kabelzug)',equipment:'Kabelzug',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_machine','bankdruecken_kh']},
+{id:'pullover',name:'Pullover (KH)',equipment:'Kurzhanteln',muscles:['brust','rücken'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable']},
+{id:'liegestuetze',name:'Liegestütze',equipment:'Eigengewicht',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,bodyweight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['bankdruecken_kh']},
+// RÜCKEN (pull/upper)
+{id:'kreuzheben',name:'Kreuzheben',equipment:'Langhantel',muscles:['rücken','beinbeuger'],secondary:['po','core'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rdl']},
+{id:'pullups',name:'Klimmzüge',equipment:'Eigengewicht',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,bodyweight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['latzug','rueckenmaschine']},
+{id:'latzug',name:'Latzug',equipment:'Kabelzug',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['pullups','rueckenmaschine']},
+{id:'rudern_lh',name:'Rudern (LH)',equipment:'Langhantel',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable','rudern_kh']},
+{id:'rudern_kh',name:'Rudern (KH)',equipment:'Kurzhanteln',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable']},
+{id:'t_bar_rudern',name:'T-Bar-Rudern',equipment:'Langhantel',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_lh']},
+{id:'rudern_machine',name:'Rudern (Maschine)',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_cable','rudern_lh']},
+{id:'rudern_cable',name:'Rudern (Kabelzug)',equipment:'Kabelzug',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_machine','rudern_lh']},
+{id:'rueckenmaschine',name:'Rückenzug-Maschine',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['latzug','rudern_machine','pullups']},
+{id:'hyperextensions',name:'Hyperextensions',equipment:'Hyperextension-Bank',muscles:['rücken'],secondary:['po','beinbeuger'],type:'reps',bodyweight:true,allowAddedWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rdl','kreuzheben']},
+{id:'shrugs_kh',name:'Shrugs (KH)',equipment:'Kurzhanteln',muscles:['trapez'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_lh']},
+{id:'shrugs_lh',name:'Shrugs (LH)',equipment:'Langhantel',muscles:['trapez'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_kh']},
+// SCHULTERN VORDERE/SEITLICHE (push/upper)
+{id:'schulterdruecken_lh',name:'Schulterdrücken (LH)',equipment:'Langhantel',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['schulterdruecken_kh','schulterdruecken_machine']},
+{id:'schulterdruecken_kh',name:'Schulterdrücken (KH)',equipment:'Kurzhanteln',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['schulterdruecken_lh','schulterdruecken_machine']},
+{id:'schulterdruecken_machine',name:'Schulterdrücken (Maschine)',equipment:'Maschine',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['schulterdruecken_kh']},
+{id:'arnold_press',name:'Arnold Press',equipment:'Kurzhanteln',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['schulterdruecken_kh']},
+{id:'seitheben_kh',name:'Seitheben (KH)',equipment:'Kurzhanteln',muscles:['schultern'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_cable','seitheben_machine']},
+{id:'seitheben_cable',name:'Seitheben (Kabel)',equipment:'Kabelzug',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_kh']},
+{id:'seitheben_machine',name:'Seitheben (Maschine)',equipment:'Maschine',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_kh']},
+{id:'frontheben_kh',name:'Frontheben (KH)',equipment:'Kurzhanteln',muscles:['schultern'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_kh']},
+{id:'aufrechtes_rudern',name:'Aufrechtes Rudern',equipment:'Langhantel',muscles:['schultern','trapez'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_kh']},
+// HINTERE SCHULTER (pull/upper)
+{id:'reverse_butterfly',name:'Reverse Butterfly',equipment:'Maschine',muscles:['schultern_hinten','rücken'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['facepulls']},
+{id:'facepulls',name:'Face Pulls',equipment:'Kabelzug',muscles:['schultern_hinten','rücken'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['reverse_butterfly']},
+// BIZEPS (pull/upper)
+{id:'bizeps_curl_lh',name:'Bizepscurl (LH/SZ)',equipment:'Langhantel',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['bizeps_curl_kh','bizeps_cable']},
+{id:'bizeps_curl_kh',name:'Bizepscurl (KH)',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['bizepsmaschine','bizeps_cable','hammer_curl']},
+{id:'bizepsmaschine',name:'Bizepsmaschine',equipment:'Maschine',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['bizeps_curl_kh','bizeps_cable']},
+{id:'bizeps_cable',name:'Bizepscurl (Kabel)',equipment:'Kabelzug',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['bizepsmaschine','bizeps_curl_kh']},
+{id:'hammer_curl',name:'Hammer-Curls',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['bizeps_curl_kh']},
+{id:'scott_curls',name:'Scott-Curls (SZ)',equipment:'Langhantel',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['bizeps_curl_lh']},
+{id:'konzentrationscurl',name:'Konzentrationscurl',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['bizeps_curl_kh']},
+{id:'reverse_curl',name:'Reverse Curls (SZ)',equipment:'Langhantel',muscles:['bizeps','unterarme'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['hammer_curl']},
+// TRIZEPS (push/upper)
+{id:'enges_bankdruecken',name:'Enges Bankdrücken',equipment:'Langhantel',muscles:['trizeps','brust'],secondary:['schultern'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['dips','bankdruecken_lh']},
+{id:'trizeps_cable',name:'Rope Pushdowns',equipment:'Kabelzug',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizepsmaschine','trizeps_kh']},
+{id:'trizepsmaschine',name:'Dipmaschine (sitzend)',equipment:'Maschine',muscles:['trizeps'],secondary:['brust'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizeps_cable','trizeps_kh']},
+{id:'french_press',name:'French Press',equipment:'Langhantel',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizepsmaschine','trizeps_overhead']},
+{id:'trizeps_kh',name:'Trizepsdrücken (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizepsmaschine','trizeps_cable']},
+{id:'trizeps_overhead',name:'Overhead-Trizepsstrecken (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['french_press']},
+{id:'kickbacks',name:'Kickbacks (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['trizeps_cable']},
+// QUADS (legs/lower)
+{id:'kniebeuge_lh',name:'Kniebeuge',equipment:'Langhantel',muscles:['quads'],secondary:['po','core','beinbeuger'],type:'reps',isCompound:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['beinpresse','hackschmidt']},
+{id:'beinpresse',name:'Beinpresse',equipment:'Maschine',muscles:['quads'],secondary:['po'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['kniebeuge_lh','hackschmidt']},
+{id:'hackschmidt',name:'Hackenschmidt',equipment:'Maschine',muscles:['quads'],secondary:['po'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['beinpresse','kniebeuge_lh']},
+{id:'bulgarian_split_squat',name:'Bulgarian Split Squat',equipment:'Kurzhanteln',muscles:['quads','po'],secondary:['beinbeuger'],type:'reps',isCompound:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['walking_lunges']},
+{id:'walking_lunges',name:'Walking Lunges',equipment:'Eigengewicht',muscles:['quads'],secondary:['po','beinbeuger'],type:'reps',isCompound:true,bodyweight:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['kniebeuge_lh','beinpresse']},
+{id:'goblet_squat',name:'Goblet Squat (KH)',equipment:'Kurzhanteln',muscles:['quads'],secondary:['po','core'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['kniebeuge_lh']},
+{id:'beinstrecker',name:'Beinstrecker',equipment:'Maschine',muscles:['quads'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['beinpresse']},
+{id:'sissy_squat',name:'Sissy Squats',equipment:'Eigengewicht',muscles:['quads'],type:'reps',bodyweight:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['beinstrecker']},
+// BEINBEUGER (legs/lower)
+{id:'rdl',name:'Rumänisches Kreuzheben',equipment:'Langhantel',muscles:['beinbeuger','po'],secondary:['rücken'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['beinbeuger','hipthrust']},
+{id:'beinbeuger',name:'Beinbeuger',equipment:'Maschine',muscles:['beinbeuger'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['rdl']},
+// PO (legs/lower)
+{id:'hipthrust',name:'Hip Thrust',equipment:'Langhantel',muscles:['po'],secondary:['beinbeuger'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['glute_bridge']},
+{id:'glute_bridge',name:'Glute Bridge',equipment:'Eigengewicht',muscles:['po'],type:'reps',bodyweight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['hipthrust']},
+{id:'kickback_cable',name:'Kickbacks (Kabel)',equipment:'Kabelzug',muscles:['po'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['glute_bridge']},
+// ADDUKTOREN / ABDUKTOREN (legs/lower)
+{id:'adduktoren_machine',name:'Adduktoren (Maschine)',equipment:'Maschine',muscles:['adduktoren'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3},
+{id:'abduktoren_machine',name:'Abduktoren (Maschine)',equipment:'Maschine',muscles:['abduktoren','po'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3},
+// WADEN (legs/lower)
+{id:'wadenheben',name:'Wadenheben (stehend)',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['wadenheben_sitzend']},
+{id:'wadenheben_sitzend',name:'Wadenheben (sitzend)',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['wadenheben']},
+// BAUCH/CORE (core)
+{id:'bauchmaschine',name:'Bauchmaschine',equipment:'Maschine',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['crunches','beinheben']},
+{id:'crunches',name:'Crunches',equipment:'Eigengewicht',muscles:['bauch'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['bauchmaschine','beinheben']},
+{id:'beinheben',name:'Beinheben (hängend)',equipment:'Eigengewicht',muscles:['bauch'],secondary:['core'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['crunches','bauchmaschine']},
+{id:'cable_crunch',name:'Cable Crunch',equipment:'Kabelzug',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['crunches']},
+{id:'plank',name:'Plank',equipment:'Eigengewicht',muscles:['core'],secondary:['bauch'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['side_plank']},
+{id:'side_plank',name:'Seitlicher Plank',equipment:'Eigengewicht',muscles:['core'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['plank']},
+{id:'russian_twist',name:'Russian Twists',equipment:'Kurzhanteln',muscles:['bauch','core'],type:'reps',isIsolation:true,allowAddedWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['side_plank']}
 ];
 function getExerciseDef(id){return EXERCISE_LIBRARY.find(e=>e.id===id)}
 function getExerciseInfo(id){return getExerciseDef(id)||(DATA.customExercises&&DATA.customExercises[id])||null}
@@ -2003,8 +2042,26 @@ function renderSetup(){
     </div>
 
     <div class="card">
-      <div class="card-title">Neuer Trainingszyklus</div>
-      <div class="card-sub" style="margin-bottom:12px;">Frequenz, Tage, Rotation neu konfigurieren.</div>
+      <div class="card-title">Aktueller Trainingsplan</div>
+      ${(()=>{
+        const c=DATA.cycle;
+        const typeLabels={fullbody:'Ganzkörper',split2:'2er-Split',split3:'3er-Split'};
+        const typeLabel=typeLabels[c.type]||c.type;
+        const splitLabel=c.splitVariant&&SPLIT_LABELS[c.splitVariant]?(' · '+SPLIT_LABELS[c.splitVariant]):'';
+        const dayNames=['Mo','Di','Mi','Do','Fr','Sa','So'];
+        const daysStr=(c.days||[]).map(d=>dayNames[d-1]).join(', ');
+        const variationLabel=c.type==='fullbody'?(c.rotation==='AB'?' · A↔B-Wechsel':' · Plan A immer gleich'):'';
+        const planSummary=Object.keys(DATA.plans||{}).map(pk=>{
+          const p=DATA.plans[pk];
+          const count=p&&p.exercises?p.exercises.length:0;
+          return `<b>${pk}</b>: ${p?p.name:''} (${count} Übungen)`;
+        }).join(' · ');
+        return `<div style="font-size:13px;color:var(--text-dim);line-height:1.8;margin-bottom:12px;">
+          ${typeLabel}${splitLabel}${variationLabel}<br>
+          ${c.frequency}× pro Woche · ${daysStr}<br>
+          ${planSummary}
+        </div>`;
+      })()}
       <button class="btn" onclick="openWizard()">Setup-Wizard starten</button>
     </div>
 
@@ -2102,60 +2159,345 @@ function confirmReset(){
     },'Endgültig löschen');
   },'Weiter');
 }
-// Setup-Wizard
-const WIZARD_STEPS=4;
+// ===== SPLIT-TEMPLATES & PLAN-GENERATOR =====
+const SPLIT_TEMPLATES={
+  fullbody:{
+    A:{name:'Ganzkörper',muscles:['brust','rücken','schultern','quads','beinbeuger','po','bizeps','trizeps','bauch']}
+  },
+  split2_okuk:{
+    A:{name:'Oberkörper',muscles:['brust','rücken','schultern','schultern_hinten','bizeps','trizeps']},
+    B:{name:'Unterkörper',muscles:['quads','beinbeuger','po','waden','bauch']}
+  },
+  split2_pushpull:{
+    A:{name:'Push',muscles:['brust','schultern','trizeps','quads','waden']},
+    B:{name:'Pull',muscles:['rücken','schultern_hinten','bizeps','beinbeuger','po']}
+  },
+  split2_torso:{
+    A:{name:'Torso',muscles:['brust','rücken','schultern','schultern_hinten','bauch']},
+    B:{name:'Extremitäten',muscles:['quads','beinbeuger','po','waden','bizeps','trizeps']}
+  },
+  split3_ppb:{
+    A:{name:'Push',muscles:['brust','schultern','trizeps']},
+    B:{name:'Pull',muscles:['rücken','schultern_hinten','bizeps']},
+    C:{name:'Beine',muscles:['quads','beinbeuger','po','waden','bauch']}
+  },
+  split3_classic:{
+    A:{name:'Brust + Trizeps',muscles:['brust','trizeps']},
+    B:{name:'Rücken + Bizeps',muscles:['rücken','schultern_hinten','bizeps']},
+    C:{name:'Beine + Schultern',muscles:['quads','beinbeuger','po','waden','schultern','bauch']}
+  },
+  split3_okuk:{
+    A:{name:'Oberkörper 1',muscles:['brust','rücken','trizeps','bizeps']},
+    B:{name:'Unterkörper',muscles:['quads','beinbeuger','po','waden','bauch']},
+    C:{name:'Oberkörper 2',muscles:['brust','rücken','schultern','schultern_hinten','trizeps','bizeps'],variantB:true}
+  }
+};
+const SPLIT_LABELS={
+  split2_okuk:'Oberkörper / Unterkörper',
+  split2_pushpull:'Push / Pull',
+  split2_torso:'Torso / Extremitäten',
+  split3_ppb:'Push / Pull / Beine',
+  split3_classic:'Brust+Tri / Rücken+Bi / Beine+Schulter',
+  split3_okuk:'Oberkörper 1 / Unterkörper / Oberkörper 2'
+};
+function generateExercisesForDay(targetMuscles,count){
+  // Kandidaten: Übungen mit mind. einer Zielmuskelgruppe als Primärmuskel
+  const candidates=EXERCISE_LIBRARY.filter(e=>e.muscles.some(m=>targetMuscles.includes(m)));
+  // Sortierung: Priorität (1 zuerst), Compounds vor Isolation
+  const sorted=[...candidates].sort((a,b)=>{
+    if((a.priority||3)!==(b.priority||3))return(a.priority||3)-(b.priority||3);
+    if(a.isCompound&&!b.isCompound)return -1;
+    if(!a.isCompound&&b.isCompound)return 1;
+    return 0;
+  });
+  const selected=[];
+  // Zähle direkte Abdeckung pro Zielmuskel (nur Primärmuskeln zählen)
+  const muscleCount={};
+  targetMuscles.forEach(m=>muscleCount[m]=0);
+  // PASS 1: Mindestens eine direkte Übung pro Zielmuskelgruppe (in Reihenfolge der Liste)
+  for(const m of targetMuscles){
+    if(selected.length>=count)break;
+    if(muscleCount[m]>=1)continue;
+    const ex=sorted.find(e=>!selected.includes(e)&&e.muscles.includes(m));
+    if(ex){
+      selected.push(ex);
+      // Nur Primärmuskeln als abgedeckt zählen, nicht Sekundärmuskeln
+      ex.muscles.forEach(mu=>{if(muscleCount[mu]!==undefined)muscleCount[mu]++;});
+    }
+  }
+  // PASS 2: Mit verbleibenden Slots große Muskelgruppen mit zweiter Übung versorgen
+  const bigMuscles=['brust','rücken','quads','schultern'];
+  let safety=0;
+  while(selected.length<count&&safety<50){
+    safety++;
+    let added=false;
+    for(const m of bigMuscles){
+      if(!targetMuscles.includes(m))continue;
+      if(selected.length>=count)break;
+      const ex=sorted.find(e=>!selected.includes(e)&&e.muscles.includes(m));
+      if(ex){
+        selected.push(ex);
+        added=true;
+        ex.muscles.forEach(mu=>{if(muscleCount[mu]!==undefined)muscleCount[mu]++;});
+      }
+    }
+    if(!added){
+      const ex=sorted.find(e=>!selected.includes(e));
+      if(ex)selected.push(ex);else break;
+    }
+  }
+  return selected.slice(0,count);
+}
+function exerciseToplanEntry(ex){
+  const sets=ex.type==='time'?[{seconds:30,done:false},{seconds:30,done:false},{seconds:30,done:false}]
+    :[{reps:10,weight:0,done:false},{reps:10,weight:0,done:false},{reps:10,weight:0,done:false}];
+  return{exerciseId:ex.id,sets:sets,restSec:90};
+}
+function variantBExercise(exId){
+  const def=EXERCISE_LIBRARY.find(e=>e.id===exId);
+  if(!def)return exId;
+  // Bevorzuge alternatives, die in der gleichen movement-Kategorie liegen
+  if(def.alternatives&&def.alternatives.length){
+    for(const altId of def.alternatives){
+      const alt=EXERCISE_LIBRARY.find(e=>e.id===altId);
+      if(alt&&alt.movement===def.movement)return alt.id;
+    }
+    // Fallback: erste verfügbare Alternative
+    const firstAlt=EXERCISE_LIBRARY.find(e=>def.alternatives.includes(e.id));
+    if(firstAlt)return firstAlt.id;
+  }
+  // Generischer Fallback: andere Übung mit überlappenden Muskeln + gleichem movement
+  const fallback=EXERCISE_LIBRARY.find(e=>
+    e.id!==def.id&&e.movement===def.movement&&
+    e.muscles.some(m=>def.muscles.includes(m))
+  );
+  return fallback?fallback.id:def.id;
+}
+function buildPlansFromWizard(wd){
+  const plans={};
+  if(wd.type==='fullbody'){
+    const template=SPLIT_TEMPLATES.fullbody.A;
+    const exercises=generateExercisesForDay(template.muscles,wd.exercisesPerDay);
+    plans.A={name:'Plan A',exercises:exercises.map(exerciseToplanEntry)};
+    if(wd.variation==='AB'){
+      plans.B={name:'Plan B',exercises:exercises.map(ex=>({
+        ...exerciseToplanEntry(ex),
+        exerciseId:variantBExercise(ex.id)
+      }))};
+    }
+  }else{
+    const templateKey=wd.splitVariant;
+    const template=SPLIT_TEMPLATES[templateKey];
+    if(!template){console.error('Unknown split template',templateKey);return plans;}
+    const planKeys=Object.keys(template);
+    planKeys.forEach(pk=>{
+      const dayTemplate=template[pk];
+      const exercises=generateExercisesForDay(dayTemplate.muscles,wd.exercisesPerDay);
+      if(dayTemplate.variantB){
+        // Variante B: andere Übungen für gleiche Muskeln (z.B. OK2 nach OK1)
+        plans[pk]={name:dayTemplate.name,exercises:exercises.map(ex=>({
+          ...exerciseToplanEntry(ex),
+          exerciseId:variantBExercise(ex.id)
+        }))};
+      }else{
+        plans[pk]={name:dayTemplate.name,exercises:exercises.map(exerciseToplanEntry)};
+      }
+    });
+  }
+  return plans;
+}
+function defaultDaysForFrequency(freq){
+  // Sinnvolle Verteilung mit Erholungstagen
+  const map={2:[1,4],3:[1,3,5],4:[1,2,4,5]};
+  return map[freq]||[1,3,5];
+}
+// ===== SETUP-WIZARD =====
 let wizardStep=0;let wizardData={};
+function getWizardStepIds(){
+  const steps=['type'];
+  if(wizardData.type==='split2'||wizardData.type==='split3')steps.push('split_variant');
+  steps.push('frequency','days','exercises_per_day');
+  if(wizardData.type==='fullbody')steps.push('variation');
+  steps.push('summary');
+  return steps;
+}
 function openWizard(){
   wizardStep=0;
-  wizardData={type:DATA.cycle.type,frequency:DATA.cycle.frequency,days:[...DATA.cycle.days],rotation:DATA.cycle.rotation};
+  wizardData={
+    type:DATA.cycle.type||'fullbody',
+    splitVariant:null,
+    frequency:DATA.cycle.frequency||3,
+    days:[...(DATA.cycle.days||[1,3,5])],
+    exercisesPerDay:6,
+    variation:DATA.cycle.rotation==='AB'?'AB':'same'
+  };
   showWizardStep();
 }
 function showWizardStep(){
   const dayLabels=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const stepIds=getWizardStepIds();
+  const currentId=stepIds[wizardStep];
   let progress='';
-  for(let i=0;i<WIZARD_STEPS;i++)progress+=`<div class="step ${i<wizardStep?'done':(i===wizardStep?'current':'')}"></div>`;
-  let content='';
-  if(wizardStep===0){
-    content=`<h2>Trainingsart</h2><p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie strukturierst du dein Training?</p>
-      ${[['fullbody','Ganzkörper'],['split2','2er-Split'],['split3','3er-Split']].map(o=>`<div class="checkbox-row" onclick="wizSelect('type','${o[0]}')"><input type="radio" ${wizardData.type===o[0]?'checked':''}><label>${o[1]}</label></div>`).join('')}`;
-  }else if(wizardStep===1){
-    content=`<h2>Frequenz</h2><p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie oft pro Woche?</p>
-      ${[2,3,4].map(n=>`<div class="checkbox-row" onclick="wizSelect('frequency',${n})"><input type="radio" ${wizardData.frequency===n?'checked':''}><label>${n}× pro Woche</label></div>`).join('')}`;
-  }else if(wizardStep===2){
-    content=`<h2>Trainingstage</h2><p style="color:var(--text-dim);margin-bottom:8px;font-size:13px;">Welche Tage sind dein Standard? Du kannst sie jederzeit verschieben.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
-        ${dayLabels.map((d,i)=>`<button class="day-tab ${wizardData.days.includes(i+1)?'active':''}" onclick="wizToggleDay(${i+1})">${d}</button>`).join('')}
-      </div>
-      <div class="help-text">Auswahl: ${wizardData.days.length} Tage</div>`;
-  }else if(wizardStep===3){
-    content=`<h2>Plan-Rotation</h2><p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wenn du mehrmals/Woche trainierst:</p>
-      ${[['same','Jedes Training gleich (nur Plan A)'],['AB','Wechsel A → B'],['ABC','Wechsel A → B → C']].map(o=>`<div class="checkbox-row" onclick="wizSelect('rotation','${o[0]}')"><input type="radio" ${wizardData.rotation===o[0]?'checked':''}><label>${o[1]}</label></div>`).join('')}`;
+  for(let i=0;i<stepIds.length;i++){
+    progress+=`<div class="step ${i<wizardStep?'done':(i===wizardStep?'current':'')}"></div>`;
   }
+  let content='';
+  let canProceed=true;
+  if(currentId==='type'){
+    content=`<h2>Trainingsart</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie strukturierst du dein Training?</p>
+      ${[
+        ['fullbody','Ganzkörper','Alle Muskeln in jedem Training. Ideal für 2–3× pro Woche.'],
+        ['split2','2er-Split','Körper in 2 Hälften. Ideal für 3–4× pro Woche.'],
+        ['split3','3er-Split','Körper in 3 Bereiche. Ideal für 3–6× pro Woche.']
+      ].map(o=>`<div class="checkbox-row" onclick="wizSelectType('${o[0]}')" style="align-items:flex-start;padding:10px 0;">
+        <input type="radio" ${wizardData.type===o[0]?'checked':''} style="margin-top:3px;">
+        <div><label style="font-weight:600;display:block;">${o[1]}</label>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}`;
+  }else if(currentId==='split_variant'){
+    const variants=wizardData.type==='split2'
+      ?[['split2_okuk','Oberkörper / Unterkörper','Klassiker: Tag A Oberkörper, Tag B Beine + Bauch.'],
+        ['split2_pushpull','Push / Pull','Drücken (Brust, Schulter, Tri, Quads) vs. Ziehen (Rücken, Bizeps, Beinbeuger).'],
+        ['split2_torso','Torso / Extremitäten','Rumpf (Brust, Rücken, Schultern, Bauch) vs. Arme + Beine.']]
+      :[['split3_ppb','Push / Pull / Beine','Der bewährteste 3er-Split. Beste Regeneration.'],
+        ['split3_classic','Brust+Tri / Rücken+Bi / Beine+Schultern','Klassischer Bodybuilder-Split.'],
+        ['split3_okuk','OK1 / Unterkörper / OK2','Zwei verschiedene Oberkörper-Tage, ein Beintag.']];
+    content=`<h2>Aufteilung</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie willst du die Trainingseinheiten aufteilen?</p>
+      ${variants.map(o=>`<div class="checkbox-row" onclick="wizSelect('splitVariant','${o[0]}')" style="align-items:flex-start;padding:10px 0;">
+        <input type="radio" ${wizardData.splitVariant===o[0]?'checked':''} style="margin-top:3px;">
+        <div><label style="font-weight:600;display:block;">${o[1]}</label>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}`;
+    canProceed=!!wizardData.splitVariant;
+  }else if(currentId==='frequency'){
+    let warning='';
+    if(wizardData.type==='fullbody'&&wizardData.frequency===4){
+      warning=`<div style="background:rgba(239,68,68,0.1);border:1px solid var(--warning);padding:10px;border-radius:8px;margin-top:12px;font-size:12px;color:var(--text-dim);">
+        ⚠️ 4× Ganzkörper pro Woche ist sehr fordernd für die Regeneration. Ein 2er- oder 3er-Split wäre bei dieser Frequenz meist sinnvoller.</div>`;
+    }
+    content=`<h2>Frequenz</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie oft pro Woche trainierst du?</p>
+      ${[2,3,4,5,6].map(n=>`<div class="checkbox-row" onclick="wizSelectFreq(${n})">
+        <input type="radio" ${wizardData.frequency===n?'checked':''}><label>${n}× pro Woche</label></div>`).join('')}
+      ${warning}`;
+  }else if(currentId==='days'){
+    const need=wizardData.frequency;
+    const have=wizardData.days.length;
+    const diff=need-have;
+    let hint='';
+    if(diff>0)hint=`<div style="color:var(--warning);font-size:12px;margin-top:8px;">Bitte wähle noch ${diff} ${diff===1?'Tag':'Tage'} aus.</div>`;
+    else if(diff<0)hint=`<div style="color:var(--warning);font-size:12px;margin-top:8px;">Du hast ${-diff} ${-diff===1?'Tag':'Tage'} zu viel ausgewählt.</div>`;
+    else hint=`<div style="color:var(--success);font-size:12px;margin-top:8px;">✓ Passt: ${have} von ${need} Tagen</div>`;
+    content=`<h2>Trainingstage</h2>
+      <p style="color:var(--text-dim);margin-bottom:8px;font-size:13px;">An welchen ${need} Tagen pro Woche trainierst du?</p>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;">
+        ${dayLabels.map((d,i)=>`<button class="day-tab ${wizardData.days.includes(i+1)?'active':''}" onclick="wizToggleDay(${i+1})">${d}</button>`).join('')}
+      </div>${hint}`;
+    canProceed=(have===need);
+  }else if(currentId==='exercises_per_day'){
+    const labels={4:'~30–40 min',5:'~40–50 min',6:'~50–60 min',7:'~60–70 min',8:'~70–90 min'};
+    content=`<h2>Übungen pro Training</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie viele Übungen schaffst du pro Trainingseinheit?</p>
+      ${[4,5,6,7,8].map(n=>`<div class="checkbox-row" onclick="wizSelect('exercisesPerDay',${n})">
+        <input type="radio" ${wizardData.exercisesPerDay===n?'checked':''}>
+        <label>${n} Übungen <span style="color:var(--text-faint);font-size:12px;">(${labels[n]})</span></label></div>`).join('')}
+      <div style="font-size:12px;color:var(--text-dim);margin-top:10px;line-height:1.4;">
+        Bei wenigen Übungen wählt der Generator Grundübungen mit hoher Priorität (Bankdrücken, Kniebeuge, Klimmzüge). Bei mehr Übungen kommen Isolationsübungen dazu.</div>`;
+  }else if(currentId==='variation'){
+    content=`<h2>Plan-Variation</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Möchtest du immer das gleiche Training oder zwei unterschiedliche Pläne (A und B) im Wechsel?</p>
+      ${[
+        ['same','Immer gleich (Plan A)','Jedes Training enthält dieselben Übungen.'],
+        ['AB','Wechsel A → B','Plan A und B haben dieselben Muskelgruppen, aber unterschiedliche Übungen (z.B. A: Bankdrücken, B: Brustpresse).']
+      ].map(o=>`<div class="checkbox-row" onclick="wizSelect('variation','${o[0]}')" style="align-items:flex-start;padding:10px 0;">
+        <input type="radio" ${wizardData.variation===o[0]?'checked':''} style="margin-top:3px;">
+        <div><label style="font-weight:600;display:block;">${o[1]}</label>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}`;
+  }else if(currentId==='summary'){
+    // Vorschau-Plan generieren
+    const previewPlans=buildPlansFromWizard(wizardData);
+    let preview='';
+    Object.keys(previewPlans).forEach(pk=>{
+      const p=previewPlans[pk];
+      preview+=`<div style="background:var(--bg-elev2);padding:10px;border-radius:8px;margin-bottom:8px;">
+        <div style="font-weight:600;font-size:14px;margin-bottom:6px;">${pk}: ${p.name}</div>
+        <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text-dim);">
+          ${p.exercises.map(ex=>`<li>${getExerciseDisplayName(ex.exerciseId)}</li>`).join('')}
+        </ol></div>`;
+    });
+    const typeLabel=wizardData.type==='fullbody'?'Ganzkörper':(wizardData.type==='split2'?'2er-Split':'3er-Split');
+    const splitLabel=wizardData.splitVariant?(' · '+SPLIT_LABELS[wizardData.splitVariant]):'';
+    content=`<h2>Dein Plan</h2>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">
+        ${typeLabel}${splitLabel} · ${wizardData.frequency}× pro Woche · ${wizardData.exercisesPerDay} Übungen/Training
+        ${wizardData.type==='fullbody'&&wizardData.variation==='AB'?' · A↔B-Wechsel':''}
+      </div>
+      ${preview}
+      <div style="background:rgba(239,68,68,0.08);border:1px solid var(--warning);padding:10px;border-radius:8px;font-size:12px;color:var(--text-dim);margin-top:8px;">
+        ⚠️ Wenn du fertigstellst, werden deine aktuellen Pläne überschrieben.
+      </div>`;
+  }
+  const isLast=wizardStep===stepIds.length-1;
   const html=`<div class="wizard-progress">${progress}</div>${content}
     <div class="btn-row" style="margin-top:18px;">
       ${wizardStep>0?'<button class="btn btn-ghost" onclick="wizPrev()">Zurück</button>':'<button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>'}
-      <button class="btn" onclick="wizNext()">${wizardStep===WIZARD_STEPS-1?'Fertigstellen':'Weiter'}</button>
+      <button class="btn" ${!canProceed?'disabled style="opacity:0.4;pointer-events:none;"':''} onclick="wizNext()">${isLast?'Plan erstellen':'Weiter'}</button>
     </div>`;
   showModal(html);
 }
 function wizSelect(key,val){wizardData[key]=val;showWizardStep();}
+function wizSelectType(val){
+  wizardData.type=val;
+  // Reset splitVariant wenn Trainingsart wechselt
+  wizardData.splitVariant=null;
+  // Auto-Default für Variation
+  if(val!=='fullbody')wizardData.variation='same';
+  showWizardStep();
+}
+function wizSelectFreq(n){
+  wizardData.frequency=n;
+  // Trainingstage smart vorschlagen, wenn Anzahl nicht passt
+  if(wizardData.days.length!==n){
+    wizardData.days=defaultDaysForFrequency(n);
+  }
+  showWizardStep();
+}
 function wizToggleDay(d){
   const i=wizardData.days.indexOf(d);
-  if(i>=0)wizardData.days.splice(i,1);else wizardData.days.push(d);
+  if(i>=0)wizardData.days.splice(i,1);
+  else wizardData.days.push(d);
   wizardData.days.sort((a,b)=>a-b);
   showWizardStep();
 }
 function wizPrev(){wizardStep--;showWizardStep();}
-function wizNext(){if(wizardStep<WIZARD_STEPS-1){wizardStep++;showWizardStep();}else finishWizard();}
+function wizNext(){
+  const stepIds=getWizardStepIds();
+  if(wizardStep<stepIds.length-1){wizardStep++;showWizardStep();}
+  else finishWizard();
+}
 function finishWizard(){
+  // Pläne generieren
+  const newPlans=buildPlansFromWizard(wizardData);
+  // Cycle aktualisieren
   DATA.cycle.type=wizardData.type;
+  DATA.cycle.splitVariant=wizardData.splitVariant;
   DATA.cycle.frequency=wizardData.frequency;
   DATA.cycle.days=wizardData.days;
-  DATA.cycle.rotation=wizardData.rotation;
-  if(wizardData.rotation==='same')DATA.cycle.activePlans=['A'];
-  else if(wizardData.rotation==='AB')DATA.cycle.activePlans=['A','B'];
-  else if(wizardData.rotation==='ABC'){DATA.cycle.activePlans=['A','B','C'];if(!DATA.plans.C)DATA.plans.C={name:'Plan C',exercises:[]};}
-  saveData(DATA);closeModal();showToast('Konfiguration gespeichert');switchTab('today');
+  DATA.cycle.exercisesPerDay=wizardData.exercisesPerDay;
+  // Rotation: bei Splits immer durch die Plan-Anzahl bestimmt
+  if(wizardData.type==='fullbody'){
+    DATA.cycle.rotation=wizardData.variation;
+    DATA.cycle.activePlans=wizardData.variation==='AB'?['A','B']:['A'];
+  }else if(wizardData.type==='split2'){
+    DATA.cycle.rotation='AB';
+    DATA.cycle.activePlans=['A','B'];
+  }else if(wizardData.type==='split3'){
+    DATA.cycle.rotation='ABC';
+    DATA.cycle.activePlans=['A','B','C'];
+  }
+  // Alte Pläne durch neue ersetzen
+  DATA.plans=newPlans;
+  saveData(DATA);closeModal();showToast('Plan erstellt');switchTab('today');
 }
 // START
 renderToday();
