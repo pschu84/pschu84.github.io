@@ -254,10 +254,69 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 <script>
 // ===== KONSTANTEN =====
 const STORAGE_KEY='krafttraining_v3';
-const MUSCLE_GROUPS=['brust','rücken','schultern','bizeps','trizeps','quads','beinbeuger','po','waden','bauch','core'];
-const MUSCLE_LABELS={brust:'Brust',rücken:'Rücken',schultern:'Schultern',bizeps:'Bizeps',trizeps:'Trizeps',quads:'Quads',beinbeuger:'Beinbeuger',po:'Po',waden:'Waden',bauch:'Bauch',core:'Core'};
-// Volumen-Empfehlungen (Sätze/Woche) - moderate Werte für Fortgeschrittene
-const MAV_RANGES={brust:[12,16],rücken:[12,16],schultern:[12,16],bizeps:[8,14],trizeps:[8,14],quads:[12,16],beinbeuger:[8,14],po:[8,14],waden:[8,14],bauch:[6,12],core:[6,12]};
+// Rücken ist aufgeteilt in funktionale Untergruppen (EMG-basiert: Edelburg/Schoenfeld):
+// rücken_lat = Latissimus (vertikales Ziehen: Klimmzüge, Latzug, Pullover)
+// rücken_oben = mittlerer/unterer Trapez + Rhomboiden (horizontales Ziehen: Rudern, Face Pulls)
+// rücken_unten = Erector spinae (Kreuzheben, Hyperextensions)
+const MUSCLE_GROUPS=['brust','rücken_lat','rücken_oben','rücken_unten','schultern','schultern_hinten','bizeps','trizeps','quads','beinbeuger','po','waden','bauch','core'];
+const MUSCLE_LABELS={brust:'Brust',rücken_lat:'Rücken (Lat)',rücken_oben:'Rücken (Mitte)',rücken_unten:'Rücken (unten)',schultern:'Schultern',schultern_hinten:'Schulter hinten',bizeps:'Bizeps',trizeps:'Trizeps',quads:'Quads',beinbeuger:'Beinbeuger',po:'Po',waden:'Waden',bauch:'Bauch',core:'Core'};
+// Volumen-Empfehlungen (Sätze/Woche) je nach Trainingsniveau.
+// Werte aus Meta-Analysen (Schoenfeld 2017/2021, Krieger 2010) und Israetels RP-Tabellen.
+// MEV = Minimum Effective Volume, MRV = Maximum Recoverable Volume.
+const MAV_RANGES_BY_LEVEL={
+  anfaenger:{
+    brust:[6,12],rücken_lat:[6,12],rücken_oben:[6,12],rücken_unten:[3,8],
+    schultern:[4,10],schultern_hinten:[3,8],bizeps:[4,10],trizeps:[4,10],
+    quads:[6,12],beinbeuger:[4,10],po:[4,10],waden:[4,10],bauch:[4,10],core:[4,10]
+  },
+  fortgeschritten:{
+    brust:[10,18],rücken_lat:[10,16],rücken_oben:[10,16],rücken_unten:[5,10],
+    schultern:[8,16],schultern_hinten:[6,12],bizeps:[8,14],trizeps:[8,14],
+    quads:[10,18],beinbeuger:[8,14],po:[8,14],waden:[8,14],bauch:[6,12],core:[6,12]
+  },
+  sehr_fortgeschritten:{
+    brust:[12,22],rücken_lat:[12,20],rücken_oben:[12,20],rücken_unten:[6,12],
+    schultern:[10,20],schultern_hinten:[8,16],bizeps:[10,18],trizeps:[10,18],
+    quads:[12,22],beinbeuger:[10,18],po:[10,18],waden:[10,18],bauch:[8,14],core:[8,14]
+  }
+};
+let _levelOverride=null;
+function getTrainingLevel(){return _levelOverride||(DATA.cycle&&DATA.cycle.level)||'fortgeschritten';}
+function getMAVRange(muscle){
+  const ranges=MAV_RANGES_BY_LEVEL[getTrainingLevel()]||MAV_RANGES_BY_LEVEL.fortgeschritten;
+  return ranges[muscle]||[6,12];
+}
+// Niveau-spezifische Defaults für Wiederholungen, Default-Satzzahl und Profil-Texte
+const LEVEL_DEFAULTS={
+  anfaenger:{
+    label:'Anfänger',
+    description:'Weniger als 6 Monate strukturiertes Krafttraining. Newbie-Gains noch aktiv, Fortschritte schon mit geringem Volumen.',
+    repsCompound:[8,12],repsIsolation:[10,15],
+    setsDefault:2,setsRange:[1,3],
+    rirOffsetHyp:1
+  },
+  fortgeschritten:{
+    label:'Fortgeschritten',
+    description:'6 bis 24 Monate konsistentes Training. Fortschritte verlangsamen sich, Volumen muss steigen.',
+    repsCompound:[6,12],repsIsolation:[8,15],
+    setsDefault:3,setsRange:[2,4],
+    rirOffsetHyp:0
+  },
+  sehr_fortgeschritten:{
+    label:'Sehr fortgeschritten',
+    description:'Mehr als 24 Monate konsistentes Training. Hohes Volumen nötig, präzise Steuerung von Erholung und Intensität wichtig.',
+    repsCompound:[4,12],repsIsolation:[8,15],
+    setsDefault:3,setsRange:[2,5],
+    rirOffsetHyp:-1
+  }
+};
+function getLevelDefaults(){return LEVEL_DEFAULTS[getTrainingLevel()]||LEVEL_DEFAULTS.fortgeschritten;}
+function getDefaultRepsFor(def){
+  const lvl=getLevelDefaults();
+  if(!def)return lvl.repsCompound;
+  if(def.isIsolation)return lvl.repsIsolation;
+  return lvl.repsCompound;
+}
 const PHASE_DEFS={
   hypertrophie:{label:'Hypertrophie · Akkumulation',shortLabel:'Hypertrophie',badge:'badge-hyp',color:'#f59e0b',repsRange:[8,12],intensityPct:[0.70,0.80],weeklyRIR:{1:'3-4',2:'2-3',3:'1-2',4:'0-1',5:'0-1',6:'0-1',7:'0-1',8:'0-1'},description:'Akkumulationsblock. Aufbau-Phase mit hohem Volumen (Volumen steigt MEV → MRV) und moderater Intensität. 8-12 Wdh bei 70-80% 1RM, 60-90s Pause. RIR fällt von 3-4 in Woche 1 auf 0-1 in der Peak-Woche. Hauptarbeit für Muskelaufbau.',pauseSec:90},
   maxkraft:{label:'Maximalkraft · Transmutation',shortLabel:'Maxkraft',badge:'badge-maxkraft',color:'#ef4444',repsRange:[3,6],intensityPct:[0.85,0.95],weeklyRIR:{1:'3',2:'2',3:'1-2',4:'1',5:'0-1',6:'0-1'},description:'Transmutationsblock. Wandelt die Hypertrophie-Basis in spezifische Kraft. 3-6 Wdh bei 85-95% 1RM, 3-5 Min Pause, niedriges Volumen, RPE 7.5-9. Macht dich für den nächsten Aufbau-Block stärker, sodass du dort schwerere Gewichte für 10 Wdh bewegen kannst.',pauseSec:240},
@@ -284,21 +343,21 @@ const EXERCISE_LIBRARY=[
 {id:'dips',name:'Dips',equipment:'Eigengewicht',muscles:['brust','trizeps'],secondary:['schultern'],type:'reps',isCompound:true,bodyweight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['brustpresse']},
 {id:'butterfly_machine',name:'Butterfly (Maschine)',equipment:'Maschine',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable','brustpresse']},
 {id:'butterfly_cable',name:'Butterfly (Kabelzug)',equipment:'Kabelzug',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_machine','bankdruecken_kh']},
-{id:'pullover',name:'Pullover (KH)',equipment:'Kurzhanteln',muscles:['brust','rücken'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable']},
+{id:'pullover',name:'Pullover (KH)',equipment:'Kurzhanteln',muscles:['brust','rücken_lat'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable']},
 {id:'liegestuetze',name:'Liegestütze',equipment:'Eigengewicht',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,bodyweight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['bankdruecken_kh']},
 // RÜCKEN (pull/upper)
-{id:'kreuzheben',name:'Kreuzheben',equipment:'Langhantel',muscles:['rücken','beinbeuger'],secondary:['po','core'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rdl']},
-{id:'pullups',name:'Klimmzüge',equipment:'Eigengewicht',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,bodyweight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['latzug','rueckenmaschine']},
-{id:'latzug',name:'Latzug',equipment:'Kabelzug',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['pullups','rueckenmaschine']},
-{id:'rudern_lh',name:'Rudern (LH)',equipment:'Langhantel',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable','rudern_kh']},
-{id:'rudern_kh',name:'Rudern (KH)',equipment:'Kurzhanteln',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable']},
-{id:'t_bar_rudern',name:'T-Bar-Rudern',equipment:'Langhantel',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_lh']},
-{id:'rudern_machine',name:'Rudern (Maschine)',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_cable','rudern_lh']},
-{id:'rudern_cable',name:'Rudern (Kabelzug)',equipment:'Kabelzug',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_machine','rudern_lh']},
-{id:'rueckenmaschine',name:'Rückenzug-Maschine',equipment:'Maschine',muscles:['rücken'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['latzug','rudern_machine','pullups']},
-{id:'hyperextensions',name:'Hyperextensions',equipment:'Hyperextension-Bank',muscles:['rücken'],secondary:['po','beinbeuger'],type:'reps',bodyweight:true,allowAddedWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rdl','kreuzheben']},
-{id:'shrugs_kh',name:'Shrugs (KH)',equipment:'Kurzhanteln',muscles:['trapez'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_lh']},
-{id:'shrugs_lh',name:'Shrugs (LH)',equipment:'Langhantel',muscles:['trapez'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_kh']},
+{id:'kreuzheben',name:'Kreuzheben',equipment:'Langhantel',muscles:['rücken_unten','beinbeuger'],secondary:['po','core','rücken_oben'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rdl']},
+{id:'pullups',name:'Klimmzüge',equipment:'Eigengewicht',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,bodyweight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['latzug','rueckenmaschine']},
+{id:'latzug',name:'Latzug',equipment:'Kabelzug',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['pullups','rueckenmaschine']},
+{id:'rudern_lh',name:'Rudern (LH)',equipment:'Langhantel',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable','rudern_kh']},
+{id:'rudern_kh',name:'Rudern (KH)',equipment:'Kurzhanteln',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable']},
+{id:'t_bar_rudern',name:'T-Bar-Rudern',equipment:'Langhantel',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_lh']},
+{id:'rudern_machine',name:'Rudern (Maschine)',equipment:'Maschine',muscles:['rücken_oben'],secondary:['bizeps','rücken_lat'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_cable','rudern_lh']},
+{id:'rudern_cable',name:'Rudern (Kabelzug)',equipment:'Kabelzug',muscles:['rücken_oben'],secondary:['bizeps','rücken_lat'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_machine','rudern_lh']},
+{id:'rueckenmaschine',name:'Rückenzug-Maschine',equipment:'Maschine',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['latzug','rudern_machine','pullups']},
+{id:'hyperextensions',name:'Hyperextensions',equipment:'Hyperextension-Bank',muscles:['rücken_unten'],secondary:['po','beinbeuger'],type:'reps',bodyweight:true,allowAddedWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rdl','kreuzheben']},
+{id:'shrugs_kh',name:'Shrugs (KH)',equipment:'Kurzhanteln',muscles:['rücken_oben'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_lh']},
+{id:'shrugs_lh',name:'Shrugs (LH)',equipment:'Langhantel',muscles:['rücken_oben'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_kh']},
 // SCHULTERN VORDERE/SEITLICHE (push/upper)
 {id:'schulterdruecken_lh',name:'Schulterdrücken (LH)',equipment:'Langhantel',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['schulterdruecken_kh','schulterdruecken_machine']},
 {id:'schulterdruecken_kh',name:'Schulterdrücken (KH)',equipment:'Kurzhanteln',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['schulterdruecken_lh','schulterdruecken_machine']},
@@ -308,10 +367,10 @@ const EXERCISE_LIBRARY=[
 {id:'seitheben_cable',name:'Seitheben (Kabel)',equipment:'Kabelzug',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_kh']},
 {id:'seitheben_machine',name:'Seitheben (Maschine)',equipment:'Maschine',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_kh']},
 {id:'frontheben_kh',name:'Frontheben (KH)',equipment:'Kurzhanteln',muscles:['schultern'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_kh']},
-{id:'aufrechtes_rudern',name:'Aufrechtes Rudern',equipment:'Langhantel',muscles:['schultern','trapez'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_kh']},
+{id:'aufrechtes_rudern',name:'Aufrechtes Rudern',equipment:'Langhantel',muscles:['schultern','rücken_oben'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_kh']},
 // HINTERE SCHULTER (pull/upper)
-{id:'reverse_butterfly',name:'Reverse Butterfly',equipment:'Maschine',muscles:['schultern_hinten','rücken'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['facepulls']},
-{id:'facepulls',name:'Face Pulls',equipment:'Kabelzug',muscles:['schultern_hinten','rücken'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['reverse_butterfly']},
+{id:'reverse_butterfly',name:'Reverse Butterfly',equipment:'Maschine',muscles:['schultern_hinten'],secondary:['rücken_oben'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['facepulls']},
+{id:'facepulls',name:'Face Pulls',equipment:'Kabelzug',muscles:['schultern_hinten','rücken_oben'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['reverse_butterfly']},
 // BIZEPS (pull/upper)
 {id:'bizeps_curl_lh',name:'Bizepscurl (LH/SZ)',equipment:'Langhantel',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['bizeps_curl_kh','bizeps_cable']},
 {id:'bizeps_curl_kh',name:'Bizepscurl (KH)',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['bizepsmaschine','bizeps_cable','hammer_curl']},
@@ -339,7 +398,7 @@ const EXERCISE_LIBRARY=[
 {id:'beinstrecker',name:'Beinstrecker',equipment:'Maschine',muscles:['quads'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['beinpresse']},
 {id:'sissy_squat',name:'Sissy Squats',equipment:'Eigengewicht',muscles:['quads'],type:'reps',bodyweight:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['beinstrecker']},
 // BEINBEUGER (legs/lower)
-{id:'rdl',name:'Rumänisches Kreuzheben',equipment:'Langhantel',muscles:['beinbeuger','po'],secondary:['rücken'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['beinbeuger','hipthrust']},
+{id:'rdl',name:'Rumänisches Kreuzheben',equipment:'Langhantel',muscles:['beinbeuger','po'],secondary:['rücken_unten'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['beinbeuger','hipthrust']},
 {id:'beinbeuger',name:'Beinbeuger',equipment:'Maschine',muscles:['beinbeuger'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['rdl']},
 // PO (legs/lower)
 {id:'hipthrust',name:'Hip Thrust',equipment:'Langhantel',muscles:['po'],secondary:['beinbeuger'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['glute_bridge']},
@@ -509,6 +568,29 @@ function migrateData(d){
     if(!d.settings)d.settings={};
     if(d.settings.plankBaseSec===undefined)d.settings.plankBaseSec=120;
     d._migratedSkipBooster=true;
+    saveData(d);
+  }
+  // Migration: Trainingsniveau-Feld einführen (Default für bestehende User: fortgeschritten)
+  if(d.cycle&&!d.cycle.level){
+    d.cycle.level='fortgeschritten';
+    saveData(d);
+  }
+  // Migration: Rücken-Aufteilung. Custom Exercises mit altem 'rücken'-Tag
+  // werden auf 'rücken_oben' gemappt (häufigster Fall: mittlerer Rücken / Rudern).
+  // History bleibt unverändert, da sie nur exerciseId speichert.
+  // Pläne sind ebenfalls über exerciseId verlinkt, die EXERCISE_LIBRARY ist neu getaggt.
+  if(!d._migratedRueckenSplit){
+    if(d.customExercises){
+      Object.values(d.customExercises).forEach(ex=>{
+        if(ex&&Array.isArray(ex.muscles)){
+          ex.muscles=ex.muscles.map(m=>m==='rücken'?'rücken_oben':(m==='trapez'?'rücken_oben':m));
+        }
+        if(ex&&Array.isArray(ex.secondary)){
+          ex.secondary=ex.secondary.map(m=>m==='rücken'?'rücken_oben':(m==='trapez'?'rücken_oben':m));
+        }
+      });
+    }
+    d._migratedRueckenSplit=true;
     saveData(d);
   }
   return d;
@@ -869,6 +951,100 @@ function planVolumeAnalysis(){
     });
   });
   return vol;
+}
+// ===== PLAN-ANALYSE =====
+// Liefert pro Muskelgruppe eine Bewertung gegen das aktuelle Trainingsniveau
+// und konkrete Vorschläge, welche Übungen hinzugefügt/reduziert werden sollten.
+function analyzePlanForRecommendations(){
+  const planVol=planVolumeAnalysis();
+  const recommendations=[];
+  // Welche Muskeln werden im Plan überhaupt adressiert?
+  const adressedMuscles=new Set();
+  (DATA.cycle.activePlans||[]).forEach(pk=>{
+    const plan=DATA.plans[pk];if(!plan)return;
+    plan.exercises.forEach(ex=>{
+      const def=getExerciseInfo(ex.exerciseId);if(!def)return;
+      (def.muscles||[]).forEach(m=>adressedMuscles.add(m));
+    });
+  });
+  for(const m of MUSCLE_GROUPS){
+    const sets=Math.round((planVol[m]||0)*10)/10;
+    const[mev,mrv]=getMAVRange(m);
+    if(sets===0&&m==='core')continue; // core wird oft über bauch indirekt abgedeckt
+    if(sets===0&&!adressedMuscles.has(m)){
+      // Nicht im Plan: nur Vorschlag, wenn Muskel als "wichtig" gilt
+      const importantMuscles=['brust','rücken_lat','rücken_oben','schultern','quads','beinbeuger','po'];
+      if(importantMuscles.includes(m)){
+        const suggestions=suggestExercisesForMuscle(m,3);
+        if(suggestions.length>0){
+          recommendations.push({
+            type:'missing',muscle:m,sets,mev,mrv,
+            message:`${MUSCLE_LABELS[m]} fehlt im Plan. Empfohlen: ${mev}-${mrv} Sätze/Woche.`,
+            suggestions
+          });
+        }
+      }
+      continue;
+    }
+    if(sets>0&&sets<mev){
+      const deficit=Math.ceil(mev-sets);
+      const suggestions=suggestExercisesForMuscle(m,3);
+      recommendations.push({
+        type:'under_mev',muscle:m,sets,mev,mrv,deficit,
+        message:`${MUSCLE_LABELS[m]}: ${sets} Sätze, unter MEV (${mev}). Fehlen ungefähr ${deficit} Sätze.`,
+        suggestions
+      });
+    }else if(sets>mrv){
+      const excess=Math.round((sets-mrv)*10)/10;
+      const contributors=exercisesContributingToMuscle(m);
+      recommendations.push({
+        type:'over_mrv',muscle:m,sets,mev,mrv,excess,
+        message:`${MUSCLE_LABELS[m]}: ${sets} Sätze, über MRV (${mrv}). Überschuss ${excess} Sätze.`,
+        contributors
+      });
+    }
+  }
+  return recommendations;
+}
+function suggestExercisesForMuscle(muscle,maxSuggestions){
+  maxSuggestions=maxSuggestions||3;
+  // Übungen, die nicht bereits im Plan sind und den Muskel primär trainieren
+  const inPlan=new Set();
+  Object.values(DATA.plans||{}).forEach(plan=>{
+    (plan.exercises||[]).forEach(ex=>inPlan.add(ex.exerciseId));
+  });
+  return EXERCISE_LIBRARY
+    .filter(e=>!inPlan.has(e.id)&&Array.isArray(e.muscles)&&e.muscles.includes(muscle))
+    .sort((a,b)=>(a.priority||3)-(b.priority||3))
+    .slice(0,maxSuggestions)
+    .map(e=>({id:e.id,name:e.name,priority:e.priority||3}));
+}
+function exercisesContributingToMuscle(muscle){
+  const list=[];
+  const freq=DATA.cycle.frequency,plans=DATA.cycle.activePlans;
+  const plansPerWeek=freq/plans.length;
+  (DATA.cycle.activePlans||[]).forEach(pk=>{
+    const plan=DATA.plans[pk];if(!plan)return;
+    plan.exercises.forEach(ex=>{
+      const def=getExerciseInfo(ex.exerciseId);if(!def)return;
+      const isPrim=(def.muscles||[]).includes(muscle);
+      const isSec=(def.secondary||[]).includes(muscle);
+      if(isPrim||isSec){
+        const sets=ex.targetSets||3;
+        const weeklyContribution=isPrim?sets*plansPerWeek:sets*0.5*plansPerWeek;
+        list.push({
+          planKey:pk,
+          exerciseId:ex.exerciseId,
+          name:def.name,
+          sets,
+          contribution:isPrim?'primär':'sekundär',
+          weekly:Math.round(weeklyContribution*10)/10
+        });
+      }
+    });
+  });
+  // Sortiere nach Wochenbeitrag absteigend (größter Beitrag oben)
+  return list.sort((a,b)=>b.weekly-a.weekly);
 }
 // ===== HEUTE-TAB =====
 let currentWorkoutDraft=null;
@@ -2173,7 +2349,7 @@ function renderPlan(){
   const sorted=MUSCLE_GROUPS.slice().sort((a,b)=>(planVol[b]||0)-(planVol[a]||0));
   sorted.forEach(m=>{
     const sets=Math.round((planVol[m]||0)*10)/10;
-    const[min,max]=MAV_RANGES[m];
+    const[min,max]=getMAVRange(m);
     let color='var(--text-faint)';
     let statusIcon='';
     if(sets===0){color='var(--text-faint)';statusIcon='';}
@@ -2194,13 +2370,59 @@ function renderPlan(){
     </div>`;
   });
   volumeOverviewHtml+=`</div>`;
-  // Auch Push/Pull-Hinweis
-  if(planVol.brust>0&&planVol.rücken>0&&planVol.brust>planVol.rücken*1.4){
-    volumeOverviewHtml+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(239,68,68,0.08);border-left:3px solid var(--warning);border-radius:6px;font-size:12px;color:var(--text-dim);">⚠ Push/Pull-Verhältnis: Brust ${planVol.brust.toFixed(1)} vs Rücken ${planVol.rücken.toFixed(1)} – mehr Rücken einbauen.</div>`;
+  // Push/Pull-Hinweis: Brust vs. Rücken (Lat + Mitte als Pull-Gegenstück)
+  const pullVol=(planVol.rücken_lat||0)+(planVol.rücken_oben||0);
+  if(planVol.brust>0&&pullVol>0&&planVol.brust>pullVol*1.4){
+    volumeOverviewHtml+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(239,68,68,0.08);border-left:3px solid var(--warning);border-radius:6px;font-size:12px;color:var(--text-dim);">⚠ Push/Pull-Verhältnis: Brust ${planVol.brust.toFixed(1)} vs. Lat+Mitte ${pullVol.toFixed(1)}. Mehr Pull-Übungen einbauen.</div>`;
+  }else if(pullVol>0&&planVol.brust>0&&pullVol>planVol.brust*1.6){
+    volumeOverviewHtml+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(245,158,11,0.08);border-left:3px solid var(--warning);border-radius:6px;font-size:12px;color:var(--text-dim);">⚠ Push/Pull-Verhältnis: Lat+Mitte ${pullVol.toFixed(1)} vs. Brust ${planVol.brust.toFixed(1)}. Mehr Brust-Übungen einbauen.</div>`;
   }
-  volumeOverviewHtml+=`<div class="help-text" style="margin-top:8px;">✓ im Soll · ⚠ unter MEV oder über MRV · Die zwei Markierungen im Balken zeigen MEV (Untergrenze) und MRV (Obergrenze).</div>`;
+  volumeOverviewHtml+=`<div class="help-text" style="margin-top:8px;">✓ im Soll · ⚠ unter MEV oder über MRV · Markierungen im Balken: MEV (links) und MRV (rechts). Niveau: ${getLevelDefaults().label}.</div>`;
   volumeOverviewHtml+=`</div>`;
-  let html=volumeOverviewHtml;
+  // Plan-Analyse-Karte: konkrete Empfehlungen
+  const recs=analyzePlanForRecommendations();
+  let analysisHtml='';
+  if(recs.length>0){
+    analysisHtml=`<div class="card">
+      <div class="card-title">Plan-Analyse</div>
+      <div class="card-sub">Konkrete Empfehlungen für dein Niveau "${getLevelDefaults().label}"</div>
+      <div style="margin-top:12px;">`;
+    recs.forEach(r=>{
+      let bgColor,borderColor,icon;
+      if(r.type==='missing'){bgColor='rgba(245,158,11,0.08)';borderColor='var(--warning)';icon='⚠';}
+      else if(r.type==='under_mev'){bgColor='rgba(245,158,11,0.08)';borderColor='var(--warning)';icon='↓';}
+      else{bgColor='rgba(239,68,68,0.08)';borderColor='var(--warning)';icon='↑';}
+      analysisHtml+=`<div style="background:${bgColor};border-left:3px solid ${borderColor};border-radius:6px;padding:10px;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">${icon} ${r.message}</div>`;
+      if(r.suggestions&&r.suggestions.length>0){
+        analysisHtml+=`<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Vorschläge zum Hinzufügen:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">`;
+        r.suggestions.forEach(s=>{
+          const planKey=(DATA.cycle.activePlans||['A'])[0];
+          analysisHtml+=`<button class="btn btn-ghost btn-small" style="font-size:12px;" onclick="addSuggestedExercise('${planKey}','${s.id}')">+ ${s.name}</button>`;
+        });
+        analysisHtml+=`</div>
+          <div style="font-size:11px;color:var(--text-faint);margin-top:6px;">Hinzufügen erfolgt zum ersten aktiven Plan. Du kannst die Übung anschließend verschieben.</div>`;
+      }
+      if(r.contributors&&r.contributors.length>0){
+        analysisHtml+=`<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Beitragende Übungen (sortiert nach Wochenvolumen):</div>
+          <ul style="margin:6px 0 0 0;padding-left:18px;font-size:12px;color:var(--text-dim);line-height:1.6;">`;
+        r.contributors.slice(0,5).forEach(c=>{
+          analysisHtml+=`<li>${c.name} (${c.planKey}): ${c.sets} Sätze, ${c.contribution} · ${c.weekly} S/Woche</li>`;
+        });
+        analysisHtml+=`</ul>
+          <div style="font-size:11px;color:var(--text-faint);margin-top:6px;">Reduziere die Sätze einer dieser Übungen oder tausche eine Übung gegen eine Variante mit anderem Primärmuskel.</div>`;
+      }
+      analysisHtml+=`</div>`;
+    });
+    analysisHtml+=`</div></div>`;
+  }else{
+    analysisHtml=`<div class="card">
+      <div class="card-title">Plan-Analyse</div>
+      <div style="margin-top:8px;font-size:13px;color:var(--success);">✓ Alle Muskelgruppen im Soll für dein Niveau "${getLevelDefaults().label}".</div>
+    </div>`;
+  }
+  let html=volumeOverviewHtml+analysisHtml;
   DATA.cycle.activePlans.forEach(pk=>{
     const plan=DATA.plans[pk];
     if(!plan)return;
@@ -2325,6 +2547,32 @@ function confirmAddEx(pk,exId){
   DATA.plans[pk].exercises.push(newEx);
   saveData(DATA);closeModal();renderPlan();
 }
+// Add-Funktion aus der Plan-Analyse heraus.
+// Nutzt niveauspezifische Default-Wdh-Bereiche und Default-Satzzahl.
+function addSuggestedExercise(pk,exId){
+  const def=getExerciseInfo(exId);
+  if(!def||!DATA.plans[pk]){showToast('Übung konnte nicht hinzugefügt werden');return;}
+  const isTime=def.type==='time';
+  const reps=getDefaultRepsFor(def);
+  const lvl=getLevelDefaults();
+  const newEx={
+    exerciseId:exId,
+    targetSets:lvl.setsDefault,
+    currentWeight:0,
+    maxWeight:null
+  };
+  if(isTime){
+    newEx.targetSeconds=DATA.settings.plankBaseSec||120;
+    newEx.plankBaseSec=DATA.settings.plankBaseSec||120;
+  }else{
+    newEx.targetRepsMin=reps[0];
+    newEx.targetRepsMax=reps[1];
+  }
+  DATA.plans[pk].exercises.push(newEx);
+  saveData(DATA);
+  showToast(`${def.name} hinzugefügt`);
+  renderPlan();
+}
 // ===== STATISTIK-TAB =====
 let currentChart=null;
 function renderStats(){
@@ -2371,7 +2619,7 @@ function renderVolumeSummary(){
   let html='';
   MUSCLE_GROUPS.forEach(m=>{
     const sets=Math.round(vol[m]*10)/10;
-    const[min,max]=MAV_RANGES[m];
+    const[min,max]=getMAVRange(m);
     const pct=Math.min(100,(sets/max)*100);
     let color='var(--text-faint)';
     if(sets>=min&&sets<=max)color='var(--success)';
@@ -2642,6 +2890,15 @@ function renderSetup(){
     </div>
 
     <div class="card">
+      <div class="card-title">Trainingsniveau</div>
+      <div class="card-sub" style="margin-bottom:8px;">Beeinflusst Wochenvolumen-Empfehlungen (MEV/MRV) und Default-Wiederholungsbereiche bei neu hinzugefügten Übungen.</div>
+      <select onchange="changeLevel(this.value)">
+        ${Object.keys(LEVEL_DEFAULTS).map(k=>`<option value="${k}" ${getTrainingLevel()===k?'selected':''}>${LEVEL_DEFAULTS[k].label}</option>`).join('')}
+      </select>
+      <div class="help-text" style="margin-top:8px;line-height:1.5;">${getLevelDefaults().description}</div>
+    </div>
+
+    <div class="card">
       <div class="card-title">Plateau-Erkennung</div>
       <label>Hinweis nach X Trainings ohne Steigerung</label>
       <input type="number" value="${DATA.settings.plateauThreshold}" min="2" max="6" onchange="DATA.settings.plateauThreshold=parseInt(this.value);saveData(DATA);">
@@ -2707,6 +2964,13 @@ function changePeriodization(val){
   // nur Vorschau, noch nicht anwenden
   DATA.macro.preset=val;
   saveData(DATA);
+  renderSetup();
+}
+function changeLevel(val){
+  if(!LEVEL_DEFAULTS[val])return;
+  DATA.cycle.level=val;
+  saveData(DATA);
+  showToast('Trainingsniveau aktualisiert: '+LEVEL_DEFAULTS[val].label);
   renderSetup();
 }
 function confirmReapplyPreset(){
@@ -2804,34 +3068,34 @@ function confirmClearHistory(){
 // ===== SPLIT-TEMPLATES & PLAN-GENERATOR =====
 const SPLIT_TEMPLATES={
   fullbody:{
-    A:{name:'Ganzkörper',muscles:['brust','rücken','schultern','quads','beinbeuger','po','bizeps','trizeps','bauch']}
+    A:{name:'Ganzkörper',muscles:['brust','rücken_lat','rücken_oben','schultern','quads','beinbeuger','po','bizeps','trizeps','bauch']}
   },
   split2_okuk:{
-    A:{name:'Oberkörper',muscles:['brust','rücken','schultern','schultern_hinten','bizeps','trizeps']},
-    B:{name:'Unterkörper',muscles:['quads','beinbeuger','po','waden','bauch']}
+    A:{name:'Oberkörper',muscles:['brust','rücken_lat','rücken_oben','schultern','schultern_hinten','bizeps','trizeps']},
+    B:{name:'Unterkörper',muscles:['quads','beinbeuger','po','rücken_unten','waden','bauch']}
   },
   split2_pushpull:{
     A:{name:'Push',muscles:['brust','schultern','trizeps','quads','waden']},
-    B:{name:'Pull',muscles:['rücken','schultern_hinten','bizeps','beinbeuger','po']}
+    B:{name:'Pull',muscles:['rücken_lat','rücken_oben','rücken_unten','schultern_hinten','bizeps','beinbeuger','po']}
   },
   split2_torso:{
-    A:{name:'Torso',muscles:['brust','rücken','schultern','schultern_hinten','bauch']},
+    A:{name:'Torso',muscles:['brust','rücken_lat','rücken_oben','schultern','schultern_hinten','bauch']},
     B:{name:'Extremitäten',muscles:['quads','beinbeuger','po','waden','bizeps','trizeps']}
   },
   split3_ppb:{
     A:{name:'Push',muscles:['brust','schultern','trizeps']},
-    B:{name:'Pull',muscles:['rücken','schultern_hinten','bizeps']},
+    B:{name:'Pull',muscles:['rücken_lat','rücken_oben','rücken_unten','schultern_hinten','bizeps']},
     C:{name:'Beine',muscles:['quads','beinbeuger','po','waden','bauch']}
   },
   split3_classic:{
     A:{name:'Brust + Trizeps',muscles:['brust','trizeps']},
-    B:{name:'Rücken + Bizeps',muscles:['rücken','schultern_hinten','bizeps']},
+    B:{name:'Rücken + Bizeps',muscles:['rücken_lat','rücken_oben','rücken_unten','schultern_hinten','bizeps']},
     C:{name:'Beine + Schultern',muscles:['quads','beinbeuger','po','waden','schultern','bauch']}
   },
   split3_okuk:{
-    A:{name:'Oberkörper 1',muscles:['brust','rücken','trizeps','bizeps']},
-    B:{name:'Unterkörper',muscles:['quads','beinbeuger','po','waden','bauch']},
-    C:{name:'Oberkörper 2',muscles:['brust','rücken','schultern','schultern_hinten','trizeps','bizeps'],variantB:true}
+    A:{name:'Oberkörper 1',muscles:['brust','rücken_lat','rücken_oben','trizeps','bizeps']},
+    B:{name:'Unterkörper',muscles:['quads','beinbeuger','po','rücken_unten','waden','bauch']},
+    C:{name:'Oberkörper 2',muscles:['brust','rücken_lat','rücken_oben','schultern','schultern_hinten','trizeps','bizeps'],variantB:true}
   }
 };
 const SPLIT_LABELS={
@@ -2842,58 +3106,139 @@ const SPLIT_LABELS={
   split3_classic:'Brust+Tri / Rücken+Bi / Beine+Schulter',
   split3_okuk:'Oberkörper 1 / Unterkörper / Oberkörper 2'
 };
-function generateExercisesForDay(targetMuscles,count){
-  // Kandidaten: Übungen mit mind. einer Zielmuskelgruppe als Primärmuskel
-  const candidates=EXERCISE_LIBRARY.filter(e=>e.muscles.some(m=>targetMuscles.includes(m)));
-  // Sortierung: Priorität (1 zuerst), Compounds vor Isolation
+// Volumen-bewusster Generator. Wählt Übungen so, dass das Wochenvolumen pro Muskelgruppe
+// im MAV-Korridor des Niveaus landet. Variable Satzzahl 1 bis level-Maximum.
+// Parameter:
+//   targetMuscles: Array der Muskelgruppen, die DIESER Tag abdecken soll
+//   count: gewünschte Übungsanzahl pro Tag
+//   ctx (optional): { plansPerWeek, accumulatedWeeklyVol }
+//     plansPerWeek = wie oft pro Woche dieser Plan-Tag trainiert wird (frequency / numPlans)
+//     accumulatedWeeklyVol = bereits durch andere Plan-Tage erzeugtes Wochenvolumen (pro Muskel)
+// Rückgabe: Array von Objekten { def, sets, repsMin, repsMax }
+function generateExercisesForDay(targetMuscles,count,ctx){
+  ctx=ctx||{};
+  const plansPerWeek=ctx.plansPerWeek||1;
+  const accVol=ctx.accumulatedWeeklyVol||{};
+  const lvl=getLevelDefaults();
+  const setsDefault=lvl.setsDefault;
+  const setsMin=lvl.setsRange[0];
+  const setsMax=lvl.setsRange[1];
+  // Lokales Volumen für DIESEN Plan-Tag (primär 1.0, sekundär 0.5)
+  const dayVol={};
+  MUSCLE_GROUPS.forEach(m=>dayVol[m]=0);
+  // Welcher Wochenanteil resultiert aus dem aktuellen Tag + bereits geplanten Tagen?
+  function weeklyVol(m){return(accVol[m]||0)+(dayVol[m]||0)*plansPerWeek;}
+  function deficitToMEV(m){
+    if(!MUSCLE_GROUPS.includes(m))return 0;
+    const r=getMAVRange(m);return Math.max(0,r[0]-weeklyVol(m));
+  }
+  function deficitToMidMAV(m){
+    if(!MUSCLE_GROUPS.includes(m))return 0;
+    const r=getMAVRange(m),mid=(r[0]+r[1])/2;return Math.max(0,mid-weeklyVol(m));
+  }
+  function wouldOverMRV(ex,sets){
+    for(const m of(ex.muscles||[])){
+      if(!MUSCLE_GROUPS.includes(m))continue;
+      const r=getMAVRange(m);
+      const projected=(accVol[m]||0)+((dayVol[m]||0)+sets)*plansPerWeek;
+      if(projected>r[1]+2)return true; // Toleranz +2 Sätze
+    }
+    return false;
+  }
+  function addExerciseVolume(ex,sets){
+    (ex.muscles||[]).forEach(m=>{if(dayVol[m]!==undefined)dayVol[m]+=sets;});
+    (ex.secondary||[]).forEach(m=>{if(dayVol[m]!==undefined)dayVol[m]+=sets*0.5;});
+  }
+  // Kandidaten-Pool: Übungen, die mind. einen Zielmuskel als Primärmuskel haben
+  const candidates=EXERCISE_LIBRARY.filter(e=>(e.muscles||[]).some(m=>targetMuscles.includes(m)));
   const sorted=[...candidates].sort((a,b)=>{
     if((a.priority||3)!==(b.priority||3))return(a.priority||3)-(b.priority||3);
     if(a.isCompound&&!b.isCompound)return -1;
     if(!a.isCompound&&b.isCompound)return 1;
     return 0;
   });
-  const selected=[];
-  // Zähle direkte Abdeckung pro Zielmuskel (nur Primärmuskeln zählen)
-  const muscleCount={};
-  targetMuscles.forEach(m=>muscleCount[m]=0);
-  // PASS 1: Mindestens eine direkte Übung pro Zielmuskelgruppe (in Reihenfolge der Liste)
-  for(const m of targetMuscles){
-    if(selected.length>=count)break;
-    if(muscleCount[m]>=1)continue;
-    const ex=sorted.find(e=>!selected.includes(e)&&e.muscles.includes(m));
-    if(ex){
-      selected.push(ex);
-      // Nur Primärmuskeln als abgedeckt zählen, nicht Sekundärmuskeln
-      ex.muscles.forEach(mu=>{if(muscleCount[mu]!==undefined)muscleCount[mu]++;});
-    }
+  // Bei Anfänger-Niveau: Priorität-3-Übungen weglassen (nur Grundübungen + wichtige Hilfsübungen)
+  const useSorted=getTrainingLevel()==='anfaenger'
+    ?sorted.filter(e=>(e.priority||3)<=2)
+    :sorted;
+  const selected=[]; // [{def, sets}]
+  function isSelected(ex){return selected.some(s=>s.def.id===ex.id);}
+  function bestExerciseFor(muscle){
+    return useSorted.find(e=>!isSelected(e)&&(e.muscles||[]).includes(muscle));
   }
-  // PASS 2: Mit verbleibenden Slots große Muskelgruppen mit zweiter Übung versorgen
-  const bigMuscles=['brust','rücken','quads','schultern'];
+  // PASS 1: Mindestabdeckung pro Zielmuskel.
+  // Reihenfolge: zuerst Muskeln mit dem größten Defizit zu MEV behandeln.
+  // Compound-Übungen treffen oft mehrere Muskeln gleichzeitig, daher prüfen wir nach jeder
+  // Auswahl neu, welcher Muskel noch unbedingt eine Übung braucht.
+  const pass1Pool=[...targetMuscles];
+  while(pass1Pool.length>0&&selected.length<count){
+    // Sortiere verbleibende Zielmuskeln nach Defizit (größtes Defizit zuerst)
+    pass1Pool.sort((a,b)=>deficitToMidMAV(b)-deficitToMidMAV(a));
+    const m=pass1Pool.shift();
+    if(!MUSCLE_GROUPS.includes(m))continue;
+    // Skip, wenn dieser Muskel schon mind. 2 Sätze (primär) abbekommen hat durch andere Wahl
+    if(dayVol[m]>=2)continue;
+    const ex=bestExerciseFor(m);
+    if(!ex)continue;
+    let sets=setsDefault;
+    // Bei systemisch belastenden Compounds (priority 1, compound) max 3 Sätze ab Fortgeschritten
+    if(ex.isCompound&&ex.priority===1&&getTrainingLevel()==='sehr_fortgeschritten')sets=Math.min(sets,3);
+    if(wouldOverMRV(ex,sets))sets=Math.max(setsMin,sets-1);
+    if(wouldOverMRV(ex,sets))continue;
+    selected.push({def:ex,sets});
+    addExerciseVolume(ex,sets);
+  }
+  // PASS 2: Verbleibende Slots zur Defizit-Auffüllung.
+  // Wähle in jeder Iteration den Zielmuskel mit dem größten Defizit zu Mid-MAV
+  // (mittlerer Punkt zwischen MEV und MRV) und ergänze eine passende Übung.
   let safety=0;
-  while(selected.length<count&&safety<50){
+  while(selected.length<count&&safety<30){
     safety++;
-    let added=false;
-    for(const m of bigMuscles){
-      if(!targetMuscles.includes(m))continue;
-      if(selected.length>=count)break;
-      const ex=sorted.find(e=>!selected.includes(e)&&e.muscles.includes(m));
-      if(ex){
-        selected.push(ex);
-        added=true;
-        ex.muscles.forEach(mu=>{if(muscleCount[mu]!==undefined)muscleCount[mu]++;});
-      }
+    // Welcher Zielmuskel hat das größte Defizit?
+    let bestMuscle=null,bestDef=-1;
+    for(const m of targetMuscles){
+      if(!MUSCLE_GROUPS.includes(m))continue;
+      const d=deficitToMidMAV(m);
+      if(d>bestDef){bestDef=d;bestMuscle=m;}
     }
-    if(!added){
-      const ex=sorted.find(e=>!selected.includes(e));
-      if(ex)selected.push(ex);else break;
+    if(!bestMuscle||bestDef<=0.5)break; // alle im Soll
+    const ex=bestExerciseFor(bestMuscle);
+    if(!ex){
+      // Keine Übung mehr verfügbar für diesen Muskel
+      // entferne ihn aus dem Pool, indem wir die Schleife mit einem Hack abbrechen
+      // alternativ: irgendeine verfügbare Übung wählen
+      const fallback=useSorted.find(e=>!isSelected(e));
+      if(!fallback)break;
+      selected.push({def:fallback,sets:setsDefault});
+      addExerciseVolume(fallback,setsDefault);
+      continue;
     }
+    // Satzzahl orientiert sich am verbleibenden Defizit
+    let setsNeeded=Math.ceil(bestDef/plansPerWeek);
+    let sets=Math.max(setsMin,Math.min(setsMax,setsNeeded));
+    // Cap, falls Wochen-MRV droht
+    while(sets>setsMin&&wouldOverMRV(ex,sets))sets--;
+    if(wouldOverMRV(ex,sets))break;
+    selected.push({def:ex,sets});
+    addExerciseVolume(ex,sets);
   }
-  return selected.slice(0,count);
+  return selected;
 }
-function exerciseToplanEntry(ex){
-  const sets=ex.type==='time'?[{seconds:30,done:false},{seconds:30,done:false},{seconds:30,done:false}]
-    :[{reps:10,weight:0,done:false},{reps:10,weight:0,done:false},{reps:10,weight:0,done:false}];
-  return{exerciseId:ex.id,sets:sets,restSec:90};
+// Wandelt das Generator-Ergebnis in einen Plan-Eintrag um (Struktur kompatibel zu buildInitialData).
+// Setzt targetSets, targetRepsMin/Max basierend auf Übungstyp und Trainingsniveau.
+function exerciseSpecToplanEntry(spec){
+  const ex=spec.def;
+  const reps=getDefaultRepsFor(ex);
+  const isTime=ex.type==='time';
+  return{
+    exerciseId:ex.id,
+    targetSets:spec.sets,
+    targetRepsMin:isTime?undefined:reps[0],
+    targetRepsMax:isTime?undefined:reps[1],
+    targetSeconds:isTime?(DATA.settings&&DATA.settings.plankBaseSec||120):undefined,
+    currentWeight:0,
+    maxWeight:null
+  };
 }
 function variantBExercise(exId){
   const def=EXERCISE_LIBRARY.find(e=>e.id===exId);
@@ -2917,32 +3262,54 @@ function variantBExercise(exId){
 }
 function buildPlansFromWizard(wd){
   const plans={};
+  // Wochen-Volumen-Tracker: akkumuliert das Volumen über alle Plan-Tage hinweg,
+  // damit der Generator weiß, wie viel schon "verbraucht" ist.
+  const accumulatedWeeklyVol={};
+  MUSCLE_GROUPS.forEach(m=>accumulatedWeeklyVol[m]=0);
+  function addPlanToAccumulator(planSpecs,plansPerWeek){
+    planSpecs.forEach(spec=>{
+      const ex=spec.def;
+      (ex.muscles||[]).forEach(m=>{
+        if(accumulatedWeeklyVol[m]!==undefined)accumulatedWeeklyVol[m]+=spec.sets*plansPerWeek;
+      });
+      (ex.secondary||[]).forEach(m=>{
+        if(accumulatedWeeklyVol[m]!==undefined)accumulatedWeeklyVol[m]+=spec.sets*0.5*plansPerWeek;
+      });
+    });
+  }
   if(wd.type==='fullbody'){
     const template=SPLIT_TEMPLATES.fullbody.A;
-    const exercises=generateExercisesForDay(template.muscles,wd.exercisesPerDay);
-    plans.A={name:'Plan A',exercises:exercises.map(exerciseToplanEntry)};
+    const numPlans=wd.variation==='AB'?2:1;
+    // Beide Plan-Varianten erzeugen gleiches Wochenvolumen, weil sie sich abwechseln
+    const plansPerWeek=wd.frequency/numPlans;
+    const specsA=generateExercisesForDay(template.muscles,wd.exercisesPerDay,{plansPerWeek,accumulatedWeeklyVol});
+    plans.A={name:'Plan A',exercises:specsA.map(exerciseSpecToplanEntry)};
     if(wd.variation==='AB'){
-      plans.B={name:'Plan B',exercises:exercises.map(ex=>({
-        ...exerciseToplanEntry(ex),
-        exerciseId:variantBExercise(ex.id)
-      }))};
+      addPlanToAccumulator(specsA,plansPerWeek);
+      // Plan B nutzt die SELBEN Übungsstruktur, aber mit Variant-B-Übungen
+      // Volumen ist identisch, also Akkumulator-Update korrekt
+      plans.B={name:'Plan B',exercises:specsA.map(spec=>{
+        const entry=exerciseSpecToplanEntry(spec);
+        return{...entry,exerciseId:variantBExercise(spec.def.id)};
+      })};
     }
   }else{
     const templateKey=wd.splitVariant;
     const template=SPLIT_TEMPLATES[templateKey];
     if(!template){console.error('Unknown split template',templateKey);return plans;}
     const planKeys=Object.keys(template);
+    const plansPerWeek=wd.frequency/planKeys.length;
     planKeys.forEach(pk=>{
       const dayTemplate=template[pk];
-      const exercises=generateExercisesForDay(dayTemplate.muscles,wd.exercisesPerDay);
+      const specs=generateExercisesForDay(dayTemplate.muscles,wd.exercisesPerDay,{plansPerWeek,accumulatedWeeklyVol});
+      addPlanToAccumulator(specs,plansPerWeek);
       if(dayTemplate.variantB){
-        // Variante B: andere Übungen für gleiche Muskeln (z.B. OK2 nach OK1)
-        plans[pk]={name:dayTemplate.name,exercises:exercises.map(ex=>({
-          ...exerciseToplanEntry(ex),
-          exerciseId:variantBExercise(ex.id)
-        }))};
+        plans[pk]={name:dayTemplate.name,exercises:specs.map(spec=>{
+          const entry=exerciseSpecToplanEntry(spec);
+          return{...entry,exerciseId:variantBExercise(spec.def.id)};
+        })};
       }else{
-        plans[pk]={name:dayTemplate.name,exercises:exercises.map(exerciseToplanEntry)};
+        plans[pk]={name:dayTemplate.name,exercises:specs.map(exerciseSpecToplanEntry)};
       }
     });
   }
@@ -2956,7 +3323,7 @@ function defaultDaysForFrequency(freq){
 // ===== SETUP-WIZARD =====
 let wizardStep=0;let wizardData={};
 function getWizardStepIds(){
-  const steps=['type'];
+  const steps=['level','type'];
   if(wizardData.type==='split2'||wizardData.type==='split3')steps.push('split_variant');
   steps.push('frequency','days','exercises_per_day');
   if(wizardData.type==='fullbody')steps.push('variation');
@@ -2966,6 +3333,7 @@ function getWizardStepIds(){
 function openWizard(){
   wizardStep=0;
   wizardData={
+    level:(DATA.cycle&&DATA.cycle.level)||'fortgeschritten',
     type:DATA.cycle.type||'fullbody',
     splitVariant:null,
     frequency:DATA.cycle.frequency||3,
@@ -2985,7 +3353,21 @@ function showWizardStep(){
   }
   let content='';
   let canProceed=true;
-  if(currentId==='type'){
+  if(currentId==='level'){
+    const options=[
+      ['anfaenger','Anfänger','Weniger als 6 Monate strukturiertes Krafttraining. Niedrigeres Wochenvolumen, längere Reserve bis zum Muskelversagen.'],
+      ['fortgeschritten','Fortgeschritten','6 bis 24 Monate konsistentes Training. Mittleres Wochenvolumen, näher am Muskelversagen.'],
+      ['sehr_fortgeschritten','Sehr fortgeschritten','Mehr als 24 Monate konsistentes Training. Höheres Wochenvolumen, gezielte Steuerung der Intensität.']
+    ];
+    content=`<h2>Trainingsniveau</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Bestimmt das empfohlene Wochenvolumen pro Muskelgruppe und die Standard-Wiederholungsbereiche.</p>
+      ${options.map(o=>`<div class="checkbox-row" onclick="wizSelect('level','${o[0]}')" style="align-items:flex-start;padding:10px 0;">
+        <input type="radio" ${wizardData.level===o[0]?'checked':''} style="margin-top:3px;">
+        <div><label style="font-weight:600;display:block;">${o[1]}</label>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}
+      <div style="font-size:11px;color:var(--text-faint);margin-top:10px;line-height:1.4;">
+        Du kannst das Niveau später ändern. Es wirkt sich auf neu generierte Pläne und die Volumen-Bewertung im Plan-Tab aus.</div>`;
+  }else if(currentId==='type'){
     content=`<h2>Trainingsart</h2>
       <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie strukturierst du dein Training?</p>
       ${[
@@ -3056,22 +3438,25 @@ function showWizardStep(){
         <div><label style="font-weight:600;display:block;">${o[1]}</label>
         <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}`;
   }else if(currentId==='summary'){
-    // Vorschau-Plan generieren
+    // Preview-Pläne mit gewähltem Niveau generieren
+    _levelOverride=wizardData.level;
     const previewPlans=buildPlansFromWizard(wizardData);
+    _levelOverride=null;
     let preview='';
     Object.keys(previewPlans).forEach(pk=>{
       const p=previewPlans[pk];
       preview+=`<div style="background:var(--bg-elev2);padding:10px;border-radius:8px;margin-bottom:8px;">
         <div style="font-weight:600;font-size:14px;margin-bottom:6px;">${pk}: ${p.name}</div>
         <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text-dim);">
-          ${p.exercises.map(ex=>`<li>${getExerciseDisplayName(ex.exerciseId)}</li>`).join('')}
+          ${p.exercises.map(ex=>`<li>${getExerciseDisplayName(ex.exerciseId)} · ${ex.targetSets||3}×${ex.targetRepsMin||8}-${ex.targetRepsMax||12}</li>`).join('')}
         </ol></div>`;
     });
     const typeLabel=wizardData.type==='fullbody'?'Ganzkörper':(wizardData.type==='split2'?'2er-Split':'3er-Split');
     const splitLabel=wizardData.splitVariant?(' · '+SPLIT_LABELS[wizardData.splitVariant]):'';
+    const lvlLabel=(LEVEL_DEFAULTS[wizardData.level]||LEVEL_DEFAULTS.fortgeschritten).label;
     content=`<h2>Dein Plan</h2>
       <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">
-        ${typeLabel}${splitLabel} · ${wizardData.frequency}× pro Woche · ${wizardData.exercisesPerDay} Übungen/Training
+        ${lvlLabel} · ${typeLabel}${splitLabel} · ${wizardData.frequency}× pro Woche · ${wizardData.exercisesPerDay} Übungen/Training
         ${wizardData.type==='fullbody'&&wizardData.variation==='AB'?' · A↔B-Wechsel':''}
       </div>
       ${preview}
@@ -3118,6 +3503,8 @@ function wizNext(){
   else finishWizard();
 }
 function finishWizard(){
+  // Level zuerst speichern, damit buildPlansFromWizard mit korrektem Niveau arbeitet
+  DATA.cycle.level=wizardData.level;
   // Pläne generieren
   const newPlans=buildPlansFromWizard(wizardData);
   // Cycle aktualisieren
