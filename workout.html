@@ -81,6 +81,10 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 .session-time-row .lbl{color:var(--text-faint);font-size:11px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
 .session-time-row .val{color:var(--text);font-weight:700;font-size:14px;margin-left:auto}
 .session-time-row.active .val{color:var(--accent)}
+.session-time-row.paused{border-color:var(--warning);background:color-mix(in srgb,var(--warning) 8%,var(--bg-elev2))}
+.session-time-row.paused .val{color:var(--warning)}
+.session-pause-btn{background:none;border:none;cursor:pointer;font-size:15px;padding:0 2px;line-height:1;color:var(--text-dim);opacity:0.7;transition:opacity 0.15s}
+.session-pause-btn:hover{opacity:1}
 .timer-btn-small{background:var(--bg-elev2);border:1px solid var(--border);color:var(--accent);padding:0 12px;height:42px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-family:inherit;white-space:nowrap}
 .suggest{font-size:12px;color:var(--accent);margin-top:6px;display:flex;align-items:flex-start;gap:5px;line-height:1.4}
 .suggest.warn{color:var(--warning)}
@@ -742,6 +746,13 @@ function progressionSuggestion(exerciseId,exercise){
   const rir=getWeeklyRIR();
   // Pausen-Logik: Tage seit letztem Training dieser Übung
   const daysGap=daysSinceLastTraining(exerciseId);
+  // Erholung hängt am MUSKEL, nicht am Gerät: Wenn der Primärmuskel kürzlich
+  // durch eine ähnliche Übung trainiert wurde (z.B. Brustpresse statt Bankdrücken),
+  // ist der Muskel noch in der Superkompensation – auch wenn DIESE Übung länger her ist.
+  const muscleTrain=daysSinceMuscleTrained(exerciseId);
+  const muscleGap=muscleTrain?muscleTrain.days:daysGap;
+  // Wurde der Muskel zuletzt durch eine ANDERE Übung belastet?
+  const muscleViaOther=!!(muscleTrain&&muscleTrain.exerciseId!==exerciseId&&(daysGap===null||muscleTrain.days<daysGap));
   // Booster-Vergleich
   const lastWasBoostered=lastWorkoutBoostered(exerciseId);
   const todayBoostered=!!(currentWorkoutDraft&&currentWorkoutDraft.boostered);
@@ -805,18 +816,28 @@ function progressionSuggestion(exerciseId,exercise){
     return{weight:reducedW,text:`Trend nach unten (-${regression.drop.toFixed(1)} kg e1RM über 2 Trainings). Erholung prüfen: Schlaf, Ernährung, Stress. Heute: ${reducedW} kg (-5%).`,isWarn:true};
   }
   // === LANGE PAUSE: Detraining berücksichtigen ===
-  if(daysGap!==null){
-    if(daysGap>21){
+  // Maßgeblich ist die Erholung des MUSKELS, nicht der einzelnen Übung. Wurde der
+  // Primärmuskel zuletzt über eine ähnliche Übung trainiert (z.B. Brustpresse statt
+  // Bankdrücken), zählt dieser kürzere Abstand – kein falsches "Detraining".
+  if(muscleGap!==null){
+    if(muscleGap>21){
       const reducedW=Math.round(lastWeight*0.88/0.5)*0.5;
-      return{weight:reducedW,text:`${daysGap} Tage Pause – Detraining wahrscheinlich. Heute: ${reducedW} kg (-12%), Form vor Gewicht.`,isWarn:true};
+      return{weight:reducedW,text:`${muscleGap} Tage ohne Belastung dieser Muskeln – Detraining wahrscheinlich. Heute: ${reducedW} kg (-12%), Form vor Gewicht.`,isWarn:true};
     }
-    if(daysGap>10){
+    if(muscleGap>10){
       const reducedW=Math.round(lastWeight*0.95/0.5)*0.5;
-      return{weight:reducedW,text:`${daysGap} Tage Pause – Wiedereinstieg. Heute: ${reducedW} kg (-5%).`,isWarn:true};
+      return{weight:reducedW,text:`${muscleGap} Tage ohne Belastung dieser Muskeln – Wiedereinstieg. Heute: ${reducedW} kg (-5%).`,isWarn:true};
     }
-    if(daysGap>=7){
-      return{weight:lastWeight,text:`${daysGap} Tage Pause – Superkompensation vorbei. Heute halten: ${fmtWeight(lastWeight)} kg, gleiche Wdh wie letztes Mal.`};
+    if(muscleGap>=7){
+      return{weight:lastWeight,text:`${muscleGap} Tage ohne Belastung dieser Muskeln – Superkompensation vorbei. Heute halten: ${fmtWeight(lastWeight)} kg, gleiche Wdh wie letztes Mal.`};
     }
+  }
+  // Spezifische Übung länger her, Muskel aber kürzlich anders trainiert (z.B.
+  // Brustpresse in Plan A, jetzt Bankdrücken in Plan B): kein Pausen-Malus,
+  // nur ein kurzer Hinweis. Die normale Progression unten greift.
+  if(muscleViaOther&&daysGap!==null&&daysGap>=7){
+    const otherName=getExerciseDisplayName(muscleTrain.exerciseId);
+    return{weight:lastWeight,text:`Diese Übung ${daysGap} Tage her, aber ${otherName} vor ${muscleGap} Tagen – Muskel ist erholt. Heute halten: ${fmtWeight(lastWeight)} kg, gleiche Wdh.`};
   }
   // === BOOSTER FEHLT: konservativer Vorschlag ===
   if(boosterMissing){
@@ -1178,9 +1199,10 @@ function renderToday(){
       </div>
       <div class="rir-hint">Heute: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh · Pause ~${phaseDef.pauseSec}s</div>
     </div>
-    <div class="session-time-row${currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime?' active':''}" id="session-time-row">
-      <span>🕐</span><span class="lbl">Trainingsdauer</span>
-      <span class="val" id="session-time-val">${currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime?fmtTime(Math.floor((Date.now()-currentWorkoutDraft.sessionStartTime)/1000)):'--:--'}</span>
+    <div class="session-time-row${currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime?(currentWorkoutDraft.sessionPauseStart?' active paused':' active'):''}" id="session-time-row">
+      <span>${currentWorkoutDraft&&currentWorkoutDraft.sessionPauseStart?'⏸':'🕐'}</span><span class="lbl">${currentWorkoutDraft&&currentWorkoutDraft.sessionPauseStart?'Pausiert':'Trainingsdauer'}</span>
+      <span class="val" id="session-time-val">${currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime?fmtTime(getSessionElapsedSec()):'--:--'}</span>
+      ${currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime?`<button class="session-pause-btn" onclick="toggleSessionPause()" title="${currentWorkoutDraft.sessionPauseStart?'Timer fortsetzen':'Timer pausieren'}">${currentWorkoutDraft.sessionPauseStart?'▶':'⏸'}</button>`:''}
     </div>
     <div class="skip-row">
       <button class="btn btn-ghost btn-small" onclick="showSkipDayModal()">⏸ Heute aussetzen</button>
@@ -1382,8 +1404,8 @@ function renderToday(){
   document.getElementById('today-content').innerHTML=html;
   // Aktive Pausen-Timer sofort aktualisieren (Display wurde neu gerendert)
   Object.keys(pauseTimers).forEach(k=>tickPauseTimer(parseInt(k)));
-  // Session-Timer wieder anwerfen, falls aktiv
-  if(currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime){
+  // Session-Timer wieder anwerfen, falls aktiv und NICHT pausiert
+  if(currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime&&!currentWorkoutDraft.sessionPauseStart){
     if(!sessionTimerId)startSessionTimer();
     else tickSessionTimer();
   }
@@ -1431,6 +1453,17 @@ function onSetInput(inputEl){
 }
 // ===== SESSION-TIMER für gesamtes Training =====
 let sessionTimerId=null;
+// Berechnet die tatsächlich trainierte Zeit in Sekunden (ohne Pausen).
+// Drei Felder im Draft steuern das:
+//   sessionStartTime  – Unix-ms, wann das erste Set eingetragen wurde
+//   sessionPausedMs   – bereits angesammelte Paus-Millisekunden (abgeschlossene Pausen)
+//   sessionPauseStart – Unix-ms, wann die aktuell laufende Pause begann (null = läuft)
+function getSessionElapsedSec(){
+  if(!currentWorkoutDraft||!currentWorkoutDraft.sessionStartTime)return 0;
+  const paused=currentWorkoutDraft.sessionPausedMs||0;
+  const activePause=currentWorkoutDraft.sessionPauseStart?(Date.now()-currentWorkoutDraft.sessionPauseStart):0;
+  return Math.floor((Date.now()-currentWorkoutDraft.sessionStartTime-paused-activePause)/1000);
+}
 function startSessionTimer(){
   if(sessionTimerId)clearInterval(sessionTimerId);
   sessionTimerId=setInterval(tickSessionTimer,1000);
@@ -1441,10 +1474,41 @@ function stopSessionTimer(){
 }
 function tickSessionTimer(){
   if(!currentWorkoutDraft||!currentWorkoutDraft.sessionStartTime)return;
+  // Im pausierten Zustand Intervall nicht weiterticken lassen
+  if(currentWorkoutDraft.sessionPauseStart)return;
   const el=document.getElementById('session-time-val');
   if(!el)return;
-  const elapsedSec=Math.floor((Date.now()-currentWorkoutDraft.sessionStartTime)/1000);
-  el.textContent=fmtTime(elapsedSec);
+  el.textContent=fmtTime(getSessionElapsedSec());
+}
+function toggleSessionPause(){
+  if(!currentWorkoutDraft||!currentWorkoutDraft.sessionStartTime)return;
+  if(currentWorkoutDraft.sessionPauseStart){
+    // Pause beenden: verstrichene Pause-Zeit zu sessionPausedMs addieren
+    const pauseDuration=Date.now()-currentWorkoutDraft.sessionPauseStart;
+    currentWorkoutDraft.sessionPausedMs=(currentWorkoutDraft.sessionPausedMs||0)+pauseDuration;
+    currentWorkoutDraft.sessionPauseStart=null;
+    saveWorkoutDraft();
+    // Timer-Intervall neu starten
+    startSessionTimer();
+  } else {
+    // Pause beginnen
+    currentWorkoutDraft.sessionPauseStart=Date.now();
+    saveWorkoutDraft();
+    stopSessionTimer();
+  }
+  // Row und Button sofort neu rendern (ohne komplettes renderToday)
+  const row=document.getElementById('session-time-row');
+  const valEl=document.getElementById('session-time-val');
+  const btnEl=row?row.querySelector('.session-pause-btn'):null;
+  const lblEl=row?row.querySelector('.lbl'):null;
+  const iconEl=row?row.querySelector('span:first-child'):null;
+  const isPaused=!!currentWorkoutDraft.sessionPauseStart;
+  if(row){row.classList.toggle('paused',isPaused);}
+  if(valEl)valEl.textContent=fmtTime(getSessionElapsedSec());
+  if(btnEl){btnEl.textContent=isPaused?'▶':'⏸';btnEl.title=isPaused?'Timer fortsetzen':'Timer pausieren';}
+  if(lblEl)lblEl.textContent=isPaused?'Pausiert':'Trainingsdauer';
+  if(iconEl)iconEl.textContent=isPaused?'⏸':'🕐';
+  showToast(isPaused?'⏸ Timer pausiert':'▶ Timer läuft wieder',1800);
 }
 // ===== PAUSEN-TIMER pro Übung =====
 let pauseTimers={};
@@ -1658,6 +1722,34 @@ function daysSinceLastTraining(exerciseId){
   const today=new Date();today.setHours(0,0,0,0);
   const lastD=new Date(last.date);lastD.setHours(0,0,0,0);
   return Math.floor((today-lastD)/86400000);
+}
+// Primärmuskeln einer Übung (für Erholungs-Gruppierung)
+function getPrimaryMuscles(exerciseId){
+  const def=getExerciseInfo(exerciseId);
+  return(def&&Array.isArray(def.muscles))?def.muscles:[];
+}
+// Letztes Training, das DENSELBEN Primärmuskel belastet hat (egal welche Übung).
+// Gruppiert dadurch z.B. Bankdrücken + Brustpresse (beide 'brust') für die
+// Superkompensations-/Pausen-Logik. Liefert Tage seit dieser Belastung sowie
+// die zugehörige Übung. Berücksichtigt NICHT die heutige Session.
+function daysSinceMuscleTrained(exerciseId){
+  const muscles=getPrimaryMuscles(exerciseId);
+  if(!muscles.length)return null;
+  const muscleSet=new Set(muscles);
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayStr=today.toISOString().slice(0,10);
+  let bestDate=null,bestExId=null;
+  DATA.history.forEach(h=>{
+    if(h.legacy)return;
+    // Heutige Einträge ausklammern – wir wollen die letzte VORHERIGE Belastung
+    if(h.date===todayStr)return;
+    const hMuscles=getPrimaryMuscles(h.exerciseId);
+    if(!hMuscles.some(m=>muscleSet.has(m)))return;
+    if(bestDate===null||h.date>bestDate){bestDate=h.date;bestExId=h.exerciseId;}
+  });
+  if(bestDate===null)return null;
+  const lastD=new Date(bestDate);lastD.setHours(0,0,0,0);
+  return{days:Math.floor((today-lastD)/86400000),exerciseId:bestExId,date:bestDate};
 }
 // Wiederholter Muskelkater bei nicht-neuer Übung erkennen
 function detectRepeatedSoreness(exerciseId){
@@ -2011,7 +2103,7 @@ function showWorkoutSummary(finished){
     else if(totalTonnage>500)positives.push(`<strong>${Math.round(totalTonnage).toLocaleString('de-DE')} kg</strong> insgesamt bewegt`);
     else positives.push(`Heute auf der Matte gewesen – der nächste greift`);
   }
-  const durationSec=currentWorkoutDraft&&currentWorkoutDraft.sessionStartTime?Math.floor((Date.now()-currentWorkoutDraft.sessionStartTime)/1000):0;
+  const durationSec=currentWorkoutDraft?getSessionElapsedSec():0;
   let html=`<div class="summary-header">
     <div class="emoji bounce">${head.emoji}</div>
     <h2>${head.headline}</h2>
@@ -2058,7 +2150,7 @@ function showWorkoutSummary(finished){
 function confirmFinishWorkout(){
   const finished=window._pendingWorkout;
   if(!finished)return;
-  const durationSec=currentWorkoutDraft.sessionStartTime?Math.floor((Date.now()-currentWorkoutDraft.sessionStartTime)/1000):0;
+  const durationSec=getSessionElapsedSec();
   const planId=currentWorkoutDraft.planId;
   const boostered=!!currentWorkoutDraft.boostered;
   finished.forEach(ex=>{
