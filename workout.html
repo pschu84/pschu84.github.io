@@ -724,8 +724,8 @@ function computeTargetSets(base,phase,wk,totalWeeks,deload){
 function getWeeklyTargetSets(exercise){
   const base=exercise.targetSets||3;
   let sets=computeTargetSets(base,getCurrentPhase(),getCurrentWeek(),getMesoLength(),isDeloadWeek());
-  // Plateau-Volumen-Boost: +1 Satz, nur in Hypertrophie, nur in den ersten 2 Wochen, nicht in Deload
-  if(exercise.exerciseId&&getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()<=2){
+  // Plateau-Volumen-Boost: +1 Satz, nur in Hypertrophie-Woche 2 (nicht Woche 1, dort ist der Volumen-Reset normal), nicht in Deload
+  if(exercise.exerciseId&&getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()===2){
     if(detectPlateau(exercise.exerciseId))sets+=1;
   }
   return sets;
@@ -914,18 +914,48 @@ function progressionSuggestion(exerciseId,exercise){
 }
 function detectPlateau(exerciseId){
   const threshold=DATA.settings.plateauThreshold||3;
-  const recent=getRecentWorkouts(exerciseId,threshold+1).filter(w=>!w.legacy);
+  // Deload-Sessions ausschließen (gesenkte Last würde sonst nach dem Deload ein Plateau vortäuschen),
+  // dann die jüngsten threshold+1 echten Trainingseinheiten nehmen. Größeres Rohfenster als Puffer.
+  const recent=getRecentWorkouts(exerciseId,threshold+6).filter(w=>!w.legacy&&w.phase!=='deload').slice(0,threshold+1);
   if(recent.length<threshold)return null;
-  const e1rms=recent.map(w=>{if(!w.sets)return 0;return Math.max(0,...w.sets.map(s=>calcE1RM(s.weight,s.reps)||0));});
-  const current=e1rms[0],prev=e1rms.slice(1,threshold+1);
-  if(prev.length===0)return null;
-  const maxPrev=Math.max(...prev);
-  if(current<=maxPrev*1.005)return{type:'plateau',sessions:threshold};
+  const e1rms=recent.map(w=>w.sets?Math.max(0,...w.sets.map(s=>calcE1RM(s.weight,s.reps)||0)):0);
+  const tons =recent.map(w=>calcTonnage(w.sets));
+  const prevE=e1rms.slice(1,threshold+1),prevT=tons.slice(1,threshold+1);
+  if(prevE.length===0)return null;
+  const e1rmFlat   = e1rms[0]<=Math.max(...prevE)*1.005; // Intensität (bestes Set) stagniert
+  const tonnageFlat= tons[0] <=Math.max(...prevT)*1.005; // Gesamtvolumen (Sätze×Wdh×Gewicht) stagniert
+  // Echtes Plateau nur, wenn WEDER Intensität NOCH Volumen steigt.
+  // e1RM flach + Tonnage steigt = Akkumulations-Progression über Sätze/Wdh, kein Plateau.
+  if(e1rmFlat&&tonnageFlat)return{type:'plateau',sessions:threshold};
+  return null;
+}
+// Spitzen-e1RM einer Übung in einem Datumsfenster (Deload- und Legacy-Einheiten ausgenommen)
+function peakE1RMInRange(exerciseId,start,end){
+  if(!_historyByExerciseId)buildHistoryIndex();
+  let best=0;
+  (_historyByExerciseId[exerciseId]||[]).forEach(h=>{
+    if(h.legacy||h.phase==='deload')return;
+    if(h.date<start||h.date>end)return;
+    (h.sets||[]).forEach(s=>{const e=calcE1RM(s.weight,s.reps)||0;if(e>best)best=e;});
+  });
+  return best;
+}
+// Langzeit-Plateau: kein Kraftzuwachs über die letzten zwei ABGESCHLOSSENEN Akkumulationsblöcke.
+// Vergleicht den Spitzen-e1RM je Hypertrophie-Mesozyklus. Bleibt still bei < 2 Blöcken mit Daten.
+function detectLongTermPlateau(exerciseId){
+  const hist=(DATA.cycle&&DATA.cycle.mesoHistory)||[];
+  const accBlocks=hist.filter(m=>m.phase==='hypertrophie');
+  if(accBlocks.length<2)return null;
+  const peaks=accBlocks.map(m=>peakE1RMInRange(exerciseId,m.startDate,m.endDate)).filter(p=>p>0);
+  if(peaks.length<2)return null;
+  const last=peaks[peaks.length-1],prev=peaks[peaks.length-2];
+  // Kein spürbarer Zuwachs (< 1 %) vom vorletzten zum letzten Akkumulationsblock
+  if(last<=prev*1.01)return{type:'longterm',peakLast:last,peakPrev:prev};
   return null;
 }
 // Rückschritt: zwei Trainings in Folge mit e1RM-Drop >= 2%
 function detectRegression(exerciseId){
-  const recent=getRecentWorkouts(exerciseId,3).filter(w=>!w.legacy);
+  const recent=getRecentWorkouts(exerciseId,9).filter(w=>!w.legacy&&w.phase!=='deload').slice(0,3);
   if(recent.length<3)return null;
   const e1rms=recent.map(w=>w.sets?Math.max(0,...w.sets.map(s=>calcE1RM(s.weight,s.reps)||0)):0);
   if(e1rms[0]<=0||e1rms[1]<=0||e1rms[2]<=0)return null;
@@ -961,12 +991,20 @@ function intelligentExerciseAdvice(exerciseId,exercise){
   if(exercise.maxWeight&&exercise.currentWeight>=exercise.maxWeight){
     advice.push({type:'max',msg:`Maschinen-Max erreicht (${exercise.maxWeight} kg). Tempo 3-1-1 oder Alternative.`});
   }
+  // Langzeit-Plateau (blockübergreifend) zuerst, das ist das stärkere Signal
+  const longTerm=def.isCompound?detectLongTermPlateau(exerciseId):null;
+  if(longTerm){
+    advice.push({type:'longterm',msg:'Über die letzten zwei Akkumulationsblöcke kein Kraftzuwachs. Variante wechseln oder einen Intensivierungsblock (Maxkraft) einplanen. Schlaf, Protein und Erholung prüfen.'});
+  }
   const plateau=detectPlateau(exerciseId);
-  if(plateau){
+  // Blockanfang: in Woche 1 setzt das Volumen bewusst auf MEV zurück. Der akute Detektor schlägt dann
+  // allein durch den Volumen-Reset an, ohne echtes Plateau. Deshalb dort unterdrücken.
+  const blockStart=getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()===1;
+  if(plateau&&!longTerm&&!blockStart){
     const inHypBoost=getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()<=2;
     if(inHypBoost)advice.push({type:'volume',msg:'Plateau erkannt: heute +1 Satz, um den Reiz zu erhöhen.'});
     else if(def.isIsolation)advice.push({type:'plateau',msg:'Isolation stagniert. Eher Reps anziehen, ROM voll, Tempo langsamer als Gewicht hoch.'});
-    else if(def.isCompound)advice.push({type:'plateau',msg:'Grundübung stagniert. Prüfe Schlaf, Protein, Pausen. Falls über 2 Mesozyklen: Variante wechseln.'});
+    else if(def.isCompound)advice.push({type:'plateau',msg:'Grundübung stagniert akut bei Intensität und Volumen. Prüfe Schlaf, Protein, Pausen.'});
   }
   // Wiederholter Muskelkater bei eingespielter Übung → Volumen senken
   if(detectRepeatedSoreness(exerciseId)){
@@ -1763,21 +1801,25 @@ function getPrimaryMuscles(exerciseId){
   const def=getExerciseInfo(exerciseId);
   return(def&&Array.isArray(def.muscles))?def.muscles:[];
 }
-// Letztes Training, das DENSELBEN Primärmuskel belastet hat (egal welche Übung).
-// Gruppiert dadurch z.B. Bankdrücken + Brustpresse (beide 'brust') für die
-// Superkompensations-/Pausen-Logik. Liefert Tage seit dieser Belastung sowie
-// die zugehörige Übung. Berücksichtigt NICHT die heutige Session.
+// Erholungs-Synonyme: bauch und core sind anatomisch derselbe Rumpf-Bereich.
+// Plank (core) belastet damit dieselbe Gruppe wie Bauchmaschine (bauch).
+const RECOVERY_SYNONYMS={bauch:['bauch','core'],core:['bauch','core']};
+function expandRecoveryMuscles(muscles){
+  const out=new Set();
+  (muscles||[]).forEach(m=>{(RECOVERY_SYNONYMS[m]||[m]).forEach(x=>out.add(x));});
+  return out;
+}
+// Letztes Training, das DENSELBEN Rumpf/Muskel-Bereich belastet hat (egal welche Übung).
+// Gruppiert dadurch z.B. Bankdrücken + Brustpresse (beide 'brust') oder Plank + Bauchmaschine
+// (core/bauch, siehe RECOVERY_SYNONYMS) für die Superkompensations-/Pausen-Logik.
+// Zählt die heutige Belastung MIT, eine Einheit von heute liest sich also als 0 Tage.
 function daysSinceMuscleTrained(exerciseId){
-  const muscles=getPrimaryMuscles(exerciseId);
-  if(!muscles.length)return null;
-  const muscleSet=new Set(muscles);
+  const muscleSet=expandRecoveryMuscles(getPrimaryMuscles(exerciseId));
+  if(muscleSet.size===0)return null;
   const today=new Date();today.setHours(0,0,0,0);
-  const todayStr=today.toISOString().slice(0,10);
   let bestDate=null,bestExId=null;
   DATA.history.forEach(h=>{
     if(h.legacy)return;
-    // Heutige Einträge ausklammern – wir wollen die letzte VORHERIGE Belastung
-    if(h.date===todayStr)return;
     const hMuscles=getPrimaryMuscles(h.exerciseId);
     if(!hMuscles.some(m=>muscleSet.has(m)))return;
     if(bestDate===null||h.date>bestDate){bestDate=h.date;bestExId=h.exerciseId;}
@@ -2189,7 +2231,7 @@ function confirmFinishWorkout(){
   const planId=currentWorkoutDraft.planId;
   const boostered=!!currentWorkoutDraft.boostered;
   finished.forEach(ex=>{
-    const entry={date:currentWorkoutDraft.date,exerciseId:ex.exerciseId,sets:ex.sets,planId};
+    const entry={date:currentWorkoutDraft.date,exerciseId:ex.exerciseId,sets:ex.sets,planId,phase:getEffectivePhase()};
     if(ex.originalExerciseId&&ex.originalExerciseId!==ex.exerciseId)entry.originalExerciseId=ex.originalExerciseId;
     if(boostered)entry.boostered=true;
     DATA.history.push(entry);
