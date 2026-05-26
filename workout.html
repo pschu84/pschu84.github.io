@@ -232,6 +232,38 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 .summary-positives ul{margin:0;padding:0;list-style:none}
 .summary-positives li{padding:2px 0;color:var(--text)}
 .summary-positives li::before{content:'• ';color:var(--success);font-weight:700}
+/* Anwesenheit */
+.att-week{padding:8px 0;border-bottom:1px solid var(--border)}
+.att-week:last-of-type{border-bottom:none}
+.att-week-head{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.att-week-date{font-weight:600;color:var(--text)}
+.att-quota{font-weight:700;font-size:13px;padding:1px 8px;border-radius:10px}
+.att-quota.good{color:var(--success);background:rgba(34,197,94,0.12)}
+.att-quota.partial{color:var(--warning);background:rgba(245,158,11,0.12)}
+.att-quota.miss{color:var(--text-faint);background:var(--bg-elev2)}
+.att-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.att-chip{font-size:11px;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.att-chip.on{background:rgba(34,197,94,0.14);color:var(--success);border:1px solid rgba(34,197,94,0.3)}
+.att-chip.off{background:rgba(245,158,11,0.12);color:var(--warning);border:1px solid rgba(245,158,11,0.3)}
+.att-none{font-size:11px;color:var(--text-faint);font-style:italic}
+.att-legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:11px;color:var(--text-dim)}
+.att-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.att-dot.on{background:var(--success)}
+.att-dot.off{background:var(--warning);margin-left:8px}
+/* Trainings-Verlauf */
+.log-day{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;overflow:hidden}
+.log-day[open]{border-color:rgba(245,158,11,0.35)}
+.log-day-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;list-style:none;background:var(--bg-elev2)}
+.log-day-head::-webkit-details-marker{display:none}
+.log-day-head::after{content:'▸';color:var(--text-faint);font-size:12px;transition:transform 0.15s}
+.log-day[open] .log-day-head::after{transform:rotate(90deg)}
+.log-day-date{font-weight:600;font-size:13px;color:var(--text);flex:1;min-width:0}
+.log-day-meta{font-size:11px;color:var(--text-dim);white-space:nowrap}
+.log-day-body{padding:6px 12px 10px}
+.log-ex{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:12px;border-top:1px solid var(--border)}
+.log-ex:first-child{border-top:none}
+.log-ex-name{color:var(--text);flex:1;min-width:0}
+.log-ex-sets{color:var(--text-dim);text-align:right}
 </style>
 </head>
 <body data-theme="dark">
@@ -605,6 +637,9 @@ function fmtDate(iso){return new Date(iso).toLocaleDateString('de-DE',{weekday:'
 function fmtDateLong(iso){return new Date(iso).toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
 function fmtWeight(w){if(w===null||w===undefined||isNaN(w))return'-';return Number.isInteger(w)?w.toString():(Math.round(w*10)/10).toString();}
 function fmtTime(sec){const m=Math.floor(sec/60),s=sec%60;return`${m}:${s.toString().padStart(2,'0')}`;}
+const WEEKDAY_SHORT=['Mo','Di','Mi','Do','Fr','Sa','So']; // Index = ISO-Wochentag - 1
+function isoWeekday(d){const g=d.getDay();return g===0?7:g;} // JS So=0 -> ISO 7
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function calcE1RM(weight,reps){if(!weight||!reps)return null;return weight*(1+0.0333*reps);}
 function calcTonnage(sets){if(!sets)return 0;return sets.reduce((sum,s)=>sum+(s.weight||0)*(s.reps||0),0);}
 function showToast(msg,duration=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),duration);}
@@ -1728,25 +1763,21 @@ function getPrimaryMuscles(exerciseId){
   const def=getExerciseInfo(exerciseId);
   return(def&&Array.isArray(def.muscles))?def.muscles:[];
 }
-// Erholungs-Synonyme: bauch und core sind anatomisch derselbe Rumpf-Bereich.
-// Plank (core) belastet damit dieselbe Gruppe wie Bauchmaschine (bauch).
-const RECOVERY_SYNONYMS={bauch:['bauch','core'],core:['bauch','core']};
-function expandRecoveryMuscles(muscles){
-  const out=new Set();
-  (muscles||[]).forEach(m=>{(RECOVERY_SYNONYMS[m]||[m]).forEach(x=>out.add(x));});
-  return out;
-}
-// Letztes Training, das DENSELBEN Rumpf/Muskel-Bereich belastet hat (egal welche Übung).
-// Gruppiert dadurch z.B. Bankdrücken + Brustpresse (beide 'brust') oder Plank + Bauchmaschine
-// (core/bauch, siehe RECOVERY_SYNONYMS) für die Superkompensations-/Pausen-Logik.
-// Zählt die heutige Belastung MIT, eine Einheit von heute liest sich also als 0 Tage.
+// Letztes Training, das DENSELBEN Primärmuskel belastet hat (egal welche Übung).
+// Gruppiert dadurch z.B. Bankdrücken + Brustpresse (beide 'brust') für die
+// Superkompensations-/Pausen-Logik. Liefert Tage seit dieser Belastung sowie
+// die zugehörige Übung. Berücksichtigt NICHT die heutige Session.
 function daysSinceMuscleTrained(exerciseId){
-  const muscleSet=expandRecoveryMuscles(getPrimaryMuscles(exerciseId));
-  if(muscleSet.size===0)return null;
+  const muscles=getPrimaryMuscles(exerciseId);
+  if(!muscles.length)return null;
+  const muscleSet=new Set(muscles);
   const today=new Date();today.setHours(0,0,0,0);
+  const todayStr=today.toISOString().slice(0,10);
   let bestDate=null,bestExId=null;
   DATA.history.forEach(h=>{
     if(h.legacy)return;
+    // Heutige Einträge ausklammern – wir wollen die letzte VORHERIGE Belastung
+    if(h.date===todayStr)return;
     const hMuscles=getPrimaryMuscles(h.exerciseId);
     if(!hMuscles.some(m=>muscleSet.has(m)))return;
     if(bestDate===null||h.date>bestDate){bestDate=h.date;bestExId=h.exerciseId;}
@@ -2696,6 +2727,7 @@ function renderStats(){
     <div class="card-sub">Sätze in der aktuellen Kalenderwoche · Zielbereich für Fortgeschrittene</div>
     <div id="volume-summary" style="margin-top:12px;"></div>
   </div>
+  ${renderAttendance()}
   ${durationHtml}
   <div class="card">
     <div class="card-title">Übungs-Verlauf</div>
@@ -2705,10 +2737,99 @@ function renderStats(){
     </select>
     <div id="stats-stats" class="stat-grid" style="margin-top:12px;"></div>
     <div class="chart-wrap"><canvas id="exerciseChart"></canvas></div>
-  </div>`;
+  </div>
+  ${renderTrainingLog()}`;
   document.getElementById('stats-content').innerHTML=html;
   renderVolumeSummary();
   if(exerciseIds.length>0)renderExerciseChart();
+}
+// ===== ANWESENHEIT + TRAININGS-VERLAUF =====
+let _logLimit=15;
+// Echte (nicht-legacy) Historie nach Datum zu Einheiten gruppieren, neueste zuerst.
+function getTrainingLog(){
+  const byDate={};
+  DATA.history.forEach(h=>{
+    if(h.legacy)return;
+    if(!byDate[h.date])byDate[h.date]={date:h.date,planIds:new Set(),exercises:[],_exMap:{}};
+    const day=byDate[h.date];
+    if(h.planId)day.planIds.add(h.planId);
+    if(!day._exMap[h.exerciseId]){day._exMap[h.exerciseId]={exerciseId:h.exerciseId,sets:[]};day.exercises.push(day._exMap[h.exerciseId]);}
+    (h.sets||[]).forEach(s=>day._exMap[h.exerciseId].sets.push(s));
+  });
+  const durByDate={};
+  (DATA.workoutSessions||[]).forEach(s=>{if(s.durationSec>0)durByDate[s.date]=(durByDate[s.date]||0)+s.durationSec;});
+  return Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)).map(d=>{
+    delete d._exMap;
+    d.planIds=Array.from(d.planIds);
+    d.durationSec=durByDate[d.date]||0;
+    return d;
+  });
+}
+function renderAttendance(){
+  const cycle=DATA.cycle||{};
+  const plannedDays=(cycle.days&&cycle.days.length)?cycle.days.slice().sort((a,b)=>a-b):[];
+  const plannedLabel=plannedDays.length?plannedDays.map(d=>WEEKDAY_SHORT[d-1]).join(' · '):'kein fester Plan';
+  const soll=plannedDays.length||cycle.frequency||0;
+  const trainDates=Array.from(new Set(DATA.history.filter(h=>!h.legacy).map(h=>h.date)));
+  const planByDate={};DATA.history.filter(h=>!h.legacy&&h.planId).forEach(h=>{planByDate[h.date]=h.planId;});
+  const today=new Date();today.setHours(0,0,0,0);
+  const thisMon=new Date(today);thisMon.setDate(today.getDate()-(isoWeekday(today)-1));
+  let rows='';
+  for(let w=0;w<6;w++){
+    const monday=new Date(thisMon);monday.setDate(thisMon.getDate()-w*7);
+    const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
+    const ms=monday.toISOString().slice(0,10),ss=sunday.toISOString().slice(0,10);
+    const dates=trainDates.filter(d=>d>=ms&&d<=ss).sort();
+    const ist=dates.length;
+    const chips=dates.map(d=>{
+      const dt=new Date(d),iso=isoWeekday(dt);
+      const planned=plannedDays.includes(iso);
+      const pid=planByDate[d];
+      return `<span class="att-chip ${planned?'on':'off'}">${WEEKDAY_SHORT[iso-1]}. ${dt.getDate()}.${dt.getMonth()+1}.${pid?' · '+escapeHtml(pid):''}</span>`;
+    }).join('');
+    const cls=soll&&ist>=soll?'good':(ist>0?'partial':'miss');
+    rows+=`<div class="att-week">
+      <div class="att-week-head"><span class="att-week-date">Woche ab ${monday.getDate()}.${monday.getMonth()+1}.</span><span class="att-quota ${cls}">${ist}${soll?' / '+soll:''}</span></div>
+      <div class="att-chips">${chips||'<span class="att-none">kein Training</span>'}</div>
+    </div>`;
+  }
+  return `<div class="card">
+    <div class="card-title">Anwesenheit</div>
+    <div class="card-sub">Geplant: ${plannedLabel} · letzte 6 Wochen</div>
+    <div style="margin-top:12px;">${rows}</div>
+    <div class="att-legend"><span class="att-dot on"></span>geplanter Tag <span class="att-dot off"></span>verschoben</div>
+  </div>`;
+}
+function renderTrainingLog(){
+  const log=getTrainingLog();
+  const shown=log.slice(0,_logLimit);
+  let items='';
+  shown.forEach(day=>{
+    const planTxt=day.planIds.length?' · Plan '+day.planIds.map(escapeHtml).join('/'):'';
+    const durTxt=day.durationSec>0?' · '+fmtTime(day.durationSec):'';
+    let body='';
+    day.exercises.forEach(ex=>{
+      const def=getExerciseInfo(ex.exerciseId);
+      const isTime=def&&def.type==='time';
+      const setsTxt=ex.sets.map(s=>{
+        if(isTime)return `${s.reps||0}s`;
+        if(s.weight===null||s.weight===undefined||s.weight===0)return `${s.reps||0} Wdh`;
+        return `${fmtWeight(s.weight)} kg × ${s.reps||0}`;
+      }).join(' · ');
+      body+=`<div class="log-ex"><span class="log-ex-name">${escapeHtml(getExerciseDisplayName(ex.exerciseId))}</span><span class="log-ex-sets">${setsTxt}</span></div>`;
+    });
+    items+=`<details class="log-day">
+      <summary class="log-day-head"><span class="log-day-date">${fmtDate(day.date)}</span><span class="log-day-meta">${day.exercises.length} Übungen${planTxt}${durTxt}</span></summary>
+      <div class="log-day-body">${body}</div>
+    </details>`;
+  });
+  const more=log.length>_logLimit?`<button class="btn btn-secondary btn-small" style="margin-top:10px;width:100%;" onclick="_logLimit+=15;renderStats();">Mehr laden (${log.length-_logLimit} weitere)</button>`:'';
+  return `<div class="card">
+    <div class="card-title">Trainings-Verlauf</div>
+    <div class="card-sub">${log.length} Einheiten aufgezeichnet · neueste zuerst, zum Aufklappen tippen</div>
+    <div style="margin-top:12px;">${items||'<span class="att-none">Noch keine Einheiten aufgezeichnet.</span>'}</div>
+    ${more}
+  </div>`;
 }
 function renderVolumeSummary(){
   const vol=calcWeeklyVolume(0);
