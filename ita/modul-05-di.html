@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva 2014 Präposition DI</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Präpositionen &middot; Modul 5</span>
+    </div>
+  </div>
+
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+    <h1>🔗 Präposition DI</h1>
+    <p>del / dello / della 2014 Verschmelzung, Herkunft, Zugehörigkeit, Mengenangaben</p>
+  </div>
+
+  <div id="theory-mount"></div>
+
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 50</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm05',
+  block: 'praepos',
+  title: 'Präposition DI',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Die Präposition <strong>di</strong> hat viele Funktionen: Herkunft, Zugehörigkeit, Material, Thema und Mengenangaben. Vor einem Artikel verschmilzt sie zu einer einzigen Form: den <strong>Artikelpräpositionen</strong>.' },
+
+    { type:'table', head:['di +', 'Artikelpräposition', 'Beispiel'],
+      rows:[
+        ['il',   '<strong>del</strong>',    'il libro del ragazzo'],
+        ['lo',   '<strong>dello</strong>',  'il colore dello zaino'],
+        ['la',   '<strong>della</strong>',  'la casa della nonna'],
+        ['l\'',  '<strong>dell\'</strong>', 'il nome dell\'amico'],
+        ['i',    '<strong>dei</strong>',    'la voce dei bambini'],
+        ['gli',  '<strong>degli</strong>',  'il colore degli occhi'],
+        ['le',   '<strong>delle</strong>',  'le case delle famiglie']
+      ]
+    },
+
+    { type:'tip', body:'<strong>Eselsbrücke:</strong> Die Artikelpräposition folgt immer dem bestimmten Artikel 2014 del/dello/della/dell\'/dei/degli/delle. Kein bestimmter Artikel? Dann bleibt es einfach <strong>di</strong>: "Sono di Roma." (kein Artikel vor Städtenamen).' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Hauptfunktionen von DI:</strong>' },
+
+    { type:'table', head:['Funktion', 'Beispiel', 'Deutsch'],
+      rows:[
+        ['Herkunft',        'Sono di Roma.',             'Ich bin aus Rom.'],
+        ['Zugehörigkeit',   'il libro di Marco',         'Marcos Buch'],
+        ['Material',        'una borsa di pelle',        'eine Tasche aus Leder'],
+        ['Thema',           'un libro di storia',        'ein Geschichtsbuch'],
+        ['Mengenangabe',    'un bicchiere di vino',      'ein Glas Wein'],
+        ['Teilungsartikel', 'Voglio del pane.',          'Ich möchte (etwas) Brot.'],
+        ['Vergleich',       'Marco è più alto di Luigi.','Marco ist größer als Luigi.']
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Teilungsartikel (articolo partitivo):</strong> del/dello/della usw. können auch "etwas von" oder "ein bisschen" bedeuten 2014 besonders bei unzählbaren Dingen oder wenn keine genaue Menge gemeint ist.' },
+
+    { type:'example', it:'Voglio del pane e della frutta.', de:'Ich möchte (etwas) Brot und (etwas) Obst.' },
+    { type:'example', it:'Ha degli amici simpatici.', de:'Er hat nette Freunde. (= einige)' },
+
+    { type:'tip', body:'<strong>DI vs. DA:</strong> Herkunft einer Person = di ("Sono di Milano"). Herkunft im Sinne von "von ... weg" = da ("Vengo da Milano" = Ich komme (gerade) aus Mailand). Im Alltag überschneiden sich beide häufig.' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m05-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['il', 'libro', 'del', 'ragazzo'],
+      solution:['il', 'libro', 'del', 'ragazzo'],
+      translation:'Das Buch des Jungen.',
+      explain:'di + il = del. Zugehörigkeit: il libro del ragazzo.' },
+
+    { id:'m05-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['vorrei', 'vino', 'del', 'rosso'],
+      solution:['vorrei', 'del', 'vino', 'rosso'],
+      translation:'Ich hätte gerne etwas roten Wein.',
+      explain:'del = Teilungsartikel (di + il). Vorrei del vino rosso.' },
+
+    /* === ZO 8 === */
+    { id:'m05-zo-01', type:'ZO',
+      prompt:'Ordne zu: di + Artikel = Artikelpräposition',
+      pairs:[
+        { de:'di + il',   it:'del'    },
+        { de:'di + lo',   it:'dello'  },
+        { de:'di + la',   it:'della'  },
+        { de:'di + i',    it:'dei'    },
+        { de:'di + gli',  it:'degli'  },
+        { de:'di + le',   it:'delle'  }
+      ] },
+
+    { id:'m05-zo-02', type:'ZO',
+      prompt:'Ordne zu: Substantiv -> richtige Artikelpräposition (Zugehörigkeit)',
+      pairs:[
+        { de:'il libro [di + il ragazzo]',    it:'del ragazzo'   },
+        { de:'la casa [di + la nonna]',       it:'della nonna'   },
+        { de:'il nome [di + lo studente]',    it:'dello studente'},
+        { de:'il nome [di + l\'amico]',       it:'dell\'amico'   },
+        { de:'la voce [di + i bambini]',      it:'dei bambini'   },
+        { de:'il colore [di + le scarpe]',    it:'delle scarpe'  }
+      ] },
+
+    { id:'m05-zo-03', type:'ZO',
+      prompt:'Ordne zu: Funktion von DI',
+      pairs:[
+        { de:'Sono di Berlino.',          it:'Herkunft'        },
+        { de:'una borsa di pelle',        it:'Material'        },
+        { de:'un libro di matematica',    it:'Thema'           },
+        { de:'il cane di Marco',          it:'Zugehörigkeit'   },
+        { de:'un bicchiere di acqua',     it:'Mengenangabe'    },
+        { de:'Marco è più grande di me.', it:'Vergleich'       }
+      ] },
+
+    { id:'m05-zo-04', type:'ZO',
+      prompt:'Ordne zu: Teilungsartikel -> Bedeutung',
+      pairs:[
+        { de:'Voglio del pane.',       it:'(etwas) Brot'      },
+        { de:'Ho della frutta.',       it:'(etwas) Obst'      },
+        { de:'Bevo dello spumante.',   it:'(etwas) Sekt'      },
+        { de:'Ha degli amici.',        it:'(einige) Freunde'  },
+        { de:'Compro delle mele.',     it:'(einige) Äpfel'    },
+        { de:'Voglio dell\'acqua.',    it:'(etwas) Wasser'    }
+      ] },
+
+    { id:'m05-zo-05', type:'ZO',
+      prompt:'Ordne zu: Satz -> Typ der DI-Verwendung',
+      pairs:[
+        { de:'Sono di Napoli.',              it:'Herkunft'      },
+        { de:'Voglio del caffè.',            it:'Teilungsartikel'},
+        { de:'la borsa della mamma',         it:'Zugehörigkeit' },
+        { de:'un film di azione',            it:'Thema'         },
+        { de:'una camicia di cotone',        it:'Material'      },
+        { de:'Lei è più brava di lui.',      it:'Vergleich'     }
+      ] },
+
+    { id:'m05-zo-06', type:'ZO',
+      prompt:'Ordne zu: Substantiv (Genus/Numerus) -> richtige Form',
+      pairs:[
+        { de:'lo zaino (m/Sg. s-)',   it:'dello zaino'  },
+        { de:'gli occhi (m/Pl. s-)',  it:'degli occhi'  },
+        { de:'l\'amica (f/Sg. Vokal)',it:'dell\'amica'  },
+        { de:'le amiche (f/Pl.)',     it:'delle amiche' },
+        { de:'il cane (m/Sg.)',       it:'del cane'     },
+        { de:'la città (f/Sg.)',      it:'della città'  }
+      ] },
+
+    { id:'m05-zo-07', type:'ZO',
+      prompt:'Ordne zu: Mengenangabe + DI -> Deutsch',
+      pairs:[
+        { de:'un bicchiere di vino',   it:'ein Glas Wein'         },
+        { de:'una tazza di caffè',     it:'eine Tasse Kaffee'     },
+        { de:'un po\' di sale',        it:'ein bisschen Salz'     },
+        { de:'un chilo di pasta',      it:'ein Kilo Nudeln'       },
+        { de:'una fetta di pane',      it:'eine Scheibe Brot'     },
+        { de:'un litro di latte',      it:'ein Liter Milch'       }
+      ] },
+
+    { id:'m05-zo-08', type:'ZO',
+      prompt:'Ordne zu: Vergleich mit DI -> Deutsch',
+      pairs:[
+        { de:'più alto di Marco',   it:'größer als Marco'     },
+        { de:'meno caro del vino',  it:'billiger als der Wein'},
+        { de:'più veloce di me',    it:'schneller als ich'    },
+        { de:'meno bravo di te',    it:'weniger gut als du'   },
+        { de:'più bella della sorella', it:'schöner als die Schwester'},
+        { de:'più lento degli altri',   it:'langsamer als die anderen'}
+      ] },
+
+    /* === MC Basis 12 === */
+    { id:'m05-mc-01', type:'MC',
+      prompt:'Wie heißt "di + il"?',
+      options:['di il','del','dell\'','dello'],
+      correctValue:'del',
+      explain:'di + il verschmilzt zu del.' },
+
+    { id:'m05-mc-02', type:'MC',
+      prompt:'Welche Form? "il colore ___ zaino" (der Rucksack, m/Sg. mit s-)',
+      options:['del','dello','della','dei'],
+      correctValue:'dello',
+      explain:'lo zaino (s-Anlaut) -> di + lo = dello.' },
+
+    { id:'m05-mc-03', type:'MC',
+      prompt:'Welche Form? "la borsa ___ amica" (die Freundin, f/Sg. Vokal)',
+      options:['della','dell\'','del','dei'],
+      correctValue:'dell\'',
+      explain:'l\'amica (Vokal) -> di + l\' = dell\'.' },
+
+    { id:'m05-mc-04', type:'MC',
+      prompt:'Welche Form? "la voce ___ bambini" (m/Pl.)',
+      options:['dei','degli','delle','del'],
+      correctValue:'dei',
+      explain:'i bambini (m/Pl.) -> di + i = dei.' },
+
+    { id:'m05-mc-05', type:'MC',
+      prompt:'"Sono ___ Roma." Welche Form?',
+      options:['del','di','della','da'],
+      correctValue:'di',
+      explain:'Herkunft aus einer Stadt: di + Stadtname (kein Artikel). Sono di Roma.' },
+
+    { id:'m05-mc-06', type:'MC',
+      prompt:'Was bedeutet "Voglio del pane"?',
+      options:['Ich will das Brot.','Ich will ein Brot.','Ich will etwas Brot.','Ich will kein Brot.'],
+      correctValue:'Ich will etwas Brot.',
+      explain:'del als Teilungsartikel drückt eine unbestimmte Menge aus: etwas Brot.' },
+
+    { id:'m05-mc-07', type:'MC',
+      prompt:'Welche Form? "un libro ___ storia" (Thema)',
+      options:['del','di','della','dello'],
+      correctValue:'di',
+      explain:'Thema ohne Artikel: di + Substantiv. un libro di storia.' },
+
+    { id:'m05-mc-08', type:'MC',
+      prompt:'Welche Form? "una borsa ___ pelle" (Material)',
+      options:['di','del','della','delle'],
+      correctValue:'di',
+      explain:'Material ohne Artikel: di + Material. una borsa di pelle.' },
+
+    { id:'m05-mc-09', type:'MC',
+      prompt:'Welche Form? "il colore ___ occhi" (gli occhi, m/Pl. Vokal)',
+      options:['dei','degli','delle','del'],
+      correctValue:'degli',
+      explain:'gli occhi (m/Pl., Vokal) -> di + gli = degli.' },
+
+    { id:'m05-mc-10', type:'MC',
+      prompt:'"Marco è più alto ___ Luigi." Welche Form?',
+      options:['del','di','da','che'],
+      correctValue:'di',
+      explain:'Vergleich vor Pronomen oder Eigenname: di. Più alto di Luigi.' },
+
+    { id:'m05-mc-11', type:'MC',
+      prompt:'Welche Form? "Ha ___ amici simpatici." (einige Freunde)',
+      options:['dei','degli','delle','di'],
+      correctValue:'degli',
+      explain:'gli amici (m/Pl., Vokal) -> Teilungsartikel: degli amici.' },
+
+    { id:'m05-mc-12', type:'MC',
+      prompt:'"un bicchiere ___ acqua" -- welche Form?',
+      options:['di','del','dell\'','della'],
+      correctValue:'di',
+      explain:'Mengenangabe: Menge + di + Substanz (kein Artikel). un bicchiere di acqua.' },
+
+    /* === MCL 10 === */
+    { id:'m05-mcl-01', type:'MC',
+      prompt:'Wähle: "il nome ___ studente" (lo studente)',
+      options:['del','dello','della','dei'],
+      correctValue:'dello',
+      explain:'lo studente -> di + lo = dello.' },
+
+    { id:'m05-mcl-02', type:'MC',
+      prompt:'Wähle: "Vorrei ___ acqua, per favore."',
+      options:['di','del','dell\'','della'],
+      correctValue:'dell\'',
+      explain:'l\'acqua (f, Vokal) -> Teilungsartikel: dell\'acqua.' },
+
+    { id:'m05-mcl-03', type:'MC',
+      prompt:'Wähle: "la casa ___ miei genitori"',
+      options:['dei','degli','delle','del'],
+      correctValue:'dei',
+      explain:'i miei genitori (m/Pl.) -> di + i = dei.' },
+
+    { id:'m05-mcl-04', type:'MC',
+      prompt:'Wähle: "Ho comprato ___ biscotti."',
+      options:['di','del','dei','degli'],
+      correctValue:'dei',
+      explain:'i biscotti (m/Pl.) -> Teilungsartikel: dei biscotti.' },
+
+    { id:'m05-mcl-05', type:'MC',
+      prompt:'Wähle: "Lei è più brava ___ sorella."',
+      options:['di','della','del','dalle'],
+      correctValue:'della',
+      explain:'Vergleich vor Substantiv mit Artikel: della sorella.' },
+
+    { id:'m05-mcl-06', type:'MC',
+      prompt:'Wähle: "un po\' ___ zucchero" (un po\' = ein bisschen)',
+      options:['di','del','dello','della'],
+      correctValue:'di',
+      explain:'un po\' di + Substantiv (kein Artikel). un po\' di zucchero.' },
+
+    { id:'m05-mcl-07', type:'MC',
+      prompt:'Wähle: "il profumo ___ fiori" (i fiori = die Blumen)',
+      options:['del','dei','degli','delle'],
+      correctValue:'dei',
+      explain:'i fiori (m/Pl.) -> di + i = dei.' },
+
+    { id:'m05-mcl-08', type:'MC',
+      prompt:'Wähle: "Sono ___ Germania." (Herkunft, Ländername ohne Artikel)',
+      options:['di','della','in','dalla'],
+      correctValue:'di',
+      explain:'Herkunft aus Land ohne Artikel: di. Sono di Germania (seltener, aber korrekt; da ist auch möglich).' },
+
+    { id:'m05-mcl-09', type:'MC',
+      prompt:'Wähle: "la fine ___ film" (il film)',
+      options:['del','dello','dei','della'],
+      correctValue:'del',
+      explain:'il film (m/Sg.) -> di + il = del.' },
+
+    { id:'m05-mcl-10', type:'MC',
+      prompt:'Wähle: "Ho bisogno ___ aiuto." (Ich brauche Hilfe.)',
+      options:['di','del','dell\'','dello'],
+      correctValue:'di',
+      explain:'avere bisogno di = brauchen. Ohne Artikel: di aiuto.' },
+
+    /* === LT 5 === */
+    { id:'m05-lt-01', type:'LT',
+      text:'Questo è il libro {0} professore.',
+      blanks:[ { accept:['del'] } ],
+      translation:'Das ist das Buch des Lehrers.',
+      explain:'il professore -> di + il = del.' },
+
+    { id:'m05-lt-02', type:'LT',
+      text:'Voglio una tazza {0} caffè e una fetta {1} torta.',
+      blanks:[ { accept:['di'] }, { accept:['di'] } ],
+      translation:'Ich möchte eine Tasse Kaffee und ein Stück Kuchen.',
+      explain:'Mengenangaben: tazza di / fetta di + Substantiv ohne Artikel.' },
+
+    { id:'m05-lt-03', type:'LT',
+      text:'La sorella {0} mio amico è {1} Milano.',
+      blanks:[ { accept:['del'] }, { accept:['di'] } ],
+      translation:'Die Schwester meines Freundes kommt aus Mailand.',
+      explain:'del = di + il (mio amico); di + Stadtname (Herkunft).' },
+
+    { id:'m05-lt-04', type:'LT',
+      text:'Ho comprato {0} pane e {1} frutta al mercato.',
+      blanks:[ { accept:['del'] }, { accept:['della'] } ],
+      translation:'Ich habe etwas Brot und etwas Obst auf dem Markt gekauft.',
+      explain:'Teilungsartikel: del pane (m), della frutta (f).' },
+
+    { id:'m05-lt-05', type:'LT',
+      text:'Il colore {0} occhi {1} mia sorella è verde.',
+      blanks:[ { accept:['degli'] }, { accept:['di'] } ],
+      translation:'Die Augenfarbe meiner Schwester ist grün.',
+      explain:'gli occhi -> degli occhi; di + mia sorella (kein Artikel vor Possessivpronomen + Verwandtschaft Sg.).' },
+
+    /* === FT 2 === */
+    { id:'m05-ft-01', type:'FT',
+      prompt:'Bilde die Artikelpräposition: di + ...',
+      rows:[
+        { label:'di + il',   accept:['del']     },
+        { label:'di + lo',   accept:['dello']   },
+        { label:'di + la',   accept:['della']   },
+        { label:'di + l\'',  accept:["dell'"]   },
+        { label:'di + i',    accept:['dei']     },
+        { label:'di + gli',  accept:['degli']   }
+      ],
+      explain:'delle fehlt: di + le = delle (f/Pl.).' },
+
+    { id:'m05-ft-02', type:'FT',
+      prompt:'Ergänze die richtige Form für diese Nomen (Zugehörigkeit):',
+      rows:[
+        { label:'il libro [di + il ragazzo]',   accept:['del ragazzo']    },
+        { label:'la casa [di + la nonna]',      accept:['della nonna']    },
+        { label:'il nome [di + l\'amico]',      accept:["dell'amico"]     },
+        { label:'la voce [di + i bambini]',     accept:['dei bambini']    },
+        { label:'il colore [di + gli occhi]',   accept:['degli occhi']    },
+        { label:'le chiavi [di + le ragazze]',  accept:['delle ragazze']  }
+      ] },
+
+    /* === FK 3 === */
+    { id:'m05-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Voglio di pane.',
+      solution:'Voglio del pane.',
+      errorToken:'di',
+      translation:'Ich möchte etwas Brot.',
+      explain:'Teilungsartikel: di + il = del. "di" allein ohne Artikel funktioniert hier nicht.' },
+
+    { id:'m05-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Il libro dello ragazzo è bello.',
+      solution:'Il libro del ragazzo è bello.',
+      errorToken:'dello',
+      translation:'Das Buch des Jungen ist schön.',
+      explain:'il ragazzo (normaler m/Sg.) -> di + il = del. dello gilt nur für s+Konsonant, z, ps, gn usw.' },
+
+    { id:'m05-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Sono da Roma.',
+      solution:'Sono di Roma.',
+      errorToken:'da',
+      translation:'Ich komme aus Rom.',
+      explain:'Herkunft (Geburtsort, Wohnort): di. "da" bedeutet "von ... weg" (Bewegung) oder "bei jemandem".' },
+
+    /* === KA 3 === */
+    { id:'m05-ka-01', type:'KA',
+      prompt:'Kategorisiere: Braucht diese Mengenangabe DI oder Artikelpräposition (del/della...)?',
+      categories:['nur di', 'Artikelpräposition'],
+      items:[
+        { text:'una tazza di caffè',    cat:0 },
+        { text:'Voglio del pane.',      cat:1 },
+        { text:'un litro di acqua',     cat:0 },
+        { text:'Ho della frutta.',      cat:1 },
+        { text:'un pezzo di pizza',     cat:0 },
+        { text:'Bevo dello spumante.',  cat:1 }
+      ] },
+
+    { id:'m05-ka-02', type:'KA',
+      prompt:'Kategorisiere: Verwendung von DI',
+      categories:['Herkunft', 'Zugehörigkeit / Material / Thema'],
+      items:[
+        { text:'Sono di Venezia.',      cat:0 },
+        { text:'il cane di Marco',      cat:1 },
+        { text:'È di Berlino.',         cat:0 },
+        { text:'una borsa di cuoio',    cat:1 },
+        { text:'Vieni di qui?',         cat:0 },
+        { text:'un corso di italiano',  cat:1 }
+      ] },
+
+    { id:'m05-ka-03', type:'KA',
+      prompt:'Kategorisiere: del/dello oder della/dell\'?',
+      categories:['del / dello / dei / degli (maskulin)', 'della / dell\' / delle (feminin)'],
+      items:[
+        { text:'il pane (m)',       cat:0 },
+        { text:'la pasta (f)',      cat:1 },
+        { text:'lo zucchero (m)',   cat:0 },
+        { text:'l\'acqua (f)',      cat:1 },
+        { text:'gli spaghetti (m)', cat:0 },
+        { text:'le olive (f)',      cat:1 }
+      ] },
+
+    /* === DE 3 === */
+    { id:'m05-de-01', type:'DE',
+      prompt:'"Das ist das Haus meiner Mutter."',
+      solutions:['Questa è la casa della mamma.','Questa è la casa di mia mamma.','È la casa della mamma.'],
+      note:'della mamma = di + la. Vor Verwandtschaft Sg. + Possessiv ist auch "di mia mamma" möglich.' },
+
+    { id:'m05-de-02', type:'DE',
+      prompt:'"Ich hätte gerne etwas Wasser und etwas Wein."',
+      solutions:["Vorrei dell'acqua e del vino.",'Vorrei un po\' di acqua e un po\' di vino.'],
+      note:"dell'acqua = di + l' (Vokal, f); del vino = di + il (m)." },
+
+    { id:'m05-de-03', type:'DE',
+      prompt:'"Sie ist größer als ihr Bruder."',
+      solutions:['È più alta del fratello.','Lei è più alta del fratello.','È più alta di suo fratello.'],
+      note:'Vergleich vor Substantiv mit Artikel: del (di + il); vor Pronomen/Eigenname: di.' },
+
+    /* === IT 3 === */
+    { id:'m05-it-01', type:'IT',
+      prompt:'"il colore degli occhi"',
+      solutions:['die Farbe der Augen','die Augenfarbe'],
+      note:'degli = di + gli (gli occhi, m/Pl. Vokal).' },
+
+    { id:'m05-it-02', type:'IT',
+      prompt:'"Ho comprato dei libri e delle riviste."',
+      solutions:['Ich habe einige Bücher und einige Zeitschriften gekauft.','Ich habe Bücher und Zeitschriften gekauft.'],
+      note:'dei = Teilungsartikel m/Pl.; delle = Teilungsartikel f/Pl.' },
+
+    { id:'m05-it-03', type:'IT',
+      prompt:'"un corso di italiano per principianti"',
+      solutions:['ein Italienischkurs für Anfänger','ein Kurs für Anfänger auf Italienisch'],
+      note:'di italiano = Thema (kein Artikel); per principianti = für Anfänger.' }
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

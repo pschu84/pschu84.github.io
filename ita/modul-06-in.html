@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva &mdash; Präposition IN</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Präpositionen &middot; Modul 6</span>
+    </div>
+  </div>
+
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+    <h1>📦 Präposition IN</h1>
+    <p>nel / nello / nella &mdash; Ort, Bewegung in Länder und Räume, Zeit</p>
+  </div>
+
+  <div id="theory-mount"></div>
+
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 50</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm06',
+  block: 'praepos',
+  title: 'Präposition IN',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Die Präposition <strong>in</strong> drückt vor allem <strong>Ort</strong> (wo?) und <strong>Richtung</strong> (wohin?) aus. Vor einem bestimmten Artikel verschmilzt sie: <strong>nel, nello, nella, nell\', nei, negli, nelle</strong>.' },
+
+    { type:'table', head:['in +', 'Artikelpräposition', 'Beispiel'],
+      rows:[
+        ['il',   '<strong>nel</strong>',    'nel parco'],
+        ['lo',   '<strong>nello</strong>',  'nello zaino'],
+        ['la',   '<strong>nella</strong>',  'nella stanza'],
+        ['l\'',  '<strong>nell\'</strong>', 'nell\'armadio'],
+        ['i',    '<strong>nei</strong>',    'nei negozi'],
+        ['gli',  '<strong>negli</strong>',  'negli anni \'90'],
+        ['le',   '<strong>nelle</strong>',  'nelle tasche']
+      ]
+    },
+
+    { type:'tip', body:'<strong>Wann bleibt IN ohne Artikel?</strong> Vor Länder- und Kontinentnamen (weiblich Singular): "Abito in Italia." Vor Stadtvierteln und Räumen bei allgemeiner Bedeutung: "in cucina", "in bagno", "in centro". Vor Transportmitteln: "in treno", "in macchina".' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Hauptfunktionen von IN:</strong>' },
+
+    { type:'table', head:['Funktion', 'Beispiel', 'Deutsch'],
+      rows:[
+        ['Ort (wo?)',           'Abito in Italia.',          'Ich wohne in Italien.'],
+        ['Richtung (wohin?)',   'Vado in Italia.',           'Ich fahre nach Italien.'],
+        ['Raum (ohne Artikel)', 'Sono in cucina.',           'Ich bin in der Küche.'],
+        ['Raum (mit Artikel)', 'Il gatto è nel salotto.',  'Die Katze ist im Wohnzimmer.'],
+        ['Transportmittel',    'Vado in treno.',            'Ich fahre mit dem Zug.'],
+        ['Zeit (Jahr/Jahreszeit)', 'nel 2024 / in estate',  'im Jahr 2024 / im Sommer'],
+        ['Dauer',              'in un\'ora',                'in einer Stunde']
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Länder und Kontinente:</strong> Weibliche Länder (die meisten auf -a) und Kontinente nehmen <strong>in ohne Artikel</strong>. Männliche Länder und Länder mit Artikel nehmen <strong>nel/nella</strong>.' },
+
+    { type:'table', head:['Kategorie', 'Beispiel', 'Anmerkung'],
+      rows:[
+        ['Weibl. Länder (f)',   'in Italia, in Francia, in Germania', 'kein Artikel'],
+        ['Kontinente',          'in Europa, in Africa',               'kein Artikel'],
+        ['Männl. Länder (m)',   'nel Portogallo, nel Giappone',       'nel = in + il'],
+        ['Pl. Länder',          'negli Stati Uniti, nei Paesi Bassi', 'negli/nei'],
+        ['Regionen (f)',         'in Toscana, in Lombardia',          'kein Artikel']
+      ]
+    },
+
+    { type:'example', it:'Vado in Francia quest\'estate.', de:'Ich fahre diesen Sommer nach Frankreich.' },
+    { type:'example', it:'Il libro è nell\'armadio.', de:'Das Buch ist im Schrank.' },
+    { type:'example', it:'Arrivo in un\'ora.', de:'Ich komme in einer Stunde an.' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m06-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['abito', 'in', 'Germania', 'da', 'anni', 'tre'],
+      solution:['abito', 'in', 'Germania', 'da', 'tre', 'anni'],
+      translation:'Ich wohne seit drei Jahren in Deutschland.',
+      explain:'in + Ländername (f) ohne Artikel. da tre anni = seit drei Jahren.' },
+
+    { id:'m06-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['gatto', 'il', 'è', 'salotto', 'nel'],
+      solution:['il', 'gatto', 'è', 'nel', 'salotto'],
+      translation:'Die Katze ist im Wohnzimmer.',
+      explain:'nel = in + il (il salotto, m/Sg.).' },
+
+    /* === ZO 8 === */
+    { id:'m06-zo-01', type:'ZO',
+      prompt:'Ordne zu: in + Artikel = Artikelpräposition',
+      pairs:[
+        { de:'in + il',   it:'nel'    },
+        { de:'in + lo',   it:'nello'  },
+        { de:'in + la',   it:'nella'  },
+        { de:'in + i',    it:'nei'    },
+        { de:'in + gli',  it:'negli'  },
+        { de:'in + le',   it:'nelle'  }
+      ] },
+
+    { id:'m06-zo-02', type:'ZO',
+      prompt:'Ordne zu: IN ohne oder mit Artikel?',
+      pairs:[
+        { de:'in Italia',        it:'ohne Artikel (f-Land)' },
+        { de:'nel parco',        it:'mit Artikel (il parco)' },
+        { de:'in cucina',        it:'ohne Artikel (Raum allg.)' },
+        { de:'nella stanza',     it:'mit Artikel (la stanza)' },
+        { de:'in treno',         it:'ohne Artikel (Transportmittel)' },
+        { de:'negli anni \'90',  it:'mit Artikel (gli anni)' }
+      ] },
+
+    { id:'m06-zo-03', type:'ZO',
+      prompt:'Ordne zu: Satz -> Funktion von IN',
+      pairs:[
+        { de:'Vado in Francia.',             it:'Richtung (Wohin?)' },
+        { de:'Abito in Francia.',            it:'Ort (Wo?)' },
+        { de:'Vado in macchina.',            it:'Transportmittel' },
+        { de:'Arrivo in un\'ora.',           it:'Dauer' },
+        { de:'È nata nel 1990.',             it:'Zeitpunkt (Jahr)' },
+        { de:'Il libro è nel cassetto.',     it:'Ort mit Artikel' }
+      ] },
+
+    { id:'m06-zo-04', type:'ZO',
+      prompt:'Ordne zu: Land -> IN-Form',
+      pairs:[
+        { de:'Italia (f)',           it:'in Italia'           },
+        { de:'Francia (f)',          it:'in Francia'          },
+        { de:'Germania (f)',         it:'in Germania'         },
+        { de:'Portogallo (m)',       it:'nel Portogallo'      },
+        { de:'Stati Uniti (m/Pl.)', it:'negli Stati Uniti'   },
+        { de:'Giappone (m)',         it:'nel Giappone'        }
+      ] },
+
+    { id:'m06-zo-05', type:'ZO',
+      prompt:'Ordne zu: Raum -> richtige IN-Form',
+      pairs:[
+        { de:'la cucina',      it:'in cucina (allg.) / nella cucina (spez.)' },
+        { de:'il salotto',     it:'nel salotto'    },
+        { de:'la stanza',      it:'nella stanza'   },
+        { de:'lo studio',      it:'nello studio'   },
+        { de:'l\'armadio',     it:"nell'armadio"   },
+        { de:'il bagno',       it:'in bagno (allg.) / nel bagno (spez.)' }
+      ] },
+
+    { id:'m06-zo-06', type:'ZO',
+      prompt:'Ordne zu: Transportmittel + IN -> Deutsch',
+      pairs:[
+        { de:'in treno',       it:'mit dem Zug'      },
+        { de:'in macchina',    it:'mit dem Auto'      },
+        { de:'in bici',        it:'mit dem Fahrrad'   },
+        { de:'in autobus',     it:'mit dem Bus'       },
+        { de:'in aereo',       it:'mit dem Flugzeug'  },
+        { de:'in taxi',        it:'mit dem Taxi'      }
+      ] },
+
+    { id:'m06-zo-07', type:'ZO',
+      prompt:'Ordne zu: Zeitausdruck + IN -> Deutsch',
+      pairs:[
+        { de:'nel 2024',         it:'im Jahr 2024'     },
+        { de:'in estate',        it:'im Sommer'        },
+        { de:'in inverno',       it:'im Winter'        },
+        { de:"in un'ora",        it:'in einer Stunde'  },
+        { de:'nel pomeriggio',   it:'am Nachmittag'    },
+        { de:'negli anni \'80',  it:'in den 80er Jahren'}
+      ] },
+
+    { id:'m06-zo-08', type:'ZO',
+      prompt:'Ordne zu: Substantiv (m/f) -> nel oder nella?',
+      pairs:[
+        { de:'il parco (m)',       it:'nel parco'      },
+        { de:'la piazza (f)',      it:'nella piazza'   },
+        { de:'il centro (m)',      it:'nel centro'     },
+        { de:'la borsa (f)',       it:'nella borsa'    },
+        { de:'il cassetto (m)',    it:'nel cassetto'   },
+        { de:'la tasca (f)',       it:'nella tasca'    }
+      ] },
+
+    /* === MC Basis 12 === */
+    { id:'m06-mc-01', type:'MC',
+      prompt:'Wie heißt "in + il"?',
+      options:['in il','nel','nello','nell\''],
+      correctValue:'nel',
+      explain:'in + il = nel.' },
+
+    { id:'m06-mc-02', type:'MC',
+      prompt:'Welche Form? "Il gatto è ___ scatola." (la scatola = die Schachtel)',
+      options:['in','nel','nella','nello'],
+      correctValue:'nella',
+      explain:'la scatola (f/Sg.) -> in + la = nella.' },
+
+    { id:'m06-mc-03', type:'MC',
+      prompt:'"Vado ___ Italia questa estate." Welche Form?',
+      options:['nell\'','nella','in','nel'],
+      correctValue:'in',
+      explain:'Ländername feminin Singular -> in ohne Artikel.' },
+
+    { id:'m06-mc-04', type:'MC',
+      prompt:'Welche Form? "Le chiavi sono ___ zaino." (lo zaino)',
+      options:['nel','nello','nella','nei'],
+      correctValue:'nello',
+      explain:'lo zaino (s-Anlaut) -> in + lo = nello.' },
+
+    { id:'m06-mc-05', type:'MC',
+      prompt:'"Sono ___ cucina." Was ist korrekt?',
+      options:['nella','in','nel','nello'],
+      correctValue:'in',
+      explain:'Räume mit allgemeiner Bedeutung: in cucina (ohne Artikel). Auch "nella cucina" wäre bei spezifischer Küche möglich.' },
+
+    { id:'m06-mc-06', type:'MC',
+      prompt:'Welche Form? "Ci vediamo ___ un\'ora."',
+      options:['in','nel','nell\'','nella'],
+      correctValue:'in',
+      explain:'Dauer: in + unbestimmten Artikel. in un\'ora = in einer Stunde.' },
+
+    { id:'m06-mc-07', type:'MC',
+      prompt:'"Vado ___ Portogallo." (Il Portogallo = Portugal, m)',
+      options:['in','nel','nello','nella'],
+      correctValue:'nel',
+      explain:'Männliche Länder mit Artikel: nel Portogallo (in + il).' },
+
+    { id:'m06-mc-08', type:'MC',
+      prompt:'Welche Form? "I libri sono ___ scaffale." (lo scaffale)',
+      options:['nel','nello','nella','nei'],
+      correctValue:'nello',
+      explain:'lo scaffale (s-Anlaut) -> in + lo = nello.' },
+
+    { id:'m06-mc-09', type:'MC',
+      prompt:'"Vado a scuola ___ bici." Welche Form?',
+      options:['nella','in','con la','nel'],
+      correctValue:'in',
+      explain:'Transportmittel: in bici / in macchina (ohne Artikel). Auch "con la bici" ist möglich.' },
+
+    { id:'m06-mc-10', type:'MC',
+      prompt:'Welche Form? "Sono nata ___ 1995."',
+      options:['in','nel','nell\'','nella'],
+      correctValue:'nel',
+      explain:'Jahr mit Artikel: nel + Jahr (in + il = nel). il 1995 -> nel 1995.' },
+
+    { id:'m06-mc-11', type:'MC',
+      prompt:'Welche Form? "Ho trovato la ricetta ___ libro di cucina."',
+      options:['in','nel','nello','nella'],
+      correctValue:'nel',
+      explain:'il libro (m/Sg.) -> in + il = nel.' },
+
+    { id:'m06-mc-12', type:'MC',
+      prompt:'"___ estate fa molto caldo." Welche Form?',
+      options:['Nell\'','Nella','In','Nel'],
+      correctValue:'In',
+      explain:'Jahreszeit: in + Jahreszeit ohne Artikel. In estate = im Sommer.' },
+
+    /* === MCL 10 === */
+    { id:'m06-mcl-01', type:'MC',
+      prompt:'Wähle: "Il telefono è ___ borsa."',
+      options:['in','nel','nella','nello'],
+      correctValue:'nella',
+      translation:'Das Telefon ist in der Tasche.',
+      explain:'la borsa (f/Sg.) -> in + la = nella.' },
+
+    { id:'m06-mcl-02', type:'MC',
+      prompt:'Wähle: "Lavoro ___ centro."',
+      options:['nel','in','nella','nello'],
+      correctValue:'in',
+      translation:'Ich arbeite in der Innenstadt.',
+      explain:'in centro (allgemeine Bedeutung, Raum ohne Artikel).' },
+
+    { id:'m06-mcl-03', type:'MC',
+      prompt:'Wähle: "Abito ___ Spagna."',
+      options:['nella','in','nella Spagna','nello'],
+      correctValue:'in',
+      translation:'Ich wohne in Spanien.',
+      explain:'La Spagna ist feminin -> in Spagna (ohne Artikel).' },
+
+    { id:'m06-mcl-04', type:'MC',
+      prompt:'Wähle: "Metto il libro ___ zaino."',
+      options:['nel','nello','nella','nei'],
+      correctValue:'nello',
+      translation:'Ich lege das Buch in den Rucksack.',
+      explain:'lo zaino (s-Anlaut) -> nello.' },
+
+    { id:'m06-mcl-05', type:'MC',
+      prompt:'Wähle: "Ci vediamo ___ parco."',
+      options:['in','nel','nella','nello'],
+      correctValue:'nel',
+      translation:'Wir sehen uns im Park.',
+      explain:'il parco (m/Sg.) -> nel.' },
+
+    { id:'m06-mcl-06', type:'MC',
+      prompt:'Wähle: "Vivono ___ Stati Uniti." (gli Stati Uniti)',
+      options:['in','nei','negli','nelle'],
+      correctValue:'negli',
+      translation:'Sie leben in den USA.',
+      explain:'gli Stati Uniti (m/Pl., Vokal) -> in + gli = negli.' },
+
+    { id:'m06-mcl-07', type:'MC',
+      prompt:'Wähle: "Vengo ___ macchina."',
+      options:['nella','in','con','nel'],
+      correctValue:'in',
+      translation:'Ich komme mit dem Auto.',
+      explain:'Transportmittel: in macchina (ohne Artikel).' },
+
+    { id:'m06-mcl-08', type:'MC',
+      prompt:'Wähle: "Ho studiato ___ anni \'90."',
+      options:['in','negli','nei','nelle'],
+      correctValue:'negli',
+      translation:'Ich habe in den 90er Jahren studiert.',
+      explain:'gli anni (m/Pl., Vokal) -> negli anni.' },
+
+    { id:'m06-mcl-09', type:'MC',
+      prompt:'Wähle: "Il gatto dorme ___ letto."',
+      options:['in','nel','nello','nella'],
+      correctValue:'nel',
+      translation:'Die Katze schläft im Bett.',
+      explain:'il letto (m/Sg.) -> nel.' },
+
+    { id:'m06-mcl-10', type:'MC',
+      prompt:'Wähle: "Finisco ___ mezz\'ora."',
+      options:['in','nella','nell\'','nella'],
+      correctValue:'in',
+      translation:'Ich bin in einer halben Stunde fertig.',
+      explain:'Dauer: in + Zeitangabe ohne bestimmten Artikel. in mezz\'ora.' },
+
+    /* === LT 5 === */
+    { id:'m06-lt-01', type:'LT',
+      text:'Il mio passaporto è {0} borsa.',
+      blanks:[ { accept:['nella'] } ],
+      translation:'Mein Pass ist in der Tasche.',
+      explain:'la borsa (f/Sg.) -> nella.' },
+
+    { id:'m06-lt-02', type:'LT',
+      text:'Vivo {0} Germania da dieci anni e lavoro {1} centro.',
+      blanks:[ { accept:['in'] }, { accept:['in'] } ],
+      translation:'Ich lebe seit zehn Jahren in Deutschland und arbeite in der Innenstadt.',
+      explain:'in + f-Land (ohne Artikel); in centro (allgemeiner Raum).' },
+
+    { id:'m06-lt-03', type:'LT',
+      text:'{0} estate andiamo sempre {1} Toscana.',
+      blanks:[ { accept:['In'] }, { accept:['in'] } ],
+      translation:'Im Sommer fahren wir immer in die Toskana.',
+      explain:'In estate (Jahreszeit, ohne Artikel); in Toscana (f-Region, ohne Artikel).' },
+
+    { id:'m06-lt-04', type:'LT',
+      text:'Ho trovato le chiavi {0} tasca {1} zaino.',
+      blanks:[ { accept:['nella'] }, { accept:['dello'] } ],
+      translation:'Ich habe die Schlüssel in der Tasche des Rucksacks gefunden.',
+      explain:'nella tasca (f); dello zaino (di + lo = dello, Zugehörigkeit).' },
+
+    { id:'m06-lt-05', type:'LT',
+      text:'Sono nata {0} 1988 e sono cresciuta {1} Sicilia.',
+      blanks:[ { accept:['nel'] }, { accept:['in'] } ],
+      translation:'Ich bin 1988 geboren und auf Sizilien aufgewachsen.',
+      explain:'nel + Jahr (il 1988); in Sicilia (f-Region, ohne Artikel).' },
+
+    /* === FT 2 === */
+    { id:'m06-ft-01', type:'FT',
+      prompt:'Bilde die Artikelpräposition: in + ...',
+      rows:[
+        { label:'in + il',   accept:['nel']    },
+        { label:'in + lo',   accept:['nello']  },
+        { label:'in + la',   accept:['nella']  },
+        { label:"in + l'",   accept:["nell'"]  },
+        { label:'in + i',    accept:['nei']    },
+        { label:'in + gli',  accept:['negli']  }
+      ],
+      explain:'nelle fehlt: in + le = nelle (f/Pl.).' },
+
+    { id:'m06-ft-02', type:'FT',
+      prompt:'Ergänze: IN + Ländername (ohne oder mit Artikel?)',
+      rows:[
+        { label:'Italia (f)',            accept:['in Italia']           },
+        { label:'Francia (f)',           accept:['in Francia']          },
+        { label:'Giappone (m)',          accept:['nel Giappone']        },
+        { label:'Portogallo (m)',        accept:['nel Portogallo']      },
+        { label:'Stati Uniti (m/Pl.)',   accept:['negli Stati Uniti']   },
+        { label:'Brasile (m)',           accept:['nel Brasile']         }
+      ] },
+
+    /* === FK 3 === */
+    { id:'m06-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Abito in la Germania.',
+      solution:'Abito in Germania.',
+      errorToken:'in la',
+      translation:'Ich wohne in Deutschland.',
+      explain:'Weibliche Länder: in ohne Artikel. Nie "in la" oder "nella Germania" (außer in spezifischem Kontext).' },
+
+    { id:'m06-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Le chiavi sono nel borsa.',
+      solution:'Le chiavi sono nella borsa.',
+      errorToken:'nel',
+      translation:'Die Schlüssel sind in der Tasche.',
+      explain:'la borsa ist feminin -> nella (nicht nel, das ist für maskulin il).' },
+
+    { id:'m06-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Sono nato nel 1990 e vivo nella Italia.',
+      solution:'Sono nato nel 1990 e vivo in Italia.',
+      errorToken:'nella Italia',
+      translation:'Ich bin 1990 geboren und lebe in Italien.',
+      explain:'in Italia (f-Land, kein Artikel). nel 1990 ist korrekt (Jahr mit Artikel).' },
+
+    /* === KA 3 === */
+    { id:'m06-ka-01', type:'KA',
+      prompt:'Kategorisiere: IN ohne Artikel oder mit Artikelpräposition?',
+      categories:['ohne Artikel (in)', 'mit Artikelpräposition (nel/nella...)'],
+      items:[
+        { text:'in cucina',           cat:0 },
+        { text:'nel parco',           cat:1 },
+        { text:'in Italia',           cat:0 },
+        { text:'nella borsa',         cat:1 },
+        { text:'in treno',            cat:0 },
+        { text:'nello studio',        cat:1 }
+      ] },
+
+    { id:'m06-ka-02', type:'KA',
+      prompt:'Kategorisiere: Land -> IN mit oder ohne Artikel?',
+      categories:['ohne Artikel (f-Länder)', 'mit Artikel (m-Länder / Plural)'],
+      items:[
+        { text:'Italia (f)',           cat:0 },
+        { text:'Giappone (m)',         cat:1 },
+        { text:'Germania (f)',         cat:0 },
+        { text:'Brasile (m)',          cat:1 },
+        { text:'Francia (f)',          cat:0 },
+        { text:'Stati Uniti (m/Pl.)', cat:1 }
+      ] },
+
+    { id:'m06-ka-03', type:'KA',
+      prompt:'Kategorisiere: Ort (wo?) oder Richtung (wohin?)',
+      categories:['Ort: wo?', 'Richtung: wohin?'],
+      items:[
+        { text:'Vivo in Italia.',         cat:0 },
+        { text:'Vado in Italia.',         cat:1 },
+        { text:'Sono in cucina.',         cat:0 },
+        { text:'Vado in cucina.',         cat:1 },
+        { text:'Il gatto è nel giardino.',cat:0 },
+        { text:'Metto le chiavi nel cassetto.',cat:1}
+      ] },
+
+    /* === DE 3 === */
+    { id:'m06-de-01', type:'DE',
+      prompt:'"Ich wohne in Spanien, aber ich arbeite in Portugal."',
+      solutions:['Abito in Spagna, ma lavoro nel Portogallo.','Vivo in Spagna, ma lavoro nel Portogallo.'],
+      note:'in Spagna (f, kein Artikel); nel Portogallo (m, in + il).' },
+
+    { id:'m06-de-02', type:'DE',
+      prompt:'"Das Buch ist im Schrank." (lo scaffale = das Regal / l\'armadio = der Schrank)',
+      solutions:["Il libro è nell'armadio.",'Il libro è nello scaffale.'],
+      note:"nell'armadio: in + l' (Vokal, m). nello scaffale: in + lo (s-Anlaut)." },
+
+    { id:'m06-de-03', type:'DE',
+      prompt:'"Im Sommer fahre ich mit dem Zug in die Toskana."',
+      solutions:['In estate vado in Toscana in treno.','In estate vado in treno in Toscana.'],
+      note:'In estate (Jahreszeit); in Toscana (f-Region); in treno (Transportmittel).' },
+
+    /* === IT 3 === */
+    { id:'m06-it-01', type:'IT',
+      prompt:'"Il mio portafoglio è nella tasca dei pantaloni."',
+      solutions:['Meine Geldbörse ist in der Hosentasche.','Mein Portemonnaie ist in der Tasche der Hose.'],
+      note:'nella tasca (f); dei pantaloni = di + i (m/Pl.).' },
+
+    { id:'m06-it-02', type:'IT',
+      prompt:'"Negli anni \'60 la vita era più semplice."',
+      solutions:['In den 60er Jahren war das Leben einfacher.','Das Leben war in den 60ern einfacher.'],
+      note:'negli anni (m/Pl., Vokal); era = er/sie war (imperfetto di essere).' },
+
+    { id:'m06-it-03', type:'IT',
+      prompt:'"Arrivo in mezz\'ora, aspettami."',
+      solutions:['Ich komme in einer halben Stunde, warte auf mich.','Ich bin in einer halben Stunde da, warte auf mich.'],
+      note:'in mezz\'ora = in einer halben Stunde (Dauer); aspettami = warte auf mich.' }
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
