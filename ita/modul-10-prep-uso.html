@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Welche Präposition wann?</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Präpositionen &middot; Modul 10</span>
+    </div>
+  </div>
+
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+    <h1>🗺️ Welche Präposition wann?</h1>
+    <p>di / a / da / in / su / con / per / tra — Überblick, typische Verwechslungen, Entscheidungshilfen</p>
+  </div>
+
+  <div id="theory-mount"></div>
+
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 50</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm10',
+  block: 'praepos',
+  title: 'Welche Präposition wann?',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Dieses Modul fasst alle fünf Hauptpräpositionen zusammen und hilft dir, die häufigsten Verwechslungen zu vermeiden. Der Fokus liegt auf Kontrasten: <strong>wann welche</strong> -- und warum.' },
+
+    { type:'table', head:['Präp.', 'Kernsinn', 'Ohne Artikel bei', 'Mit Artikel (Beispiel)'],
+      rows:[
+        ['DI',  'von / aus / Zugehörigkeit', 'Städte (Herkunft), Material, Thema', 'del pane, della città'],
+        ['A',   'zu / nach / an',            'Städte (Ort/Ziel), feste Ausdrücke (a piedi)', 'al cinema, alle tre'],
+        ['DA',  'von / seit / bei',          'Personen (da Marco), Zeitdauer (da anni)', 'dal medico, dall\'inizio'],
+        ['IN',  'in / nach',                 'Länder (f), Räume allg., Transport, Jahreszeiten', 'nel parco, nella borsa'],
+        ['SU',  'auf / über',                'feste Ausdrücke (su misura)',  'sul tavolo, sul clima'],
+        ['CON', 'mit',                       'nie (con verschmilzt nicht!)', 'con il treno (nie "col" in Standard-Ital.)'],
+        ['PER', 'für / um zu / wegen',       'nie', 'per te, per due ore'],
+        ['TRA/FRA', 'zwischen / in',         'nie', 'tra me e te, fra un\'ora'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Der häufigste Fehlerbereich: Ort und Herkunft</strong>' },
+
+    { type:'table', head:['Situation', 'Präposition', 'Beispiel'],
+      rows:[
+        ['Wohnort / Geburtsort (Person)', 'di', 'Sono di Roma.'],
+        ['Bewegung von einem Ort', 'da', 'Vengo da Roma.'],
+        ['Ort / Ziel: Stadt', 'a', 'Abito a Roma. / Vado a Roma.'],
+        ['Ort / Ziel: Land (f)', 'in', 'Abito in Italia. / Vado in Italia.'],
+        ['Ort / Ziel: Land (m)', 'nel/nei', 'Vivo nel Giappone.'],
+        ['Ort: allgemeiner Raum', 'in', 'Sono in cucina. / in ufficio.'],
+        ['Ort: benannter Raum', 'nel/nella...', 'Sono nel salotto.'],
+        ['Ort: auf einer Fläche', 'su (sul/sulla...)', 'Il libro è sul tavolo.'],
+        ['Ort: bei jemandem', 'da (dal/dalla...)', 'Sono dal medico.'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Zeitdauer: DA vs. PER</strong>' },
+
+    { type:'compare',
+      left:  { title:'DA: seit (bis jetzt)', body:'<strong>Präsens + da</strong><br>Studio da tre anni.<br>(Ich lerne seit drei Jahren — und noch immer.)<br><br>Non mangio da ieri.<br>(Ich esse seit gestern nicht.)' },
+      right: { title:'PER: für (abgeschlossen)', body:'<strong>Passato + per</strong><br>Ho studiato per tre anni.<br>(Ich habe drei Jahre lang gelernt — abgeschlossen.)<br><br>Ho aspettato per un\'ora.<br>(Ich habe eine Stunde lang gewartet.)' }
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Verb + Präposition + Infinitiv:</strong> Viele Verben verlangen eine feste Präposition vor dem Infinitiv.' },
+
+    { type:'table', head:['Verb + A + Infinitiv', 'Verb + DI + Infinitiv', 'Verb + PER + Infinitiv'],
+      rows:[
+        ['imparare a',     'cercare di',    'studiare per'],
+        ['cominciare a',   'smettere di',   'lavorare per'],
+        ['riuscire a',     'decidere di',   'partire per'],
+        ['continuare a',   'sperare di',    'fermarsi per'],
+        ['aiutare a',      'dimenticare di','telefonare per'],
+        ['abituarsi a',    'promettere di', ''],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Merkhilfe Ort:</strong> Stadt = A  |  Land (f) = IN  |  Raum auf Fläche = SU  |  Raum innen = IN (oder NEL/NELLA)  |  Bei Person = DA.' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m10-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['abito', 'in', 'Italia', 'ma', 'sono', 'di', 'Germania'],
+      solution:['abito', 'in', 'Italia', 'ma', 'sono', 'di', 'Germania'],
+      translation:'Ich wohne in Italien, aber ich komme aus Deutschland.',
+      explain:'in Italia (Ort, f-Land); sono di Germania (Herkunft/Geburtsort: DI).' },
+
+    { id:'m10-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['da', 'aspetto', 'tre', 'ore', 'qui'],
+      solution:['aspetto', 'qui', 'da', 'tre', 'ore'],
+      translation:'Ich warte hier seit drei Stunden.',
+      explain:'Zeitdauer seit: Präsens + da + Zeitangabe.' },
+
+    /* === ZO 8 === */
+    { id:'m10-zo-01', type:'ZO',
+      prompt:'Ordne zu: Situation -> richtige Präposition (Ort)',
+      pairs:[
+        { de:'Ich wohne in Mailand.',      it:'Abito a Milano. (A)'         },
+        { de:'Ich wohne in Italien.',      it:'Abito in Italia. (IN)'       },
+        { de:'Ich bin beim Arzt.',         it:'Sono dal medico. (DA)'       },
+        { de:'Das Buch liegt auf dem Tisch.', it:'Il libro è sul tavolo. (SU)' },
+        { de:'Das Buch liegt im Schrank.',  it:"Il libro è nell'armadio. (IN)" },
+        { de:'Ich bin aus Rom.',           it:'Sono di Roma. (DI)'          }
+      ] },
+
+    { id:'m10-zo-02', type:'ZO',
+      prompt:'Ordne zu: DA oder PER? (Zeitdauer)',
+      pairs:[
+        { de:'Ich lerne seit zwei Jahren.',   it:'Studio da due anni.'       },
+        { de:'Ich habe zwei Jahre gelernt.',  it:'Ho studiato per due anni.' },
+        { de:'Ich warte seit einer Stunde.',  it:"Aspetto da un'ora."        },
+        { de:'Ich habe eine Stunde gewartet.',it:"Ho aspettato per un'ora."  },
+        { de:'Er schläft seit Mittag.',       it:'Dorme da mezzogiorno.'     },
+        { de:'Er hat bis Mittag geschlafen.', it:'Ha dormito fino a mezzogiorno.' }
+      ] },
+
+    { id:'m10-zo-03', type:'ZO',
+      prompt:'Ordne zu: DI oder DA? (Herkunft)',
+      pairs:[
+        { de:'Ich bin aus Rom. (Wohnort)',     it:'Sono di Roma.'       },
+        { de:'Ich komme gerade aus Rom.',     it:'Vengo da Roma.'      },
+        { de:'ein Freund aus Neapel',         it:'un amico di Napoli'  },
+        { de:'von Neapel nach Hause kommen', it:'tornare da Napoli'   },
+        { de:'Er ist aus der Schweiz.',       it:'È di Svizzera.'      },
+        { de:'Er kommt aus der Schweiz.',     it:'Viene dalla Svizzera.' }
+      ] },
+
+    { id:'m10-zo-04', type:'ZO',
+      prompt:'Ordne zu: Verb + Präposition + Infinitiv',
+      pairs:[
+        { de:'imparare ___ guidare',     it:'a'  },
+        { de:'smettere ___ fumare',      it:'di' },
+        { de:'cominciare ___ capire',    it:'a'  },
+        { de:'sperare ___ vincere',      it:'di' },
+        { de:'riuscire ___ dormire',     it:'a'  },
+        { de:'decidere ___ partire',     it:'di' }
+      ] },
+
+    { id:'m10-zo-05', type:'ZO',
+      prompt:'Ordne zu: Präposition -> Hauptbedeutung',
+      pairs:[
+        { de:'DI',     it:'Zugehörigkeit, Herkunft, Material'  },
+        { de:'A',      it:'Stadt, Uhrzeit, Ziel'               },
+        { de:'DA',     it:'Seit, von (Bewegung), bei Person'   },
+        { de:'IN',     it:'Land, Raum, Jahreszeit, Transportm.'},
+        { de:'SU',     it:'Auf (Fläche), Thema, ungefähre Zahl'},
+        { de:'PER',    it:'Für, Zweck, abgeschlossene Dauer'   }
+      ] },
+
+    { id:'m10-zo-06', type:'ZO',
+      prompt:'Ordne zu: A oder IN? (Ort/Ziel)',
+      pairs:[
+        { de:'Florenz',           it:'a Firenze'      },
+        { de:'Toskana',           it:'in Toscana'     },
+        { de:'Japan',             it:'in Giappone'    },
+        { de:'Tokio',             it:'a Tokyo'        },
+        { de:'Kino',              it:'al cinema'      },
+        { de:'Büro (allgemein)',  it:'in ufficio'     }
+      ] },
+
+    { id:'m10-zo-07', type:'ZO',
+      prompt:'Ordne zu: Fester Ausdruck -> Präposition',
+      pairs:[
+        { de:'zu Fuß gehen',        it:'a piedi'           },
+        { de:'am Meer sein',        it:'al mare'           },
+        { de:'mit dem Zug fahren',  it:'in treno'          },
+        { de:'ungefähr 50 Euro',    it:'sui 50 euro'       },
+        { de:'seit gestern',        it:'da ieri'           },
+        { de:'in einer Stunde',     it:"tra un'ora"        }
+      ] },
+
+    { id:'m10-zo-08', type:'ZO',
+      prompt:'Ordne zu: Satz -> verwendete Präposition',
+      pairs:[
+        { de:'Ho un vestito da sera.',         it:'DA (Zweck)'               },
+        { de:'Vengo da Milano.',               it:'DA (Herkunft, Bewegung)'  },
+        { de:'Studio da un mese.',             it:'DA (Zeitdauer seit)'      },
+        { de:'Sono dal medico.',               it:'DA (Ort: bei Person)'     },
+        { de:'Il libro è stato scritto da lei.',it:'DA (Passiv-Agens)'      },
+        { de:'La ragazza dai capelli neri.',   it:'DA (Charakteristikum)'   }
+      ] },
+
+    /* === MC Basis 12 === */
+    { id:'m10-mc-01', type:'MC',
+      prompt:'Welche Präposition? "Abito ___ Berlino."',
+      options:['in','a','di','da'],
+      correctValue:'a',
+      explain:'Stadt -> A. Abito a Berlino.' },
+
+    { id:'m10-mc-02', type:'MC',
+      prompt:'Welche Präposition? "Abito ___ Germania."',
+      options:['a','di','in','da'],
+      correctValue:'in',
+      explain:'Land (f) -> IN. Abito in Germania.' },
+
+    { id:'m10-mc-03', type:'MC',
+      prompt:'Welche Präposition? "Sono ___ Roma." (Geburtsort)',
+      options:['a','in','da','di'],
+      correctValue:'di',
+      explain:'Geburtsort/Herkunft: DI. Sono di Roma.' },
+
+    { id:'m10-mc-04', type:'MC',
+      prompt:'Welche Präposition? "Studio italiano ___ sei mesi." (und noch immer)',
+      options:['per','da','di','a'],
+      correctValue:'da',
+      explain:'Zeitdauer seit (andauernd): DA + Präsens.' },
+
+    { id:'m10-mc-05', type:'MC',
+      prompt:'Welche Präposition? "Ho studiato italiano ___ sei mesi." (abgeschlossen)',
+      options:['da','di','per','a'],
+      correctValue:'per',
+      explain:'Abgeschlossene Dauer: PER. Ho studiato per sei mesi.' },
+
+    { id:'m10-mc-06', type:'MC',
+      prompt:'Welche Präposition? "Il gatto dorme ___ divano."',
+      options:['in','a','su','da'],
+      correctValue:'su',
+      explain:'Auf einer Fläche: SU. sul divano (su + il).' },
+
+    { id:'m10-mc-07', type:'MC',
+      prompt:'Welche Präposition? "Vado ___ medico." (zum Arzt)',
+      options:['al','dal','in','a'],
+      correctValue:'dal',
+      explain:'Zu jemandem (Person): DA. dal medico (da + il).' },
+
+    { id:'m10-mc-08', type:'MC',
+      prompt:'Welche Präposition? "Ho imparato ___ cucinare." (Verb + Präp.)',
+      options:['di','a','per','in'],
+      correctValue:'a',
+      explain:'imparare a + Infinitiv. Immer A, nie DI.' },
+
+    { id:'m10-mc-09', type:'MC',
+      prompt:'Welche Präposition? "Ci vediamo ___ un\'ora." (in einer Stunde, Zukunft)',
+      options:['da','in','tra','per'],
+      correctValue:'tra',
+      explain:'Zukünftiger Zeitpunkt: TRA/FRA. Ci vediamo tra un\'ora.' },
+
+    { id:'m10-mc-10', type:'MC',
+      prompt:'Welche Präposition? "un libro ___ storia" (Thema)',
+      options:['a','in','di','su'],
+      correctValue:'di',
+      explain:'Thema ohne Artikel: DI. un libro di storia.' },
+
+    { id:'m10-mc-11', type:'MC',
+      prompt:'Welche Präposition? "Leggo un articolo ___ clima sul giornale." (über das Klima)',
+      options:['di','a','sul','del'],
+      correctValue:'sul',
+      explain:'Thema mit bestimmtem Artikel: SU. un articolo sul clima (su + il).' },
+
+    { id:'m10-mc-12', type:'MC',
+      prompt:'Welche Präposition? "Vado ___ Francia." (Richtung, Land)',
+      options:['a','nella','in','di'],
+      correctValue:'in',
+      explain:'Land (f), Richtung: IN. Vado in Francia (kein Artikel).' },
+
+    /* === MCL 10 === */
+    { id:'m10-mcl-01', type:'MC',
+      prompt:'Wähle: "Sono ___ Napoli ma vivo ___ Roma."',
+      options:['di / a','a / in','di / in','da / a'],
+      correctValue:'di / a',
+      translation:'Ich bin aus Neapel, aber ich lebe in Rom.',
+      explain:'di Napoli (Herkunft); a Roma (Wohnort Stadt).' },
+
+    { id:'m10-mcl-02', type:'MC',
+      prompt:'Wähle: "Il vaso è ___ tavolo e le chiavi sono ___ borsa."',
+      options:['sul / nella','al / alla','sul / nella','in / su'],
+      correctValue:'sul / nella',
+      translation:'Die Vase steht auf dem Tisch und die Schlüssel sind in der Tasche.',
+      explain:'sul tavolo (su + il, Fläche); nella borsa (in + la, innen).' },
+
+    { id:'m10-mcl-03', type:'MC',
+      prompt:'Wähle: "Ho lavorato ___ quella ditta ___ tre anni."',
+      options:['in / da','a / per','in / per','per / da'],
+      correctValue:'in / per',
+      translation:'Ich habe drei Jahre lang in dieser Firma gearbeitet.',
+      explain:'in quella ditta (in + Raum/Firma); per tre anni (Dauer, abgeschlossen).' },
+
+    { id:'m10-mcl-04', type:'MC',
+      prompt:'Wähle: "Vengo ___ lavoro e poi vado ___ fare la spesa."',
+      options:['dal / a','al / in','dal / a','di / per'],
+      correctValue:'dal / a',
+      translation:'Ich komme von der Arbeit und gehe dann einkaufen.',
+      explain:'dal lavoro (da + il, Herkunft Bewegung); a fare (a + Infinitiv).' },
+
+    { id:'m10-mcl-05', type:'MC',
+      prompt:'Wähle: "Mi ha chiesto ___ aiutarla."',
+      options:['a','di','per','in'],
+      correctValue:'di',
+      translation:'Er/Sie hat mich gebeten ihr zu helfen.',
+      explain:'chiedere di + Infinitiv. Immer DI nach chiedere.' },
+
+    { id:'m10-mcl-06', type:'MC',
+      prompt:'Wähle: "Aspettiamo qui ___ dieci minuti."',
+      options:['da','a','per','tra'],
+      correctValue:'tra',
+      translation:'Wir warten hier in zehn Minuten. (in zehn Minuten sind wir wieder da)',
+      explain:'tra + Zeitangabe = in X (zukünftiger Zeitpunkt). Aspettiamo tra dieci minuti.' },
+
+    { id:'m10-mcl-07', type:'MC',
+      prompt:'Wähle: "Vivo ___ Italia ___ due anni." (und noch)',
+      options:['in / da','a / per','in / per','in / da'],
+      correctValue:'in / da',
+      translation:'Ich lebe seit zwei Jahren in Italien.',
+      explain:'in Italia (Land f); da due anni (Zeitdauer seit, Präsens).' },
+
+    { id:'m10-mcl-08', type:'MC',
+      prompt:'Wähle: "Ho comprato un vestito ___ sera ___ un negozio ___ centro."',
+      options:['da / in / in','di / da / nel','da / in / in','per / al / in'],
+      correctValue:'da / in / in',
+      translation:'Ich habe ein Abendkleid in einem Geschäft im Zentrum gekauft.',
+      explain:'vestito da sera (DA Zweck); in un negozio (IN Raum); in centro (IN allg. Ort).' },
+
+    { id:'m10-mcl-09', type:'MC',
+      prompt:'Wähle: "Sei mai stato ___ Giappone?"',
+      options:['in','a','nel','al'],
+      correctValue:'in',
+      translation:'Warst du schon mal in Japan?',
+      explain:'Il Giappone ist ein Land (m), aber mit in: in Giappone. (Alternativ: nel Giappone, beides korrekt)' },
+
+    { id:'m10-mcl-10', type:'MC',
+      prompt:'Wähle: "Ho smesso ___ fumare tre anni fa."',
+      options:['a','di','per','da'],
+      correctValue:'di',
+      translation:'Ich habe vor drei Jahren aufgehört zu rauchen.',
+      explain:'smettere di + Infinitiv. Immer DI nach smettere.' },
+
+    /* === LT 5 === */
+    { id:'m10-lt-01', type:'LT',
+      text:'Sono {0} Milano ma abito {1} Roma {2} cinque anni.',
+      blanks:[ { accept:['di'] }, { accept:['a'] }, { accept:['da'] } ],
+      translation:'Ich bin aus Mailand, aber ich wohne seit fünf Jahren in Rom.',
+      explain:'di Milano (Herkunft); a Roma (Wohnort Stadt); da cinque anni (seit).' },
+
+    { id:'m10-lt-02', type:'LT',
+      text:'Il gatto dorme {0} divano e il libro è {1} tavolo.',
+      blanks:[ { accept:['sul'] }, { accept:['sul'] } ],
+      translation:'Die Katze schläft auf dem Sofa und das Buch liegt auf dem Tisch.',
+      explain:'sul divano (su + il); sul tavolo (su + il). Beide: Fläche.' },
+
+    { id:'m10-lt-03', type:'LT',
+      text:'Ho imparato {0} cucinare {1} mia nonna. Ho studiato {2} tre anni.',
+      blanks:[ { accept:['a'] }, { accept:['da','dalla'] }, { accept:['per'] } ],
+      translation:'Ich habe bei meiner Oma kochen gelernt. Ich habe drei Jahre lang studiert.',
+      explain:'imparare a (Infinitiv); da mia nonna (bei Person); per tre anni (abgeschl. Dauer).' },
+
+    { id:'m10-lt-04', type:'LT',
+      text:'Tra un\'ora vado {0} dentista. Vengo {1} lavoro e poi passo {2} te.',
+      blanks:[ { accept:['dal'] }, { accept:['dal'] }, { accept:['da'] } ],
+      translation:'In einer Stunde gehe ich zum Zahnarzt. Ich komme von der Arbeit und komme dann bei dir vorbei.',
+      explain:'dal dentista / dal lavoro (da + il); da te = bei dir (Person, kein Artikel).' },
+
+    { id:'m10-lt-05', type:'LT',
+      text:'Ho cercato {0} dormire ma non sono riuscito {1} farlo. Ho aspettato {2} due ore.',
+      blanks:[ { accept:['di'] }, { accept:['a'] }, { accept:['per'] } ],
+      translation:'Ich habe versucht zu schlafen, aber es ist mir nicht gelungen. Ich habe zwei Stunden gewartet.',
+      explain:'cercare di (Infinitiv); riuscire a (Infinitiv); per due ore (abgeschl. Dauer).' },
+
+    /* === FT 1 === */
+    { id:'m10-ft-01', type:'FT',
+      prompt:'Ergänze die richtige Präposition (DI / A / DA / IN / SU):',
+      rows:[
+        { label:'Ich bin aus Neapel. Sono ___ Napoli.',     accept:['di'] },
+        { label:'Ich fahre nach Neapel. Vado ___ Napoli.',  accept:['a']  },
+        { label:'Ich komme aus Neapel. Vengo ___ Napoli.',  accept:['da'] },
+        { label:'Das Buch ist im Rucksack. È ___ zaino.',   accept:['nello'] },
+        { label:'Das Buch ist auf dem Tisch. È ___ tavolo.',accept:['sul'] },
+        { label:'Ich bin beim Arzt. Sono ___ medico.',      accept:['dal'] }
+      ] },
+
+    /* === FK 3 === */
+    { id:'m10-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Studio italiano per tre anni e ancora continuo.',
+      solution:'Studio italiano da tre anni e ancora continuo.',
+      errorToken:'per',
+      translation:'Ich lerne seit drei Jahren Italienisch und mache noch weiter.',
+      explain:'Andauernde Handlung mit Präsens: DA. PER + Vergangenheit wäre für abgeschlossene Dauer.' },
+
+    { id:'m10-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Vado in Roma domani.',
+      solution:'Vado a Roma domani.',
+      errorToken:'in Roma',
+      translation:'Ich fahre morgen nach Rom.',
+      explain:'Städte immer mit A. IN gilt für Länder und Regionen, nicht für Städte.' },
+
+    { id:'m10-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
+      sentence:'Ho smesso a fumare.',
+      solution:'Ho smesso di fumare.',
+      errorToken:'a fumare',
+      translation:'Ich habe aufgehört zu rauchen.',
+      explain:'smettere di + Infinitiv. Niemals smettere a.' },
+
+    /* === KA 3 === */
+    { id:'m10-ka-01', type:'KA',
+      prompt:'Kategorisiere: A oder IN? (Ort/Ziel)',
+      categories:['A (Städte, Orte, Uhrzeiten)', 'IN (Länder, Räume, Jahreszeiten)'],
+      items:[
+        { text:'Vado a Parigi.',          cat:0 },
+        { text:'Vado in Francia.',        cat:1 },
+        { text:'Sono al bar.',            cat:0 },
+        { text:'Sono in ufficio.',        cat:1 },
+        { text:'alle cinque',             cat:0 },
+        { text:'in estate',               cat:1 }
+      ] },
+
+    { id:'m10-ka-02', type:'KA',
+      prompt:'Kategorisiere: DA oder PER? (Zeitdauer)',
+      categories:['DA (seit, andauernd)', 'PER (für, abgeschlossen)'],
+      items:[
+        { text:'Studio da un mese.',          cat:0 },
+        { text:'Ho studiato per un mese.',    cat:1 },
+        { text:'Abito qui da anni.',          cat:0 },
+        { text:'Ho vissuto lì per anni.',     cat:1 },
+        { text:'Non mangio da ieri.',         cat:0 },
+        { text:'Ho aspettato per ore.',       cat:1 }
+      ] },
+
+    { id:'m10-ka-03', type:'KA',
+      prompt:'Kategorisiere: Verb + A oder Verb + DI?',
+      categories:['Verb + A + Infinitiv', 'Verb + DI + Infinitiv'],
+      items:[
+        { text:'imparare a parlare',       cat:0 },
+        { text:'smettere di fumare',       cat:1 },
+        { text:'riuscire a dormire',       cat:0 },
+        { text:'cercare di capire',        cat:1 },
+        { text:'cominciare a lavorare',    cat:0 },
+        { text:'sperare di vincere',       cat:1 }
+      ] },
+
+    /* === KO 3 === */
+    { id:'m10-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Sono di Milano.', tag:'DI: Herkunft / Geburtsort' },
+      b:{ sentence:'Vengo da Milano.', tag:'DA: Bewegung von einem Ort' },
+      reveal:'"Sono di Milano" = Ich bin aus Mailand (Geburtsort, Wohnort, Herkunft als Tatsache). "Vengo da Milano" = Ich komme (gerade/jetzt) aus Mailand (konkrete Bewegung). Beide können im Alltag für Herkunft verwendet werden, aber DI ist neutraler und häufiger für die bloße Tatsache.' },
+
+    { id:'m10-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Ho studiato per due anni.', tag:'PER + Vergangenheit: abgeschlossen' },
+      b:{ sentence:'Studio da due anni.', tag:'DA + Präsens: noch andauernd' },
+      reveal:'"Ho studiato per due anni" = Ich habe zwei Jahre lang gelernt (und jetzt nicht mehr). "Studio da due anni" = Ich lerne seit zwei Jahren (und lerne noch immer). Das Tempus des Hauptverbs entscheidet: Vergangenheit + PER = abgeschlossen. Präsens + DA = andauernd.' },
+
+    { id:'m10-ko-03', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'un libro di storia', tag:'DI: Thema ohne Artikel' },
+      b:{ sentence:'un libro sulla storia', tag:'SU: Thema mit Artikel' },
+      reveal:'Beide bedeuten "ein Buch über Geschichte", aber mit leicht unterschiedlichem Fokus: "di storia" ist allgemeiner und bezeichnet das Genre/Thema (kein Artikel). "sulla storia" ist etwas spezifischer und verweist auf die Geschichte als konkretes Konzept (mit Artikel). Im Alltag sind beide korrekt, DI ist häufiger bei Büchern/Kursen.' },
+
+    /* === DE 3 === */
+    { id:'m10-de-01', type:'DE',
+      prompt:'"Ich bin aus Japan, wohne seit drei Jahren in Berlin und fahre morgen nach München."',
+      solutions:['Sono del Giappone, abito a Berlino da tre anni e domani vado a Monaco.','Sono giapponese, vivo a Berlino da tre anni e domani vado a Monaco di Baviera.'],
+      note:'di/del Giappone (Herkunft); a Berlino (Stadt Wohnort); da tre anni (seit, Präsens); a Monaco (Stadt Ziel).' },
+
+    { id:'m10-de-02', type:'DE',
+      prompt:'"Er hat angefangen zu lernen, aber nach einer Woche aufgehört."',
+      solutions:['Ha cominciato a studiare, ma ha smesso dopo una settimana.','Ha cominciato a imparare, ma ha smesso di farlo dopo una settimana.'],
+      note:'cominciare a (Infinitiv); smettere di (Infinitiv); dopo una settimana = nach einer Woche.' },
+
+    { id:'m10-de-03', type:'DE',
+      prompt:'"Die Katze mit den langen Haaren schläft auf dem Sofa."',
+      solutions:['Il gatto dai peli lunghi dorme sul divano.','La gatta dai capelli lunghi dorme sul divano.'],
+      note:'dai peli lunghi (DA Charakteristikum); sul divano (SU + il, Fläche).' },
+
+    /* === IT 3 === */
+    { id:'m10-it-01', type:'IT',
+      prompt:'"Sono di Parigi, ma vivo a Milano da un anno."',
+      solutions:['Ich bin aus Paris, aber ich lebe seit einem Jahr in Mailand.'],
+      note:'di Parigi (Herkunft); a Milano (Stadt); da un anno (seit).' },
+
+    { id:'m10-it-02', type:'IT',
+      prompt:'"Ho studiato per tutta la mattina e poi sono uscito a fare una passeggiata."',
+      solutions:['Ich habe den ganzen Morgen gelernt und bin dann spazieren gegangen.','Ich habe den Vormittag gelernt und dann einen Spaziergang gemacht.'],
+      note:'per tutta la mattina (PER, abgeschlossene Dauer); uscire a fare (A + Infinitiv).' },
+
+    { id:'m10-it-03', type:'IT',
+      prompt:'"Tra due ore vengo da te e ti porto un libro sulla cucina italiana."',
+      solutions:['In zwei Stunden komme ich zu dir und bringe dir ein Buch über die italienische Küche.'],
+      note:'tra due ore (TRA, Zukunft); da te (bei/zu dir, Person); sulla cucina (SU Thema).' }
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

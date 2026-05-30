@@ -8,31 +8,38 @@
 <link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <style>
-  /* Responsive Anpassungen für die Topbar auf Smartphones */
-  @media (max-width: 680px) {
-    .topbar {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.8rem;
-      padding: 0.8rem 1rem;
-    }
-    .topbar-right {
-      display: flex;
-      gap: 0.5rem;
-      width: 100%;
-    }
-    .topbar-right a {
-      margin-left: 0 !important;
-      flex: 1;
-      text-align: center;
-      font-size: 0.78rem !important;
-      padding: 0.35rem 0.5rem !important;
-      white-space: nowrap;
-    }
-    .brand {
-      text-align: center;
-      font-size: 1.2rem;
-    }
+  /* Mobile Topbar */
+  @media (max-width: 640px) {
+    .topbar { flex-direction: column; align-items: stretch; gap: 0.6rem; padding: 0.75rem 1rem; }
+    .topbar-right { display: flex; gap: 0.4rem; width: 100%; flex-wrap: wrap; }
+    .topbar-right a { flex: 1; text-align: center; font-size: 0.75rem !important; padding: 0.3rem 0.4rem !important; min-width: 0; }
+    .brand { text-align: center; }
+  }
+
+  /* Niveau-Label über jedem Block */
+  .niveau-section { margin-bottom: 0.5rem; margin-top: 2.2rem; }
+  .niveau-section:first-child { margin-top: 0; }
+  .niveau-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 1.05rem;
+    padding: 0.3rem 1rem 0.3rem 0.7rem;
+    border: 2.5px solid var(--ink);
+    border-radius: 99px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+  }
+  .niveau-label-a1 { background: var(--oliva-soft); color: var(--oliva-deep); }
+  .niveau-label-a2 { background: var(--cielo-soft); color: var(--cielo-deep); }
+  .niveau-label-b1 { background: var(--terra-soft); color: var(--terra-deep); }
+  .niveau-desc {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin: -0.4rem 0 1rem 0.2rem;
+    font-style: italic;
   }
 </style>
 </head>
@@ -43,133 +50,320 @@
     <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
     <div class="topbar-right">
       <a href="grammatik.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;" title="Grammatik kompakt">📋 Grammatik kompakt</a>
-      <a href="grammatik-niveau.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;margin-left:0.5rem;" title="Grammatik A1-B1">📊 Grammatik A1-B1</a>
+      <a href="grammatik-niveau.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;" title="Grammatik A1–B1">🎓 Grammatik A1–B1</a>
+      <span class="topbar-streak" id="topbarStreak"></span>
     </div>
   </div>
 
-  <header class="dashboard-hero">
-    <h1 class="dashboard-title">Benvenuto! 👋</h1>
-    <p class="dashboard-intro">Meistere die italienische Grammatik Schritt für Schritt. Wähle ein Thema und starte deine Übung!</p>
-  </header>
+  <!-- Gesamtfortschritt -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-label">
+      <span>Gesamtfortschritt</span>
+      <span id="overallPct">0 %</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="overallFill" style="width:0%"></div>
+    </div>
+  </div>
 
-  <div id="blocks-container"></div>
+  <!-- Streak + Zitat -->
+  <div class="dashboard-meta">
+    <div class="streak-box">
+      <span class="streak-number" id="streakCount">0</span>
+      <span class="streak-label">Tage<br>in Folge 🔥</span>
+    </div>
+    <div class="quote-box" id="quoteBox"></div>
+  </div>
+
+  <!-- Schwachstellen-Empfehlung -->
+  <div class="weakness-box hidden" id="weaknessBox">
+    <span class="weakness-icon">🎯</span>
+    <div class="weakness-text">
+      <strong>Empfehlung: Nochmal üben</strong>
+      <span id="weaknessText"></span>
+    </div>
+    <a id="weaknessLink" href="#" class="btn btn-cielo btn-sm">Jetzt üben</a>
+  </div>
+
+  <!-- Module nach Niveau -->
+  <div id="blocks"></div>
+
+  <!-- Extras -->
+  <div style="margin-top:2.5rem;">
+    <div style="border-bottom:3px solid var(--ink);padding-bottom:0.5rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.7rem;">
+      <h2 style="font-family:var(--f-display);font-weight:900;font-size:1.2rem;margin:0;">Extras</h2>
+    </div>
+    <div class="module-grid">
+      <div class="module-card">
+        <div class="module-card-top">
+          <span class="module-icon">🗂️</span>
+          <span class="module-title">Vokabeln üben</span>
+        </div>
+        <p class="module-intro">Alle Vokabeln aus den Modulen gezielt wiederholen — mit Lernkarten, Eingabe und Selbstkontrolle.</p>
+        <a href="vokabeln.html" class="btn btn-primary btn-sm">Lernen →</a>
+      </div>
+      <div class="module-card">
+        <div class="module-card-top">
+          <span class="module-icon">📋</span>
+          <span class="module-title">Grammatik kompakt</span>
+        </div>
+        <p class="module-intro">Kompakter Überblick: Präpositionen, Zeiten, Pronomen, Genus, Verneinung — zum schnellen Nachschlagen.</p>
+        <a href="grammatik.html" class="btn btn-primary btn-sm">Nachschlagen →</a>
+      </div>
+      <div class="module-card">
+        <div class="module-card-top">
+          <span class="module-icon">🎓</span>
+          <span class="module-title">Grammatik nach Niveau</span>
+        </div>
+        <p class="module-intro">Alle Grammatikthemen sortiert nach A1, A2 und B1 — mit Erklärungen, Tabellen und Modul-Links.</p>
+        <a href="grammatik-niveau.html" class="btn btn-primary btn-sm">Erkunden →</a>
+      </div>
+    </div>
+  </div>
 
 </div>
 
+<script src="assets/shared.js"></script>
 <script>
 'use strict';
 
-const COURSE_DATA = [
+// ─────────────────────────────────────────────────────────────
+// Kursstruktur: nach Niveau gruppiert, Fachgruppen als Blöcke
+// Dateinamen und IDs der fertigen Module bleiben unverändert.
+// Neue Module (m17+) für spätere Inhalte vorgesehen.
+// ─────────────────────────────────────────────────────────────
+const NIVEAU_GROUPS = [
   {
-    id: "block1",
-    title: "1. Die Grundlagen (A1)",
-    color: "accent-1",
-    modules: [
-      { id: "mod_subst_plur", title: "Substantive & Plural", icon: "🇮🇹", intro: "Regelmäßige Pluralbildung (-o/-a/-e) und Besonderheiten.", ready: true },
-      { id: "mod_art_determ", title: "Bestimmter Artikel", icon: "✏️", intro: "il, lo, la, i, gli, le und wann man sie benutzt.", ready: true },
-      { id: "mod_art_indeterm", title: "Unbestimmter Artikel", icon: "💼", intro: "un, uno, una, un' für Personen und Gegenstände.", ready: true },
-      { id: "mod_verb_presente", title: "Präsens: Regelmäßige Verben", icon: "⏳", intro: "Die Konjugation der Verbgruppen auf -are, -ere und -ire.", ready: true }
+    niveau: 'a1',
+    label: '🌱 A1 — Die Grundlagen',
+    desc: 'Erste Zeitformen, Artikel, Plural, einfache Sätze und Verben.',
+    blocks: [
+      {
+        id: 'grundlagen', title: 'Substantive & Artikel', color: 'oliva',
+        modules: [
+          { id:'m17', title:'Substantive & Plural', icon:'📦', file:'modul-17-plural.html', ready:false,
+            intro:'Regelmäßige und unregelmäßige Pluralbildung: -o/-a/-e und Besonderheiten.' },
+          { id:'m18', title:'Bestimmter Artikel', icon:'✏️', file:'modul-18-art-best.html', ready:false,
+            intro:'il, lo, la, l\', i, gli, le — Genus, Anlaut und alle Formen auf einen Blick.' },
+          { id:'m19', title:'Unbestimmter Artikel', icon:'💼', file:'modul-19-art-unbest.html', ready:false,
+            intro:'un, uno, una, un\' — Regeln, Genus und typische Fehler.' },
+        ]
+      },
+      {
+        id: 'zeiten-a1', title: 'Zeiten (A1)', color: 'cielo',
+        modules: [
+          { id:'m20', title:'Präsens: Regelmäßige Verben', icon:'⏳', file:'modul-20-presente.html', ready:false,
+            intro:'Konjugation der drei Verbgruppen -are, -ere, -ire im Presente.' },
+          { id:'m01', title:'Passato Prossimo', icon:'🕰️', file:'modul-01-passato.html', ready:true,
+            intro:'Einfache Vergangenheit mit avere/essere, regelmäßige und unregelmäßige Partizipien.' },
+        ]
+      },
+      {
+        id: 'verben-a1', title: 'Verben (A1)', color: 'sun',
+        modules: [
+          { id:'m21', title:'Essere & Avere', icon:'👑', file:'modul-21-essere-avere.html', ready:false,
+            intro:'Die wichtigsten Hilfsverben: Konjugation, Bedeutungen und häufigste Ausdrücke.' },
+          { id:'m12', title:'Modalverben', icon:'💬', file:'modul-12-modali.html', ready:false,
+            intro:'dovere, potere, volere + Infinitiv: Formen, Verneinung, Vergangenheit.' },
+        ]
+      },
     ]
   },
   {
-    id: "block2",
-    title: "2. Erste Sätze & Verben (A1)",
-    color: "accent-2",
-    modules: [
-      { id: "mod_verb_essere_avere", title: "Essere & Avere", icon: "👑", intro: "Die beiden wichtigsten Hilfsverben im Präsens.", ready: true },
-      { id: "mod_verb_modal", title: "Modalverben", icon: "🚀", intro: "Dovere, potere und volere im Alltag verwenden.", ready: true },
-      { id: "mod_pron_diretti", title: "Direkte Objektpronomen", icon: "🎯", intro: "Ersetze Objekte durch mi, ti, lo, la, ci, vi, li, le.", ready: true },
-      { id: "mod_passato_prossimo", title: "Passato Prossimo", icon: "📜", intro: "Über die Vergangenheit sprechen mit essere oder avere.", ready: true }
+    niveau: 'a2',
+    label: '🌿 A2 — Vertiefung & Alltag',
+    desc: 'Mehr Zeitformen, Pronomen, Präpositionen und Satzbau für den Alltag.',
+    blocks: [
+      {
+        id: 'zeiten-a2', title: 'Zeiten (A2)', color: 'cielo',
+        modules: [
+          { id:'m02', title:'Futuro Semplice', icon:'🔮', file:'modul-02-futuro.html', ready:true,
+            intro:'Einfache Zukunft: Endungen, unregelmäßige Stämme, Verwendung auch für Vermutungen.' },
+          { id:'m22', title:'Imperfetto', icon:'📽️', file:'modul-22-imperfetto.html', ready:false,
+            intro:'Gewohnheiten, Zustände und Hintergründe in der Vergangenheit.' },
+          { id:'m13', title:'Verlaufsform: stare + Gerundio', icon:'⏳', file:'modul-13-gerundio.html', ready:false,
+            intro:'Gerade dabei sein: stare + -ando/-endo, Vergleich mit Deutsch und Englisch.' },
+        ]
+      },
+      {
+        id: 'pronomen-a2', title: 'Pronomen', color: 'terra',
+        modules: [
+          { id:'m03', title:'Direkte Objektpronomen', icon:'🎯', file:'modul-03-direkte-pronomen.html', ready:true,
+            intro:'lo/la/li/le — Akkusativ-Pronomen: Position, Elision, Kongruenz im Passato.' },
+          { id:'m04', title:'Indirekte Objektpronomen', icon:'📤', file:'modul-04-indirekte-pronomen.html', ready:true,
+            intro:'gli/le/ci — Dativ-Pronomen: Vergleich mit Deutsch, piacere, typische Fehler.' },
+        ]
+      },
+      {
+        id: 'praepos-a2', title: 'Präpositionen', color: 'oliva',
+        modules: [
+          { id:'m05', title:'Präposition DI', icon:'🔗', file:'modul-05-di.html', ready:true,
+            intro:'del/dello/della — Verschmelzung, Herkunft, Zugehörigkeit, Mengenangaben.' },
+          { id:'m06', title:'Präposition IN', icon:'📦', file:'modul-06-in.html', ready:true,
+            intro:'nel/nello/nella — Ort, Bewegung in Länder und Räume, Zeit.' },
+          { id:'m07', title:'Präposition SU', icon:'⬆️', file:'modul-07-su.html', ready:true,
+            intro:'sul/sulla/sui — Lage auf einer Fläche, Thema, ungefähre Zahlen.' },
+          { id:'m08', title:'Präposition A', icon:'📍', file:'modul-08-a.html', ready:true,
+            intro:'al/alla/agli — Städte, indirektes Objekt, Uhrzeit, Art und Weise.' },
+          { id:'m09', title:'Präposition DA', icon:'↩️', file:'modul-09-da.html', ready:true,
+            intro:'dal/dalla — Herkunft, seit + Zeitdauer, Zweck, bei jemandem.' },
+          { id:'m10', title:'Welche Präposition wann?', icon:'🗺️', file:'modul-10-prep-uso.html', ready:true,
+            intro:'Überblick und typische Verwechslungen: di/a/da/in/su im direkten Vergleich.' },
+        ]
+      },
+      {
+        id: 'verben-a2', title: 'Verben (A2)', color: 'sun',
+        modules: [
+          { id:'m11', title:'Reflexive Verben', icon:'🔄', file:'modul-11-riflessivi.html', ready:false,
+            intro:'alzarsi, vestirsi und co. — mi/ti/si, reflexiv im Passato Prossimo.' },
+        ]
+      },
+      {
+        id: 'satzbau-a2', title: 'Satzbau (A2)', color: 'lavanda',
+        modules: [
+          { id:'m14', title:'Negation', icon:'🚫', file:'modul-14-negazione.html', ready:false,
+            intro:'non...mai, non...ancora, doppelte Negation — ganz anders als im Deutschen.' },
+        ]
+      },
     ]
   },
   {
-    id: "block3",
-    title: "3. Vertiefung & Alltag (A2)",
-    color: "accent-3",
-    modules: [
-      { id: "mod_imperfetto", title: "Imperfetto", icon: "🕰️", intro: "Gewohnheiten und Beschreibungen in der Vergangenheit.", ready: true },
-      { id: "mod_prep_semplici", title: "Einfache Präpositionen", icon: "🗺️", intro: "di, a, da, in, con, su, per, tra/fra richtig einsetzen.", ready: true },
-      { id: "mod_prep_articolate", title: "Präpositionen mit Artikel", icon: "🔗", intro: "Die Verschmelzung von Präpositionen und Artikeln (del, al, nel...).", ready: true },
-      { id: "mod_verb_riflessivi", title: "Reflexive Verben", icon: "🧼", intro: "Aktivitäten des Alltags: mi lavo, si alza.", ready: true }
+    niveau: 'b1',
+    label: '🌳 B1 — Fortgeschrittene Strukturen',
+    desc: 'Konditionalis, Konjunktiv, kombinierte Pronomen und komplexer Satzbau.',
+    blocks: [
+      {
+        id: 'zeiten-b1', title: 'Zeiten (B1)', color: 'cielo',
+        modules: [
+          { id:'m16', title:'Condizionale Presente', icon:'✨', file:'modul-16-condizionale.html', ready:false,
+            intro:'Würde-Form: höfliche Bitten, Wünsche, Hypothesen — Konjunktiv II auf Italienisch.' },
+          { id:'m23', title:'Passato Remoto', icon:'📜', file:'modul-23-passato-remoto.html', ready:false,
+            intro:'Historische Vergangenheit: Bildung, unregelmäßige Verben, Nord/Süd-Unterschied.' },
+          { id:'m24', title:'Congiuntivo', icon:'🌀', file:'modul-24-congiuntivo.html', ready:false,
+            intro:'Konjunktiv Präsens und Imperfekt: Auslöser, Bildung, Zeitenfolge.' },
+        ]
+      },
+      {
+        id: 'pronomen-b1', title: 'Pronomen (B1)', color: 'terra',
+        modules: [
+          { id:'m25', title:'Kombinierte Pronomen', icon:'🔀', file:'modul-25-kombipron.html', ready:false,
+            intro:'me lo, glielo, ce ne — direkte + indirekte Pronomen kombiniert.' },
+          { id:'m26', title:'Pronomen CI und NE', icon:'🧩', file:'modul-26-ci-ne.html', ready:false,
+            intro:'CI als Ort, Objekt und in Pronominalverben. NE für Mengen und Bezüge.' },
+        ]
+      },
+      {
+        id: 'satzbau-b1', title: 'Satzbau (B1)', color: 'lavanda',
+        modules: [
+          { id:'m15', title:'Relativsätze', icon:'🔗', file:'modul-15-relativsaetze.html', ready:false,
+            intro:'che, cui, quello che — Relativpronomen im Vergleich mit der/die/das.' },
+          { id:'m27', title:'Pronominalverben', icon:'🧠', file:'modul-27-pronominalverben.html', ready:false,
+            intro:'farcela, andarsene, metterci — Verben mit festem Pronomen und eigenem Sinn.' },
+        ]
+      },
     ]
   },
-  {
-    id: "block4",
-    title: "4. Fortgeschrittene Strukturen (B1)",
-    color: "accent-4",
-    modules: [
-      { id: "mod_futuro_semplice", title: "Futuro Semplice", icon: "🔮", intro: "Pläne und Vorhersagen für die Zukunft ausdrücken.", ready: true },
-      { id: "mod_condizionale_semplice", title: "Condizionale Semplice", icon: "💭", intro: "Wünsche, Höflichkeit und Ratschläge formulieren.", ready: true },
-      { id: "mod_pron_indiretti", title: "Indirekte Objektpronomen", icon: "💌", intro: "jemandem etwas geben oder sagen: mi, ti, gli, le, ci, vi, loro.", ready: true },
-      { id: "mod_ci_ne", title: "Pronomen CI und NE", icon: "🔀", intro: "Orte und Mengen schlau ersetzen.", ready: true }
-    ]
-  }
 ];
 
-function renderDashboard() {
-  const container = document.getElementById('blocks-container');
-  container.innerHTML = '';
-  
-  let state = { modules: {} };
-  try {
-    const saved = localStorage.getItem('grammaticaviva_state');
-    if (saved) state = JSON.parse(saved);
-  } catch(e) { console.error(e); }
+const QUOTES = [
+  '"Sbagliando si impara." — Durch Fehler lernt man.',
+  '"La pratica rende perfetti." — Übung macht den Meister.',
+  '"Piano piano si va lontano." — Schritt für Schritt kommt man weit.',
+  '"Chi studia, impara." — Wer lernt, gewinnt.',
+  '"Il bello dell\'italiano è la musica delle parole." — Die Schönheit des Italienischen liegt in der Musik der Wörter.',
+  '"Non smettere mai di imparare." — Hör nie auf zu lernen.',
+];
 
+function initDashboard() {
+  const state = Store.load();
+
+  // Streak
+  const sc = state.streak.count || 0;
+  document.getElementById('streakCount').textContent = sc;
+  if (sc > 0) document.getElementById('topbarStreak').textContent = `🔥 ${sc} ${sc === 1 ? 'Tag' : 'Tage'}`;
+
+  // Quote
+  document.getElementById('quoteBox').textContent = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+
+  // Alle Module flach für Gesamtfortschritt + Weakness
+  const allMods = NIVEAU_GROUPS.flatMap(ng => ng.blocks.flatMap(b => b.modules));
+  const allIds  = allMods.map(m => m.id);
+  const scores  = allIds.map(id => state.modules[id]?.bestScore || 0);
+  const overall = scores.reduce((a, b) => a + b, 0) / allIds.length;
+  const pct = Math.round(overall * 100);
+  document.getElementById('overallPct').textContent = pct + ' %';
+  document.getElementById('overallFill').style.width = pct + '%';
+
+  // Weakness
+  const weakestId = Store.findWeakest(allIds);
+  if (weakestId) {
+    const wMod = allMods.find(m => m.id === weakestId);
+    if (wMod && wMod.ready) {
+      document.getElementById('weaknessBox').classList.remove('hidden');
+      const wScore = Math.round((state.modules[weakestId]?.bestScore || 0) * 100);
+      document.getElementById('weaknessText').textContent = wMod.title + ' — bisher ' + wScore + ' %';
+      document.getElementById('weaknessLink').href = wMod.file;
+    }
+  }
+
+  // Render
+  const container = document.getElementById('blocks');
   const C = 2 * Math.PI * 15.9;
 
-  COURSE_DATA.forEach(block => {
-    let totalProgress = 0;
-    let countedModules = 0;
-    block.modules.forEach(m => {
-      if (m.ready) {
-        totalProgress += (state.modules[m.id]?.bestScore || 0);
-        countedModules++;
-      }
-    });
-    const blockPct = countedModules > 0 ? Math.round(totalProgress / countedModules) : 0;
+  NIVEAU_GROUPS.forEach(ng => {
+    // Niveau-Label
+    const nDiv = document.createElement('div');
+    nDiv.className = 'niveau-section';
+    nDiv.innerHTML = `
+      <div class="niveau-label niveau-label-${ng.niveau}">${ng.label}</div>
+      <p class="niveau-desc">${ng.desc}</p>`;
+    container.appendChild(nDiv);
 
-    const section = document.createElement('section');
-    section.className = 'dashboard-block';
-    section.innerHTML = `
-      <div class="block-header">
-        <h2 class="block-title">${block.title}</h2>
-        <span class="block-pct" style="background:var(--${block.color}-soft);border-color:var(--${block.color})">${blockPct} %</span>
-      </div>
-      <div class="module-grid"></div>`;
-    container.appendChild(section);
+    // Blöcke innerhalb des Niveaus
+    ng.blocks.forEach(block => {
+      const blockScores = block.modules.map(m => state.modules[m.id]?.bestScore || 0);
+      const blockPct = Math.round(blockScores.reduce((a,b) => a+b, 0) / block.modules.length * 100);
 
-    const grid = section.querySelector('.module-grid');
-    block.modules.forEach(mod => {
-      const progress = state.modules[mod.id]?.bestScore || 0;
-      const done     = state.modules[mod.id]?.done || false;
-      const dash     = (progress * C / 100).toFixed(1);
-
-      const card = document.createElement('div');
-      card.className = 'module-card' + (done ? ' done' : '') + (!mod.ready ? ' locked' : '');
-      card.innerHTML = `
-        <div class="module-card-top">
-          <span class="module-icon">${mod.icon}</span>
-          <span class="module-title">${mod.title}</span>
-          <div class="module-ring">
-            <svg class="ring-svg" viewBox="0 0 36 36">
-              <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
-              <circle class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="${dash} ${C.toFixed(1)}"/>
-            </svg>
-          </div>
+      const section = document.createElement('div');
+      section.className = 'block-section';
+      section.innerHTML = `
+        <div class="block-header">
+          <h2 class="block-title">${block.title}</h2>
+          <span class="block-pct" style="background:var(--${block.color}-soft);border-color:var(--${block.color})">${blockPct} %</span>
         </div>
-        <p class="module-intro">${mod.intro}</p>
-        ${mod.ready 
-          ? `<a href="uebung.html?mod=${mod.id}" class="btn btn-sm btn-primary">Starten &rarr;</a>`
-          : `<button class="btn btn-sm btn-ghost" disabled>Demnächst</button>`
-        }
-      `;
-      grid.appendChild(card);
+        <div class="module-grid"></div>`;
+      container.appendChild(section);
+
+      const grid = section.querySelector('.module-grid');
+      block.modules.forEach(mod => {
+        const progress = state.modules[mod.id]?.bestScore || 0;
+        const done     = state.modules[mod.id]?.done || false;
+        const dash     = (progress * C).toFixed(1);
+
+        const card = document.createElement('div');
+        card.className = 'module-card' + (done ? ' done' : '') + (!mod.ready ? ' locked' : '');
+        card.innerHTML = `
+          <div class="module-card-top">
+            <span class="module-icon">${mod.icon}</span>
+            <span class="module-title">${mod.title}</span>
+            <div class="module-ring">
+              <svg class="ring-svg" viewBox="0 0 36 36">
+                <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                <circle class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="${dash} ${C.toFixed(1)}"/>
+              </svg>
+            </div>
+          </div>
+          <p class="module-intro">${mod.intro}</p>
+          ${mod.ready
+            ? `<a href="${mod.file}" class="btn btn-primary btn-sm">${done ? 'Wiederholen ↩' : 'Üben →'}</a>`
+            : `<span class="badge-soon">Demnächst</span>`}`;
+        grid.appendChild(card);
+      });
     });
   });
 }
 
-document.addEventListener('DOMContentLoaded', renderDashboard);
+initDashboard();
 </script>
 </body>
 </html>
