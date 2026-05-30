@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GrammaticaViva — Passato Prossimo</title>
+<title>GrammaticaViva \u2014 Passato Prossimo</title>
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
@@ -12,24 +12,23 @@
 <div class="container page-animate">
 
   <div class="topbar">
-    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <a class="brand" href="index.html"><span class="brand-flag">\ud83c\uddee\ud83c\uddf9</span> GrammaticaViva</a>
     <div class="topbar-right">
       <span class="topbar-module">Block: Zeiten &middot; Modul 1</span>
     </div>
   </div>
 
   <div class="module-page-header">
-    <a href="index.html" class="back-link">&#8592; Zurück zur Übersicht</a>
-    <h1>🕰️ Passato Prossimo</h1>
-    <p>Einfache Vergangenheit mit avere / essere &middot; Regelmäßige und unregelmäßige Partizipien</p>
+    <a href="index.html" class="back-link">&larr; Zur&uuml;ck zur &Uuml;bersicht</a>
+    <h1>\u23f0 Passato Prossimo</h1>
+    <p>Einfache Vergangenheit mit avere / essere &middot; Regelmä&szlig;ige und unregelmä&szlig;ige Partizipien</p>
   </div>
 
   <div id="theory-mount"></div>
 
-  <h2 class="exercises-heading">Übungen</h2>
-
+  <h2 class="exercises-heading">&Uuml;bungen</h2>
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 19</span>
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -41,285 +40,447 @@
 </div>
 <script src="assets/shared.js"></script>
 <script>
-/* jshint esversion: 11 */
 'use strict';
 
 const MODULE = {
   id: 'm01',
   block: 'zeiten',
   title: 'Passato Prossimo',
-  icon: '\u23f0',
   passThreshold: 0.6,
 
-  /* ======================================================
+  /* ==============================================================
      THEORIE
-     ====================================================== */
+     ============================================================== */
   theory: [
-    {
-      type: 'text',
-      html: 'Das <strong>Passato Prossimo</strong> ist die h\u00e4ufigste Vergangenheitsform im gesprochenen Italienisch. Es entspricht dem deutschen <strong>Perfekt</strong> und wird f\u00fcr abgeschlossene Handlungen in der Vergangenheit verwendet. Im Unterschied zum Deutschen tritt es auch in der Schriftsprache f\u00fcr pers\u00f6nliche Erlebnisse auf.'
+    { type:'text', html:'Das <strong>Passato Prossimo</strong> ist die h\u00e4ufigste Vergangenheitsform im gesprochenen Italienisch. Es entspricht dem deutschen <strong>Perfekt</strong> und wird f\u00fcr abgeschlossene Handlungen in der Vergangenheit verwendet.' },
+    { type:'compare',
+      left:  { title:'Deutsch \u2014 Perfekt',           body:'<strong>haben / sein</strong> + Partizip II<br><br>Ich <strong>habe</strong> gegessen.<br>Ich <strong>bin</strong> gegangen.<br>Sie <strong>hat</strong> gelesen.' },
+      right: { title:'Italiano \u2014 Passato Prossimo', body:'<strong>avere / essere</strong> + Participio Passato<br><br>Ho <strong>mangiato</strong>.<br>Sono <strong>andato</strong>.<br>Ha <strong>letto</strong>.' }
     },
-    {
-      type: 'compare',
-      left: {
-        title: 'Deutsch \u2014 Perfekt',
-        body: '<strong>haben / sein</strong> + Partizip II<br><br>Ich <strong>habe</strong> gegessen.<br>Ich <strong>bin</strong> gegangen.<br>Sie <strong>hat</strong> gelesen.<br>Wir <strong>sind</strong> gekommen.'
-      },
-      right: {
-        title: 'Italiano \u2014 Passato Prossimo',
-        body: '<strong>avere / essere</strong> + Participio Passato<br><br>Ho <strong>mangiato</strong>.<br>Sono <strong>andato</strong>.<br>Ha <strong>letto</strong>.<br>Siamo <strong>venuti</strong>.'
-      }
-    },
-    {
-      type: 'text',
-      html: 'Die entscheidende Frage ist: <strong>avere</strong> (haben) oder <strong>essere</strong> (sein)?<br>Die Wahl h\u00e4ngt vom Hauptverb ab, nicht von der Handlung selbst. Als Grundregel gilt: Verben mit direktem Objekt (transitive Verben) nehmen <strong>avere</strong>. Verben, die Bewegung, Aufenthalt oder Zustandswechsel ausdr\u00fccken, nehmen meist <strong>essere</strong>.'
-    },
-    {
-      type: 'table',
-      head: ['Hilfsverb', 'Verben (Kategorien)', 'Beispiel'],
-      rows: [
-        ['<strong>avere</strong>', 'Transitive Verben:<br>mangiare, bere, leggere, vedere, fare, dire\u2026', 'Ho mangiato la pizza.'],
-        ['<strong>essere</strong>', 'Bewegungsverben:<br>andare, venire, partire, arrivare, tornare, uscire\u2026', 'Sono andato a Roma.'],
-        ['<strong>essere</strong>', 'Zustandsverben:<br>essere, stare, rimanere, diventare, sembrare\u2026', '\u00c8 rimasta a casa.'],
-        ['<strong>essere</strong>', 'Reflexive Verben (immer essere):<br>alzarsi, vestirsi, svegliarsi\u2026', 'Mi sono alzato.']
+    { type:'text', html:'Die entscheidende Frage: <strong>avere</strong> (haben) oder <strong>essere</strong> (sein)?<br>Transitive Verben (mit direktem Objekt) nehmen <strong>avere</strong>. Bewegungs\u00ad, Aufenthalts\u00ad und Zustandswechselverben nehmen meist <strong>essere</strong>.' },
+    { type:'table', head:['Hilfsverb','Kategorie','Beispiel'],
+      rows:[
+        ['<strong>avere</strong>','Transitive Verben: mangiare, bere, leggere, vedere, fare, dire\u2026','Ho mangiato la pizza.'],
+        ['<strong>essere</strong>','Bewegungsverben: andare, venire, partire, arrivare, tornare, uscire\u2026','Sono andato a Roma.'],
+        ['<strong>essere</strong>','Zustandsverben: essere, stare, rimanere, diventare\u2026','\u00c8 rimasta a casa.'],
+        ['<strong>essere</strong>','Reflexive Verben (immer): alzarsi, vestirsi\u2026','Mi sono alzato.']
       ]
     },
-    {
-      type: 'table',
-      head: ['Infinitiv-Endung', '\u2192 Partizip-Endung', 'Beispiele'],
-      rows: [
-        ['<code>-are</code>', '\u2192 <code>-ato</code>', 'parlare \u2192 parlato &nbsp;&nbsp; mangiare \u2192 mangiato'],
-        ['<code>-ere</code>', '\u2192 <code>-uto</code>', 'vendere \u2192 venduto &nbsp;&nbsp; credere \u2192 creduto'],
-        ['<code>-ire</code>', '\u2192 <code>-ito</code>', 'partire \u2192 partito &nbsp;&nbsp; dormire \u2192 dormito']
+    { type:'table', head:['Infinitiv-Endung','\u2192 Partizip-Endung','Beispiele'],
+      rows:[
+        ['<code>-are</code>','\u2192 <code>-ato</code>','parlare \u2192 parlato &nbsp; mangiare \u2192 mangiato'],
+        ['<code>-ere</code>','\u2192 <code>-uto</code>','vendere \u2192 venduto &nbsp; credere \u2192 creduto'],
+        ['<code>-ire</code>','\u2192 <code>-ito</code>','partire \u2192 partito &nbsp; dormire \u2192 dormito']
       ]
     },
-    {
-      type: 'table',
-      head: ['Infinitiv', 'Partizip', 'Infinitiv', 'Partizip'],
-      rows: [
-        ['essere',   '<code>stato</code>',   'avere',   '<code>avuto</code>'],
-        ['fare',     '<code>fatto</code>',   'dire',    '<code>detto</code>'],
-        ['venire',   '<code>venuto</code>',  'prendere','<code>preso</code>'],
-        ['leggere',  '<code>letto</code>',   'scrivere','<code>scritto</code>'],
-        ['vedere',   '<code>visto</code>',   'aprire',  '<code>aperto</code>'],
-        ['chiedere', '<code>chiesto</code>', 'mettere', '<code>messo</code>'],
-        ['bere',     '<code>bevuto</code>',  'vivere',  '<code>vissuto</code>'],
-        ['nascere',  '<code>nato</code>',    'morire',  '<code>morto</code>']
+    { type:'table', head:['Infinitiv','Partizip','Infinitiv','Partizip'],
+      rows:[
+        ['essere','<code>stato</code>','avere','<code>avuto</code>'],
+        ['fare','<code>fatto</code>','dire','<code>detto</code>'],
+        ['venire','<code>venuto</code>','prendere','<code>preso</code>'],
+        ['leggere','<code>letto</code>','scrivere','<code>scritto</code>'],
+        ['vedere','<code>visto</code>','aprire','<code>aperto</code>'],
+        ['chiedere','<code>chiesto</code>','mettere','<code>messo</code>'],
+        ['bere','<code>bevuto</code>','vivere','<code>vissuto</code>'],
+        ['nascere','<code>nato</code>','morire','<code>morto</code>']
       ]
     },
-    {
-      type: 'table',
-      head: ['Pronomen', 'mangiare (avere-Verb)'],
-      rows: [
-        ['io',      'ho mangiato'],
-        ['tu',      'hai mangiato'],
-        ['lui / lei','ha mangiato'],
-        ['noi',     'abbiamo mangiato'],
-        ['voi',     'avete mangiato'],
-        ['loro',    'hanno mangiato']
-      ]
+    { type:'table', head:['Pronomen','mangiare (avere)'],
+      rows:[['io','ho mangiato'],['tu','hai mangiato'],['lui / lei','ha mangiato'],['noi','abbiamo mangiato'],['voi','avete mangiato'],['loro','hanno mangiato']]
     },
-    {
-      type: 'table',
-      head: ['Pronomen', 'andare (essere-Verb) maskulin', 'feminin'],
-      rows: [
-        ['io',       'sono andato', 'sono andata'],
-        ['tu',       'sei andato',  'sei andata'],
-        ['lui / lei','&egrave; andato',  '&egrave; andata'],
-        ['noi',      'siamo andati','siamo andate'],
-        ['voi',      'siete andati','siete andate'],
-        ['loro',     'sono andati', 'sono andate']
-      ]
+    { type:'table', head:['Pronomen','andare (essere) maskulin','feminin'],
+      rows:[['io','sono andato','sono andata'],['tu','sei andato','sei andata'],['lui / lei','\u00e8 andato','\u00e8 andata'],['noi','siamo andati','siamo andate'],['voi','siete andati','siete andate'],['loro','sono andati','sono andate']]
     },
-    {
-      type: 'tip',
-      body: '<strong>Eselsbrücke für essere-Verben:</strong> Denke an drei Gruppen: <em>Bewegung</em> von A nach B (andare, venire, partire, arrivare), <em>Aufenthalt</em> (stare, rimanere), <em>Zustandswechsel</em> (nascere, morire, diventare). Ausnahme: Hat ein Bewegungsverb ein direktes Objekt, nimmt es avere &mdash; "Ho guidato la macchina" (transitiv), aber "Sono andato a casa" (kein Objekt).'
-    },
-    {
-      type: 'divider'
-    },
-    {
-      type: 'text',
-      html: '<strong>Partizip-Kongruenz bei essere-Verben:</strong> Das Partizip richtet sich nach Genus und Numerus des Subjekts.<br><br>Mario \u00e8 andat<strong>o</strong>. &nbsp;&nbsp; Laura \u00e8 andat<strong>a</strong>. &nbsp;&nbsp; Noi siamo andat<strong>i</strong>. (gemischt/maskulin) &nbsp;&nbsp; Loro sono andat<strong>e</strong>. (nur feminin)<br><br>Bei <em>avere</em>-Verben bleibt das Partizip unveränderlich: &bdquo;ho mangiato&ldquo; / &bdquo;abbiamo mangiato&ldquo; &mdash; kein Genusabgleich.'
-    }
+    { type:'tip', body:'<strong>Eselsbrücke essere:</strong> Bewegung von A nach B (andare, venire, partire, arrivare), Aufenthalt (stare, rimanere), Zustandswechsel (nascere, morire, diventare). Ausnahme: Hat das Verb ein direktes Objekt, nimmt es avere \u2014 &bdquo;Ho guidato la macchina&ldquo; vs. &bdquo;Sono andato a casa&ldquo;.' },
+    { type:'divider' },
+    { type:'text', html:'<strong>Partizip-Kongruenz bei essere-Verben:</strong> Das Partizip richtet sich nach Genus und Numerus des Subjekts.<br>Mario \u00e8 andat<strong>o</strong>. &nbsp; Laura \u00e8 andat<strong>a</strong>. &nbsp; Noi siamo andat<strong>i</strong>. &nbsp; Loro sono andat<strong>e</strong>.<br>Bei <em>avere</em>-Verben bleibt das Partizip immer unveränderlich.' }
   ],
 
-  /* ======================================================
-     AUFGABEN (19 gesamt)
-     4 MC  |  4 LT  |  2 FT  |  2 SO  |  2 FK  |  3 DE  |  2 IT
-     ====================================================== */
+  /* ==============================================================
+     AUFGABEN (47):
+     SO(2) \u2192 ZO(10) \u2192 MC-Basis(12) \u2192 MC-Lücke(10) \u2192 LT(4) \u2192 FT(2) \u2192 FK(2) \u2192 DE(3) \u2192 IT(2)
+     ============================================================== */
   exercises: [
 
-    /* ---- MC ---- */
-    {
-      id: 'm01-mc-01', type: 'MC',
-      prompt: 'Welches Hilfsverb braucht "andare" im Passato Prossimo? "___ andato a Roma."',
-      options: ['ho', 'sono', 'hai', 'sei'],
-      correctValue: 'sono',
-      explain: 'andare ist ein Bewegungsverb \u2192 immer essere. Erste Person Singular: sono.'
-    },
-    {
-      id: 'm01-mc-02', type: 'MC',
-      prompt: 'Welches Hilfsverb braucht "mangiare"? "___ mangiato una pizza."',
-      options: ['sono', 'ho', 'siamo', 'abbia'],
-      correctValue: 'ho',
-      explain: 'mangiare ist transitiv (man isst etwas) \u2192 avere. Erste Person Singular: ho.'
-    },
-    {
-      id: 'm01-mc-03', type: 'MC',
-      prompt: 'Welches ist das korrekte Partizip von "leggere" (lesen)?',
-      options: ['legguto', 'leggito', 'letto', 'leggato'],
-      correctValue: 'letto',
-      explain: 'leggere \u2192 letto (unregelmäßig, wie lire en fran\u00e7ais).'
-    },
-    {
-      id: 'm01-mc-04', type: 'MC',
-      prompt: 'Welche Form ist für Maria (Sg. feminin) richtig? "Maria ___ a casa presto."',
-      options: ['\u00e8 tornata', 'ha tornata', '\u00e8 tornato', 'ha tornato'],
-      correctValue: '\u00e8 tornata',
-      explain: 'tornare \u2192 essere; Subjekt Maria ist feminin Singular \u2192 tornata.'
-    },
+    /* =========================================================
+       SORTIERAUFGABEN (SO) — leicht, keine Eingabe nötig
+       ========================================================= */
+    { id:'m01-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['pizza','mangiato','ho','la'],
+      solution:['ho','mangiato','la','pizza'],
+      translation:'Ich habe die Pizza gegessen.',
+      explain:'ho mangiato la pizza \u2014 Hilfsverb direkt vor Partizip.' },
 
-    /* ---- LT ---- */
-    {
-      id: 'm01-lt-01', type: 'LT',
-      text: 'Ieri sera ho {0} una pizza e {1} del vino rosso.',
-      blanks: [
-        { accept: ['mangiato'] },
-        { accept: ['bevuto'] }
+    { id:'m01-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['andati','a','siamo','Roma'],
+      solution:['siamo','andati','a','Roma'],
+      translation:'Wir sind nach Rom gegangen.',
+      explain:'siamo andati a Roma \u2014 essere vor kongruierendem Partizip.' },
+
+    /* =========================================================
+       ZUORDNUNGSAUFGABEN (ZO) — 10 Sets à 6 Paare
+       Links: deutsches Verb, rechts: italienische Vergangenheitsform
+       ========================================================= */
+    { id:'m01-zo-01', type:'ZO',
+      prompt:'Ordne zu: Klicke erst das deutsche Wort, dann die passende Vergangenheitsform.',
+      pairs:[
+        { de:'essen',    it:'ho mangiato' },
+        { de:'sprechen', it:'ho parlato'  },
+        { de:'schauen',  it:'ho guardato' },
+        { de:'kaufen',   it:'ho comprato' },
+        { de:'finden',   it:'ho trovato'  },
+        { de:'bringen',  it:'ho portato'  }
+      ] },
+
+    { id:'m01-zo-02', type:'ZO',
+      prompt:'Ordne zu \u2014 unregelmä\u00dfige avere-Verben:',
+      pairs:[
+        { de:'sehen',      it:'ho visto'   },
+        { de:'lesen',      it:'ho letto'   },
+        { de:'nehmen',     it:'ho preso'   },
+        { de:'schreiben',  it:'ho scritto' },
+        { de:'fragen',     it:'ho chiesto' },
+        { de:'legen',      it:'ho messo'   }
+      ] },
+
+    { id:'m01-zo-03', type:'ZO',
+      prompt:'Ordne zu \u2014 essere-Verben (Bewegung):',
+      pairs:[
+        { de:'gehen',         it:'sono andato'  },
+        { de:'kommen',        it:'sono venuto'  },
+        { de:'abfahren',      it:'sono partito' },
+        { de:'ankommen',      it:'sono arrivato'},
+        { de:'zurückkehren',  it:'sono tornato' },
+        { de:'hinausgehen',   it:'sono uscito'  }
+      ] },
+
+    { id:'m01-zo-04', type:'ZO',
+      prompt:'Ordne zu \u2014 essere-Verben (Zustand und Wechsel):',
+      pairs:[
+        { de:'sein',           it:'sono stato'    },
+        { de:'bleiben',        it:'sono rimasto'  },
+        { de:'werden',         it:'sono diventato'},
+        { de:'hereinkommen',   it:'sono entrato'  },
+        { de:'fallen',         it:'sono caduto'   },
+        { de:'hinaufsteigen',  it:'sono salito'   }
+      ] },
+
+    { id:'m01-zo-05', type:'ZO',
+      prompt:'Ordne zu \u2014 avere-Verben (Alltagsaktivit\u00e4ten):',
+      pairs:[
+        { de:'kochen',    it:'ho cucinato'   },
+        { de:'lernen',    it:'ho studiato'   },
+        { de:'arbeiten',  it:'ho lavorato'   },
+        { de:'spielen',   it:'ho giocato'    },
+        { de:'anrufen',   it:'ho telefonato' },
+        { de:'reisen',    it:'ho viaggiato'  }
+      ] },
+
+    { id:'m01-zo-06', type:'ZO',
+      prompt:'Ordne zu \u2014 unregelmä\u00dfige avere-Verben (zweite Gruppe):',
+      pairs:[
+        { de:'machen',    it:'ho fatto'   },
+        { de:'sagen',     it:'ho detto'   },
+        { de:'trinken',   it:'ho bevuto'  },
+        { de:'verlieren', it:'ho perso'   },
+        { de:'lachen',    it:'ho riso'    },
+        { de:'gewinnen',  it:'ho vinto'   }
+      ] },
+
+    { id:'m01-zo-07', type:'ZO',
+      prompt:'Ordne zu \u2014 Modalverben und mentale Verben:',
+      pairs:[
+        { de:'wollen',   it:'ho voluto'    },
+        { de:'können',   it:'ho potuto'    },
+        { de:'müssen',   it:'ho dovuto'    },
+        { de:'wissen',   it:'ho saputo'    },
+        { de:'glauben',  it:'ho creduto'   },
+        { de:'kennen',   it:'ho conosciuto'}
+      ] },
+
+    { id:'m01-zo-08', type:'ZO',
+      prompt:'Ordne zu \u2014 avere-Verben (Sinne und Aktionen):',
+      pairs:[
+        { de:'hören',      it:'ho sentito'   },
+        { de:'verstehen',  it:'ho capito'    },
+        { de:'öffnen',     it:'ho aperto'    },
+        { de:'beenden',    it:'ho finito'    },
+        { de:'schlafen',   it:'ho dormito'   },
+        { de:'vorziehen',  it:'ho preferito' }
+      ] },
+
+    { id:'m01-zo-09', type:'ZO',
+      prompt:'Ordne zu \u2014 avere-Verben (weitere):',
+      pairs:[
+        { de:'helfen',      it:'ho aiutato'    },
+        { de:'antworten',   it:'ho risposto'   },
+        { de:'warten',      it:'ho aspettato'  },
+        { de:'vergessen',   it:'ho dimenticato'},
+        { de:'träumen',     it:'ho sognato'    },
+        { de:'erinnern',    it:'ho ricordato'  }
+      ] },
+
+    { id:'m01-zo-10', type:'ZO',
+      prompt:'Ordne zu \u2014 essere-Verben (Lebensereignisse):',
+      pairs:[
+        { de:'hinuntergehen',   it:'sono sceso'    },
+        { de:'geboren werden',  it:'sono nato'     },
+        { de:'sterben',         it:'sono morto'    },
+        { de:'erscheinen',      it:'sono apparso'  },
+        { de:'wachsen',         it:'sono cresciuto'},
+        { de:'verschwinden',    it:'sono scomparso'}
+      ] },
+
+    /* =========================================================
+       MULTIPLE CHOICE \u2014 BASISWISSEN (12)
+       ========================================================= */
+    { id:'m01-mc-01', type:'MC',
+      prompt:'Welches Hilfsverb braucht "andare"? \u201e___ andato a Roma.\u201c',
+      options:['ho','sono','hai','sei'], correctValue:'sono',
+      explain:'andare ist ein Bewegungsverb \u2192 immer essere. 1. Person Singular: sono.' },
+
+    { id:'m01-mc-02', type:'MC',
+      prompt:'Welches Hilfsverb braucht "mangiare"? \u201e___ mangiato una pizza.\u201c',
+      options:['sono','ho','siamo','abbia'], correctValue:'ho',
+      explain:'mangiare ist transitiv \u2192 avere. 1. Person Singular: ho.' },
+
+    { id:'m01-mc-03', type:'MC',
+      prompt:'Welches ist das korrekte Partizip von \u201eleggere\u201c (lesen)?',
+      options:['legguto','leggito','letto','leggato'], correctValue:'letto',
+      explain:'leggere \u2192 letto (unregelm\u00e4\u00dfig).' },
+
+    { id:'m01-mc-04', type:'MC',
+      prompt:'Welche Form ist f\u00fcr Maria richtig? \u201eMaria ___ a casa.\u201c',
+      options:['\u00e8 tornata','ha tornata','\u00e8 tornato','ha tornato'], correctValue:'\u00e8 tornata',
+      explain:'tornare \u2192 essere; Maria (feminin Singular) \u2192 tornata.' },
+
+    { id:'m01-mc-05', type:'MC',
+      prompt:'Welches ist das korrekte Partizip von \u201efare\u201c (machen)?',
+      options:['faceto','fato','fatto','fatuto'], correctValue:'fatto',
+      explain:'fare \u2192 fatto (unregelm\u00e4\u00dfig).' },
+
+    { id:'m01-mc-06', type:'MC',
+      prompt:'Welches Partizip passt? \u201eHo ___ un caf\u00e8.\u201c (bere = trinken)',
+      options:['beruto','bibito','berato','bevuto'], correctValue:'bevuto',
+      explain:'bere \u2192 bevuto (unregelm\u00e4\u00dfig).' },
+
+    { id:'m01-mc-07', type:'MC',
+      prompt:'Welches Hilfsverb? \u201eIo ___ tutta la notte.\u201c (dormire = schlafen)',
+      options:['ho dormita','sono dormito','ho dormito','sono dormita'], correctValue:'ho dormito',
+      explain:'dormire \u2192 avere; Partizip unveränderlich bei avere \u2192 dormito.' },
+
+    { id:'m01-mc-08', type:'MC',
+      prompt:'Welche Form? \u201eMarco ___ un messaggio.\u201c (scrivere = schreiben)',
+      options:['ha scritto','\u00e8 scritto','ha scrivuto','\u00e8 scrivuto'], correctValue:'ha scritto',
+      explain:'scrivere \u2192 avere; scritto (unregelm\u00e4\u00dfig).' },
+
+    { id:'m01-mc-09', type:'MC',
+      prompt:'Welche Form? \u201eLe ragazze ___ tardi.\u201c (uscire = hinausgehen)',
+      options:['sono uscite','hanno uscito','sono uscito','hanno uscite'], correctValue:'sono uscite',
+      explain:'uscire \u2192 essere; le ragazze (feminin plural) \u2192 sono uscite.' },
+
+    { id:'m01-mc-10', type:'MC',
+      prompt:'Welches ist das korrekte Partizip von \u201eprendere\u201c (nehmen)?',
+      options:['prenduto','presto','preso','prenuto'], correctValue:'preso',
+      explain:'prendere \u2192 preso (unregelm\u00e4\u00dfig).' },
+
+    { id:'m01-mc-11', type:'MC',
+      prompt:'Welche Form? \u201eMia sorella ___ molto al telefono.\u201c (parlare = sprechen)',
+      options:['ha parlato','\u00e8 parlata','ha parlata','\u00e8 parlato'], correctValue:'ha parlato',
+      explain:'parlare \u2192 avere; Partizip parlato bleibt unveränderlich.' },
+
+    { id:'m01-mc-12', type:'MC',
+      prompt:'Welche Form? \u201eI bambini ___ in giardino.\u201c (giocare = spielen)',
+      options:['hanno giocato','sono giocati','hanno giocati','sono giocato'], correctValue:'hanno giocato',
+      explain:'giocare \u2192 avere; Partizip giocato bleibt unveränderlich.' },
+
+    /* =========================================================
+       MULTIPLE CHOICE MIT SATZLÜCKE (MCL = MC-Typ, 10)
+       Sehr ähnliche Optionen testen Konjugation und Kongruenz.
+       ========================================================= */
+    { id:'m01-mcl-01', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eIeri Mario ___ al cinema.\u201c',
+      options:['\u00e8 andato','ha andato','\u00e8 andare','sono andato'],
+      correctValue:'\u00e8 andato',
+      translation:'Gestern ist Mario ins Kino gegangen.',
+      explain:'andare \u2192 essere; Mario = lui \u2192 \u00e8 andato.' },
+
+    { id:'m01-mcl-02', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eNoi ___ la pizza.\u201c',
+      options:['abbiamo mangiato','siamo mangiati','abbiamo mangiata','hanno mangiato'],
+      correctValue:'abbiamo mangiato',
+      translation:'Wir haben die Pizza gegessen.',
+      explain:'mangiare \u2192 avere; noi \u2192 abbiamo; Partizip unveränderlich bei avere.' },
+
+    { id:'m01-mcl-03', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eLaura ___ un libro.\u201c (leggere)',
+      options:['ha letto','ha letta','\u00e8 letta','ha legge'],
+      correctValue:'ha letto',
+      translation:'Laura hat ein Buch gelesen.',
+      explain:'leggere \u2192 avere; letto bleibt unveränderlich bei avere.' },
+
+    { id:'m01-mcl-04', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eI miei genitori ___ ieri.\u201c (arrivare)',
+      options:['sono arrivati','sono arrivate','hanno arrivato','\u00e8 arrivato'],
+      correctValue:'sono arrivati',
+      translation:'Meine Eltern sind gestern angekommen.',
+      explain:'arrivare \u2192 essere; genitori (maskulin plural) \u2192 sono arrivati.' },
+
+    { id:'m01-mcl-05', type:'MC',
+      prompt:'W\u00e4hle die richtige Form (Sprecher maskulin): \u201eIo ___ in citt\u00e0.\u201c (andare)',
+      options:['sono andato','sono andata','ho andato','siamo andati'],
+      correctValue:'sono andato',
+      translation:'Ich bin in die Stadt gegangen.',
+      explain:'andare \u2192 essere; io (maskulin) \u2192 sono andato.' },
+
+    { id:'m01-mcl-06', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eMia madre ___ tardi.\u201c (tornare)',
+      options:['\u00e8 tornata','\u00e8 tornato','ha tornata','sono tornata'],
+      correctValue:'\u00e8 tornata',
+      translation:'Meine Mutter ist spät zurückgekehrt.',
+      explain:'tornare \u2192 essere; mia madre (feminin Singular) \u2192 \u00e8 tornata.' },
+
+    { id:'m01-mcl-07', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eVoi ___ i compiti?\u201c (fare)',
+      options:['avete fatto','siete fatti','avete fatti','hanno fatto'],
+      correctValue:'avete fatto',
+      translation:'Habt ihr die Hausaufgaben gemacht?',
+      explain:'fare \u2192 avere; voi \u2192 avete; fatto bleibt unveränderlich bei avere.' },
+
+    { id:'m01-mcl-08', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eIl treno ___ in ritardo.\u201c (arrivare)',
+      options:['\u00e8 arrivato','ha arrivato','sono arrivati','\u00e8 arrivata'],
+      correctValue:'\u00e8 arrivato',
+      translation:'Der Zug ist mit Verspätung angekommen.',
+      explain:'arrivare \u2192 essere; il treno (maskulin Singular) \u2192 \u00e8 arrivato.' },
+
+    { id:'m01-mcl-09', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eLe mie amiche ___ molto.\u201c (studiare)',
+      options:['hanno studiato','hanno studiate','sono studiate','ha studiato'],
+      correctValue:'hanno studiato',
+      translation:'Meine Freundinnen haben viel gelernt.',
+      explain:'studiare \u2192 avere; loro \u2192 hanno; studiato unveränderlich.' },
+
+    { id:'m01-mcl-10', type:'MC',
+      prompt:'W\u00e4hle die richtige Form: \u201eMarco ___ al supermercato.\u201c (andare)',
+      options:['\u00e8 andato','ha andato','sono andato','sei andato'],
+      correctValue:'\u00e8 andato',
+      translation:'Marco ist zum Supermarkt gegangen.',
+      explain:'andare \u2192 essere; Marco = lui \u2192 \u00e8 andato.' },
+
+    /* =========================================================
+       LÜCKENTEXT (LT) — einfaches Vokabular, 4 Aufgaben
+       ========================================================= */
+    { id:'m01-lt-01', type:'LT',
+      text:'Ieri ho {0} una pizza e {1} del vino.',
+      blanks:[ { accept:['mangiato'] }, { accept:['bevuto'] } ],
+      translation:'Gestern habe ich eine Pizza gegessen und Wein getrunken.',
+      explain:'mangiare \u2192 mangiato; bere \u2192 bevuto (unregelm\u00e4\u00dfig).' },
+
+    { id:'m01-lt-02', type:'LT',
+      prompt:'Erg\u00e4nze das Hilfsverb:',
+      text:'Noi {0} andati a Roma sabato.',
+      blanks:[ { accept:['siamo'] } ],
+      translation:'Wir sind am Samstag nach Rom gegangen.',
+      explain:'andare \u2192 essere; noi \u2192 siamo.' },
+
+    { id:'m01-lt-03', type:'LT',
+      prompt:'Setze das richtige Partizip ein:',
+      text:'Marco ha {0} una lettera.',
+      blanks:[ { accept:['scritto'] } ],
+      translation:'Marco hat einen Brief geschrieben.',
+      explain:'scrivere \u2192 scritto (unregelm\u00e4\u00dfig).' },
+
+    { id:'m01-lt-04', type:'LT',
+      prompt:'Erg\u00e4nze Hilfsverb und Partizip:',
+      text:'I ragazzi {0} {1} alle tre.',
+      blanks:[ { accept:['sono'] }, { accept:['arrivati'] } ],
+      translation:'Die Jungs sind um drei Uhr angekommen.',
+      explain:'arrivare \u2192 essere; i ragazzi (maskulin plural) \u2192 sono arrivati.' },
+
+    /* =========================================================
+       FORMTABELLE (FT) — vollst\u00e4ndige Konjugation, 2 Aufgaben
+       ========================================================= */
+    { id:'m01-ft-01', type:'FT',
+      prompt:'Konjugiere \u201eparlare\u201c vollst\u00e4ndig im Passato Prossimo (avere-Verb):',
+      rows:[
+        { label:'io',       accept:['ho parlato'] },
+        { label:'tu',       accept:['hai parlato'] },
+        { label:'lui / lei', accept:['ha parlato'] },
+        { label:'noi',      accept:['abbiamo parlato'] },
+        { label:'voi',      accept:['avete parlato'] },
+        { label:'loro',     accept:['hanno parlato'] }
+      ] },
+
+    { id:'m01-ft-02', type:'FT',
+      prompt:'Konjugiere \u201epartire\u201c im Passato Prossimo (essere-Verb, beide Genus-Formen akzeptiert):',
+      rows:[
+        { label:'io',        accept:['sono partito','sono partita'] },
+        { label:'tu',        accept:['sei partito','sei partita'] },
+        { label:'lui / lei', accept:['\u00e8 partito','\u00e8 partita'] },
+        { label:'noi',       accept:['siamo partiti','siamo partite'] },
+        { label:'voi',       accept:['siete partiti','siete partite'] },
+        { label:'loro',      accept:['sono partiti','sono partite'] }
       ],
-      explain: 'mangiare \u2192 mangiato (-are \u2192 -ato); bere \u2192 bevuto (unregelm\u00e4\u00dfig).'
-    },
-    {
-      id: 'm01-lt-02', type: 'LT',
-      prompt: 'Erg\u00e4nze mit dem korrekten Hilfsverb:',
-      text: 'Noi {0} andati al mare sabato scorso.',
-      blanks: [ { accept: ['siamo'] } ],
-      explain: 'andare \u2192 essere; Subjekt noi \u2192 siamo.'
-    },
-    {
-      id: 'm01-lt-03', type: 'LT',
-      prompt: 'Setze das richtige Partizip ein:',
-      text: 'Marco ha {0} una lettera ai suoi amici.',
-      blanks: [ { accept: ['scritto'] } ],
-      explain: 'scrivere \u2192 scritto (unregelm\u00e4\u00dfig).'
-    },
-    {
-      id: 'm01-lt-04', type: 'LT',
-      prompt: 'Erg\u00e4nze Hilfsverb und Partizip:',
-      text: 'I ragazzi {0} {1} alla stazione alle tre.',
-      blanks: [
-        { accept: ['sono'] },
-        { accept: ['arrivati'] }
-      ],
-      explain: 'arrivare \u2192 essere; Subjekt i ragazzi ist maskulin plural \u2192 arrivati.'
-    },
+      explain:'essere-Verb: Partizip stimmt in Genus und Numerus mit dem Subjekt \u00fcberein.' },
 
-    /* ---- FT ---- */
-    {
-      id: 'm01-ft-01', type: 'FT',
-      prompt: 'Konjugiere "parlare" vollst\u00e4ndig im Passato Prossimo (avere-Verb):',
-      rows: [
-        { label: 'io',       accept: ['ho parlato'] },
-        { label: 'tu',       accept: ['hai parlato'] },
-        { label: 'lui / lei', accept: ['ha parlato'] },
-        { label: 'noi',      accept: ['abbiamo parlato'] },
-        { label: 'voi',      accept: ['avete parlato'] },
-        { label: 'loro',     accept: ['hanno parlato'] }
-      ]
-    },
-    {
-      id: 'm01-ft-02', type: 'FT',
-      prompt: 'Konjugiere "partire" im Passato Prossimo (essere-Verb). Beide Genus-Formen werden akzeptiert.',
-      rows: [
-        { label: 'io',       accept: ['sono partito', 'sono partita'] },
-        { label: 'tu',       accept: ['sei partito', 'sei partita'] },
-        { label: 'lui / lei', accept: ['\u00e8 partito', '\u00e8 partita'] },
-        { label: 'noi',      accept: ['siamo partiti', 'siamo partite'] },
-        { label: 'voi',      accept: ['siete partiti', 'siete partite'] },
-        { label: 'loro',     accept: ['sono partiti', 'sono partite'] }
-      ],
-      explain: 'essere-Verb: Partizip stimmt in Genus und Numerus mit dem Subjekt \u00fcberein.'
-    },
+    /* =========================================================
+       FEHLERKORREKTUR (FK) — 2 Aufgaben
+       ========================================================= */
+    { id:'m01-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler \u2014 schreibe den ganzen korrekten Satz:',
+      sentence:'Ho andato al cinema ieri.',
+      solution:'Sono andato al cinema ieri.',
+      errorToken:'Ho',
+      translation:'Ich bin gestern ins Kino gegangen.',
+      explain:'andare \u2192 essere, nicht avere. Korrekt: Sono andato.' },
 
-    /* ---- SO ---- */
-    {
-      id: 'm01-so-01', type: 'SO',
-      prompt: 'Bringe die W\u00f6rter in die richtige Reihenfolge:',
-      tokens: ['pizza', 'mangiato', 'ho', 'la'],
-      solution: ['ho', 'mangiato', 'la', 'pizza'],
-      explain: 'ho mangiato la pizza \u2014 Hilfsverb direkt vor Partizip, Objekt danach.'
-    },
-    {
-      id: 'm01-so-02', type: 'SO',
-      prompt: 'Bringe die W\u00f6rter in die richtige Reihenfolge:',
-      tokens: ['andati', 'a', 'siamo', 'Roma'],
-      solution: ['siamo', 'andati', 'a', 'Roma'],
-      explain: 'siamo andati a Roma \u2014 essere-Form vor dem kongruierten Partizip.'
-    },
+    { id:'m01-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler \u2014 schreibe den ganzen korrekten Satz:',
+      sentence:'Maria ha tornata a casa.',
+      solution:'Maria \u00e8 tornata a casa.',
+      errorToken:'ha',
+      translation:'Maria ist nach Hause zurückgekehrt.',
+      explain:'tornare \u2192 essere. Korrekt: Maria \u00e8 tornata.' },
 
-    /* ---- FK ---- */
-    {
-      id: 'm01-fk-01', type: 'FK',
-      prompt: 'Finde und korrigiere den Fehler \u2014 schreibe den ganzen korrekten Satz:',
-      sentence: 'Ho andato al cinema ieri sera.',
-      solution: 'Sono andato al cinema ieri sera.',
-      errorToken: 'Ho',
-      explain: 'andare \u2192 essere, nicht avere. Korrekt: Sono andato.'
-    },
-    {
-      id: 'm01-fk-02', type: 'FK',
-      prompt: 'Finde und korrigiere den Fehler \u2014 schreibe den ganzen korrekten Satz:',
-      sentence: 'Maria ha tornata a casa presto.',
-      solution: 'Maria \u00e8 tornata a casa presto.',
-      errorToken: 'ha',
-      explain: 'tornare \u2192 essere. Korrekt: Maria \u00e8 tornata.'
-    },
+    /* =========================================================
+       ÜBERSETZUNG DEUTSCH \u2192 ITALIANO (DE) — 3 Aufgaben
+       ========================================================= */
+    { id:'m01-de-01', type:'DE',
+      prompt:'"Ich habe Pizza gegessen."',
+      solutions:['Ho mangiato la pizza.','Ho mangiato pizza.'],
+      note:'mangiare \u2192 avere; mangiato (regelm\u00e4\u00dfig: -are \u2192 -ato)' },
 
-    /* ---- DE (Deutsch \u2192 Italiano, Selbstkontrolle) ---- */
-    {
-      id: 'm01-de-01', type: 'DE',
-      prompt: '"Ich habe Pizza gegessen."',
-      solutions: ['Ho mangiato la pizza.', 'Ho mangiato pizza.'],
-      note: 'mangiare \u2192 avere; mangiato (regelm\u00e4\u00dfig: -are \u2192 -ato)'
-    },
-    {
-      id: 'm01-de-02', type: 'DE',
-      prompt: '"Wir sind nach Hause gegangen."',
-      solutions: ['Siamo andati a casa.', 'Siamo andate a casa.'],
-      note: 'andare \u2192 essere; noi \u2192 siamo; Plural maskulin \u2192 andati'
-    },
-    {
-      id: 'm01-de-03', type: 'DE',
-      prompt: '"Sie (= lei) hat den Roman gelesen."',
-      solutions: ['Ha letto il romanzo.', 'Lei ha letto il romanzo.'],
-      note: 'leggere \u2192 avere; letto (unregelm\u00e4\u00dfig) \u2014 kein Genusabgleich bei avere'
-    },
+    { id:'m01-de-02', type:'DE',
+      prompt:'"Wir sind nach Rom gegangen."',
+      solutions:['Siamo andati a Roma.','Siamo andate a Roma.'],
+      note:'andare \u2192 essere; noi \u2192 siamo; maskulin plural \u2192 andati' },
 
-    /* ---- IT (Italiano \u2192 Deutsch, Selbstkontrolle) ---- */
-    {
-      id: 'm01-it-01', type: 'IT',
-      prompt: '"Sono tornato tardi."',
-      solutions: ['Ich bin sp\u00e4t zur\u00fcckgekehrt.', 'Ich bin sp\u00e4t nach Hause gekommen.', 'Ich bin sp\u00e4t heimgekehrt.'],
-      note: 'tornare \u2192 essere; tornato (maskulin Singular)'
-    },
-    {
-      id: 'm01-it-02', type: 'IT',
-      prompt: '"Hanno visto un bel film."',
-      solutions: ['Sie haben einen sch\u00f6nen Film gesehen.', 'Sie haben einen sch\u00f6nen Film geschaut.'],
-      note: 'vedere \u2192 avere; visto (unregelm\u00e4\u00dfig); bel = bello vor Konsonant'
-    }
+    { id:'m01-de-03', type:'DE',
+      prompt:'"Sie (= lei) hat das Buch gelesen."',
+      solutions:['Ha letto il libro.','Lei ha letto il libro.'],
+      note:'leggere \u2192 avere; letto (unregelm\u00e4\u00dfig) \u2014 kein Genusabgleich bei avere' },
+
+    /* =========================================================
+       ÜBERSETZUNG ITALIANO \u2192 DEUTSCH (IT) — 2 Aufgaben
+       ========================================================= */
+    { id:'m01-it-01', type:'IT',
+      prompt:'"Sono tornato tardi."',
+      solutions:['Ich bin sp\u00e4t zur\u00fcckgekehrt.','Ich bin sp\u00e4t nach Hause gekommen.','Ich bin sp\u00e4t heimgekehrt.'],
+      note:'tornare \u2192 essere; tornato (maskulin Singular)' },
+
+    { id:'m01-it-02', type:'IT',
+      prompt:'"Hanno visto un film."',
+      solutions:['Sie haben einen Film gesehen.','Sie haben einen Film geschaut.'],
+      note:'vedere \u2192 avere; visto (unregelm\u00e4\u00dfig)' }
 
   ] /* end exercises */
 }; /* end MODULE */
 
-
-/* ======================================================
-   SEITE INITIALISIEREN
-   ====================================================== */
 function initModulePage() {
   renderTheory(MODULE.theory, document.getElementById('theory-mount'));
-
   const session = new ExerciseSession(
     MODULE,
     document.getElementById('ex-fill'),
@@ -329,7 +490,6 @@ function initModulePage() {
   );
   session.start();
 }
-
 initModulePage();
 </script>
 </body>
