@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Indirekte Objektpronomen</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">&#127470;&#127481;</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Pronomen &middot; Modul 4</span>
+    </div>
+  </div>
+
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">&larr; Zur&uuml;ck zur &Uuml;bersicht</a>
+    <h1>&#128228; Indirekte Objektpronomen</h1>
+    <p>gli / le / ci &mdash; Dativ-Pronomen: Vergleich mit Deutsch, typische Fehlerquellen</p>
+  </div>
+
+  <div id="theory-mount"></div>
+
+  <h2 class="exercises-heading">&Uuml;bungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm04',
+  block: 'pronomen',
+  title: 'Indirekte Objektpronomen',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'<strong>Indirekte Objektpronomen</strong> ersetzen das indirekte Objekt &mdash; auf Deutsch: Dativ-Pronomen (&bdquo;wem?&ldquo;). Im Italienischen stehen sie &mdash; genau wie die direkten &mdash; <strong>vor dem konjugierten Verb</strong>.' },
+
+    { type:'table', head:['Person', 'Indir. Pronomen', 'Bedeutung (Dativ)'],
+      rows:[
+        ['1. Sg.',    '<strong>mi</strong>',  'mir'            ],
+        ['2. Sg.',    '<strong>ti</strong>',  'dir'            ],
+        ['3. Sg. m.', '<strong>gli</strong>', 'ihm'            ],
+        ['3. Sg. f.', '<strong>le</strong>',  'ihr'            ],
+        ['1. Pl.',    '<strong>ci</strong>',  'uns'            ],
+        ['2. Pl.',    '<strong>vi</strong>',  'euch'           ],
+        ['3. Pl.',    '<strong>gli</strong>', 'ihnen (m + f)!' ]
+      ]
+    },
+
+    { type:'tip', body:'<strong>Kritischer Unterschied:</strong> Im Plural gibt es f&uuml;r den Dativ <em>nur</em> <strong>gli</strong> &mdash; f&uuml;r maskulin und feminin gleich! <em>Loro</em> existiert als formelle Alternative, ist aber veraltet und kommt im Alltag kaum vor.' },
+
+    { type:'divider' },
+
+    { type:'compare',
+      left:  { title:'Direkt (Akkusativ)', body:'<strong>lo/la/li/le</strong><br><br>"wen oder was?"<br><br>lo vedo &mdash; ich sehe <u>ihn</u><br>la chiamo &mdash; ich rufe <u>sie</u> an<br>li compro &mdash; ich kaufe <u>sie</u>' },
+      right: { title:'Indirekt (Dativ)', body:'<strong>gli/le/ci</strong><br><br>"wem?"<br><br>gli scrivo &mdash; ich schreibe <u>ihm</u><br>le telefono &mdash; ich telefoniere mit <u>ihr</u><br>ci parla &mdash; er spricht mit <u>uns</u>' }
+    },
+
+    { type:'text', html:'<strong>Typische Verben mit Dativobjekt:</strong> parlare <em>a</em>, scrivere <em>a</em>, telefonare <em>a</em>, dare <em>a</em>, dire <em>a</em>, chiedere <em>a</em>, rispondere <em>a</em>, spiegare <em>a</em>, offrire <em>a</em>, piacere (+ Dativ!).' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>piacere</strong> funktioniert umgekehrt: Das Subjekt ist das, was gef&auml;llt. Das Pronomen steht im Dativ vor dem Verb.' },
+
+    { type:'example', it:'Mi piace la pizza.', de:'Ich mag Pizza. (w&ouml;rtl.: Mir gef&auml;llt die Pizza.)' },
+    { type:'example', it:'Ti piacciono i film?', de:'Magst du Filme? (w&ouml;rtl.: Gefallen dir Filme?)' },
+    { type:'example', it:'Gli piace studiare.', de:'Er mag lernen. (w&ouml;rtl.: Ihm gef&auml;llt das Lernen.)' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Position bei Modalverben:</strong> Das indirekte Pronomen kann wie das direkte vor das Modalverb oder an den Infinitiv geh&auml;ngt werden.' },
+
+    { type:'compare',
+      left:  { title:'Vor dem Modalverb', body:'<strong>Gli</strong> devo parlare.<br><strong>Le</strong> voglio scrivere.<br><strong>Mi</strong> puoi aiutare?' },
+      right: { title:'An den Infinitiv', body:'Devo parlar<strong>gli</strong>.<br>Voglio scriver<strong>le</strong>.<br>Puoi aiutar<strong>mi</strong>?' }
+    },
+
+    { type:'tip', body:'<strong>Kein Genusabgleich!</strong> Das Partizip ver&auml;ndert sich beim indirekten Objektpronomen <em>nicht</em>. Gli ho parlato bleibt parlato, egal ob "ihm" oder "ihr".' }
+  ],
+
+  exercises: [
+
+    /* === SORTIERAUFGABEN (SO) 2 === */
+    { id:'m04-so-01', type:'SO',
+      prompt:'Bringe die W&ouml;rter in die richtige Reihenfolge:',
+      tokens:['scrivo','gli','domani'],
+      solution:['gli','scrivo','domani'],
+      translation:'Ich schreibe ihm morgen.',
+      explain:'gli (ihm) steht vor dem konjugierten Verb.' },
+
+    { id:'m04-so-02', type:'SO',
+      prompt:'Bringe die W&ouml;rter in die richtige Reihenfolge:',
+      tokens:['le','ho','detto','la','verit&agrave;'],
+      solution:['le','ho','detto','la','verit&agrave;'],
+      translation:'Ich habe ihr die Wahrheit gesagt.',
+      explain:'le (ihr, Dativ) steht vor dem Hilfsverb ho. Kein Genusabgleich am Partizip.' },
+
+    /* === ZUORDNUNG (ZO) 10 === */
+    { id:'m04-zo-01', type:'ZO',
+      prompt:'Ordne zu: Deutsche Person (Dativ) &rarr; Italienisches Pronomen',
+      pairs:[
+        { de:'mir',  it:'mi' },
+        { de:'dir',  it:'ti' },
+        { de:'ihm',  it:'gli' },
+        { de:'ihr',  it:'le' },
+        { de:'uns',  it:'ci' },
+        { de:'euch', it:'vi' }
+      ] },
+
+    { id:'m04-zo-02', type:'ZO',
+      prompt:'Ordne zu: Satz &rarr; Version mit indirektem Pronomen',
+      pairs:[
+        { de:'Scrivo a Marco.',    it:'Gli scrivo.'   },
+        { de:'Scrivo a Maria.',    it:'Le scrivo.'    },
+        { de:'Parlo a te.',        it:'Ti parlo.'     },
+        { de:'D\u00f2 a voi.',     it:'Vi d\u00f2.'  },
+        { de:'Telefono a noi.',    it:'Ci telefona.'  },
+        { de:'Dico a loro.',       it:'Gli dico.'     }
+      ] },
+
+    { id:'m04-zo-03', type:'ZO',
+      prompt:'Ordne zu: "piacere" &mdash; wem gef&auml;llt was?',
+      pairs:[
+        { de:'Mir gef&auml;llt die Pizza.',   it:'Mi piace la pizza.'    },
+        { de:'Dir gef&auml;llt das Buch.',    it:'Ti piace il libro.'    },
+        { de:'Ihm gef&auml;llt die Musik.',   it:'Gli piace la musica.'  },
+        { de:'Ihr gef&auml;llt der Film.',    it:'Le piace il film.'     },
+        { de:'Uns gefallen die Kinder.',      it:'Ci piacciono i bambini.'},
+        { de:'Euch gef&auml;llt die Stadt.',  it:'Vi piace la citt\u00e0.'}
+      ] },
+
+    { id:'m04-zo-04', type:'ZO',
+      prompt:'Ordne zu: Verb + indirektes Pronomen (3. Pers. Sg.)',
+      pairs:[
+        { de:'ihm schreiben',      it:'scrivergli'    },
+        { de:'ihr antworten',      it:'risponderle'   },
+        { de:'ihm geben',          it:'dargli'        },
+        { de:'ihr erkl&auml;ren', it:'spiegarlo \u2014 spiegarle' },
+        { de:'ihm sagen',          it:'dirgli'        },
+        { de:'ihr telefonieren',   it:'telefonarle'   }
+      ] },
+
+    { id:'m04-zo-05', type:'ZO',
+      prompt:'Ordne zu: vor Modalverb vs. an Infinitiv (gli = ihm)',
+      pairs:[
+        { de:'Ich muss ihm sprechen. (vor V.)',  it:'Gli devo parlare.'   },
+        { de:'Ich muss ihm sprechen. (an Inf.)', it:'Devo parlargli.'     },
+        { de:'Er will ihr schreiben. (vor V.)',  it:'Le vuole scrivere.'  },
+        { de:'Er will ihr schreiben. (an Inf.)', it:'Vuole scriverle.'    },
+        { de:'Kannst du mir helfen? (vor V.)',   it:'Mi puoi aiutare?'    },
+        { de:'Kannst du mir helfen? (an Inf.)',  it:'Puoi aiutarmi?'      }
+      ] },
+
+    { id:'m04-zo-06', type:'ZO',
+      prompt:'Ordne zu: Direkt vs. Indirekt &mdash; richtige Pronomen w&auml;hlen',
+      pairs:[
+        { de:'Ich sehe ihn. (direkt)',         it:'lo vedo'      },
+        { de:'Ich schreibe ihm. (indirekt)',   it:'gli scrivo'   },
+        { de:'Ich rufe sie an. (direkt, f)',   it:'la chiamo'    },
+        { de:'Ich gebe ihr. (indirekt, f)',    it:'le do'        },
+        { de:'Ich kenne sie (Pl.). (direkt)',  it:'li conosco'   },
+        { de:'Ich spreche ihnen. (indirekt)',  it:'gli parlo'    }
+      ] },
+
+    { id:'m04-zo-07', type:'ZO',
+      prompt:'Ordne zu: Passato Prossimo &mdash; indirektes Pronomen (kein Genusabgleich!)',
+      pairs:[
+        { de:'Ich habe ihm geschrieben.',  it:'Gli ho scritto.'   },
+        { de:'Ich habe ihr gesagt.',       it:'Le ho detto.'      },
+        { de:'Er hat mir geantwortet.',    it:'Mi ha risposto.'   },
+        { de:'Wir haben euch geholfen.',   it:'Vi abbiamo aiutato.'},
+        { de:'Sie hat ihm gegeben.',       it:'Gli ha dato.'      },
+        { de:'Habt ihr uns erkl&auml;rt?', it:'Ci avete spiegato?' }
+      ] },
+
+    { id:'m04-zo-08', type:'ZO',
+      prompt:'Ordne zu: "piacere" &mdash; Singular vs. Plural',
+      pairs:[
+        { de:'Mir gef&auml;llt der Kaffee. (Sg.)',   it:'Mi piace il caff\u00e8.'      },
+        { de:'Mir gefallen die Kekse. (Pl.)',         it:'Mi piacciono i biscotti.'     },
+        { de:'Ihm gef&auml;llt das Lied. (Sg.)',     it:'Gli piace la canzone.'        },
+        { de:'Ihm gefallen die Lieder. (Pl.)',        it:'Gli piacciono le canzoni.'    },
+        { de:'Ihr gef&auml;llt der Sport. (Sg.)',    it:'Le piace lo sport.'           },
+        { de:'Uns gefallen die Ferien. (Pl.)',        it:'Ci piacciono le vacanze.'     }
+      ] },
+
+    { id:'m04-zo-09', type:'ZO',
+      prompt:'Ordne zu: Verb &rarr; nimmt es direktes oder indirektes Objekt?',
+      pairs:[
+        { de:'vedere (sehen)',          it:'direkt (lo/la)'         },
+        { de:'parlare a (sprechen zu)', it:'indirekt (gli/le)'      },
+        { de:'chiamare (anrufen)',      it:'direkt (lo/la)'         },
+        { de:'scrivere a (schreiben)',  it:'indirekt (gli/le)'      },
+        { de:'comprare (kaufen)',       it:'direkt (lo/la)'         },
+        { de:'rispondere a (antworten)',it:'indirekt (gli/le)'      }
+      ] },
+
+    { id:'m04-zo-10', type:'ZO',
+      prompt:'Ordne zu: Satz &rarr; Kurzantwort mit indirektem Pronomen',
+      pairs:[
+        { de:'Parli a Marco?',          it:'S\u00ec, gli parlo.'   },
+        { de:'Scrivi a Maria?',         it:'S\u00ec, le scrivo.'   },
+        { de:'Dai il libro a me?',      it:'S\u00ec, ti do il libro.' },
+        { de:'Rispondi a noi?',         it:'S\u00ec, vi rispondo.' },
+        { de:'Telefoni ai tuoi amici?', it:'S\u00ec, gli telefono.'},
+        { de:'Spieghi a lei?',          it:'S\u00ec, le spiego.'   }
+      ] },
+
+    /* === MULTIPLE CHOICE Basis (12) === */
+    { id:'m04-mc-01', type:'MC',
+      prompt:'Welches Pronomen? "Scrivo ___ una lettera." (a Marco)',
+      options:['lo','la','gli','le'],
+      correctValue:'gli',
+      explain:'Marco ist maskulin Singular &rarr; indirektes Pronomen: gli (ihm).' },
+
+    { id:'m04-mc-02', type:'MC',
+      prompt:'Welches Pronomen? "Telefono ___ ogni giorno." (a Maria)',
+      options:['la','lo','gli','le'],
+      correctValue:'le',
+      explain:'Maria ist feminin Singular &rarr; indirektes Pronomen: le (ihr).' },
+
+    { id:'m04-mc-03', type:'MC',
+      prompt:'Welches Pronomen? "___ piace la pizza." (mir gef&auml;llt)',
+      options:['Mi','Ti','Gli','Ci'],
+      correctValue:'Mi',
+      explain:'mir gef&auml;llt = mi piace. Das Dativ-Pronomen steht vor dem Verb.' },
+
+    { id:'m04-mc-04', type:'MC',
+      prompt:'Welches Pronomen? "Ho parlato ___." (= mit ihnen, Pl.)',
+      options:['loro','li','le','gli'],
+      correctValue:'gli',
+      explain:'Plural (indirekt) &rarr; gli. "Loro" ist formell und selten.' },
+
+    { id:'m04-mc-05', type:'MC',
+      prompt:'"___ piacciono i gatti?" (Dir gefallen Katzen?)',
+      options:['Mi','Ti','Gli','Ci'],
+      correctValue:'Ti',
+      explain:'dir = ti; piacciono (Plural, weil i gatti = Pl.) steht nach dem Pronomen.' },
+
+    { id:'m04-mc-06', type:'MC',
+      prompt:'Wo ist der Fehler? "Lo ho scritto una lettera."',
+      options:['Lo sollte li sein.','Lo sollte gli sein.','Lo sollte le sein.','Kein Fehler.'],
+      correctValue:'Lo sollte gli sein.',
+      explain:'scrivo a qualcuno = indirektes Objekt &rarr; gli (ihm). lo w&auml;re f&uuml;r "ihn sehen" (direkt).' },
+
+    { id:'m04-mc-07', type:'MC',
+      prompt:'Welche Aussage &uuml;ber den Partizip im Passato Prossimo ist richtig?',
+      options:[
+        'Bei indirekten Pronomen muss das Partizip immer kongruieren.',
+        'Bei indirekten Pronomen kongruiert das Partizip nie.',
+        'Bei "gli" kongruiert das Partizip, bei "le" nicht.',
+        'Das h&auml;ngt vom Genus des Substantivs ab.'
+      ],
+      correctValue:'Bei indirekten Pronomen kongruiert das Partizip nie.',
+      explain:'Nur direkte Objektpronomen (lo/la/li/le) erzwingen Partizip-Kongruenz. Indirekte nie.' },
+
+    { id:'m04-mc-08', type:'MC',
+      prompt:'Welches ist korrekt? "Ich gebe ihr das Buch." &rarr;',
+      options:['La do il libro.','Le do il libro.','Gli do il libro.','Li do il libro.'],
+      correctValue:'Le do il libro.',
+      explain:'ihr (Dativ, feminin Singular) = le. dare = geben.' },
+
+    { id:'m04-mc-09', type:'MC',
+      prompt:'Was bedeutet "Ci ha spiegato la lezione"?',
+      options:['Er hat die Stunde erkl&auml;rt.','Er hat uns die Stunde erkl&auml;rt.','Er hat euch die Stunde erkl&auml;rt.','Wir haben ihm die Stunde erkl&auml;rt.'],
+      correctValue:'Er hat uns die Stunde erkl&auml;rt.',
+      explain:'ci = uns (1. Pers. Pl. Dativ). spiegare a qualcuno = jemandem erkl&auml;ren.' },
+
+    { id:'m04-mc-10', type:'MC',
+      prompt:'Welches Pronomen? "Puoi ___ chiamare?" (mir, 1. Pers. Sg.)',
+      options:['mi','ti','ci','vi'],
+      correctValue:'mi',
+      explain:'mir (1. Pers. Sg. Dativ) = mi. Vor dem Modalverb.' },
+
+    { id:'m04-mc-11', type:'MC',
+      prompt:'Welches Pronomen bei Modalverb am Infinitiv? "Devo parlar___." (ihm)',
+      options:['lo','la','gli','le'],
+      correctValue:'gli',
+      explain:'parlare a lui = gli; an den Infinitiv geh&auml;ngt (parlar verliert -e): parlargli.' },
+
+    { id:'m04-mc-12', type:'MC',
+      prompt:'Was ist die korrekte piacere-Form? "Ihr (lei) gef&auml;llt der Film."',
+      options:['Le piace il film.','Gli piace il film.','La piace il film.','Li piace il film.'],
+      correctValue:'Le piace il film.',
+      explain:'ihr (feminin Sg. Dativ) = le; il film ist Singular &rarr; piace.' },
+
+    /* === MULTIPLE CHOICE LÜCKE (MCL) 10 === */
+    { id:'m04-mcl-01', type:'MC',
+      prompt:'W&auml;hle die richtige Form: "Marco? ___ ho scritto ieri."',
+      options:['Lo','La','Gli','Le'],
+      correctValue:'Gli',
+      translation:'Marco? Ich habe ihm gestern geschrieben.',
+      explain:'Marco (maskulin Sg.) als Dativobjekt &rarr; gli.' },
+
+    { id:'m04-mcl-02', type:'MC',
+      prompt:'W&auml;hle: "Maria non ___ ha risposto." (zu mir)',
+      options:['mi','ti','gli','le'],
+      correctValue:'mi',
+      translation:'Maria hat mir nicht geantwortet.',
+      explain:'mir (1. Pers. Sg. Dativ) = mi.' },
+
+    { id:'m04-mcl-03', type:'MC',
+      prompt:'W&auml;hle: "___ piacciono molto i dolci." (ihm)',
+      options:['Mi','Gli','Le','Ci'],
+      correctValue:'Gli',
+      translation:'Er mag S&uuml;&szlig;igkeiten sehr. (Ihm gefallen die S&uuml;&szlig;igkeiten.)',
+      explain:'ihm = gli; dolci ist Plural &rarr; piacciono.' },
+
+    { id:'m04-mcl-04', type:'MC',
+      prompt:'W&auml;hle: "Non so come dirlo. Devo parlar___." (ihr, feminin)',
+      options:['gli','le','mi','ti'],
+      correctValue:'le',
+      translation:'Ich wei&szlig; nicht, wie ich es sagen soll. Ich muss mit ihr sprechen.',
+      explain:'ihr (feminin Sg.) = le; an Infinitiv: parlarle.' },
+
+    { id:'m04-mcl-05', type:'MC',
+      prompt:'W&auml;hle: "I bambini? ___ ho dato i dolci." (ihnen, Pl.)',
+      options:['Li','Gli','Le','Ci'],
+      correctValue:'Gli',
+      translation:'Die Kinder? Ich habe ihnen die S&uuml;&szlig;igkeiten gegeben.',
+      explain:'ihnen (Plural indirekt) = gli. Kein Genusabgleich am Partizip: dato.' },
+
+    { id:'m04-mcl-06', type:'MC',
+      prompt:'W&auml;hle: "Ci ___ spiegato la lezione bene." (hat erkl&auml;rt)',
+      options:['ha','ho','hai','abbiamo'],
+      correctValue:'ha',
+      translation:'Er/Sie hat uns die Stunde gut erkl&auml;rt.',
+      explain:'ci = uns; das Subjekt ist er/sie (3. Pers. Sg.) &rarr; ha.' },
+
+    { id:'m04-mcl-07', type:'MC',
+      prompt:'W&auml;hle: "Ti ___ la verit&agrave;." (ich werde sagen)',
+      options:['dir\u00f2','dico','ho detto','dicevo'],
+      correctValue:'dir\u00f2',
+      translation:'Ich werde dir die Wahrheit sagen.',
+      explain:'Futuro von dire: dir&ograve;. ti steht vor dem Verb.' },
+
+    { id:'m04-mcl-08', type:'MC',
+      prompt:'W&auml;hle: "___ piace il caff\u00e8?" (dir)',
+      options:['Mi','Ti','Gli','Le'],
+      correctValue:'Ti',
+      translation:'Magst du Kaffee? (Gef&auml;llt dir der Kaffee?)',
+      explain:'dir = ti; caff&egrave; ist Singular &rarr; piace.' },
+
+    { id:'m04-mcl-09', type:'MC',
+      prompt:'W&auml;hle: "Non ___ ho detto niente." (ihr, feminin)',
+      options:['lo','la','gli','le'],
+      correctValue:'le',
+      translation:'Ich habe ihr nichts gesagt.',
+      explain:'ihr (feminin Sg. Dativ) = le; kein Genusabgleich bei indirektem Pronomen.' },
+
+    { id:'m04-mcl-10', type:'MC',
+      prompt:'W&auml;hle: "Vi ___ un regalo." (wir haben gegeben)',
+      options:['hanno dato','abbiamo dato','ho dato','avete dato'],
+      correctValue:'abbiamo dato',
+      translation:'Wir haben euch ein Geschenk gegeben.',
+      explain:'vi = euch (2. Pers. Pl.); noi &rarr; abbiamo dato.' },
+
+    /* === LÜCKENTEXT (LT) 5 === */
+    { id:'m04-lt-01', type:'LT',
+      text:'Scrivo a Marco ogni settimana. {0} scrivo sempre il luned\u00ec.',
+      blanks:[ { accept:['Gli','gli'] } ],
+      translation:'Ich schreibe Marco jede Woche. Ich schreibe ihm immer montags.',
+      explain:'Marco (maskulin Sg., Dativ) &rarr; gli.' },
+
+    { id:'m04-lt-02', type:'LT',
+      text:'{0} piace la musica italiana, ma non {1} piacciono le canzoni moderne.',
+      blanks:[ { accept:['Mi','mi'] }, { accept:['mi'] } ],
+      translation:'Mir gef&auml;llt die italienische Musik, aber mir gefallen die modernen Lieder nicht.',
+      explain:'Mi piace (Sg. Subjekt); mi piacciono (Pl. Subjekt canzoni). Dativ stabil.' },
+
+    { id:'m04-lt-03', type:'LT',
+      prompt:'Erg&auml;nze indirektes Pronomen und Partizip:',
+      text:'{0} ho {1} la verit\u00e0. (zu ihr)',
+      blanks:[ { accept:['Le','le'] }, { accept:['detto'] } ],
+      translation:'Ich habe ihr die Wahrheit gesagt.',
+      explain:'ihr (feminin Sg.) = Le; dire &rarr; detto (kein Genusabgleich).' },
+
+    { id:'m04-lt-04', type:'LT',
+      prompt:'Setze die richtige Form ein (Modalverb):',
+      text:'Non riesco a parlar{0}. Devo dir{1} la verit\u00e0. (zu ihm)',
+      blanks:[ { accept:['gli'] }, { accept:['gli'] } ],
+      translation:'Ich kann nicht mit ihm sprechen. Ich muss ihm die Wahrheit sagen.',
+      explain:'ihm = gli; parlargli / dirgli (Pronomen an den Infinitiv).' },
+
+    { id:'m04-lt-05', type:'LT',
+      prompt:'Erg&auml;nze alle fehlenden Pronomen:',
+      text:'{0} ha telefonato ieri e {1} ha chiesto come stiamo. Noi {2} abbiamo risposto subito.',
+      blanks:[ { accept:['Ci','ci'] }, { accept:['ci'] }, { accept:['gli','le'] } ],
+      translation:'Er/Sie hat uns gestern angerufen und gefragt, wie es uns geht. Wir haben ihm/ihr sofort geantwortet.',
+      explain:'ci = uns (1. Pers. Pl.); gli/le = ihm/ihr je nach Genus der Person.' },
+
+    /* === FORMTABELLE (FT) 2 === */
+    { id:'m04-ft-01', type:'FT',
+      prompt:'Welches indirekte Pronomen? (Dativ, Singular)',
+      rows:[
+        { label:'zu mir (1. Sg.)',    accept:['mi'] },
+        { label:'zu dir (2. Sg.)',    accept:['ti'] },
+        { label:'zu ihm (3. Sg. m.)', accept:['gli'] },
+        { label:'zu ihr (3. Sg. f.)', accept:['le'] },
+        { label:'zu uns (1. Pl.)',    accept:['ci'] },
+        { label:'zu euch (2. Pl.)',   accept:['vi'] }
+      ],
+      explain:'Plural 3. Pers. (zu ihnen) = gli (nicht loro).' },
+
+    { id:'m04-ft-02', type:'FT',
+      prompt:'Bilde die piacere-Form: "Mir/dir/ihm gef&auml;llt das Buch."',
+      rows:[
+        { label:'Mir gef\u00e4llt.',   accept:['mi piace'] },
+        { label:'Dir gef\u00e4llt.',   accept:['ti piace'] },
+        { label:'Ihm gef\u00e4llt.',   accept:['gli piace'] },
+        { label:'Ihr gef\u00e4llt.',   accept:['le piace'] },
+        { label:'Uns gef\u00e4llt.',   accept:['ci piace'] },
+        { label:'Euch gef\u00e4llt.',  accept:['vi piace'] }
+      ],
+      explain:'piacere + Singular-Objekt: piace. Davor das Dativ-Pronomen.' },
+
+    /* === FEHLERKORREKTUR (FK) 3 === */
+    { id:'m04-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
+      sentence:'Lo ho scritto una lettera ieri.',
+      solution:'Gli ho scritto una lettera ieri.',
+      errorToken:'Lo',
+      translation:'Ich habe ihm gestern einen Brief geschrieben.',
+      explain:'scrivere a qualcuno = indirektes Objekt &rarr; gli (nicht lo, das ist Akkusativ).' },
+
+    { id:'m04-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
+      sentence:'Mi piacciono la pizza.',
+      solution:'Mi piace la pizza.',
+      errorToken:'piacciono',
+      translation:'Ich mag Pizza.',
+      explain:'la pizza ist Singular &rarr; piace (nicht piacciono, das ist Plural).' },
+
+    { id:'m04-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
+      sentence:'Gli ho scritto la lettera. Ho scrittola bene.',
+      solution:'Gli ho scritto la lettera. L\'ho scritta bene.',
+      errorToken:'Ho scrittola',
+      translation:'Ich habe ihm den Brief geschrieben. Ich habe ihn gut geschrieben.',
+      explain:'Beim direkten Objekt "la lettera" (f) &rarr; la (vor Vokal: l\'); Partizip: scritta. Das indirekte gli bleibt im zweiten Satz weg, da das Pronomen schon ersetzt.' },
+
+    /* === KONTRAST (KO) 2 === */
+    { id:'m04-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese S&auml;tze?',
+      a:{ sentence:'Lo chiamo.', tag:'Direkt (Akkusativ)' },
+      b:{ sentence:'Gli telefono.', tag:'Indirekt (Dativ)' },
+      reveal:'"Lo chiamo" = Ich rufe ihn an (direktes Objekt, lo = ihn). "Gli telefono" = Ich telefoniere mit ihm (indirektes Objekt, gli = ihm). chiamare nimmt ein direktes Objekt; telefonare a qualcuno ein indirektes.' },
+
+    { id:'m04-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese S&auml;tze?',
+      a:{ sentence:'Mi piace la pizza.', tag:'piacere + Singular' },
+      b:{ sentence:'Mi piacciono le pizze.', tag:'piacere + Plural' },
+      reveal:'Bei piacere richtet sich das Verb nach dem Subjekt (das, was gef&auml;llt), nicht nach dem Dativ-Pronomen. La pizza (Sg.) &rarr; piace. Le pizze (Pl.) &rarr; piacciono. Das Pronomen mi bleibt immer gleich.' },
+
+    /* === DEUTSCH -> ITALIANO (DE) 3 === */
+    { id:'m04-de-01', type:'DE',
+      prompt:'"Ich schreibe ihr (= Maria) jeden Tag."',
+      solutions:['Le scrivo ogni giorno.','Ogni giorno le scrivo.'],
+      note:'Maria (feminin Sg.) &rarr; indirektes Pronomen le (ihr).' },
+
+    { id:'m04-de-02', type:'DE',
+      prompt:'"Er mag Kaffee sehr." (wortw&ouml;rtl. &uuml;bersetzen)',
+      solutions:['Gli piace molto il caff\u00e8.','Gli piace il caff\u00e8 molto.'],
+      note:'ihm gef&auml;llt = gli piace; il caff&egrave; (Sg.) &rarr; piace.' },
+
+    { id:'m04-de-03', type:'DE',
+      prompt:'"Sie hat uns die Wahrheit gesagt."',
+      solutions:['Ci ha detto la verit\u00e0.'],
+      note:'uns = ci; dire (unregelm.) &rarr; detto; kein Genusabgleich bei indirektem Pronomen.' },
+
+    /* === ITALIANO -> DEUTSCH (IT) 3 === */
+    { id:'m04-it-01', type:'IT',
+      prompt:'"Non gli ho risposto."',
+      solutions:['Ich habe ihm nicht geantwortet.','Ich habe ihr nicht geantwortet.'],
+      note:'gli = ihm oder ihnen; rispondere a = antworten (indirekt); kein Genusabgleich.' },
+
+    { id:'m04-it-02', type:'IT',
+      prompt:'"Ci piace molto stare qui."',
+      solutions:['Wir sind sehr gerne hier.','Wir m\u00f6gen es sehr, hier zu sein.','Es gef\u00e4llt uns sehr, hier zu sein.'],
+      note:'ci piace = uns gef\u00e4llt; stare qui = hier sein. Infinitiv ist Singular &rarr; piace.' },
+
+    { id:'m04-it-03', type:'IT',
+      prompt:'"Le devo dire una cosa importante."',
+      solutions:['Ich muss ihr etwas Wichtiges sagen.','Ich muss ihr eine wichtige Sache sagen.'],
+      note:'le = ihr (feminin Sg.); dire = sagen; una cosa importante = eine wichtige Sache.' }
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
