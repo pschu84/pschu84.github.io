@@ -748,11 +748,11 @@ class ExerciseSession {
     this.navEl.appendChild(this.weiterBtn);
   }
 
-  start() {
+start() {
     Store.updateStreak();
-    const state = Store.load();
-    const mState = Store.getModule(state, this.mod.id);
-    this.index = Math.min(mState.lastIndex || 0, this.mod.exercises.length - 1);
+    // Nutzt die bereits in shared.js vorhandene shuffle()-Funktion
+    this.mod.exercises = shuffle(this.mod.exercises); 
+    this.index = 0;
     this._render();
   }
 
