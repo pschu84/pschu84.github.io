@@ -387,8 +387,9 @@ button { font-family: var(--f-body); }
 .zo-item.zo-wrong   { background: var(--terra-soft); border-color: var(--terra); }
 
 @media (max-width: 560px) {
-  .zo-grid { grid-template-columns: 1fr; }
+  .zo-grid { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
   .zo-arrow { display: none; }
+  .zo-item { padding: 0.4rem 0.5rem; font-size: 0.82rem; min-height: 38px; }
 }
 
 /* ===== ANIMATIONS ===== */
