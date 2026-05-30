@@ -47,27 +47,20 @@
   .ref-toc a:hover { color: var(--terra); }
   .ref-toc a::before { content: '→'; font-size: 0.75rem; color: var(--terra); flex-shrink: 0; }
 
-  .ref-section {
-    margin-bottom: 3rem;
-    scroll-margin-top: 4rem;
+  .ref-section-icon {
+    font-size: 1.5rem;
+    line-height: 1;
   }
   .ref-section-header {
     display: flex;
     align-items: center;
     gap: 0.7rem;
-    border-bottom: 3px solid var(--ink);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.3rem;
   }
   .ref-section-header h2 {
     font-family: var(--f-display);
     font-weight: 900;
-    font-size: 1.35rem;
+    font-size: 1.2rem;
     margin: 0;
-  }
-  .ref-section-icon {
-    font-size: 1.5rem;
-    line-height: 1;
   }
   .ref-badge {
     font-size: 0.72rem;
@@ -83,9 +76,6 @@
   .ref-badge-modul { background: var(--cielo-soft); color: var(--cielo-deep); }
   .ref-badge-ref   { background: var(--oliva-soft); color: var(--oliva-deep); }
 
-  .ref-subsection {
-    margin-bottom: 1.5rem;
-  }
   .ref-subsection h3 {
     font-size: 0.92rem;
     font-weight: 700;
@@ -153,6 +143,49 @@
 
   .big-prep-table th { white-space: nowrap; }
 
+  /* Mobile table scroll */
+  .table-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 0.5rem;
+    border-radius: var(--r-sm);
+  }
+  .table-scroll-wrap .theory-table {
+    min-width: 420px;
+  }
+
+  /* ref-section als Karte */
+  .ref-section {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    scroll-margin-top: 4rem;
+  }
+  .ref-section-header {
+    padding: 0.85rem 1.2rem;
+    background: var(--paper-2);
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 0;
+  }
+  .ref-subsection {
+    padding: 0 1.2rem;
+    margin-bottom: 0;
+  }
+  .ref-subsection:first-of-type {
+    padding-top: 1rem;
+  }
+  .ref-subsection:last-child {
+    padding-bottom: 1.2rem;
+  }
+  .ref-subsection + .ref-subsection {
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+    margin-top: 0;
+  }
+
   @media (max-width: 600px) {
     .ref-grid-2 { grid-template-columns: 1fr; }
     .ref-it { min-width: 0; }
@@ -205,7 +238,7 @@
 
     <div class="ref-subsection">
       <h3>Einfache Präpositionen &mdash; Bedeutung im Überblick</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Präp.</th><th>Kernbedeutung</th><th>Typische Verwendung</th><th>Beispiel</th></tr></thead>
         <tbody>
           <tr><td><strong>di</strong></td><td>von, aus</td><td>Herkunft, Zugehörigkeit, Material, Thema, Vergleich</td><td>Sono di Roma. &nbsp; il libro di Marco</td></tr>
@@ -217,13 +250,13 @@
           <tr><td><strong>per</strong></td><td>für, um zu, wegen</td><td>Zweck, Dauer, Richtung, Grund</td><td>per te &nbsp; per due ore &nbsp; partire per Roma</td></tr>
           <tr><td><strong>tra / fra</strong></td><td>zwischen, in (Zukunft)</td><td>Position zwischen zwei Dingen, zukünftiger Zeitpunkt</td><td>tra me e te &nbsp; tra un'ora</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="ref-subsection">
       <h3>Artikelpräpositionen (Verschmelzungen)</h3>
       <p style="font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.7rem;">di, a, da, in, su + bestimmter Artikel verschmelzen obligatorisch. con, per, tra, fra verschmelzen <em>nicht</em>.</p>
-      <table class="theory-table big-prep-table">
+      <div class="table-scroll-wrap"><table class="theory-table big-prep-table">
         <thead>
           <tr><th>+</th><th>il</th><th>lo</th><th>la</th><th>l'</th><th>i</th><th>gli</th><th>le</th></tr>
         </thead>
@@ -234,13 +267,13 @@
           <tr><td><strong>in</strong></td><td>nel</td><td>nello</td><td>nella</td><td>nell'</td><td>nei</td><td>negli</td><td>nelle</td></tr>
           <tr><td><strong>su</strong></td><td>sul</td><td>sullo</td><td>sulla</td><td>sull'</td><td>sui</td><td>sugli</td><td>sulle</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-tip">lo / gli / l' gelten vor: s + Konsonant (lo zaino), z (lo zaino), gn, ps, x, y, i+Vokal &mdash; und vor Vokal (l'amico, gli occhi).</div>
     </div>
 
     <div class="ref-subsection">
       <h3>Präpositionen ohne Artikel (wichtige Ausnahmen)</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Regel</th><th>Beispiele</th></tr></thead>
         <tbody>
           <tr><td>Städte: immer <strong>a</strong> ohne Artikel</td><td>a Roma, a Berlino, a Milano</td></tr>
@@ -256,7 +289,7 @@
           <tr><td>Zeitdauer seit: <strong>da</strong></td><td>Studio italiano da tre anni.</td></tr>
           <tr><td>Zeitpunkt in der Zukunft: <strong>tra/fra</strong></td><td>Arrivo tra un'ora.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </section>
 
@@ -295,7 +328,7 @@
 
     <div class="ref-subsection">
       <h3>Partizip-Kongruenz bei essere</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Subjekt</th><th>Partizip-Endung</th><th>Beispiel (andare)</th></tr></thead>
         <tbody>
           <tr><td>io / lui (m)</td><td><strong>-o</strong></td><td>sono andato</td></tr>
@@ -303,7 +336,7 @@
           <tr><td>noi / loro (m/gemischt)</td><td><strong>-i</strong></td><td>siamo andati</td></tr>
           <tr><td>noi / loro (f)</td><td><strong>-e</strong></td><td>siamo andate</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </section>
 
@@ -320,7 +353,7 @@
 
     <div class="ref-subsection">
       <h3>Presente (Präsens) &mdash; Endungen</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Pronomen</th><th>-are (parlare)</th><th>-ere (vedere)</th><th>-ire (partire)</th><th>-ire/isc (capire)</th></tr></thead>
         <tbody>
           <tr><td>io</td><td>parlo</td><td>vedo</td><td>parto</td><td>capisco</td></tr>
@@ -330,26 +363,26 @@
           <tr><td>voi</td><td>parlate</td><td>vedete</td><td>partite</td><td>capite</td></tr>
           <tr><td>loro</td><td>parlano</td><td>vedono</td><td>partono</td><td>capiscono</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="ref-subsection">
       <h3>Passato Prossimo (Perfekt)</h3>
       <p style="font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.5rem;">avere/essere (Präsens) + Partizip Perfekt</p>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Infinitiv-Endung</th><th>&rarr; Partizip</th><th>Unregelmäßige (Auswahl)</th></tr></thead>
         <tbody>
           <tr><td>-are</td><td>-ato &nbsp; parlare &rarr; parlato</td><td>fare &rarr; fatto &nbsp; dare &rarr; dato</td></tr>
           <tr><td>-ere</td><td>-uto &nbsp; vendere &rarr; venduto</td><td>vedere &rarr; visto &nbsp; leggere &rarr; letto &nbsp; prendere &rarr; preso &nbsp; scrivere &rarr; scritto &nbsp; dire &rarr; detto &nbsp; bere &rarr; bevuto</td></tr>
           <tr><td>-ire</td><td>-ito &nbsp; partire &rarr; partito</td><td>aprire &rarr; aperto &nbsp; venire &rarr; venuto</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="ref-subsection">
       <h3>Futuro Semplice (Zukunft)</h3>
       <p style="font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.5rem;">Kein Hilfsverb &mdash; Endungen: -rò / -rai / -rà / -remo / -rete / -ranno</p>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Typ</th><th>Stamm</th><th>Beispiel io / lui</th></tr></thead>
         <tbody>
           <tr><td>-are (regelmäßig)</td><td>Infinitiv ohne -e</td><td>parler&ograve; / parlerà</td></tr>
@@ -362,13 +395,13 @@
           <tr><td>venire</td><td>verr-</td><td>verrò / verrà</td></tr>
           <tr><td>volere / potere / dovere</td><td>vorr- / potr- / dovr-</td><td>vorrò / potrò / dovrò</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-note">Futuro als Vermutung über die Gegenwart: <em>Sarà stanco.</em> = Er ist wohl müde.</div>
     </div>
 
     <div class="ref-subsection">
       <h3>Imperfetto (Vergangenheit &mdash; Zustand / Wiederholung)</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Pronomen</th><th>parlare</th><th>vedere</th><th>essere</th></tr></thead>
         <tbody>
           <tr><td>io</td><td>parlavo</td><td>vedevo</td><td>ero</td></tr>
@@ -378,14 +411,14 @@
           <tr><td>voi</td><td>parlavate</td><td>vedevate</td><td>eravate</td></tr>
           <tr><td>loro</td><td>parlavano</td><td>vedevano</td><td>erano</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-tip">Passato Prossimo = abgeschlossene Handlung. Imperfetto = andauernder Zustand, Gewohnheit, Hintergrund. <em>Mentre mangiavo, è arrivato Marco.</em></div>
     </div>
 
     <div class="ref-subsection">
       <h3>Condizionale Presente (Konjunktiv II / Würde-Form)</h3>
       <p style="font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.5rem;">Endungen: -rei / -resti / -rebbe / -remmo / -reste / -rebbero</p>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Pronomen</th><th>parlare</th><th>essere</th><th>avere</th></tr></thead>
         <tbody>
           <tr><td>io</td><td>parlerei</td><td>sarei</td><td>avrei</td></tr>
@@ -395,7 +428,7 @@
           <tr><td>voi</td><td>parlereste</td><td>sareste</td><td>avreste</td></tr>
           <tr><td>loro</td><td>parlerebbero</td><td>sarebbero</td><td>avrebbero</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-note">Verwendet für höfliche Bitten (<em>Vorrei...</em>), Wünsche (<em>Mi piacerebbe...</em>) und hypothetische Aussagen (<em>Lo farei volentieri.</em>).</div>
     </div>
   </section>
@@ -413,7 +446,7 @@
 
     <div class="ref-subsection">
       <h3>Alle Objektpronomen auf einen Blick</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Person</th><th>Direkt (Akkusativ)<br>"wen/was?"</th><th>Indirekt (Dativ)<br>"wem?"</th></tr></thead>
         <tbody>
           <tr><td>1. Sg.</td><td><strong>mi</strong> (mich)</td><td><strong>mi</strong> (mir)</td></tr>
@@ -424,7 +457,7 @@
           <tr><td>2. Pl.</td><td><strong>vi</strong> (euch)</td><td><strong>vi</strong> (euch)</td></tr>
           <tr><td>3. Pl.</td><td><strong>li</strong> (sie, m) / <strong>le</strong> (sie, f)</td><td><strong>gli</strong> (ihnen &mdash; m + f!)</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="ref-subsection">
@@ -463,7 +496,7 @@
 
     <div class="ref-subsection">
       <h3>Artikel &amp; Genus</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Genus / Umgebung</th><th>Bestimmt</th><th>Unbestimmt</th><th>Beispiele</th></tr></thead>
         <tbody>
           <tr><td>m/Sg. (normal)</td><td>il</td><td>un</td><td>il libro, un cane</td></tr>
@@ -474,12 +507,12 @@
           <tr><td>m/Pl.</td><td>i / gli</td><td>dei / degli</td><td>i libri / gli zaini</td></tr>
           <tr><td>f/Pl.</td><td>le</td><td>delle</td><td>le case</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="ref-subsection">
       <h3>Pluralbildung</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Singular-Endung</th><th>Plural-Endung</th><th>Beispiele</th></tr></thead>
         <tbody>
           <tr><td>-o (m)</td><td>-i</td><td>libro &rarr; libri &nbsp; ragazzo &rarr; ragazzi</td></tr>
@@ -491,7 +524,7 @@
           <tr><td>Akzent auf letzter Silbe</td><td>unveränderlich</td><td>città &rarr; città &nbsp; caffè &rarr; caffè</td></tr>
           <tr><td>auf Konsonant / Abkürzung</td><td>unveränderlich</td><td>film &rarr; film &nbsp; bar &rarr; bar</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </section>
 
@@ -508,38 +541,38 @@
 
     <div class="ref-subsection">
       <h3>Kongruenz</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Typ</th><th>m/Sg.</th><th>f/Sg.</th><th>m/Pl.</th><th>f/Pl.</th></tr></thead>
         <tbody>
           <tr><td>-o/-a Typ</td><td>bello</td><td>bella</td><td>belli</td><td>belle</td></tr>
           <tr><td>-e Typ</td><td>grande</td><td>grande</td><td>grandi</td><td>grandi</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-note">Adjektive stehen meist nach dem Nomen: <em>un libro interessante</em>. Einige häufige stehen davor: bello, brutto, grande, piccolo, buono, cattivo, nuovo, vecchio, giovane.</div>
     </div>
 
     <div class="ref-subsection">
       <h3>Steigerung</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Form</th><th>Bildung</th><th>Beispiel</th></tr></thead>
         <tbody>
           <tr><td>Komparativ</td><td>più / meno + Adj. + di/che</td><td>Marco è più alto di Luigi. &nbsp; È meno caro che bello.</td></tr>
           <tr><td>Superlativ relativ</td><td>il/la/i/le + più/meno + Adj.</td><td>È il più bello della classe.</td></tr>
           <tr><td>Superlativ absolut</td><td>Adj. + -issimo/a/i/e</td><td>bellissimo &nbsp; stanchissima &nbsp; rapidissimi</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-tip">Unregelmäßige Steigerung: buono &rarr; migliore (besser) / ottimo (am besten) &nbsp;|&nbsp; cattivo &rarr; peggiore / pessimo &nbsp;|&nbsp; grande &rarr; maggiore / massimo &nbsp;|&nbsp; piccolo &rarr; minore / minimo.</div>
     </div>
 
     <div class="ref-subsection">
       <h3>Bello und Buono vor dem Nomen</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th></th><th>m/Sg. (normal)</th><th>m/Sg. (Vokal/s+K)</th><th>f/Sg.</th><th>f/Sg. (Vokal)</th><th>m/Pl.</th><th>f/Pl.</th></tr></thead>
         <tbody>
           <tr><td><strong>bello</strong></td><td>bel libro</td><td>bello zaino / bell'amico</td><td>bella casa</td><td>bell'amica</td><td>bei libri</td><td>belle case</td></tr>
           <tr><td><strong>buono</strong></td><td>buon vino</td><td>buono studente</td><td>buona pizza</td><td>buon'amica</td><td>buoni vini</td><td>buone pizze</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </section>
 
@@ -564,7 +597,7 @@
     <div class="ref-subsection">
       <h3>Doppelte Verneinung</h3>
       <p style="font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.6rem;">Im Italienischen ist doppelte Verneinung <strong>korrekt und notwendig</strong>, wenn ein negativer Ausdruck nach dem Verb steht.</p>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Ausdruck</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
         <tbody>
           <tr><td>non&nbsp;&hellip;&nbsp;mai</td><td>nie, niemals</td><td>Non vado mai al cinema.</td></tr>
@@ -574,7 +607,7 @@
           <tr><td>non&nbsp;&hellip;&nbsp;più</td><td>nicht mehr</td><td>Non abito più a Roma.</td></tr>
           <tr><td>non&nbsp;&hellip;&nbsp;né&nbsp;&hellip;&nbsp;né</td><td>weder&nbsp;&hellip;&nbsp;noch</td><td>Non mangio né carne né pesce.</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-tip">Steht mai / niente / nessuno <em>vor</em> dem Verb, entfällt non: <em>Nessuno è venuto.</em> &nbsp; <em>Mai ho detto questo!</em></div>
     </div>
   </section>
@@ -592,7 +625,7 @@
 
     <div class="ref-subsection">
       <h3>Fragewörter</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Fragewort</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
         <tbody>
           <tr><td><strong>chi</strong></td><td>wer / wen</td><td>Chi è? &nbsp; Chi hai visto?</td></tr>
@@ -604,7 +637,7 @@
           <tr><td><strong>come</strong></td><td>wie</td><td>Come stai? &nbsp; Come si chiama?</td></tr>
           <tr><td><strong>perché</strong></td><td>warum / weil</td><td>Perché non vieni? &nbsp; Perché sono stanco.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="ref-subsection">
@@ -629,7 +662,7 @@
 
     <div class="ref-subsection">
       <h3>Grundwortstellung</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Typ</th><th>Struktur</th><th>Beispiel</th></tr></thead>
         <tbody>
           <tr><td>Einfacher Satz</td><td>Subjekt + Verb + Objekt</td><td>Marco mangia la pizza.</td></tr>
@@ -637,25 +670,25 @@
           <tr><td>Verneinung</td><td>non + (Pronomen) + Verb</td><td>Non la mangia.</td></tr>
           <tr><td>Frage</td><td>Verb + Subjekt (opt.) + ?</td><td>Mangia Marco la pizza?</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
 
     <div class="ref-subsection">
       <h3>Relativpronomen</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Pronomen</th><th>Verwendung</th><th>Beispiel</th></tr></thead>
         <tbody>
           <tr><td><strong>che</strong></td><td>Subjekt oder direktes Objekt</td><td>Il libro che leggo è bello. &nbsp; La ragazza che vedo è Maria.</td></tr>
           <tr><td><strong>cui</strong></td><td>nach Präposition (indirektes Objekt)</td><td>La persona di cui parlo è Marco. &nbsp; Il libro in cui ho letto &hellip;</td></tr>
           <tr><td><strong>quello che / ciò che</strong></td><td>"was" (ohne Bezugswort)</td><td>Quello che dici è vero. &nbsp; Faccio ciò che posso.</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-tip">che = unveränderlich (kein Genus). cui = unveränderlich, immer nach Präposition. Nie: "il quale" im Alltag (sehr formell).</div>
     </div>
 
     <div class="ref-subsection">
       <h3>Modalverben + Infinitiv</h3>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Verb</th><th>Bedeutung</th><th>Presente (io / tu / lui / noi / voi / loro)</th></tr></thead>
         <tbody>
           <tr><td><strong>dovere</strong></td><td>müssen</td><td>devo / devi / deve / dobbiamo / dovete / devono</td></tr>
@@ -663,14 +696,14 @@
           <tr><td><strong>volere</strong></td><td>wollen</td><td>voglio / vuoi / vuole / vogliamo / volete / vogliono</td></tr>
           <tr><td><strong>sapere</strong></td><td>können (wissen wie)</td><td>so / sai / sa / sappiamo / sapete / sanno</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-note">Modalverb + Infinitiv: <em>Devo mangiare.</em> &nbsp; Mit direktem Pronomen: <em>Lo devo mangiare.</em> = <em>Devo mangiarlo.</em></div>
     </div>
 
     <div class="ref-subsection">
       <h3>Reflexive Verben</h3>
       <p style="font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.5rem;">Reflexivpronomen: mi, ti, si, ci, vi, si. Immer <strong>essere</strong> im Passato Prossimo.</p>
-      <table class="theory-table">
+      <div class="table-scroll-wrap"><table class="theory-table">
         <thead><tr><th>Pronomen</th><th>alzarsi (aufstehen)</th></tr></thead>
         <tbody>
           <tr><td>io</td><td>mi alzo</td></tr>
@@ -680,7 +713,7 @@
           <tr><td>voi</td><td>vi alzate</td></tr>
           <tr><td>loro</td><td>si alzano</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="ref-example-pair" style="margin-top:0.5rem;"><span class="ref-it">Mi sono alzato alle sette.</span><span class="ref-de">Ich bin um sieben aufgestanden. (essere + kongruentes Partizip)</span></div>
     </div>
   </section>
