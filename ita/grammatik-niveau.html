@@ -206,10 +206,41 @@
   .niveau-toc a:hover { color: var(--terra); }
   .niveau-toc a::before { content: '→'; font-size: 0.74rem; color: var(--terra); flex-shrink: 0; }
 
+  /* TOC-Kategorien */
+  .toc-category {
+    margin-top: 0.85rem;
+    margin-bottom: 0.1rem;
+  }
+  .toc-category:first-child { margin-top: 0; }
+  .toc-cat-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    display: inline-block;
+    margin-bottom: 0.25rem;
+  }
+  .toc-category ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.15rem 1.2rem;
+  }
+  /* override the old single ul grid when categories are used */
+  .niveau-toc.has-categories > ul { display: none; }
+
   @media (max-width: 560px) {
     .ex-it { min-width: 0; }
     .ex-row { flex-direction: column; gap: 0.05rem; }
     .niveau-toc ul { grid-template-columns: 1fr; }
+    .toc-category ul { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -251,22 +282,44 @@
       <strong>A1 &mdash; Einstieg:</strong> Du lernst die absoluten Grundbausteine: Artikel, Plural, einfache Sätze, Präsens und das Passato Prossimo. Ziel ist, sich in einfachen Situationen verständigen zu können.
     </div>
 
-    <div class="niveau-toc">
+    <div class="niveau-toc has-categories">
       <h2>Themen in diesem Niveau</h2>
-      <ul>
-      <li><a href="#a1-subjektpronomen">👤 Subjektpronomen</a></li>
-      <li><a href="#a1-artikel-und-genus">🔤 Artikel & Genus</a></li>
-      <li><a href="#a1-plural-der-nomen">📦 Plural der Nomen</a></li>
-      <li><a href="#a1-presente-prsens">⚡ Presente (Präsens)</a></li>
-      <li><a href="#a1-essere-und-avere">⚙️ Essere und Avere</a></li>
-      <li><a href="#a1-passato-prossimo">🕰️ Passato Prossimo</a></li>
-      <li><a href="#a1-adjektive">🎨 Adjektive</a></li>
-      <li><a href="#a1-prpositionen-grundlagen">🔗 Präpositionen: Grundlagen</a></li>
-      <li><a href="#a1-teilungsartikel">🍞 Teilungsartikel</a></li>
-      <li><a href="#a1-fragepronomen">❓ Fragepronomen</a></li>
-      <li><a href="#a1-modalverben">💬 Modalverben</a></li>
-      <li><a href="#a1-mi-piace-ich-mag">❤️ Mi piace - Ich mag</a></li>
-      </ul>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Verben</span>
+        <ul>
+          <li><a href="#a1-presente-prsens">⚡ Presente (Präsens)</a></li>
+          <li><a href="#a1-essere-und-avere">⚙️ Essere und Avere</a></li>
+          <li><a href="#a1-passato-prossimo">🕰️ Passato Prossimo</a></li>
+          <li><a href="#a1-modalverben">💬 Modalverben</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Pronomen</span>
+        <ul>
+          <li><a href="#a1-subjektpronomen">👤 Subjektpronomen</a></li>
+          <li><a href="#a1-fragepronomen">❓ Fragepronomen</a></li>
+          <li><a href="#a1-mi-piace-ich-mag">❤️ Mi piace</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Nomen &amp; Artikel</span>
+        <ul>
+          <li><a href="#a1-artikel-und-genus">🔤 Artikel &amp; Genus</a></li>
+          <li><a href="#a1-plural-der-nomen">📦 Plural der Nomen</a></li>
+          <li><a href="#a1-teilungsartikel">🍞 Teilungsartikel</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Weitere Bausteine</span>
+        <ul>
+          <li><a href="#a1-adjektive">🎨 Adjektive</a></li>
+          <li><a href="#a1-prpositionen-grundlagen">🔗 Präpositionen: Grundlagen</a></li>
+        </ul>
+      </div>
     </div>
 
 
@@ -551,20 +604,42 @@
       <strong>A2 &mdash; Aufbau:</strong> Du vertiefst die Zeitformen, lernst Pronomen systematisch und erweiterst deinen Satzbau. Ziel ist flüssigere Alltagskommunikation.
     </div>
 
-    <div class="niveau-toc">
+    <div class="niveau-toc has-categories">
       <h2>Themen in diesem Niveau</h2>
-      <ul>
-      <li><a href="#a2-imperfetto">📽️ Imperfetto</a></li>
-      <li><a href="#a2-futuro-semplice">🔮 Futuro Semplice</a></li>
-      <li><a href="#a2-condizionale-presente">✨ Condizionale Presente</a></li>
-      <li><a href="#a2-direkte-objektpronomen">🎯 Direkte Objektpronomen</a></li>
-      <li><a href="#a2-indirekte-objektpronomen">📤 Indirekte Objektpronomen</a></li>
-      <li><a href="#a2-reflexive-verben">🔄 Reflexive Verben</a></li>
-      <li><a href="#a2-steigerung-der-adjektive">📈 Steigerung der Adjektive</a></li>
-      <li><a href="#a2-verlaufsform-stare-gerundio">⏳ Verlaufsform: stare + Gerundio</a></li>
-      <li><a href="#a2-verneinung">🚫 Verneinung</a></li>
-      <li><a href="#a2-possessive">🏠 Possessive</a></li>
-      </ul>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Zeitformen</span>
+        <ul>
+          <li><a href="#a2-imperfetto">📽️ Imperfetto</a></li>
+          <li><a href="#a2-futuro-semplice">🔮 Futuro Semplice</a></li>
+          <li><a href="#a2-condizionale-presente">✨ Condizionale Presente</a></li>
+          <li><a href="#a2-verlaufsform-stare-gerundio">⏳ Verlaufsform: stare + Gerundio</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Pronomen</span>
+        <ul>
+          <li><a href="#a2-direkte-objektpronomen">🎯 Direkte Objektpronomen</a></li>
+          <li><a href="#a2-indirekte-objektpronomen">📤 Indirekte Objektpronomen</a></li>
+          <li><a href="#a2-reflexive-verben">🔄 Reflexive Verben</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Nomen &amp; Adjektive</span>
+        <ul>
+          <li><a href="#a2-steigerung-der-adjektive">📈 Steigerung der Adjektive</a></li>
+          <li><a href="#a2-possessive">🏠 Possessive</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Satzbau</span>
+        <ul>
+          <li><a href="#a2-verneinung">🚫 Verneinung</a></li>
+        </ul>
+      </div>
     </div>
 
 
@@ -826,19 +901,41 @@
       <strong>B1 &mdash; Mittelstufe:</strong> Komplexere Strukturen, Konjunktiv, kombinierte Pronomen und differenzierter Ausdruck. Ziel ist selbstständiges Sprechen und Schreiben zu vertrauten Themen.
     </div>
 
-    <div class="niveau-toc">
+    <div class="niveau-toc has-categories">
       <h2>Themen in diesem Niveau</h2>
-      <ul>
-      <li><a href="#b1-congiuntivo-presente">🌀 Congiuntivo Presente</a></li>
-      <li><a href="#b1-congiuntivo-imperfetto">🌀 Congiuntivo Imperfetto</a></li>
-      <li><a href="#b1-congiuntivo-passato">🌀 Congiuntivo Passato</a></li>
-      <li><a href="#b1-passato-remoto">📜 Passato Remoto</a></li>
-      <li><a href="#b1-kombinierte-pronomen">🔀 Kombinierte Pronomen</a></li>
-      <li><a href="#b1-relativpronomen">🔗 Relativpronomen</a></li>
-      <li><a href="#b1-pronominalverben">🧩 Pronominalverben</a></li>
-      <li><a href="#b1-typische-verwechslungen">🤔 Typische Verwechslungen</a></li>
-      <li><a href="#b1-ci-und-ne">💡 CI und NE</a></li>
-      </ul>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Konjunktiv</span>
+        <ul>
+          <li><a href="#b1-congiuntivo-presente">🌀 Congiuntivo Presente</a></li>
+          <li><a href="#b1-congiuntivo-imperfetto">🌀 Congiuntivo Imperfetto</a></li>
+          <li><a href="#b1-congiuntivo-passato">🌀 Congiuntivo Passato</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Zeitformen</span>
+        <ul>
+          <li><a href="#b1-passato-remoto">📜 Passato Remoto</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Pronomen</span>
+        <ul>
+          <li><a href="#b1-kombinierte-pronomen">🔀 Kombinierte Pronomen</a></li>
+          <li><a href="#b1-relativpronomen">🔗 Relativpronomen</a></li>
+          <li><a href="#b1-pronominalverben">🧩 Pronominalverben</a></li>
+          <li><a href="#b1-ci-und-ne">💡 CI und NE</a></li>
+        </ul>
+      </div>
+
+      <div class="toc-category">
+        <span class="toc-cat-label">Verben &amp; Verwechslungen</span>
+        <ul>
+          <li><a href="#b1-typische-verwechslungen">🤔 Typische Verwechslungen</a></li>
+        </ul>
+      </div>
     </div>
 
 
