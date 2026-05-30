@@ -686,7 +686,7 @@ function _renderZO(ex, box, onDone) {
 
 /* --- helpers --- */
 function _prompt(box, text) {
-  const p = document.createElement('p'); p.className = 'ex-prompt'; p.textContent = text; box.appendChild(p);
+  const p = document.createElement('p'); p.className = 'ex-prompt'; p.innerHTML = text; box.appendChild(p);
 }
 function _chip(word, onClick) {
   const c = document.createElement('span'); c.className = 'so-chip'; c.textContent = word;
@@ -748,17 +748,42 @@ class ExerciseSession {
     this.navEl.appendChild(this.weiterBtn);
   }
 
-start() {
+  start() {
     Store.updateStreak();
-    // Nutzt die bereits in shared.js vorhandene shuffle()-Funktion
-    this.mod.exercises = shuffle(this.mod.exercises); 
-    this.index = 0;
+    const state = Store.load();
+    const mState = Store.getModule(state, this.mod.id);
+
+    // Build a shuffled-by-type order once per session.
+    // Group exercises by type, shuffle within each group, then shuffle group order.
+    // This prevents long runs of the same exercise type.
+    const groups = {};
+    this.mod.exercises.forEach((ex, i) => {
+      const t = ex.type || 'XX';
+      if (!groups[t]) groups[t] = [];
+      groups[t].push(i);
+    });
+    const shuffledGroups = shuffle(Object.values(groups).map(g => shuffle([...g])));
+    // Interleave: pick one from each group in round-robin until all exhausted
+    this._order = [];
+    const queues = shuffledGroups.map(g => [...g]);
+    let remaining = true;
+    while (remaining) {
+      remaining = false;
+      for (const q of queues) {
+        if (q.length > 0) { this._order.push(q.shift()); remaining = true; }
+      }
+    }
+
+    // Resume: try to restore position; if first run start at 0
+    const savedIdx = mState.lastIndex || 0;
+    this.index = Math.min(savedIdx, this._order.length - 1);
     this._render();
   }
 
   _render() {
-    if (this.index >= this.mod.exercises.length) { this.finish(); return; }
-    const ex    = this.mod.exercises[this.index];
+    if (this.index >= (this._order ? this._order.length : this.mod.exercises.length)) { this.finish(); return; }
+    const exIdx = this._order ? this._order[this.index] : this.index;
+    const ex    = this.mod.exercises[exIdx];
     const total = this.mod.exercises.length;
 
     this.textEl.textContent = `Aufgabe ${this.index + 1} von ${total}`;
