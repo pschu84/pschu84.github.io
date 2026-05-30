@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva &mdash; Grammatik nach Niveau</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* ── Tab-Navigation ── */
+  .niveau-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .niveau-tab {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.55rem 1.4rem;
+    border: 2.5px solid var(--ink);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    background: var(--paper-2);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .niveau-tab:hover { transform: translate(-1px,-1px); box-shadow: var(--shadow-lg); }
+  .niveau-tab.active { color: white; transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--ink); }
+  .niveau-tab[data-niveau="a1"].active { background: var(--oliva); }
+  .niveau-tab[data-niveau="a2"].active { background: var(--cielo); }
+  .niveau-tab[data-niveau="b1"].active { background: var(--terra); }
+
+  .niveau-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 900;
+    padding: 0.12rem 0.5rem;
+    border-radius: 99px;
+    border: 1.5px solid currentColor;
+    vertical-align: middle;
+    margin-left: 0.3rem;
+  }
+  .badge-a1 { background: var(--oliva-soft); color: var(--oliva-deep); }
+  .badge-a2 { background: var(--cielo-soft); color: var(--cielo-deep); }
+  .badge-b1 { background: var(--terra-soft); color: var(--terra-deep); }
+
+  /* ── Tab-Panels ── */
+  .niveau-panel { display: none; }
+  .niveau-panel.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* ── Thema-Karten ── */
+  .thema-card {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.8rem;
+    overflow: hidden;
+  }
+  .thema-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1.2rem;
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper-2);
+    flex-wrap: wrap;
+  }
+  .thema-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .thema-title {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0;
+    flex: 1;
+    min-width: 150px;
+  }
+  .thema-modul-link {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.18rem 0.6rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 99px;
+    text-decoration: none;
+    background: var(--paper);
+    color: var(--ink);
+    white-space: nowrap;
+    transition: background 0.12s;
+  }
+  .thema-modul-link:hover { background: var(--terra-soft); }
+
+  .thema-body { padding: 1rem 1.2rem; }
+  .thema-desc {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+  }
+  .thema-desc strong { color: var(--terra-deep); }
+
+  /* Beispiel-Zeilen */
+  .ex-row {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.87rem;
+    margin: 0.2rem 0;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .ex-it { font-weight: 700; min-width: 220px; }
+  .ex-de { color: var(--ink-soft); }
+
+  .thema-tip {
+    background: var(--sun-soft);
+    border: 1.5px solid var(--sun-deep);
+    border-radius: var(--r-sm);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    margin-top: 0.7rem;
+  }
+  .thema-tip::before { content: '💡 '; }
+
+  .thema-note {
+    background: var(--terra-soft);
+    border-left: 4px solid var(--terra);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    margin-top: 0.6rem;
+    color: var(--terra-deep);
+  }
+
+  /* Niveau-Intro-Box */
+  .niveau-intro {
+    padding: 1rem 1.3rem;
+    border-radius: var(--r-md);
+    border: 2px solid var(--ink);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .niveau-intro-a1 { background: var(--oliva-soft); }
+  .niveau-intro-a2 { background: var(--cielo-soft); }
+  .niveau-intro-b1 { background: var(--terra-soft); }
+
+  @media (max-width: 560px) {
+    .ex-it { min-width: 0; }
+    .ex-row { flex-direction: column; gap: 0.05rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container page-animate">
+
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Grammatik nach Niveau</span>
+    </div>
+  </div>
+
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+    <h1>🎓 Grammatik nach Niveau</h1>
+    <p>Alle wichtigen Themen sortiert nach A1, A2 und B1 &mdash; mit kurzen Erklärungen, Tabellen und Links zu den Übungsmodulen.</p>
+  </div>
+
+  <!-- TAB-NAVIGATION -->
+  <div class="niveau-tabs" role="tablist">
+    <button class="niveau-tab active" data-niveau="a1" role="tab" aria-selected="true">
+      🌱 A1 <span style="font-size:0.8rem;font-weight:400;opacity:0.7;">Anfänger</span>
+    </button>
+    <button class="niveau-tab" data-niveau="a2" role="tab" aria-selected="false">
+      🌿 A2 <span style="font-size:0.8rem;font-weight:400;opacity:0.7;">Grundlagen</span>
+    </button>
+    <button class="niveau-tab" data-niveau="b1" role="tab" aria-selected="false">
+      🌳 B1 <span style="font-size:0.8rem;font-weight:400;opacity:0.7;">Mittelstufe</span>
+    </button>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       A1
+       ══════════════════════════════════ -->
+  <div class="niveau-panel active" id="panel-a1">
+    <div class="niveau-intro niveau-intro-a1">
+      <strong>A1 &mdash; Einstieg:</strong> Du lernst die absoluten Grundbausteine: Artikel, Plural, einfache Sätze, Präsens und das Passato Prossimo. Ziel ist, sich in einfachen Situationen verständigen zu können.
+    </div>
+
+    <!-- Subjektpronomen -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">👤</span>
+        <h3 class="thema-title">Subjektpronomen</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Italienisch hat dieselben Personen wie Deutsch, aber das Subjektpronomen wird im Alltag oft weggelassen, weil die Verbendung die Person anzeigt.</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>Deutsch</th><th>Pronomen</th><th>Deutsch</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>ich</td><td>noi</td><td>wir</td></tr>
+            <tr><td>tu</td><td>du</td><td>voi</td><td>ihr</td></tr>
+            <tr><td>lui / lei</td><td>er / sie</td><td>loro</td><td>sie (Pl.)</td></tr>
+            <tr><td>Lei</td><td>Sie (Höflichkeit)</td><td></td><td></td></tr>
+          </tbody>
+        </table>
+        <div class="thema-tip">io wird im Italienischen kleingeschrieben. Lei (Höflichkeitsform) wird großgeschrieben, um es von lei (sie) zu unterscheiden.</div>
+      </div>
+    </div>
+
+    <!-- Artikel und Genus -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🔤</span>
+        <h3 class="thema-title">Artikel &amp; Genus</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Jedes Nomen ist maskulin oder feminin. Der Artikel richtet sich nach Genus und Anlaut des folgenden Wortes. Faustregel: <strong>-o = maskulin, -a = feminin</strong>, aber viele Ausnahmen.</p>
+        <table class="theory-table">
+          <thead><tr><th>Genus / Anlaut</th><th>Bestimmt</th><th>Unbestimmt</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>m/Sg. (normal)</td><td>il</td><td>un</td><td>il libro, un cane</td></tr>
+            <tr><td>m/Sg. (s+K, z, gn…)</td><td>lo</td><td>uno</td><td>lo zaino, uno studente</td></tr>
+            <tr><td>m/Sg. (Vokal)</td><td>l'</td><td>un</td><td>l'amico, un amico</td></tr>
+            <tr><td>f/Sg. (normal)</td><td>la</td><td>una</td><td>la casa, una pizza</td></tr>
+            <tr><td>f/Sg. (Vokal)</td><td>l'</td><td>un'</td><td>l'amica, un'amica</td></tr>
+            <tr><td>m/Pl.</td><td>i / gli</td><td>dei / degli</td><td>i libri / gli zaini</td></tr>
+            <tr><td>f/Pl.</td><td>le</td><td>delle</td><td>le case</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Plural -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">📦</span>
+        <h3 class="thema-title">Plural der Nomen</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Die Pluralendung hängt von der Singular-Endung ab.</p>
+        <table class="theory-table">
+          <thead><tr><th>Sg.-Endung</th><th>Pl.-Endung</th><th>Beispiele</th></tr></thead>
+          <tbody>
+            <tr><td>-o (m)</td><td>-i</td><td>libro → libri, ragazzo → ragazzi</td></tr>
+            <tr><td>-a (f)</td><td>-e</td><td>casa → case, pizza → pizze</td></tr>
+            <tr><td>-e (m/f)</td><td>-i</td><td>cane → cani, chiave → chiavi</td></tr>
+            <tr><td>-ca / -ga</td><td>-che / -ghe</td><td>amica → amiche, bottega → botteghe</td></tr>
+            <tr><td>-co (m)</td><td>-chi oder -ci</td><td>fuoco → fuochi, amico → amici</td></tr>
+            <tr><td>Akzent / Konsonant</td><td>unveränderlich</td><td>città → città, bar → bar, film → film</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Presente -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">⚡</span>
+        <h3 class="thema-title">Presente (Präsens)</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Das Presente ist die häufigste Zeitform. Endungen hängen von der Infinitiv-Endung ab (<strong>-are / -ere / -ire</strong>).</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>parlare (-are)</th><th>vedere (-ere)</th><th>partire (-ire)</th><th>capire (-isc)</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>parlo</td><td>vedo</td><td>parto</td><td>capisco</td></tr>
+            <tr><td>tu</td><td>parli</td><td>vedi</td><td>parti</td><td>capisci</td></tr>
+            <tr><td>lui/lei</td><td>parla</td><td>vede</td><td>parte</td><td>capisce</td></tr>
+            <tr><td>noi</td><td>parliamo</td><td>vediamo</td><td>partiamo</td><td>capiamo</td></tr>
+            <tr><td>voi</td><td>parlate</td><td>vedete</td><td>partite</td><td>capite</td></tr>
+            <tr><td>loro</td><td>parlano</td><td>vedono</td><td>partono</td><td>capiscono</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-tip">Wichtige unregelmäßige Verben im Presente: essere (sono/sei/è/siamo/siete/sono), avere (ho/hai/ha/abbiamo/avete/hanno), fare (faccio/fai/fa…), andare (vado/vai/va…), venire (vengo/vieni/viene…).</div>
+      </div>
+    </div>
+
+    <!-- Essere / Avere -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">⚙️</span>
+        <h3 class="thema-title">Essere und Avere</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Die wichtigsten unregelmäßigen Verben — unbedingt auswendig lernen.</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>essere (sein)</th><th>avere (haben)</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>sono</td><td>ho</td></tr>
+            <tr><td>tu</td><td>sei</td><td>hai</td></tr>
+            <tr><td>lui/lei</td><td>è</td><td>ha</td></tr>
+            <tr><td>noi</td><td>siamo</td><td>abbiamo</td></tr>
+            <tr><td>voi</td><td>siete</td><td>avete</td></tr>
+            <tr><td>loro</td><td>sono</td><td>hanno</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row"><span class="ex-it">Lei è Fiona, ha 32 anni.</span><span class="ex-de">Sie ist Fiona und ist 32 Jahre alt.</span></div>
+        <div class="ex-row"><span class="ex-it">Ho fame e ho sete.</span><span class="ex-de">Ich habe Hunger und Durst.</span></div>
+      </div>
+    </div>
+
+    <!-- Passato Prossimo -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🕰️</span>
+        <h3 class="thema-title">Passato Prossimo</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+        <a href="modul-01-passato.html" class="thema-modul-link">→ Modul 1</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Abgeschlossene Handlungen in der Vergangenheit: <strong>avere oder essere</strong> (Präsens) + Partizip Perfekt.</p>
+        <table class="theory-table">
+          <thead><tr><th>Infinitiv-Endung</th><th>Partizip</th><th>Unregelmäßige</th></tr></thead>
+          <tbody>
+            <tr><td>-are</td><td>-ato &nbsp; parlare → parlato</td><td>fare → fatto, dare → dato</td></tr>
+            <tr><td>-ere</td><td>-uto &nbsp; vendere → venduto</td><td>vedere → visto, leggere → letto, scrivere → scritto, dire → detto</td></tr>
+            <tr><td>-ire</td><td>-ito &nbsp; partire → partito</td><td>aprire → aperto, venire → venuto</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-note"><strong>avere</strong>: transitive Verben → Partizip unveränderlich.<br><strong>essere</strong>: Bewegung/Zustand/reflexiv → Partizip kongruiert mit Subjekt (andato/andata/andati/andate).</div>
+      </div>
+    </div>
+
+    <!-- Adjektive -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🎨</span>
+        <h3 class="thema-title">Adjektive</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Adjektive kongruieren in Genus und Numerus mit dem Nomen. Zwei Klassen:</p>
+        <table class="theory-table">
+          <thead><tr><th>Typ</th><th>m/Sg.</th><th>f/Sg.</th><th>m/Pl.</th><th>f/Pl.</th><th>Beispiele</th></tr></thead>
+          <tbody>
+            <tr><td>-o/-a Typ</td><td>-o</td><td>-a</td><td>-i</td><td>-e</td><td>bello/bella, rosso/rossa</td></tr>
+            <tr><td>-e Typ</td><td>-e</td><td>-e</td><td>-i</td><td>-i</td><td>grande/grande, verde/verde</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row"><span class="ex-it">un libro interessante</span><span class="ex-de">ein interessantes Buch (nach dem Nomen)</span></div>
+        <div class="ex-row"><span class="ex-it">una bella città</span><span class="ex-de">eine schöne Stadt (davor: bello, brutto, grande, piccolo, buono, nuovo, vecchio)</span></div>
+      </div>
+    </div>
+
+    <!-- Präpositionen Grundlagen -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🔗</span>
+        <h3 class="thema-title">Präpositionen: Grundlagen</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+        <a href="modul-05-di.html" class="thema-modul-link">→ Modul 5–7</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Die wichtigsten Präpositionen und ihre Kernbedeutungen. Vor bestimmten Artikeln verschmelzen di, a, da, in, su obligatorisch.</p>
+        <table class="theory-table">
+          <thead><tr><th>Präp.</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td><strong>di</strong></td><td>von, aus, Zugehörigkeit</td><td>Sono di Roma. &nbsp; il libro di Marco</td></tr>
+            <tr><td><strong>a</strong></td><td>zu, nach, an</td><td>Vado a Roma. &nbsp; alle tre</td></tr>
+            <tr><td><strong>in</strong></td><td>in, nach</td><td>in Italia &nbsp; in cucina &nbsp; nel parco</td></tr>
+            <tr><td><strong>su</strong></td><td>auf, über</td><td>sul tavolo &nbsp; un libro sul clima</td></tr>
+            <tr><td><strong>con</strong></td><td>mit</td><td>con Marco &nbsp; con il treno</td></tr>
+            <tr><td><strong>per</strong></td><td>für, um zu</td><td>per te &nbsp; partire per Roma</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-tip">Artikelpräpositionen — die 5×7-Tabelle: di+il=del, a+il=al, da+il=dal, in+il=nel, su+il=sul. Gleiches Muster für lo/la/l'/i/gli/le.</div>
+      </div>
+    </div>
+
+    <!-- Teilungsartikel -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🍞</span>
+        <h3 class="thema-title">Teilungsartikel</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+        <a href="modul-05-di.html" class="thema-modul-link">→ Modul 5</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Der Teilungsartikel (del/dello/della/dell'/dei/degli/delle) drückt eine unbestimmte Menge aus &mdash; entspricht "etwas" oder "einige".</p>
+        <div class="ex-row"><span class="ex-it">Voglio del pane.</span><span class="ex-de">Ich möchte etwas Brot. (di + il)</span></div>
+        <div class="ex-row"><span class="ex-it">Ha degli amici simpatici.</span><span class="ex-de">Er hat nette Freunde. (einige)</span></div>
+        <div class="ex-row"><span class="ex-it">Bevo dell'acqua.</span><span class="ex-de">Ich trinke etwas Wasser. (di + l')</span></div>
+        <div class="thema-tip">Mengenangaben ohne Teilungsartikel: una tazza di caffè, un bicchiere di vino (Menge + di + Substanz ohne Artikel).</div>
+      </div>
+    </div>
+
+    <!-- Fragepronomen -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">❓</span>
+        <h3 class="thema-title">Fragepronomen</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+      </div>
+      <div class="thema-body">
+        <table class="theory-table">
+          <thead><tr><th>Fragewort</th><th>Deutsch</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>chi</td><td>wer / wen</td><td>Chi sei? &nbsp; Chi hai visto?</td></tr>
+            <tr><td>che / cosa / che cosa</td><td>was</td><td>Cosa fai? &nbsp; Che dici?</td></tr>
+            <tr><td>dove</td><td>wo / wohin</td><td>Dove abiti? &nbsp; Dove vai?</td></tr>
+            <tr><td>quando</td><td>wann</td><td>Quando arrivi?</td></tr>
+            <tr><td>come</td><td>wie</td><td>Come stai? &nbsp; Come si chiama?</td></tr>
+            <tr><td>perché</td><td>warum / weil</td><td>Perché non vieni? &mdash; Perché sono stanco.</td></tr>
+            <tr><td>quanto/a/i/e</td><td>wie viel / viele</td><td>Quanto costa? &nbsp; Quanti anni hai?</td></tr>
+            <tr><td>quale / quali</td><td>welcher / welche</td><td>Quale preferisci?</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modalverben -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">💬</span>
+        <h3 class="thema-title">Modalverben</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+        <a href="modul-12-modali.html" class="thema-modul-link">→ Modul 12</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Modalverben stehen immer mit einem Infinitiv. Alle drei sind unregelmäßig.</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>dovere (müssen)</th><th>potere (können)</th><th>volere (wollen)</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>devo</td><td>posso</td><td>voglio</td></tr>
+            <tr><td>tu</td><td>devi</td><td>puoi</td><td>vuoi</td></tr>
+            <tr><td>lui/lei</td><td>deve</td><td>può</td><td>vuole</td></tr>
+            <tr><td>noi</td><td>dobbiamo</td><td>possiamo</td><td>vogliamo</td></tr>
+            <tr><td>voi</td><td>dovete</td><td>potete</td><td>volete</td></tr>
+            <tr><td>loro</td><td>devono</td><td>possono</td><td>vogliono</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row" style="margin-top:0.6rem"><span class="ex-it">Devo studiare.</span><span class="ex-de">Ich muss lernen.</span></div>
+        <div class="ex-row"><span class="ex-it">Posso venire?</span><span class="ex-de">Darf ich kommen?</span></div>
+      </div>
+    </div>
+
+    <!-- mi piace -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">❤️</span>
+        <h3 class="thema-title">Mi piace &mdash; Ich mag</h3>
+        <span class="niveau-badge badge-a1">A1</span>
+        <a href="modul-04-indirekte-pronomen.html" class="thema-modul-link">→ Modul 4</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Piacere funktioniert umgekehrt zum Deutschen: Das Subjekt ist das, was gefällt. Der Dativ-Pronomen steht davor.</p>
+        <div class="ex-row"><span class="ex-it">Mi piace la pizza.</span><span class="ex-de">Ich mag Pizza. (wörtl.: Mir gefällt die Pizza.)</span></div>
+        <div class="ex-row"><span class="ex-it">Mi piacciono i film.</span><span class="ex-de">Ich mag Filme. (Pl. → piacciono)</span></div>
+        <div class="ex-row"><span class="ex-it">Ti piace il caffè?</span><span class="ex-de">Magst du Kaffee?</span></div>
+        <div class="ex-row"><span class="ex-it">Gli piace studiare.</span><span class="ex-de">Er mag lernen. (Infinitiv → immer piace)</span></div>
+      </div>
+    </div>
+
+  </div><!-- /panel-a1 -->
+
+
+  <!-- ══════════════════════════════════
+       A2
+       ══════════════════════════════════ -->
+  <div class="niveau-panel" id="panel-a2">
+    <div class="niveau-intro niveau-intro-a2">
+      <strong>A2 &mdash; Aufbau:</strong> Du vertiefst die Zeitformen, lernst Pronomen systematisch und erweiterst deinen Satzbau. Ziel ist flüssigere Alltagskommunikation.
+    </div>
+
+    <!-- Imperfetto -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">📽️</span>
+        <h3 class="thema-title">Imperfetto</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Das Imperfetto drückt <strong>andauernde Zustände, Gewohnheiten und Hintergrundbeschreibungen</strong> in der Vergangenheit aus &mdash; nicht abgeschlossene Einzelereignisse.</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>parlare</th><th>vedere</th><th>essere</th><th>fare</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>parlavo</td><td>vedevo</td><td>ero</td><td>facevo</td></tr>
+            <tr><td>tu</td><td>parlavi</td><td>vedevi</td><td>eri</td><td>facevi</td></tr>
+            <tr><td>lui/lei</td><td>parlava</td><td>vedeva</td><td>era</td><td>faceva</td></tr>
+            <tr><td>noi</td><td>parlavamo</td><td>vedevamo</td><td>eravamo</td><td>facevamo</td></tr>
+            <tr><td>voi</td><td>parlavate</td><td>vedevate</td><td>eravate</td><td>facevate</td></tr>
+            <tr><td>loro</td><td>parlavano</td><td>vedevano</td><td>erano</td><td>facevano</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row" style="margin-top:0.6rem"><span class="ex-it">Quando ero piccolo, giocavo molto.</span><span class="ex-de">Als ich klein war, spielte ich viel. (Gewohnheit)</span></div>
+        <div class="ex-row"><span class="ex-it">Mentre mangiavo, è arrivato Marco.</span><span class="ex-de">Während ich aß, kam Marco an. (Hintergrund + Ereignis)</span></div>
+        <div class="thema-note"><strong>Imperfetto vs. Passato Prossimo:</strong> Imperfetto = Hintergrund, Zustand, Gewohnheit. Passato Prossimo = abgeschlossene Einzelhandlung mit konkretem Ende.</div>
+      </div>
+    </div>
+
+    <!-- Futuro Semplice -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🔮</span>
+        <h3 class="thema-title">Futuro Semplice</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+        <a href="modul-02-futuro.html" class="thema-modul-link">→ Modul 2</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Kein Hilfsverb — Endungen direkt an den Stamm. Auch für Vermutungen über die Gegenwart.</p>
+        <table class="theory-table">
+          <thead><tr><th>Endungen</th><th>parlare</th><th>essere</th><th>avere</th><th>venire</th></tr></thead>
+          <tbody>
+            <tr><td>-rò</td><td>parlerò</td><td>sarò</td><td>avrò</td><td>verrò</td></tr>
+            <tr><td>-rai</td><td>parlerai</td><td>sarai</td><td>avrai</td><td>verrai</td></tr>
+            <tr><td>-rà</td><td>parlerà</td><td>sarà</td><td>avrà</td><td>verrà</td></tr>
+            <tr><td>-remo</td><td>parleremo</td><td>saremo</td><td>avremo</td><td>verremo</td></tr>
+            <tr><td>-rete</td><td>parlerete</td><td>sarete</td><td>avrete</td><td>verrete</td></tr>
+            <tr><td>-ranno</td><td>parleranno</td><td>saranno</td><td>avranno</td><td>verranno</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-tip">Weitere unregelmäßige Stämme: fare→far-, andare→andr-, volere→vorr-, potere→potr-, dovere→dovr-, sapere→sapr-.</div>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">Sarà stanco.</span><span class="ex-de">Er ist wohl müde. (Vermutung über Gegenwart)</span></div>
+      </div>
+    </div>
+
+    <!-- Condizionale Presente -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">✨</span>
+        <h3 class="thema-title">Condizionale Presente</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+        <a href="modul-16-condizionale.html" class="thema-modul-link">→ Modul 16</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Die "Würde-Form" — für höfliche Bitten, Wünsche und Hypothesen. Endungen: <strong>-rei / -resti / -rebbe / -remmo / -reste / -rebbero</strong>.</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>parlare</th><th>essere</th><th>avere</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>parlerei</td><td>sarei</td><td>avrei</td></tr>
+            <tr><td>tu</td><td>parleresti</td><td>saresti</td><td>avresti</td></tr>
+            <tr><td>lui/lei</td><td>parlerebbe</td><td>sarebbe</td><td>avrebbe</td></tr>
+            <tr><td>noi</td><td>parleremmo</td><td>saremmo</td><td>avremmo</td></tr>
+            <tr><td>voi</td><td>parlereste</td><td>sareste</td><td>avreste</td></tr>
+            <tr><td>loro</td><td>parlerebbero</td><td>sarebbero</td><td>avrebbero</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">Vorrei un caffè.</span><span class="ex-de">Ich hätte gerne einen Kaffee. (höflich)</span></div>
+        <div class="ex-row"><span class="ex-it">Lo farei volentieri.</span><span class="ex-de">Das würde ich gerne machen.</span></div>
+      </div>
+    </div>
+
+    <!-- Direkte Pronomen -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🎯</span>
+        <h3 class="thema-title">Direkte Objektpronomen</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+        <a href="modul-03-direkte-pronomen.html" class="thema-modul-link">→ Modul 3</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Ersetzen das direkte Objekt ("wen / was?"). Stehen <strong>vor dem konjugierten Verb</strong>.</p>
+        <table class="theory-table">
+          <thead><tr><th>Person</th><th>Pronomen</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>1. Sg.</td><td>mi (mich)</td><td>Mi vedi? — Siehst du mich?</td></tr>
+            <tr><td>2. Sg.</td><td>ti (dich)</td><td>Ti chiamo — ich rufe dich an</td></tr>
+            <tr><td>3. Sg. m.</td><td>lo (ihn/es)</td><td>Lo mangio — ich esse ihn/es</td></tr>
+            <tr><td>3. Sg. f.</td><td>la (sie/es)</td><td>La vedo — ich sehe sie</td></tr>
+            <tr><td>1. Pl.</td><td>ci (uns)</td><td>Ci vede — er sieht uns</td></tr>
+            <tr><td>2. Pl.</td><td>vi (euch)</td><td>Vi chiamo — ich rufe euch an</td></tr>
+            <tr><td>3. Pl. m.</td><td>li (sie)</td><td>Li compro — ich kaufe sie</td></tr>
+            <tr><td>3. Pl. f.</td><td>le (sie)</td><td>Le leggo — ich lese sie</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-note">Im Passato Prossimo mit avere: Partizip kongruiert mit lo/la/li/le.<br>L'ho mangiata. (la pizza, f) &nbsp;|&nbsp; Li ho visti. (i ragazzi, m/Pl.)</div>
+      </div>
+    </div>
+
+    <!-- Indirekte Pronomen -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">📤</span>
+        <h3 class="thema-title">Indirekte Objektpronomen</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+        <a href="modul-04-indirekte-pronomen.html" class="thema-modul-link">→ Modul 4</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Ersetzen das indirekte Objekt ("wem?"). Im Plural 3. Person gilt <strong>gli</strong> für m + f.</p>
+        <table class="theory-table">
+          <thead><tr><th>Person</th><th>Pronomen</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>1. Sg.</td><td>mi (mir)</td><td>Mi scrive — er schreibt mir</td></tr>
+            <tr><td>2. Sg.</td><td>ti (dir)</td><td>Ti telefono — ich rufe dir an</td></tr>
+            <tr><td>3. Sg. m.</td><td>gli (ihm)</td><td>Gli parlo — ich spreche mit ihm</td></tr>
+            <tr><td>3. Sg. f.</td><td>le (ihr)</td><td>Le scrivo — ich schreibe ihr</td></tr>
+            <tr><td>1. Pl.</td><td>ci (uns)</td><td>Ci spiega — er erklärt uns</td></tr>
+            <tr><td>2. Pl.</td><td>vi (euch)</td><td>Vi rispondo — ich antworte euch</td></tr>
+            <tr><td>3. Pl.</td><td>gli (ihnen)</td><td>Gli dico — ich sage ihnen</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-tip">Kein Genusabgleich beim Partizip bei indirekten Pronomen: Gli ho scritto bleibt immer scritto.</div>
+      </div>
+    </div>
+
+    <!-- Reflexive Verben -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🔄</span>
+        <h3 class="thema-title">Reflexive Verben</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+        <a href="modul-11-riflessivi.html" class="thema-modul-link">→ Modul 11</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Reflexivpronomen: mi, ti, si, ci, vi, si. Im Passato Prossimo immer <strong>essere</strong>.</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>alzarsi</th><th>vestirsi</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>mi alzo</td><td>mi vesto</td></tr>
+            <tr><td>tu</td><td>ti alzi</td><td>ti vesti</td></tr>
+            <tr><td>lui/lei</td><td>si alza</td><td>si veste</td></tr>
+            <tr><td>noi</td><td>ci alziamo</td><td>ci vestiamo</td></tr>
+            <tr><td>voi</td><td>vi alzate</td><td>vi vestite</td></tr>
+            <tr><td>loro</td><td>si alzano</td><td>si vestono</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">Mi sono alzato alle sette.</span><span class="ex-de">Ich bin um sieben aufgestanden. (essere + kongruentes Partizip)</span></div>
+      </div>
+    </div>
+
+    <!-- Steigerung -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">📈</span>
+        <h3 class="thema-title">Steigerung der Adjektive</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+      </div>
+      <div class="thema-body">
+        <table class="theory-table">
+          <thead><tr><th>Form</th><th>Bildung</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>Komparativ</td><td>più / meno + Adj. + di / che</td><td>Marco è più alto di Luigi.</td></tr>
+            <tr><td>Superlativ relativ</td><td>il/la + più/meno + Adj.</td><td>È il più bello della classe.</td></tr>
+            <tr><td>Superlativ absolut</td><td>Adj. + -issimo/a/i/e</td><td>bellissimo, stanchissima</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-tip">Unregelmäßig: buono → migliore / ottimo &nbsp;|&nbsp; cattivo → peggiore / pessimo &nbsp;|&nbsp; grande → maggiore / massimo &nbsp;|&nbsp; piccolo → minore / minimo.</div>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">È più cara che bella.</span><span class="ex-de">Sie ist mehr teuer als schön. (che vor Adj./Adv., di vor Nomen/Pronomen)</span></div>
+      </div>
+    </div>
+
+    <!-- Verlaufsform -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">⏳</span>
+        <h3 class="thema-title">Verlaufsform: stare + Gerundio</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+        <a href="modul-13-gerundio.html" class="thema-modul-link">→ Modul 13</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Gerade ablaufende Handlungen: <strong>stare (konjugiert) + Gerundio</strong>.</p>
+        <table class="theory-table">
+          <thead><tr><th>Infinitiv-Endung</th><th>Gerundio</th><th>Beispiele</th></tr></thead>
+          <tbody>
+            <tr><td>-are</td><td>-ando</td><td>parlare → parlando &nbsp; mangiare → mangiando</td></tr>
+            <tr><td>-ere / -ire</td><td>-endo</td><td>vedere → vedendo &nbsp; dormire → dormendo</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">Sto mangiando.</span><span class="ex-de">Ich esse gerade.</span></div>
+        <div class="ex-row"><span class="ex-it">Stava dormendo quando ho chiamato.</span><span class="ex-de">Er schlief gerade, als ich anrief.</span></div>
+      </div>
+    </div>
+
+    <!-- Verneinung -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🚫</span>
+        <h3 class="thema-title">Verneinung</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+        <a href="modul-14-negazione.html" class="thema-modul-link">→ Modul 14</a>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc"><strong>non</strong> steht vor dem Verb. Doppelte Verneinung ist im Italienischen korrekt und notwendig.</p>
+        <table class="theory-table">
+          <thead><tr><th>Ausdruck</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>non … mai</td><td>nie</td><td>Non vado mai al cinema.</td></tr>
+            <tr><td>non … niente</td><td>nichts</td><td>Non ho mangiato niente.</td></tr>
+            <tr><td>non … nessuno</td><td>niemand</td><td>Non conosco nessuno qui.</td></tr>
+            <tr><td>non … ancora</td><td>noch nicht</td><td>Non ho ancora finito.</td></tr>
+            <tr><td>non … più</td><td>nicht mehr</td><td>Non abito più a Roma.</td></tr>
+            <tr><td>non … né … né</td><td>weder … noch</td><td>Non mangio né carne né pesce.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Possessive -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🏠</span>
+        <h3 class="thema-title">Possessive</h3>
+        <span class="niveau-badge badge-a2">A2</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Possessive kongruieren mit dem Nomen (nicht mit dem Besitzer!). Sie stehen meist mit Artikel.</p>
+        <table class="theory-table">
+          <thead><tr><th></th><th>m/Sg.</th><th>f/Sg.</th><th>m/Pl.</th><th>f/Pl.</th></tr></thead>
+          <tbody>
+            <tr><td>mein</td><td>il mio</td><td>la mia</td><td>i miei</td><td>le mie</td></tr>
+            <tr><td>dein</td><td>il tuo</td><td>la tua</td><td>i tuoi</td><td>le tue</td></tr>
+            <tr><td>sein/ihr</td><td>il suo</td><td>la sua</td><td>i suoi</td><td>le sue</td></tr>
+            <tr><td>unser</td><td>il nostro</td><td>la nostra</td><td>i nostri</td><td>le nostre</td></tr>
+            <tr><td>euer</td><td>il vostro</td><td>la vostra</td><td>i vostri</td><td>le vostre</td></tr>
+            <tr><td>ihr/Ihr</td><td>il loro</td><td>la loro</td><td>i loro</td><td>le loro</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-note">Kein Artikel bei Verwandten im Singular: mia madre, mio padre, tuo fratello &mdash; aber: il mio amico (kein Verwandter), i miei genitori (Plural).</div>
+      </div>
+    </div>
+
+  </div><!-- /panel-a2 -->
+
+
+  <!-- ══════════════════════════════════
+       B1
+       ══════════════════════════════════ -->
+  <div class="niveau-panel" id="panel-b1">
+    <div class="niveau-intro niveau-intro-b1">
+      <strong>B1 &mdash; Mittelstufe:</strong> Komplexere Strukturen, Konjunktiv, kombinierte Pronomen und differenzierter Ausdruck. Ziel ist selbstständiges Sprechen und Schreiben zu vertrauten Themen.
+    </div>
+
+    <!-- Congiuntivo Presente -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🌀</span>
+        <h3 class="thema-title">Congiuntivo Presente</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Der Konjunktiv Präsens steht in Nebensätzen nach Verben des Wünschens, Glaubens, Hoffens, Zweifelns und unpersönlichen Ausdrücken — eingeleitet durch <strong>che</strong>.</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>parlare</th><th>vedere</th><th>essere</th><th>avere</th></tr></thead>
+          <tbody>
+            <tr><td>io / tu / lui</td><td>parli</td><td>veda</td><td>sia</td><td>abbia</td></tr>
+            <tr><td>noi</td><td>parliamo</td><td>vediamo</td><td>siamo</td><td>abbiamo</td></tr>
+            <tr><td>voi</td><td>parliate</td><td>vediate</td><td>siate</td><td>abbiate</td></tr>
+            <tr><td>loro</td><td>parlino</td><td>vedano</td><td>siano</td><td>abbiano</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-note"><strong>Typische Auslöser:</strong> volere che, pensare che, credere che, sperare che, è importante che, bisogna che, è possibile che, sebbene, benché, affinché, a condizione che.</div>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">Voglio che tu venga.</span><span class="ex-de">Ich will, dass du kommst.</span></div>
+        <div class="ex-row"><span class="ex-it">È importante che lui studi.</span><span class="ex-de">Es ist wichtig, dass er lernt.</span></div>
+      </div>
+    </div>
+
+    <!-- Congiuntivo Imperfetto -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🌀</span>
+        <h3 class="thema-title">Congiuntivo Imperfetto</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Steht nach Hauptsätzen im Vergangenheitstempus oder für irreale Hypothesen (se + Congiuntivo Imperfetto → Condizionale).</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>parlare</th><th>vedere</th><th>essere</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>parlassi</td><td>vedessi</td><td>fossi</td></tr>
+            <tr><td>tu</td><td>parlassi</td><td>vedessi</td><td>fossi</td></tr>
+            <tr><td>lui/lei</td><td>parlasse</td><td>vedesse</td><td>fosse</td></tr>
+            <tr><td>noi</td><td>parlassimo</td><td>vedessimo</td><td>fossimo</td></tr>
+            <tr><td>voi</td><td>parlaste</td><td>vedeste</td><td>foste</td></tr>
+            <tr><td>loro</td><td>parlassero</td><td>vedessero</td><td>fossero</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">Se avessi tempo, studierei di più.</span><span class="ex-de">Wenn ich Zeit hätte, würde ich mehr lernen.</span></div>
+        <div class="ex-row"><span class="ex-it">Voleva che venissi.</span><span class="ex-de">Er wollte, dass ich komme.</span></div>
+      </div>
+    </div>
+
+    <!-- Congiuntivo Passato -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🌀</span>
+        <h3 class="thema-title">Congiuntivo Passato</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Für abgeschlossene Handlungen im Konjunktiv: <strong>abbia/sia</strong> (Congiuntivo Presente von avere/essere) + Partizip.</p>
+        <div class="ex-row"><span class="ex-it">Credo che abbia mangiato.</span><span class="ex-de">Ich glaube, dass er gegessen hat.</span></div>
+        <div class="ex-row"><span class="ex-it">Penso che sia partita ieri.</span><span class="ex-de">Ich denke, dass sie gestern abgereist ist.</span></div>
+        <div class="thema-tip">Zeitenfolge: Hauptsatz Präsens → Nebensatz Congiuntivo Presente (gleichzeitig) oder Congiuntivo Passato (vorzeitig).</div>
+      </div>
+    </div>
+
+    <!-- Passato Remoto -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">📜</span>
+        <h3 class="thema-title">Passato Remoto</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Das Passato Remoto beschreibt abgeschlossene Handlungen in der <strong>weit zurückliegenden Vergangenheit</strong> — besonders in Literatur, Geschichte und im Süden Italiens (im Norden auch für nahe Vergangenheit).</p>
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>parlare (-ai)</th><th>vedere (-ei)</th><th>essere</th></tr></thead>
+          <tbody>
+            <tr><td>io</td><td>parlai</td><td>vidi</td><td>fui</td></tr>
+            <tr><td>tu</td><td>parlasti</td><td>vedesti</td><td>fosti</td></tr>
+            <tr><td>lui/lei</td><td>parlò</td><td>vide</td><td>fu</td></tr>
+            <tr><td>noi</td><td>parlammo</td><td>vedemmo</td><td>fummo</td></tr>
+            <tr><td>voi</td><td>parlaste</td><td>vedeste</td><td>foste</td></tr>
+            <tr><td>loro</td><td>parlarono</td><td>videro</td><td>furono</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-note">-ere-Verben haben viele Unregelmäßigkeiten (1./3. Sg., 3. Pl.) — nur diese drei Personen müssen meistens auswendig gelernt werden.</div>
+      </div>
+    </div>
+
+    <!-- Kombinierte Pronomen -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🔀</span>
+        <h3 class="thema-title">Kombinierte Pronomen</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Wenn direktes und indirektes Pronomen zusammen stehen, fusionieren sie: <strong>indirektes + direktes</strong>, das indirekte wechselt zu -e.</p>
+        <table class="theory-table">
+          <thead><tr><th>Indirekt</th><th>+ lo</th><th>+ la</th><th>+ li</th><th>+ le</th><th>+ ne</th></tr></thead>
+          <tbody>
+            <tr><td>mi</td><td>me lo</td><td>me la</td><td>me li</td><td>me le</td><td>me ne</td></tr>
+            <tr><td>ti</td><td>te lo</td><td>te la</td><td>te li</td><td>te le</td><td>te ne</td></tr>
+            <tr><td>gli / le</td><td>glielo</td><td>gliela</td><td>glieli</td><td>gliele</td><td>gliene</td></tr>
+            <tr><td>ci</td><td>ce lo</td><td>ce la</td><td>ce li</td><td>ce le</td><td>ce ne</td></tr>
+            <tr><td>vi</td><td>ve lo</td><td>ve la</td><td>ve li</td><td>ve le</td><td>ve ne</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-row" style="margin-top:0.5rem"><span class="ex-it">Glielo do.</span><span class="ex-de">Ich gebe es ihm/ihr.</span></div>
+        <div class="ex-row"><span class="ex-it">Me lo puoi dare?</span><span class="ex-de">Kannst du es mir geben?</span></div>
+        <div class="thema-tip">gli + le → gli + la → gliela (ein Wort, kein Apostroph). Das ist der einzige Fall ohne Getrenntschreibung.</div>
+      </div>
+    </div>
+
+    <!-- Relativpronomen -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🔗</span>
+        <h3 class="thema-title">Relativpronomen</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+        <a href="modul-15-relativsaetze.html" class="thema-modul-link">→ Modul 15</a>
+      </div>
+      <div class="thema-body">
+        <table class="theory-table">
+          <thead><tr><th>Pronomen</th><th>Verwendung</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td><strong>che</strong></td><td>Subjekt oder direktes Objekt (unveränderlich)</td><td>Il libro che leggo è bello. &nbsp; La ragazza che vedo è Maria.</td></tr>
+            <tr><td><strong>cui</strong></td><td>nach Präposition (unveränderlich)</td><td>La persona di cui parlo è Marco. &nbsp; Il motivo per cui vengo.</td></tr>
+            <tr><td><strong>il cui / la cui…</strong></td><td>Possessivrelativ (zwischen Artikel und Nomen)</td><td>Lo studente il cui libro è sul tavolo.</td></tr>
+            <tr><td><strong>quello che / ciò che</strong></td><td>"was" ohne Bezugswort</td><td>Quello che dici è vero. &nbsp; Faccio ciò che posso.</td></tr>
+          </tbody>
+        </table>
+        <div class="thema-tip">che und cui sind unveränderlich — kein Genus, kein Numerus. il quale/la quale ist formell und wird im Alltag kaum verwendet.</div>
+      </div>
+    </div>
+
+    <!-- Pronominalverben -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🧩</span>
+        <h3 class="thema-title">Pronominalverben</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc">Verben mit festem Pronomen, die eine eigene Bedeutung erhalten. Häufigste:</p>
+        <table class="theory-table">
+          <thead><tr><th>Verb</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>farcela</td><td>es schaffen</td><td>Non ce la faccio più. (Ich schaffe es nicht mehr.)</td></tr>
+            <tr><td>andarsene</td><td>weggehen</td><td>Me ne vado. (Ich gehe.)</td></tr>
+            <tr><td>metterci</td><td>Zeit brauchen</td><td>Ci metto un'ora. (Ich brauche eine Stunde.)</td></tr>
+            <tr><td>volerci</td><td>Zeit/Menge brauchen (unpers.)</td><td>Ci vuole un'ora. (Es dauert eine Stunde.)</td></tr>
+            <tr><td>avercela con</td><td>es auf jmdn. abgesehen haben</td><td>Ce l'ha con me. (Er hat es auf mich abgesehen.)</td></tr>
+            <tr><td>entrarci</td><td>damit zu tun haben</td><td>Non c'entra. (Das hat nichts damit zu tun.)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sapere vs. Potere / Conoscere -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">🤔</span>
+        <h3 class="thema-title">Typische Verwechslungen</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <table class="theory-table">
+          <thead><tr><th>Verben</th><th>Unterschied</th><th>Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td><strong>sapere</strong></td><td>wissen (Fakten), können (erlernte Fähigkeit)</td><td>So cucinare. (Ich kann kochen.)</td></tr>
+            <tr><td><strong>potere</strong></td><td>können (Erlaubnis, Möglichkeit)</td><td>Posso venire? (Darf/Kann ich kommen?)</td></tr>
+            <tr><td><strong>sapere</strong></td><td>wissen</td><td>So dov'è. (Ich weiß, wo es ist.)</td></tr>
+            <tr><td><strong>conoscere</strong></td><td>kennen (Personen, Orte)</td><td>Conosco Roma bene. (Ich kenne Rom gut.)</td></tr>
+            <tr><td><strong>metterci</strong></td><td>Zeit brauchen (Subjekt = Person)</td><td>Ci metto un'ora. (Ich brauche eine Stunde.)</td></tr>
+            <tr><td><strong>volerci</strong></td><td>Zeit brauchen (unpersönlich)</td><td>Ci vuole un'ora. (Es dauert eine Stunde.)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Das Pronomen CI und NE -->
+    <div class="thema-card">
+      <div class="thema-header">
+        <span class="thema-icon">💡</span>
+        <h3 class="thema-title">CI und NE</h3>
+        <span class="niveau-badge badge-b1">B1</span>
+      </div>
+      <div class="thema-body">
+        <p class="thema-desc"><strong>CI</strong> hat viele Bedeutungen: uns (direkt/indirekt), hier/dort, reflexiv (noi), pronominal in festen Ausdrücken.</p>
+        <table class="theory-table">
+          <thead><tr><th>CI als…</th><th>Beispiel</th><th>Deutsch</th></tr></thead>
+          <tbody>
+            <tr><td>Ort (hier/dort)</td><td>Ci vado domani.</td><td>Ich gehe morgen dorthin.</td></tr>
+            <tr><td>direktes Obj. (uns)</td><td>Ci vede.</td><td>Er sieht uns.</td></tr>
+            <tr><td>indirektes Obj. (uns)</td><td>Ci parla.</td><td>Er spricht mit uns.</td></tr>
+            <tr><td>reflexiv (wir)</td><td>Ci alziamo.</td><td>Wir stehen auf.</td></tr>
+            <tr><td>pronominal</td><td>Non ce la faccio.</td><td>Ich schaffe es nicht.</td></tr>
+          </tbody>
+        </table>
+        <p class="thema-desc" style="margin-top:0.8rem"><strong>NE</strong> ersetzt eine Mengenangabe oder einen Ausdruck mit "di + Nomen".</p>
+        <div class="ex-row"><span class="ex-it">Ne voglio due.</span><span class="ex-de">Ich möchte zwei davon.</span></div>
+        <div class="ex-row"><span class="ex-it">Ne parla spesso.</span><span class="ex-de">Er spricht oft davon.</span></div>
+        <div class="ex-row"><span class="ex-it">Me ne vado.</span><span class="ex-de">Ich gehe (weg).</span></div>
+      </div>
+    </div>
+
+  </div><!-- /panel-b1 -->
+
+  <!-- BACK LINK -->
+  <div style="border-top: 2px solid var(--line); padding-top: 1.5rem; margin-top: 1rem;">
+    <a href="index.html" class="btn btn-ghost">&larr; Zurück zur Übersicht</a>
+    <a href="grammatik.html" class="btn btn-ghost" style="margin-left:0.5rem;">📋 Kompakt-Übersicht</a>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+// Tab-Navigation
+document.querySelectorAll('.niveau-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const niveau = tab.dataset.niveau;
+    document.querySelectorAll('.niveau-tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    document.querySelectorAll('.niveau-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    document.getElementById('panel-' + niveau).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
