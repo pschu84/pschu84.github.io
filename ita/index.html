@@ -7,6 +7,34 @@
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<style>
+  /* Responsive Anpassungen für die Topbar auf Smartphones */
+  @media (max-width: 680px) {
+    .topbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.8rem;
+      padding: 0.8rem 1rem;
+    }
+    .topbar-right {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    .topbar-right a {
+      margin-left: 0 !important;
+      flex: 1;
+      text-align: center;
+      font-size: 0.78rem !important;
+      padding: 0.35rem 0.5rem !important;
+      white-space: nowrap;
+    }
+    .brand {
+      text-align: center;
+      font-size: 1.2rem;
+    }
+  }
+</style>
 </head>
 <body>
 <div class="container page-animate">
@@ -14,202 +42,95 @@
   <div class="topbar">
     <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
     <div class="topbar-right">
-      <a href="grammatik.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;" title="Grammatik-Übersicht">📋 kurze Grammatik-Übersicht</a>
-      <a href="grammatik-niveau.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;" title="Grammatik nach Niveau">🎓große Grammatik-Übersicht A1–B1</a>
-      <span class="topbar-streak" id="topbarStreak"></span>
+      <a href="grammatik.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;" title="Grammatik kompakt">📋 Grammatik kompakt</a>
+      <a href="grammatik-niveau.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;margin-left:0.5rem;" title="Grammatik A1-B1">📊 Grammatik A1-B1</a>
     </div>
   </div>
 
-  <!-- Gesamtfortschritt -->
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-label">
-      <span>Gesamtfortschritt</span>
-      <span id="overallPct">0 %</span>
-    </div>
-    <div class="progress-bar-track">
-      <div class="progress-bar-fill" id="overallFill" style="width:0%"></div>
-    </div>
-  </div>
+  <header class="dashboard-hero">
+    <h1 class="dashboard-title">Benvenuto! 👋</h1>
+    <p class="dashboard-intro">Meistere die italienische Grammatik Schritt für Schritt. Wähle ein Thema und starte deine Übung!</p>
+  </header>
 
-  <!-- Streak + Zitat -->
-  <div class="dashboard-meta">
-    <div class="streak-box">
-      <span class="streak-number" id="streakCount">0</span>
-      <span class="streak-label">Tage<br>in Folge 🔥</span>
-    </div>
-    <div class="quote-box" id="quoteBox"></div>
-  </div>
-
-  <!-- Schwachstellen-Empfehlung -->
-  <div class="weakness-box hidden" id="weaknessBox">
-    <span class="weakness-icon">🎯</span>
-    <div class="weakness-text">
-      <strong>Empfehlung: Nochmal üben</strong>
-      <span id="weaknessText"></span>
-    </div>
-    <a id="weaknessLink" href="#" class="btn btn-cielo btn-sm">Jetzt üben</a>
-  </div>
-
-  <!-- Blöcke -->
-  <div id="blocks"></div>
-
-  <!-- Extra-Karten: Vokabeln + Grammatik -->
-  <div style="margin-top:2.5rem;">
-    <div style="border-bottom:3px solid var(--ink);padding-bottom:0.5rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.7rem;">
-      <h2 style="font-family:var(--f-display);font-weight:900;font-size:1.2rem;margin:0;">Extras</h2>
-    </div>
-    <div class="module-grid">
-
-      <div class="module-card">
-        <div class="module-card-top">
-          <span class="module-icon">🗂️</span>
-          <span class="module-title">Vokabeln üben</span>
-        </div>
-        <p class="module-intro">Alle Vokabeln aus den Modulen gezielt wiederholen — mit Lernkarten, Eingabe und Selbstkontrolle.</p>
-        <a href="vokabeln.html" class="btn btn-primary btn-sm">Lernen →</a>
-      </div>
-
-      <div class="module-card">
-        <div class="module-card-top">
-          <span class="module-icon">📋</span>
-          <span class="module-title">Grammatik-Übersicht</span>
-        </div>
-        <p class="module-intro">Kompakter Überblick: Präpositionen, Zeiten, Pronomen, Genus, Verneinung und mehr — zum Nachschlagen.</p>
-        <a href="grammatik.html" class="btn btn-primary btn-sm">Nachschlagen →</a>
-      </div>
-
-      <div class="module-card">
-        <div class="module-card-top">
-          <span class="module-icon">🎓</span>
-          <span class="module-title">Grammatik nach Niveau</span>
-        </div>
-        <p class="module-intro">Alle Grammatikthemen sortiert nach A1, A2 und B1 — mit Erklärungen, Tabellen und Links zu den Übungsmodulen.</p>
-        <a href="grammatik-niveau.html" class="btn btn-primary btn-sm">Erkunden →</a>
-      </div>
-
-    </div>
-  </div>
+  <div id="blocks-container"></div>
 
 </div>
 
-<script src="assets/shared.js"></script>
 <script>
-const ALL_BLOCKS = [
+'use strict';
+
+const COURSE_DATA = [
   {
-    id:'zeiten', title:'Zeiten', color:'cielo',
+    id: "block1",
+    title: "1. Die Grundlagen (A1)",
+    color: "accent-1",
     modules: [
-      { id:'m01', title:'Passato Prossimo', icon:'🕰️', file:'modul-01-passato.html', ready:true,
-        intro:'Einfache Vergangenheit mit avere/essere, regelmäßige und unregelmäßige Partizipien.' },
-      { id:'m02', title:'Futuro Semplice', icon:'🔮', file:'modul-02-futuro.html', ready:true,
-        intro:'Einfache Zukunft: Endungen, unregelmäßige Stämme, Verwendung auch für Vermutungen.' },
+      { id: "mod_subst_plur", title: "Substantive & Plural", icon: "🇮🇹", intro: "Regelmäßige Pluralbildung (-o/-a/-e) und Besonderheiten.", ready: true },
+      { id: "mod_art_determ", title: "Bestimmter Artikel", icon: "✏️", intro: "il, lo, la, i, gli, le und wann man sie benutzt.", ready: true },
+      { id: "mod_art_indeterm", title: "Unbestimmter Artikel", icon: "💼", intro: "un, uno, una, un' für Personen und Gegenstände.", ready: true },
+      { id: "mod_verb_presente", title: "Präsens: Regelmäßige Verben", icon: "⏳", intro: "Die Konjugation der Verbgruppen auf -are, -ere und -ire.", ready: true }
     ]
   },
   {
-    id:'pronomen', title:'Pronomen', color:'terra',
+    id: "block2",
+    title: "2. Erste Sätze & Verben (A1)",
+    color: "accent-2",
     modules: [
-      { id:'m03', title:'Direkte Objektpronomen', icon:'🎯', file:'modul-03-direkte-pronomen.html', ready:true,
-        intro:'lo/la/li/le — Akkusativ-Pronomen im Vergleich mit dem deutschen System.' },
-      { id:'m04', title:'Indirekte Objektpronomen', icon:'📤', file:'modul-04-indirekte-pronomen.html', ready:true,
-        intro:'gli/le/ci — Dativ-Pronomen: Vergleich mit Deutsch, typische Fehlerquellen.' },
+      { id: "mod_verb_essere_avere", title: "Essere & Avere", icon: "👑", intro: "Die beiden wichtigsten Hilfsverben im Präsens.", ready: true },
+      { id: "mod_verb_modal", title: "Modalverben", icon: "🚀", intro: "Dovere, potere und volere im Alltag verwenden.", ready: true },
+      { id: "mod_pron_diretti", title: "Direkte Objektpronomen", icon: "🎯", intro: "Ersetze Objekte durch mi, ti, lo, la, ci, vi, li, le.", ready: true },
+      { id: "mod_passato_prossimo", title: "Passato Prossimo", icon: "📜", intro: "Über die Vergangenheit sprechen mit essere oder avere.", ready: true }
     ]
   },
   {
-    id:'praepos', title:'Präpositionen', color:'oliva',
+    id: "block3",
+    title: "3. Vertiefung & Alltag (A2)",
+    color: "accent-3",
     modules: [
-      { id:'m05', title:'Präp. mit DI', icon:'🔗', file:'modul-05-di.html', ready:true,
-        intro:'del/dello/della — Verschmelzung, Herkunft, Zugehörigkeit, Mengenangaben.' },
-      { id:'m06', title:'Präp. mit IN', icon:'📦', file:'modul-06-in.html', ready:true,
-        intro:'nel/nello/nella — Ort, Bewegung in Länder und Räume, Zeit.' },
-      { id:'m07', title:'Präp. mit SU', icon:'⬆️', file:'modul-07-su.html', ready:true,
-        intro:'sul/sulla/sui — Lage auf einer Fläche, Thema, ungefähre Zahlen.' },
-      { id:'m08', title:'Präp. mit A', icon:'📍', file:'modul-08-a.html', ready:false,
-        intro:'al/alla/agli — Städte, indirektes Objekt, Zeit, Art und Weise.' },
-      { id:'m09', title:'Präp. mit DA', icon:'↩️', file:'modul-09-da.html', ready:false,
-        intro:'dal/dalla — Herkunft, seit + Zeitdauer, Zweck, bei jemandem.' },
-      { id:'m10', title:'Welche Präposition wann?', icon:'🗺️', file:'modul-10-prep-uso.html', ready:false,
-        intro:'Überblick und typische Verwechslungen aller fünf Präpositionen.' },
+      { id: "mod_imperfetto", title: "Imperfetto", icon: "🕰️", intro: "Gewohnheiten und Beschreibungen in der Vergangenheit.", ready: true },
+      { id: "mod_prep_semplici", title: "Einfache Präpositionen", icon: "🗺️", intro: "di, a, da, in, con, su, per, tra/fra richtig einsetzen.", ready: true },
+      { id: "mod_prep_articolate", title: "Präpositionen mit Artikel", icon: "🔗", intro: "Die Verschmelzung von Präpositionen und Artikeln (del, al, nel...).", ready: true },
+      { id: "mod_verb_riflessivi", title: "Reflexive Verben", icon: "🧼", intro: "Aktivitäten des Alltags: mi lavo, si alza.", ready: true }
     ]
   },
   {
-    id:'verben', title:'Verben mit Besonderheiten', color:'sun',
+    id: "block4",
+    title: "4. Fortgeschrittene Strukturen (B1)",
+    color: "accent-4",
     modules: [
-      { id:'m11', title:'Reflexive Verben', icon:'🔄', file:'modul-11-riflessivi.html', ready:false,
-        intro:'alzarsi, vestirsi und co. — mi/ti/si, reflexiv im Passato Prossimo.' },
-      { id:'m12', title:'Modalverben', icon:'💬', file:'modul-12-modali.html', ready:false,
-        intro:'dovere, potere, volere + Infinitiv: Formen, Verneinung, Vergangenheit.' },
-      { id:'m13', title:'Stare + Gerundio', icon:'⏳', file:'modul-13-gerundio.html', ready:false,
-        intro:'Gerade dabei sein: stare + -ando/-endo, Vergleich mit Deutsch und Englisch.' },
+      { id: "mod_futuro_semplice", title: "Futuro Semplice", icon: "🔮", intro: "Pläne und Vorhersagen für die Zukunft ausdrücken.", ready: true },
+      { id: "mod_condizionale_semplice", title: "Condizionale Semplice", icon: "💭", intro: "Wünsche, Höflichkeit und Ratschläge formulieren.", ready: true },
+      { id: "mod_pron_indiretti", title: "Indirekte Objektpronomen", icon: "💌", intro: "jemandem etwas geben oder sagen: mi, ti, gli, le, ci, vi, loro.", ready: true },
+      { id: "mod_ci_ne", title: "Pronomen CI und NE", icon: "🔀", intro: "Orte und Mengen schlau ersetzen.", ready: true }
     ]
-  },
-  {
-    id:'satzbau', title:'Satzbau', color:'lavanda',
-    modules: [
-      { id:'m14', title:'Negation', icon:'🚫', file:'modul-14-negazione.html', ready:false,
-        intro:'non...mai, non...ancora, doppelte Negation — ganz anders als im Deutschen.' },
-      { id:'m15', title:'Relativsätze', icon:'🔀', file:'modul-15-relativsaetze.html', ready:false,
-        intro:'che, cui, quello che — Relativpronomen im Vergleich mit der/die/das.' },
-    ]
-  },
-  {
-    id:'ausblick', title:'Ausblick: Konditional', color:'terra',
-    modules: [
-      { id:'m16', title:'Condizionale Presente', icon:'✨', file:'modul-16-condizionale.html', ready:false,
-        intro:'Würde-Form: höfliche Bitten, Wünsche, Hypothesen — Konjunktiv II auf Italienisch.' },
-    ]
-  },
-];
-
-const QUOTES = [
-  '"Sbagliando si impara." — Durch Fehler lernt man.',
-  '"La pratica rende perfetti." — Übung macht den Meister.',
-  '"Piano piano si va lontano." — Schritt für Schritt kommt man weit.',
-  '"Chi studia, impara." — Wer lernt, gewinnt.',
-  '"Il bello dell\'italiano è la musica delle parole." — Die Schönheit des Italienischen liegt in der Musik der Wörter.',
-  '"Non smettere mai di imparare." — Hör nie auf zu lernen.',
-];
-
-function initDashboard() {
-  const state = Store.load();
-
-  // Streak
-  const sc = state.streak.count || 0;
-  document.getElementById('streakCount').textContent = sc;
-  if (sc > 0) document.getElementById('topbarStreak').textContent = `🔥 ${sc} ${sc === 1 ? 'Tag' : 'Tage'}`;
-
-  // Quote
-  document.getElementById('quoteBox').textContent = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-
-  // Overall progress
-  const allMods = ALL_BLOCKS.flatMap(b => b.modules);
-  const allIds  = allMods.map(m => m.id);
-  const scores  = allIds.map(id => state.modules[id]?.bestScore || 0);
-  const overall = scores.reduce((a, b) => a + b, 0) / allIds.length;
-  const pct = Math.round(overall * 100);
-  document.getElementById('overallPct').textContent = pct + ' %';
-  document.getElementById('overallFill').style.width = pct + '%';
-
-  // Weakness
-  const weakestId = Store.findWeakest(allIds);
-  if (weakestId) {
-    const wMod = allMods.find(m => m.id === weakestId);
-    if (wMod && wMod.ready) {
-      document.getElementById('weaknessBox').classList.remove('hidden');
-      const wScore = Math.round((state.modules[weakestId]?.bestScore || 0) * 100);
-      document.getElementById('weaknessText').textContent = wMod.title + ' — bisher ' + wScore + ' %';
-      document.getElementById('weaknessLink').href = wMod.file;
-    }
   }
+];
 
-  // Build blocks
-  const container = document.getElementById('blocks');
-  const C = 2 * Math.PI * 15.9; // SVG ring circumference (r=15.9)
+function renderDashboard() {
+  const container = document.getElementById('blocks-container');
+  container.innerHTML = '';
+  
+  let state = { modules: {} };
+  try {
+    const saved = localStorage.getItem('grammaticaviva_state');
+    if (saved) state = JSON.parse(saved);
+  } catch(e) { console.error(e); }
 
-  ALL_BLOCKS.forEach(block => {
-    const blockScores = block.modules.map(m => state.modules[m.id]?.bestScore || 0);
-    const blockPct = Math.round(blockScores.reduce((a,b) => a+b, 0) / block.modules.length * 100);
+  const C = 2 * Math.PI * 15.9;
 
-    const section = document.createElement('div');
-    section.className = 'block-section';
+  COURSE_DATA.forEach(block => {
+    let totalProgress = 0;
+    let countedModules = 0;
+    block.modules.forEach(m => {
+      if (m.ready) {
+        totalProgress += (state.modules[m.id]?.bestScore || 0);
+        countedModules++;
+      }
+    });
+    const blockPct = countedModules > 0 ? Math.round(totalProgress / countedModules) : 0;
+
+    const section = document.createElement('section');
+    section.className = 'dashboard-block';
     section.innerHTML = `
       <div class="block-header">
         <h2 class="block-title">${block.title}</h2>
@@ -222,7 +143,7 @@ function initDashboard() {
     block.modules.forEach(mod => {
       const progress = state.modules[mod.id]?.bestScore || 0;
       const done     = state.modules[mod.id]?.done || false;
-      const dash     = (progress * C).toFixed(1);
+      const dash     = (progress * C / 100).toFixed(1);
 
       const card = document.createElement('div');
       card.className = 'module-card' + (done ? ' done' : '') + (!mod.ready ? ' locked' : '');
@@ -238,15 +159,17 @@ function initDashboard() {
           </div>
         </div>
         <p class="module-intro">${mod.intro}</p>
-        ${mod.ready
-          ? `<a href="${mod.file}" class="btn btn-primary btn-sm">${done ? 'Wiederholen ↩' : 'Üben →'}</a>`
-          : `<span class="badge-soon">Demnächst</span>`}`;
+        ${mod.ready 
+          ? `<a href="uebung.html?mod=${mod.id}" class="btn btn-sm btn-primary">Starten &rarr;</a>`
+          : `<button class="btn btn-sm btn-ghost" disabled>Demnächst</button>`
+        }
+      `;
       grid.appendChild(card);
     });
   });
 }
 
-initDashboard();
+document.addEventListener('DOMContentLoaded', renderDashboard);
 </script>
 </body>
 </html>
