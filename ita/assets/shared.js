@@ -299,8 +299,9 @@ function _renderSection(sec) {
 
 const TYPE_LABELS = {
   MC:'Multiple Choice', LT:'Lückentext', FT:'Formtabelle',
-  SO:'Sortieraufgabe', FK:'Fehlerkorrektur', DE:'Deutsch → Italienisch',
-  IT:'Italienisch → Deutsch', KA:'Kategorisieren', KO:'Kontrast'
+  SO:'Sortieraufgabe', FK:'Fehlerkorrektur', DE:'Deutsch \u2192 Italienisch',
+  IT:'Italienisch \u2192 Deutsch', KA:'Kategorisieren', KO:'Kontrast',
+  ZO:'Zuordnung'
 };
 
 function renderExercise(ex, box, onDone) {
@@ -310,10 +311,24 @@ function renderExercise(ex, box, onDone) {
   badge.textContent = TYPE_LABELS[ex.type] || ex.type;
   box.appendChild(badge);
 
-  const fn = { MC:_renderMC, LT:_renderLT, FT:_renderFT, SO:_renderSO, FK:_renderFK, DE:_renderDE, IT:_renderIT, KA:_renderKA, KO:_renderKO };
+  const fn = { MC:_renderMC, LT:_renderLT, FT:_renderFT, SO:_renderSO, FK:_renderFK, DE:_renderDE, IT:_renderIT, KA:_renderKA, KO:_renderKO, ZO:_renderZO };
   if (fn[ex.type]) fn[ex.type](ex, box, onDone);
   else { const p = document.createElement('p'); p.textContent = 'Unbekannter Typ: ' + ex.type; box.appendChild(p); }
-}
+
+  // Optional: Übersetzungsbutton für Aufgaben mit italienischen Sätzen
+  if (ex.translation) {
+    const tw = document.createElement('div');
+    tw.style.marginTop = '0.8rem';
+    const tb = document.createElement('button');
+    tb.className = 'btn btn-ghost btn-sm';
+    tb.textContent = '\ud83c\udde9\ud83c\uddea Deutschen Satz einblenden';
+    const td = document.createElement('div');
+    td.style.cssText = 'display:none;margin-top:0.4rem;padding:0.55rem 0.9rem;background:var(--paper-2);border:1.5px solid var(--line);border-radius:var(--r-sm);font-size:0.87rem;color:var(--ink-soft);font-style:italic;';
+    td.textContent = ex.translation;
+    tb.addEventListener('click', () => { td.style.display = 'block'; tb.disabled = true; });
+    tw.appendChild(tb); tw.appendChild(td); box.appendChild(tw);
+  }
+} /* end renderExercise */
 
 /* --- MC --- */
 function _renderMC(ex, box, onDone) {
@@ -581,9 +596,92 @@ function _renderKO(ex, box, onDone) {
   box.appendChild(pair);
 
   const revDiv = document.createElement('div'); revDiv.className = 'ko-reveal'; revDiv.innerHTML = ex.reveal;
-  const revBtn = document.createElement('button'); revBtn.className = 'btn btn-oliva btn-sm'; revBtn.textContent = 'Erklärung anzeigen';
+  const revBtn = document.createElement('button'); revBtn.className = 'btn btn-oliva btn-sm'; revBtn.textContent = 'Erkl\u00e4rung anzeigen';
   revBtn.addEventListener('click', () => { revDiv.classList.add('open'); revBtn.disabled = true; onDone('revealed', false); });
   box.appendChild(revBtn); box.appendChild(revDiv);
+}
+
+/* --- ZO (Zuordnung / Matching) --- */
+function _renderZO(ex, box, onDone) {
+  _prompt(box, ex.prompt || 'Klicke erst das deutsche Wort, dann die passende Italiano-Vergangenheitsform:');
+
+  const hint = document.createElement('p');
+  hint.style.cssText = 'font-size:0.8rem;color:var(--ink-soft);margin-bottom:0.8rem;';
+  hint.textContent = 'Zuerst links klicken, dann rechts zuordnen. Falsche Versuche werden gez\u00e4hlt.';
+  box.appendChild(hint);
+
+  const shuffled = shuffle(ex.pairs.map((p, i) => ({ it: p.it, origIdx: i })));
+  let selectedLeft = null;
+  let mistakes = 0;
+  const matched = new Set();
+
+  const grid = document.createElement('div'); grid.className = 'zo-grid';
+  const leftCol  = document.createElement('div'); leftCol.className  = 'zo-col';
+  const rightCol = document.createElement('div'); rightCol.className = 'zo-col';
+  const arrow    = document.createElement('div'); arrow.className    = 'zo-arrow'; arrow.textContent = '\u2194';
+
+  const leftBtns  = [];
+  const rightBtns = [];
+
+  ex.pairs.forEach((pair, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'zo-item';
+    btn.textContent = pair.de;
+    btn.dataset.idx = idx;
+    btn.addEventListener('click', () => {
+      if (matched.has(idx) || btn.disabled) return;
+      leftBtns.forEach(b => b.classList.remove('zo-sel'));
+      btn.classList.add('zo-sel');
+      selectedLeft = idx;
+    });
+    leftCol.appendChild(btn);
+    leftBtns.push(btn);
+  });
+
+  shuffled.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'zo-item';
+    btn.textContent = item.it;
+    btn.dataset.origidx = item.origIdx;
+    btn.addEventListener('click', () => {
+      if (selectedLeft === null || btn.disabled) return;
+      const origIdx = parseInt(btn.dataset.origidx);
+
+      if (origIdx === selectedLeft) {
+        // Richtig
+        matched.add(origIdx);
+        const lBtn = leftBtns[selectedLeft];
+        lBtn.classList.remove('zo-sel');
+        lBtn.classList.add('zo-matched');
+        lBtn.disabled = true;
+        btn.classList.add('zo-matched');
+        btn.disabled = true;
+        selectedLeft = null;
+
+        if (matched.size === ex.pairs.length) {
+          const ok = mistakes === 0;
+          showFeedback(box, ok, ok ? 'Alle Paare korrekt zugeordnet!' : mistakes + ' Fehlversuch' + (mistakes > 1 ? 'e' : '') + ' gemacht.');
+          onDone(ok ? 'correct' : 'wrong', true);
+        }
+      } else {
+        // Falsch
+        mistakes++;
+        const lBtn = leftBtns[selectedLeft];
+        btn.classList.add('zo-wrong'); lBtn.classList.add('zo-wrong');
+        selectedLeft = null;
+        setTimeout(() => {
+          btn.classList.remove('zo-wrong');
+          lBtn.classList.remove('zo-wrong', 'zo-sel');
+        }, 700);
+      }
+    });
+    rightCol.appendChild(btn);
+    rightBtns.push(btn);
+  });
+
+  grid.appendChild(leftCol); grid.appendChild(arrow); grid.appendChild(rightCol);
+  box.appendChild(grid);
+  addFeedbackArea(box);
 }
 
 /* --- helpers --- */
@@ -621,15 +719,31 @@ class ExerciseSession {
     this.runGraded    = 0; // auto-graded total
     this.selfScoreSum = 0; // weighted self-ratings
     this.selfCount    = 0;
+    this.counted      = new Set(); // exercise indices already scored in this run (no double-count on back-nav)
     this._buildNav();
   }
 
   _buildNav() {
     this.navEl.innerHTML = '';
+
+    this.zurueckBtn = document.createElement('button');
+    this.zurueckBtn.className = 'btn btn-ghost';
+    this.zurueckBtn.textContent = '\u2190 Zur\u00fcck';
+    this.zurueckBtn.disabled = true;
+    this.zurueckBtn.addEventListener('click', () => this.prev());
+    this.navEl.appendChild(this.zurueckBtn);
+
+    const homeLink = document.createElement('a');
+    homeLink.href = 'index.html';
+    homeLink.className = 'btn btn-ghost btn-sm';
+    homeLink.textContent = '\ud83c\udfe0 \u00dcbersicht';
+    this.navEl.appendChild(homeLink);
+
     this.weiterBtn = document.createElement('button');
     this.weiterBtn.className = 'btn btn-primary';
-    this.weiterBtn.textContent = 'Weiter →';
+    this.weiterBtn.textContent = 'Weiter \u2192';
     this.weiterBtn.disabled = true;
+    this.weiterBtn.style.marginLeft = 'auto';
     this.weiterBtn.addEventListener('click', () => this.next());
     this.navEl.appendChild(this.weiterBtn);
   }
@@ -650,18 +764,22 @@ class ExerciseSession {
     this.textEl.textContent = `Aufgabe ${this.index + 1} von ${total}`;
     this.fillEl.style.width = `${(this.index / total) * 100}%`;
     this.weiterBtn.disabled = true;
-    this.weiterBtn.textContent = this.index === total - 1 ? 'Ergebnis →' : 'Weiter →';
+    this.weiterBtn.textContent = this.index === total - 1 ? 'Ergebnis \u2192' : 'Weiter \u2192';
+    this.zurueckBtn.disabled = this.index === 0;
 
     renderExercise(ex, this.boxEl, (status, isAutoGraded) => {
       Store.recordAnswer(this.mod.id, ex.id, status);
       Store.setLastIndex(this.mod.id, this.index);
-      if (isAutoGraded) {
-        this.runGraded++;
-        if (status === 'correct') this.runCorrect++;
-      } else {
-        this.selfCount++;
-        const selfVals = { 'self-ok': 1, 'self-mid': 0.5, 'self-no': 0, 'revealed': 0.4 };
-        this.selfScoreSum += selfVals[status] ?? 0;
+      if (!this.counted.has(this.index)) {
+        this.counted.add(this.index);
+        if (isAutoGraded) {
+          this.runGraded++;
+          if (status === 'correct') this.runCorrect++;
+        } else {
+          this.selfCount++;
+          const selfVals = { 'self-ok': 1, 'self-mid': 0.5, 'self-no': 0, 'revealed': 0.4 };
+          this.selfScoreSum += selfVals[status] ?? 0;
+        }
       }
       this.weiterBtn.disabled = false;
     });
@@ -672,6 +790,13 @@ class ExerciseSession {
   next() {
     this.index++;
     this._render();
+  }
+
+  prev() {
+    if (this.index > 0) {
+      this.index--;
+      this._render();
+    }
   }
 
   finish() {
