@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Reflexive Verben</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Verben · Modul 11</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>🔄 Reflexive Verben</h1>
+    <p>alzarsi, vestirsi und co. — mi/ti/si im Präsens und Passato Prossimo</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm11',
+  block: 'verben',
+  title: 'Reflexive Verben',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Reflexive Verben bestehen aus einem <strong>Reflexivpronomen</strong> und einem Verb. Das Pronomen bezieht die Handlung auf das Subjekt zurück: <em>Mi lavo</em> = Ich wasche mich. Im Infinitiv endet das Verb auf <strong>-si</strong>: lavarsi, alzarsi, vestirsi.' },
+
+    { type:'table', head:['Pronomen', 'Reflexivpronomen', 'alzarsi (aufstehen)'],
+      rows:[
+        ['io',      'mi', 'mi alzo'],
+        ['tu',      'ti', 'ti alzi'],
+        ['lui/lei', 'si', 'si alza'],
+        ['noi',     'ci', 'ci alziamo'],
+        ['voi',     'vi', 'vi alzate'],
+        ['loro',    'si', 'si alzano'],
+      ]
+    },
+
+    { type:'tip', body:'Das Reflexivpronomen steht immer <strong>vor dem konjugierten Verb</strong>. Bei Modalverb + Infinitiv: entweder vor das Modalverb (mi voglio alzare) oder an den Infinitiv ohne -e (voglio alzarmi). Beide Formen sind korrekt.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Wichtige reflexive Verben:</strong>' },
+
+    { type:'table', head:['Infinitiv', 'Deutsch', 'Infinitiv', 'Deutsch'],
+      rows:[
+        ['alzarsi',      'aufstehen',        'svegliarsi',   'aufwachen'],
+        ['lavarsi',      'sich waschen',     'vestirsi',     'sich anziehen'],
+        ['pettinarsi',   'sich kämmen',      'truccarsi',    'sich schminken'],
+        ['addormentarsi','einschlafen',       'sedersi',      'sich setzen'],
+        ['divertirsi',   'sich amüsieren',   'annoiarsi',    'sich langweilen'],
+        ['sentirsi',     'sich fühlen',      'fermarsi',     'stehen bleiben'],
+        ['chiamarsi',    'heißen',           'sposarsi',     'heiraten'],
+        ['ricordarsi',   'sich erinnern',    'dimenticarsi', 'vergessen'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Passato Prossimo:</strong> Reflexive Verben nehmen immer <strong>essere</strong> als Hilfsverb. Das Partizip kongruiert mit dem Subjekt.' },
+
+    { type:'table', head:['Pronomen', 'alzarsi (aufgestanden)'],
+      rows:[
+        ['io (m)',    'mi sono alzato'],
+        ['io (f)',    'mi sono alzata'],
+        ['tu (m)',    'ti sei alzato'],
+        ['lui',      'si è alzato'],
+        ['lei',      'si è alzata'],
+        ['noi (m)',  'ci siamo alzati'],
+        ['voi',      'vi siete alzati/e'],
+        ['loro (f)', 'si sono alzate'],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Merkhilfe:</strong> Reflexiv = immer ESSERE. Das Partizip verhält sich wie bei allen essere-Verben: -o/-a/-i/-e je nach Subjekt. Mi sono alzato (m) / Mi sono alzata (f).' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m11-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['mi', 'alle', 'alzo', 'sette', 'ogni', 'mattina'],
+      solution:['mi', 'alzo', 'alle', 'sette', 'ogni', 'mattina'],
+      translation:'Ich stehe jeden Morgen um sieben Uhr auf.',
+      explain:'mi alzo: Reflexivpronomen vor dem Verb. alle sette = um sieben Uhr.' },
+
+    { id:'m11-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['si', 'è', 'lei', 'tardi', 'alzata'],
+      solution:['lei', 'si', 'è', 'alzata'],
+      translation:'Sie ist spät aufgestanden.',
+      explain:'Passato Prossimo reflexiv: si è alzata (essere + Partizip kongruiert: alzata, f).' },
+
+    /* === ZO 9 === */
+    { id:'m11-zo-01', type:'ZO',
+      prompt:'Ordne zu: Reflexivpronomen nach Person',
+      pairs:[
+        { de:'ich (1. Sg.)',   it:'mi' },
+        { de:'du (2. Sg.)',   it:'ti' },
+        { de:'er/sie (3. Sg.)',it:'si' },
+        { de:'wir (1. Pl.)',  it:'ci' },
+        { de:'ihr (2. Pl.)',  it:'vi' },
+        { de:'sie (3. Pl.)',  it:'si' },
+      ] },
+
+    { id:'m11-zo-02', type:'ZO',
+      prompt:'Ordne zu: Infinitiv -> Deutsch',
+      pairs:[
+        { de:'alzarsi',       it:'aufstehen'        },
+        { de:'svegliarsi',    it:'aufwachen'        },
+        { de:'vestirsi',      it:'sich anziehen'    },
+        { de:'lavarsi',       it:'sich waschen'     },
+        { de:'divertirsi',    it:'sich amüsieren'   },
+        { de:'addormentarsi', it:'einschlafen'      },
+      ] },
+
+    { id:'m11-zo-03', type:'ZO',
+      prompt:'Ordne zu: Infinitiv -> Deutsch',
+      pairs:[
+        { de:'sentirsi',      it:'sich fühlen'      },
+        { de:'sedersi',       it:'sich setzen'      },
+        { de:'chiamarsi',     it:'heißen'           },
+        { de:'ricordarsi',    it:'sich erinnern'    },
+        { de:'fermarsi',      it:'stehen bleiben'   },
+        { de:'sposarsi',      it:'heiraten'         },
+      ] },
+
+    { id:'m11-zo-04', type:'ZO',
+      prompt:'Ordne zu: alzarsi im Präsens (alle Formen)',
+      pairs:[
+        { de:'ich stehe auf',       it:'mi alzo'    },
+        { de:'du stehst auf',       it:'ti alzi'    },
+        { de:'er/sie steht auf',    it:'si alza'    },
+        { de:'wir stehen auf',      it:'ci alziamo' },
+        { de:'ihr steht auf',       it:'vi alzate'  },
+        { de:'sie stehen auf',      it:'si alzano'  },
+      ] },
+
+    { id:'m11-zo-05', type:'ZO',
+      prompt:'Ordne zu: Passato Prossimo von alzarsi',
+      pairs:[
+        { de:'ich (m) bin aufgestanden',    it:'mi sono alzato'    },
+        { de:'ich (f) bin aufgestanden',    it:'mi sono alzata'    },
+        { de:'er ist aufgestanden',         it:'si è alzato'       },
+        { de:'sie ist aufgestanden',        it:'si è alzata'       },
+        { de:'wir (m) sind aufgestanden',   it:'ci siamo alzati'   },
+        { de:'sie (f/Pl.) sind aufgestanden',it:'si sono alzate'   },
+      ] },
+
+    { id:'m11-zo-06', type:'ZO',
+      prompt:'Ordne zu: Pronomen-Position bei Modalverb (mi voglio alzare vs. voglio alzarmi)',
+      pairs:[
+        { de:'vor das Modalverb (mi)',     it:'Mi voglio alzare.'    },
+        { de:'an den Infinitiv (-mi)',     it:'Voglio alzarmi.'      },
+        { de:'vor das Modalverb (si)',     it:'Si deve fermare.'     },
+        { de:'an den Infinitiv (-si)',     it:'Deve fermarsi.'       },
+        { de:'vor das Modalverb (ti)',     it:'Ti puoi sedere.'      },
+        { de:'an den Infinitiv (-ti)',     it:'Puoi sederti.'        },
+      ] },
+
+    { id:'m11-zo-07', type:'ZO',
+      prompt:'Ordne zu: Partizip kongruiert — welche Form?',
+      pairs:[
+        { de:'Marco si è...',          it:'alzato'   },
+        { de:'Maria si è...',          it:'alzata'   },
+        { de:'i ragazzi si sono...',   it:'alzati'   },
+        { de:'le ragazze si sono...',  it:'alzate'   },
+        { de:'noi (f) ci siamo...',    it:'alzate'   },
+        { de:'voi (m) vi siete...',    it:'alzati'   },
+      ] },
+
+    { id:'m11-zo-08', type:'ZO',
+      prompt:'Ordne zu: Satz -> Deutsch',
+      pairs:[
+        { de:'Mi chiamo Luca.',          it:'Ich heiße Luca.'                  },
+        { de:'Come ti senti?',           it:'Wie fühlst du dich?'              },
+        { de:'Ci siamo divertiti molto.',it:'Wir haben uns sehr amüsiert.'     },
+        { de:'Si sono sposati in estate.',it:'Sie haben im Sommer geheiratet.' },
+        { de:'Vi siete annoiati?',       it:'Habt ihr euch gelangweilt?'       },
+        { de:'Non riesco ad addormentarmi.',it:'Ich kann nicht einschlafen.'   },
+      ] },
+
+    { id:'m11-zo-09', type:'ZO',
+      prompt:'Ordne zu: Reflexiv oder nicht reflexiv?',
+      pairs:[
+        { de:'lavare (etw. waschen)',   it:'Lavo la macchina.'   },
+        { de:'lavarsi (sich waschen)',  it:'Mi lavo le mani.'    },
+        { de:'alzare (etw. hochheben)',  it:'Alzo la mano.'      },
+        { de:'alzarsi (aufstehen)',      it:'Mi alzo tardi.'     },
+        { de:'sentire (hören)',          it:'Sento la musica.'   },
+        { de:'sentirsi (sich fühlen)',   it:'Mi sento stanco.'   },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m11-mc-01', type:'MC',
+      prompt:'Welche Form? "Io ___ alle sette." (alzarsi)',
+      options:['alzo','mi alzo','si alzo','ti alzo'],
+      correctValue:'mi alzo',
+      explain:'1. Pers. Sg.: mi + alzo. Das Reflexivpronomen mi steht vor dem Verb.' },
+
+    { id:'m11-mc-02', type:'MC',
+      prompt:'Welche Form? "Marco ___ e poi fa colazione." (alzarsi, Präsens)',
+      options:['si alza','mi alza','alza','si alzano'],
+      correctValue:'si alza',
+      explain:'3. Pers. Sg.: si + alza.' },
+
+    { id:'m11-mc-03', type:'MC',
+      prompt:'Passato Prossimo: "Lei ___ molto tardi." (alzarsi)',
+      options:['ha alzata','si è alzata','si è alzato','è alzata'],
+      correctValue:'si è alzata',
+      explain:'Reflexiv: essere als Hilfsverb. Lei (f) -> si è alzata (Partizip: -a).' },
+
+    { id:'m11-mc-04', type:'MC',
+      prompt:'Passato Prossimo: "I ragazzi ___ presto." (svegliarsi)',
+      options:['si sono svegliati','si hanno svegliato','hanno svegliato','si è svegliati'],
+      correctValue:'si sono svegliati',
+      explain:'Pl.: si sono + svegliati (m/Pl.). Essere als Hilfsverb.' },
+
+    { id:'m11-mc-05', type:'MC',
+      prompt:'Mit Modalverb: "Devo ___." (vestirsi, an Infinitiv)',
+      options:['mi vestire','vestirmi','si vestire','vestirsi'],
+      correctValue:'vestirmi',
+      explain:'Pronomen an den Infinitiv (ohne -e): vestire + mi = vestirmi.' },
+
+    { id:'m11-mc-06', type:'MC',
+      prompt:'Mit Modalverb: "___ posso sedere qui?" (Pronomen vor Modalverb)',
+      options:['Mi','Ti','Si','Ci'],
+      correctValue:'Mi',
+      explain:'1. Pers. Sg., Pronomen vor Modalverb: Mi posso sedere.' },
+
+    { id:'m11-mc-07', type:'MC',
+      prompt:'"Come ___ chiami?" (chiamarsi)',
+      options:['mi','ti','si','vi'],
+      correctValue:'ti',
+      explain:'Frage an "du": Come ti chiami? = Wie heißt du?' },
+
+    { id:'m11-mc-08', type:'MC',
+      prompt:'"Noi ___ siamo divertiti molto alla festa." Welche Form?',
+      options:['mi','ti','ci','si'],
+      correctValue:'ci',
+      explain:'1. Pers. Pl.: ci siamo divertiti. noi -> ci.' },
+
+    { id:'m11-mc-09', type:'MC',
+      prompt:'Welche Aussage ist korrekt?',
+      options:[
+        'Reflexive Verben nehmen avere im Passato Prossimo.',
+        'Reflexive Verben nehmen essere, Partizip kongruiert.',
+        'Reflexive Verben nehmen essere, Partizip ist unveränderlich.',
+        'Nur alzarsi nimmt essere, andere nehmen avere.',
+      ],
+      correctValue:'Reflexive Verben nehmen essere, Partizip kongruiert.',
+      explain:'Alle reflexiven Verben: essere + Partizip kongruiert mit Subjekt.' },
+
+    { id:'m11-mc-10', type:'MC',
+      prompt:'"Mi sento stanco." Was bedeutet das?',
+      options:['Ich höre mich müde.','Ich fühle mich müde.','Ich werde müde.','Ich bin müde geworden.'],
+      correctValue:'Ich fühle mich müde.',
+      explain:'sentirsi = sich fühlen. Mi sento stanco = Ich fühle mich müde.' },
+
+    { id:'m11-mc-11', type:'MC',
+      prompt:'"Non riesci ad addormentarti?" Was bedeutet das?',
+      options:['Schläfst du nicht gut?','Kannst du nicht einschlafen?','Wachst du nicht auf?','Legst du dich nicht hin?'],
+      correctValue:'Kannst du nicht einschlafen?',
+      explain:'riuscire a + Infinitiv = es schaffen. addormentarsi = einschlafen. Non riesci ad addormentarti? = Kannst du nicht einschlafen?' },
+
+    { id:'m11-mc-12', type:'MC',
+      prompt:'Welche Form für "wir haben uns gesetzt" (sedersi)?',
+      options:['ci abbiamo seduto','ci siamo seduti','si siamo seduto','abbiamo seduto'],
+      correctValue:'ci siamo seduti',
+      explain:'sedersi: ci siamo + seduti (m/Pl.). essere als Hilfsverb.' },
+
+    /* === MCL 5 === */
+    { id:'m11-mcl-01', type:'MC',
+      prompt:'Wähle: "Di solito ___ alle sette e ___ in trenta minuti."',
+      options:['mi sveglio / mi vesto','si sveglio / si vesto','mi sveglia / mi veste','mi sveglio / si veste'],
+      correctValue:'mi sveglio / mi vesto',
+      translation:'Normalerweise wache ich um sieben auf und ziehe mich in dreißig Minuten an.',
+      explain:'1. Pers. Sg.: mi sveglio / mi vesto.' },
+
+    { id:'m11-mcl-02', type:'MC',
+      prompt:'Wähle: "Ieri ___ molto tardi perché ero stanco." (addormentarsi)',
+      options:['mi sono addormentato','mi ho addormentato','si è addormentato','mi sono addormentata'],
+      correctValue:'mi sono addormentato',
+      translation:'Gestern bin ich sehr spät eingeschlafen, weil ich müde war. (Sprecher m)',
+      explain:'Passato Prossimo: mi sono addormentato (m). essere + Partizip.' },
+
+    { id:'m11-mcl-03', type:'MC',
+      prompt:'Wähle: "Le ragazze ___ e ___ al ristorante." (truccarsi / divertirsi)',
+      options:['si sono truccate / si sono divertite','si sono truccati / si sono divertiti','si hanno truccato / hanno divertito','si sono truccat / si sono divertit'],
+      correctValue:'si sono truccate / si sono divertite',
+      translation:'Die Mädchen haben sich geschminkt und sich im Restaurant amüsiert.',
+      explain:'f/Pl.: si sono truccate / divertite. Partizip endet auf -e.' },
+
+    { id:'m11-mcl-04', type:'MC',
+      prompt:'Wähle: "Non ___ alzarmi presto domani." (Modalverb, Pronomen vor Verb)',
+      options:['mi voglio','voglio mi','si voglio','mi volere'],
+      correctValue:'mi voglio',
+      translation:'Ich will mich morgen nicht früh aufstehen.',
+      explain:'Pronomen vor Modalverb: mi voglio alzarmi — hier: mi voglio alzare.' },
+
+    { id:'m11-mcl-05', type:'MC',
+      prompt:'Wähle: "___ siete divertiti alla festa?" (voi)',
+      options:['Ci','Vi','Si','Ti'],
+      correctValue:'Vi',
+      translation:'Habt ihr euch auf der Party amüsiert?',
+      explain:'2. Pers. Pl.: vi. Vi siete divertiti?' },
+
+    /* === LT 5 === */
+    { id:'m11-lt-01', type:'LT',
+      text:'Ogni mattina {0} sveglio alle sei, {1} alzo e {2} faccio la doccia.',
+      blanks:[ { accept:['mi'] }, { accept:['mi'] }, { accept:['mi'] } ],
+      translation:'Jeden Morgen wache ich um sechs auf, stehe auf und dusche.',
+      explain:'1. Pers. Sg.: mi sveglio / mi alzo / mi faccio la doccia.' },
+
+    { id:'m11-lt-02', type:'LT',
+      text:'Ieri sera Marco {0} è {1} tardi e questa mattina {2} è {3} presto.',
+      blanks:[ { accept:['si'] }, { accept:['addormentato'] }, { accept:['si'] }, { accept:['alzato'] } ],
+      translation:'Gestern Abend ist Marco spät eingeschlafen und heute Morgen früh aufgestanden.',
+      explain:'si è addormentato / si è alzato: essere + Partizip auf -o (Marco = m).' },
+
+    { id:'m11-lt-03', type:'LT',
+      text:'Come {0} senti oggi? — {1} sento un po\' stanco.',
+      blanks:[ { accept:['ti'] }, { accept:['Mi'] } ],
+      translation:'Wie fühlst du dich heute? — Ich fühle mich ein bisschen müde.',
+      explain:'sentirsi: ti senti (2. Sg.) / Mi sento (1. Sg.).' },
+
+    { id:'m11-lt-04', type:'LT',
+      text:'Noi {0} siamo {1} molto alla festa di ieri.',
+      blanks:[ { accept:['ci'] }, { accept:['divertiti','divertite'] } ],
+      translation:'Wir haben uns auf der gestrigen Party sehr amüsiert.',
+      explain:'noi -> ci siamo divertiti (m) / divertite (f).' },
+
+    { id:'m11-lt-05', type:'LT',
+      text:'Vuoi {0} o preferisci {1} dopo?',
+      blanks:[ { accept:['sederti'] }, { accept:['sederti'] } ],
+      translation:'Möchtest du dich setzen oder lieber danach?',
+      explain:'sedersi + Pronomen an Infinitiv: sedere + ti = sederti. Beide Lücken identisch.' },
+
+    /* === FT 2 === */
+    { id:'m11-ft-01', type:'FT',
+      prompt:'Konjugiere "vestirsi" im Presente:',
+      rows:[
+        { label:'io',       accept:['mi vesto']    },
+        { label:'tu',       accept:['ti vesti']    },
+        { label:'lui/lei',  accept:['si veste']    },
+        { label:'noi',      accept:['ci vestiamo'] },
+        { label:'voi',      accept:['vi vestite']  },
+        { label:'loro',     accept:['si vestono']  },
+      ] },
+
+    { id:'m11-ft-02', type:'FT',
+      prompt:'Passato Prossimo von "svegliarsi" — Partizip kongruieren:',
+      rows:[
+        { label:'io (m)',         accept:['mi sono svegliato']  },
+        { label:'io (f)',         accept:['mi sono svegliata']  },
+        { label:'lui',            accept:['si è svegliato']     },
+        { label:'lei',            accept:['si è svegliata']     },
+        { label:'noi (m)',        accept:['ci siamo svegliati'] },
+        { label:'loro (f)',       accept:['si sono svegliate']  },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m11-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Mi ho alzato tardi stamattina.',
+      solution:'Mi sono alzato tardi stamattina.',
+      errorToken:'ho',
+      translation:'Ich bin heute Morgen spät aufgestanden.',
+      explain:'Reflexive Verben nehmen essere, nicht avere. Mi sono alzato.' },
+
+    { id:'m11-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Le ragazze si sono divertiti molto.',
+      solution:'Le ragazze si sono divertite molto.',
+      errorToken:'divertiti',
+      translation:'Die Mädchen haben sich sehr amüsiert.',
+      explain:'le ragazze ist f/Pl. -> Partizip: divertite (nicht divertiti, das wäre m).' },
+
+    { id:'m11-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Come chiami ti?',
+      solution:'Come ti chiami?',
+      errorToken:'chiami ti',
+      translation:'Wie heißt du?',
+      explain:'Das Reflexivpronomen ti steht vor dem Verb, nicht danach. Come ti chiami?' },
+
+    /* === KA 2 === */
+    { id:'m11-ka-01', type:'KA',
+      prompt:'Kategorisiere: Morgenroutine in der richtigen Reihenfolge — früh oder spät?',
+      categories:['Eher früh (Beginn der Routine)', 'Eher spät (Ende der Routine)'],
+      items:[
+        { text:'svegliarsi',      cat:0 },
+        { text:'vestirsi',        cat:1 },
+        { text:'alzarsi',         cat:0 },
+        { text:'truccarsi',       cat:1 },
+        { text:'lavarsi la faccia',cat:0 },
+        { text:'pettinarsi',      cat:1 },
+      ] },
+
+    { id:'m11-ka-02', type:'KA',
+      prompt:'Kategorisiere: avere oder essere im Passato Prossimo?',
+      categories:['essere (reflexiv)', 'avere (nicht reflexiv)'],
+      items:[
+        { text:'alzarsi',       cat:0 },
+        { text:'mangiare',      cat:1 },
+        { text:'vestirsi',      cat:0 },
+        { text:'vedere',        cat:1 },
+        { text:'divertirsi',    cat:0 },
+        { text:'comprare',      cat:1 },
+      ] },
+
+    /* === KO 1 === */
+    { id:'m11-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Lavo la macchina.', tag:'nicht reflexiv: etw. waschen' },
+      b:{ sentence:'Mi lavo le mani.', tag:'reflexiv: sich waschen' },
+      reveal:'"Lavo la macchina" = Ich wasche das Auto (direktes Objekt). "Mi lavo le mani" = Ich wasche mir die Hände (Handlung auf sich selbst bezogen, Reflexivpronomen mi). Das Muster gilt für viele Verben: lavare/lavarsi, alzare/alzarsi, sentire/sentirsi.' },
+
+    /* === DE 3 === */
+    { id:'m11-de-01', type:'DE',
+      prompt:'"Ich wache normalerweise um halb sieben auf und stehe sofort auf."',
+      solutions:['Di solito mi sveglio alle sei e mezza e mi alzo subito.'],
+      note:'svegliarsi -> mi sveglio; alzarsi -> mi alzo. Kein Passato.' },
+
+    { id:'m11-de-02', type:'DE',
+      prompt:'"Wir haben uns auf der Hochzeit sehr amüsiert." (wir = gemischt)',
+      solutions:['Ci siamo divertiti molto al matrimonio.','Al matrimonio ci siamo divertiti molto.'],
+      note:'divertirsi: ci siamo divertiti (m/gemischt). essere + Partizip.' },
+
+    { id:'m11-de-03', type:'DE',
+      prompt:'"Kannst du dich nicht erinnern, wie sie heißt?"',
+      solutions:['Non riesci a ricordarti come si chiama?','Non ti riesci a ricordare come si chiama?'],
+      note:'ricordarsi -> ricordarti (an Inf.) oder ti riesci a ricordare (vor Modalverb).' },
+
+    /* === IT 3 === */
+    { id:'m11-it-01', type:'IT',
+      prompt:'"A che ora ti sei svegliato stamattina?"',
+      solutions:['Um wie viel Uhr bist du heute Morgen aufgewacht?','Wann bist du heute Morgen aufgewacht?'],
+      note:'ti sei svegliato = du bist aufgewacht (m). A che ora = um wie viel Uhr.' },
+
+    { id:'m11-it-02', type:'IT',
+      prompt:'"Mi sono annoiata durante la riunione."',
+      solutions:['Ich habe mich während des Meetings gelangweilt.','Ich langweilte mich in der Besprechung.'],
+      note:'annoiarsi -> mi sono annoiata (f, Partizip -a). durante = während.' },
+
+    { id:'m11-it-03', type:'IT',
+      prompt:'"Si sono sposati dopo dieci anni insieme."',
+      solutions:['Sie haben nach zehn gemeinsamen Jahren geheiratet.','Sie heirateten nach zehn Jahren zusammen.'],
+      note:'sposarsi -> si sono sposati (m/gemischt). dopo = nach.' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

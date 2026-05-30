@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Modalverben</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Verben · Modul 12</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>💬 Modalverben</h1>
+    <p>dovere / potere / volere / sapere — Formen, Verneinung, Vergangenheit, Bedeutungsnuancen</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm12',
+  block: 'verben',
+  title: 'Modalverben',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Modalverben stehen immer mit einem <strong>Infinitiv</strong> und sind alle unregelmäßig. Die vier wichtigsten: <strong>dovere</strong> (müssen), <strong>potere</strong> (können/dürfen), <strong>volere</strong> (wollen), <strong>sapere</strong> (können = wissen wie).' },
+
+    { type:'table', head:['Pronomen', 'dovere', 'potere', 'volere', 'sapere'],
+      rows:[
+        ['io',      'devo',    'posso',    'voglio',   'so'      ],
+        ['tu',      'devi',    'puoi',     'vuoi',     'sai'     ],
+        ['lui/lei', 'deve',    'può',      'vuole',    'sa'      ],
+        ['noi',     'dobbiamo','possiamo', 'vogliamo', 'sappiamo'],
+        ['voi',     'dovete',  'potete',   'volete',   'sapete'  ],
+        ['loro',    'devono',  'possono',  'vogliono', 'sanno'   ],
+      ]
+    },
+
+    { type:'tip', body:'<strong>sapere vs. potere:</strong> Beide können "können" bedeuten — aber unterschiedlich. sapere = erlernte Fähigkeit (Ich kann Gitarre spielen). potere = Möglichkeit / Erlaubnis (Kannst du heute kommen? / Darf ich rein?).' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Passato Prossimo:</strong> Modalverben nehmen das Hilfsverb des <em>folgenden Infinitivs</em>. Bei essere-Verben: essere. Bei avere-Verben: avere. Im Zweifel ist avere häufiger.' },
+
+    { type:'table', head:['Hilfsverb des Infinitivs', 'Modalverb im PP', 'Beispiel'],
+      rows:[
+        ['avere (mangiare)', 'avere', 'Ho dovuto mangiare.'],
+        ['essere (andare)',  'essere oder avere', 'Sono dovuto/a andare. / Ho dovuto andare.'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Verneinung:</strong> non steht vor dem Modalverb.' },
+    { type:'example', it:'Non posso venire.', de:'Ich kann nicht kommen.' },
+    { type:'example', it:'Non voglio mangiare.', de:'Ich will nicht essen.' },
+    { type:'example', it:'Non devo lavorare domani.', de:'Ich muss morgen nicht arbeiten.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Direktes Objektpronomen:</strong> Das Pronomen kann vor das Modalverb oder an den Infinitiv (ohne -e) gestellt werden.' },
+    { type:'example', it:'Lo voglio vedere. = Voglio vederlo.', de:'Ich will ihn sehen.' },
+    { type:'example', it:'La devo chiamare. = Devo chiamarla.', de:'Ich muss sie anrufen.' },
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m12-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['non', 'venire', 'posso', 'domani'],
+      solution:['non', 'posso', 'venire', 'domani'],
+      translation:'Ich kann morgen nicht kommen.',
+      explain:'non vor dem Modalverb: non posso + Infinitiv.' },
+
+    { id:'m12-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['guidare', 'sai', 'la', 'macchina'],
+      solution:['sai', 'guidare', 'la', 'macchina'],
+      translation:'Kannst du Auto fahren? (Weißt du, wie man Auto fährt?)',
+      explain:'sapere + Infinitiv: erlernte Fähigkeit. sai guidare la macchina.' },
+
+    /* === ZO 9 === */
+    { id:'m12-zo-01', type:'ZO',
+      prompt:'Ordne zu: Modalverb -> Grundbedeutung',
+      pairs:[
+        { de:'dovere',  it:'müssen / sollen'          },
+        { de:'potere',  it:'können / dürfen (Möglichkeit)' },
+        { de:'volere',  it:'wollen / möchten'          },
+        { de:'sapere',  it:'können (Fähigkeit) / wissen' },
+        { de:'dovere (negiert)', it:'nicht müssen / nicht dürfen' },
+        { de:'potere (negiert)', it:'nicht können / nicht dürfen' },
+      ] },
+
+    { id:'m12-zo-02', type:'ZO',
+      prompt:'Ordne zu: dovere — alle Formen',
+      pairs:[
+        { de:'ich muss',    it:'devo'     },
+        { de:'du musst',    it:'devi'     },
+        { de:'er/sie muss', it:'deve'     },
+        { de:'wir müssen',  it:'dobbiamo' },
+        { de:'ihr müsst',   it:'dovete'   },
+        { de:'sie müssen',  it:'devono'   },
+      ] },
+
+    { id:'m12-zo-03', type:'ZO',
+      prompt:'Ordne zu: potere — alle Formen',
+      pairs:[
+        { de:'ich kann',    it:'posso'    },
+        { de:'du kannst',   it:'puoi'     },
+        { de:'er/sie kann', it:'può'      },
+        { de:'wir können',  it:'possiamo' },
+        { de:'ihr könnt',   it:'potete'   },
+        { de:'sie können',  it:'possono'  },
+      ] },
+
+    { id:'m12-zo-04', type:'ZO',
+      prompt:'Ordne zu: volere — alle Formen',
+      pairs:[
+        { de:'ich will',    it:'voglio'   },
+        { de:'du willst',   it:'vuoi'     },
+        { de:'er/sie will', it:'vuole'    },
+        { de:'wir wollen',  it:'vogliamo' },
+        { de:'ihr wollt',   it:'volete'   },
+        { de:'sie wollen',  it:'vogliono' },
+      ] },
+
+    { id:'m12-zo-05', type:'ZO',
+      prompt:'Ordne zu: sapere vs. potere — welches Verb?',
+      pairs:[
+        { de:'Ich kann schwimmen. (Fähigkeit)',      it:'So nuotare.'        },
+        { de:'Kannst du morgen kommen? (Möglichkeit)', it:'Puoi venire domani?' },
+        { de:'Er kann Gitarre spielen. (Fähigkeit)', it:'Sa suonare la chitarra.' },
+        { de:'Darf ich hereinkommen? (Erlaubnis)',   it:'Posso entrare?'     },
+        { de:'Kannst du Italiano sprechen? (Fähigkeit)', it:'Sai parlare italiano?' },
+        { de:'Sie kann nicht schlafen. (Möglichkeit)', it:'Non può dormire.'  },
+      ] },
+
+    { id:'m12-zo-06', type:'ZO',
+      prompt:'Ordne zu: Passato Prossimo — welches Hilfsverb?',
+      pairs:[
+        { de:'Ho dovuto mangiare.',    it:'avere (mangiare = avere-Verb)'  },
+        { de:'Sono dovuto andare.',    it:'essere (andare = essere-Verb)'  },
+        { de:'Ho potuto vedere.',      it:'avere (vedere = avere-Verb)'    },
+        { de:'Ho voluto comprare.',    it:'avere (comprare = avere-Verb)'  },
+        { de:'Sono potuto/a uscire.',  it:'essere (uscire = essere-Verb)'  },
+        { de:'Ho saputo fare.',        it:'avere (fare = avere-Verb)'      },
+      ] },
+
+    { id:'m12-zo-07', type:'ZO',
+      prompt:'Ordne zu: Pronomen vor Modalverb vs. an Infinitiv',
+      pairs:[
+        { de:'Ich will es sehen. (vor Modal)',    it:'Lo voglio vedere.'   },
+        { de:'Ich will es sehen. (an Inf.)',      it:'Voglio vederlo.'     },
+        { de:'Ich muss sie anrufen. (vor Modal)', it:'La devo chiamare.'   },
+        { de:'Ich muss sie anrufen. (an Inf.)',   it:'Devo chiamarla.'     },
+        { de:'Er kann mir helfen. (vor Modal)',   it:'Mi può aiutare.'     },
+        { de:'Er kann mir helfen. (an Inf.)',     it:'Può aiutarmi.'       },
+      ] },
+
+    { id:'m12-zo-08', type:'ZO',
+      prompt:'Ordne zu: Satz -> Deutsch',
+      pairs:[
+        { de:'Devo studiare stasera.',     it:'Ich muss heute Abend lernen.'       },
+        { de:'Non posso uscire.',          it:'Ich kann nicht ausgehen.'            },
+        { de:'Vuole un caffè?',            it:'Möchten Sie einen Kaffee?'           },
+        { de:'Non sai guidare?',           it:'Kannst du nicht Auto fahren?'        },
+        { de:'Dobbiamo partire alle tre.', it:'Wir müssen um drei Uhr abfahren.'    },
+        { de:'Potete aiutarmi?',           it:'Könnt ihr mir helfen?'               },
+      ] },
+
+    { id:'m12-zo-09', type:'ZO',
+      prompt:'Ordne zu: Bedeutungsunterschied bei non dovere',
+      pairs:[
+        { de:'Non devi venire. (Du musst nicht kommen.)',  it:'keine Pflicht / kein Zwang' },
+        { de:'Non puoi venire. (Du kannst nicht kommen.)', it:'keine Möglichkeit'          },
+        { de:'Non devi farlo! (Du darfst das nicht tun!)', it:'Verbot (Kontext)'           },
+        { de:'Non vuole venire. (Er will nicht kommen.)',  it:'kein Wille'                 },
+        { de:'Non sa nuotare. (Er kann nicht schwimmen.)', it:'fehlende Fähigkeit'         },
+        { de:'Non deve sapere. (Er darf es nicht wissen.)',it:'Verbot / Gebot'             },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m12-mc-01', type:'MC',
+      prompt:'Welche Form? "Tu ___ venire con noi?" (potere)',
+      options:['può','puoi','posso','potete'],
+      correctValue:'puoi',
+      explain:'2. Pers. Sg. von potere: puoi.' },
+
+    { id:'m12-mc-02', type:'MC',
+      prompt:'Welche Form? "Loro ___ lavorare fino a tardi." (dovere)',
+      options:['devo','deve','devono','dovono'],
+      correctValue:'devono',
+      explain:'3. Pers. Pl. von dovere: devono.' },
+
+    { id:'m12-mc-03', type:'MC',
+      prompt:'Welche Form? "Noi ___ un caffè." (volere)',
+      options:['voglio','volete','vogliamo','vogliono'],
+      correctValue:'vogliamo',
+      explain:'1. Pers. Pl. von volere: vogliamo.' },
+
+    { id:'m12-mc-04', type:'MC',
+      prompt:'"___ parlare italiano?" (Kannst du Italienisch sprechen — Fähigkeit)',
+      options:['Puoi','Sai','Devi','Vuoi'],
+      correctValue:'Sai',
+      explain:'Erlernte Fähigkeit: sapere. Sai parlare italiano?' },
+
+    { id:'m12-mc-05', type:'MC',
+      prompt:'"Non ___ fumare qui." (Verbot: man darf hier nicht rauchen)',
+      options:['devo','può','si può','si deve'],
+      correctValue:'si può',
+      explain:'Unpersönlich + Verneinung: non si può + Infinitiv = man darf nicht.' },
+
+    { id:'m12-mc-06', type:'MC',
+      prompt:'Passato Prossimo: "Ho ___ lavorare tutto il giorno."',
+      options:['voluto','volevo','volendo','volere'],
+      correctValue:'voluto',
+      explain:'volere -> Partizip: voluto. Ho voluto lavorare (avere, da lavorare).' },
+
+    { id:'m12-mc-07', type:'MC',
+      prompt:'Passato Prossimo: "Non ___ uscire ieri sera." (potere + uscire)',
+      options:['ho potuto','sono potuto/a','potevo','posso'],
+      correctValue:'sono potuto/a',
+      explain:'uscire nimmt essere -> Modalverb kann essere nehmen: sono potuto/a uscire. (Auch "ho potuto uscire" wird akzeptiert.)' },
+
+    { id:'m12-mc-08', type:'MC',
+      prompt:'"Lo ___ fare adesso." (Pronomen vor Modalverb, dovere, ich)',
+      options:['devo lo','lo devo','lo deve','devo'],
+      correctValue:'lo devo',
+      explain:'Pronomen vor Modalverb: lo devo fare. Nicht "devo lo" (Pronomen geht nie zwischen Modalverb und Infinitiv).' },
+
+    { id:'m12-mc-09', type:'MC',
+      prompt:'Was ist die höflichere Art zu bestellen?',
+      options:['Voglio un caffè.','Volere un caffè.','Vorrei un caffè.','Voglio del caffè.'],
+      correctValue:'Vorrei un caffè.',
+      explain:'Vorrei (Condizionale von volere) ist die höfliche Form. Voglio ist direkter/weniger höflich.' },
+
+    { id:'m12-mc-10', type:'MC',
+      prompt:'"Dovete ___ alle tre." (partire)',
+      options:['partire','partendo','partito','a partire'],
+      correctValue:'partire',
+      explain:'Modalverb + Infinitiv: dovete partire. Kein anderes Format möglich.' },
+
+    { id:'m12-mc-11', type:'MC',
+      prompt:'"Non ___ mangiare troppo dolce." (Ich soll nicht zu viel Süßes essen — ärztlicher Rat)',
+      options:['voglio','posso','devo','so'],
+      correctValue:'devo',
+      explain:'Pflicht / Gebot (auch negiert): non devo = ich soll nicht / ich darf nicht (im Kontext ärztlicher Rat).' },
+
+    { id:'m12-mc-12', type:'MC',
+      prompt:'Welche Form ist für alle Personen identisch?',
+      options:['sapere','dovere','volere','nessuna'],
+      correctValue:'nessuna',
+      explain:'Kein Modalverb hat für alle Personen dieselbe Form — alle sind vollständig unregelmäßig.' },
+
+    /* === MCL 5 === */
+    { id:'m12-mcl-01', type:'MC',
+      prompt:'Wähle: "Mia figlia ___ già leggere a cinque anni."',
+      options:['poteva','sapeva','doveva','voleva'],
+      correctValue:'sapeva',
+      explain:'Erlernte Fähigkeit in der Vergangenheit: sapere im Imperfetto. sapeva leggere.',
+      translation:'Meine Tochter konnte (beherrschte) bereits mit fünf Jahren lesen.' },
+
+    { id:'m12-mcl-02', type:'MC',
+      prompt:'Wähle: "Non ___ uscire stasera, ho troppo da fare."',
+      options:['voglio','volendo','voluto','volerlo'],
+      correctValue:'voglio',
+      explain:'Verneinung im Präsens: non voglio uscire.',
+      translation:'Ich will heute Abend nicht ausgehen, ich habe zu viel zu tun.' },
+
+    { id:'m12-mcl-03', type:'MC',
+      prompt:'Wähle: "___ chiamarla subito." (ich muss sie — Pronomen vor Modal)',
+      options:['La devo','Devo la','La deve','Devo lei'],
+      correctValue:'La devo',
+      explain:'Pronomen vor Modalverb: La devo chiamare.',
+      translation:'Ich muss sie sofort anrufen.' },
+
+    { id:'m12-mcl-04', type:'MC',
+      prompt:'Wähle: "Ieri non ___ dormire per il caldo." (potere)',
+      options:['ho potuto','sono potuto','potevo','posso'],
+      correctValue:'ho potuto',
+      explain:'Passato Prossimo: non ho potuto dormire (dormire = avere-Verb).',
+      translation:'Gestern konnte ich wegen der Hitze nicht schlafen.' },
+
+    { id:'m12-mcl-05', type:'MC',
+      prompt:'Wähle: "___ del pane?" (Möchten Sie etwas Brot — höfliche Frage)',
+      options:['Vuole','Vorrebbe','Vuoi','Deve'],
+      correctValue:'Vorrebbe',
+      explain:'Höfliche Form: Vorrebbe (Condizionale von volere). Vuole ist Präsens und weniger höflich.',
+      translation:'Möchten Sie etwas Brot?' },
+
+    /* === LT 4 === */
+    { id:'m12-lt-01', type:'LT',
+      text:'Non {0} venire alla festa perché {1} lavorare fino a tardi.',
+      blanks:[ { accept:['posso'] }, { accept:['devo'] } ],
+      translation:'Ich kann nicht zur Party kommen, weil ich bis spät arbeiten muss.',
+      explain:'posso (potere, 1. Sg.); devo (dovere, 1. Sg.).' },
+
+    { id:'m12-lt-02', type:'LT',
+      text:'{0} guidare la macchina ma non {1} guidare il camion.',
+      blanks:[ { accept:['So'] }, { accept:['so'] } ],
+      translation:'Ich kann Auto fahren, aber ich kann keinen LKW fahren.',
+      explain:'sapere = Fähigkeit. So guidare (Präsens 1. Sg.).' },
+
+    { id:'m12-lt-03', type:'LT',
+      text:'Ho {0} lavorare tutto il weekend e non sono {1} uscire.',
+      blanks:[ { accept:['dovuto'] }, { accept:['potuto','potuta'] } ],
+      translation:'Ich musste das ganze Wochenende arbeiten und konnte nicht ausgehen.',
+      explain:'dovuto (dovere PP); potuto/a (potere PP, uscire = essere).' },
+
+    { id:'m12-lt-04', type:'LT',
+      text:'{0} vuoi {1}? — Voglio {2}.',
+      blanks:[ { accept:['Cosa','cosa'] }, { accept:['mangiare','bere','fare'] }, { accept:['mangiare','bere','fare','una pizza'] } ],
+      translation:'Was möchtest du (essen/trinken/tun)? — Ich möchte ...',
+      explain:'volere + Infinitiv oder Substantiv: cosa vuoi mangiare? Voglio una pizza.' },
+
+    /* === FT 2 === */
+    { id:'m12-ft-01', type:'FT',
+      prompt:'Konjugiere "potere" im Presente:',
+      rows:[
+        { label:'io',       accept:['posso']    },
+        { label:'tu',       accept:['puoi']     },
+        { label:'lui/lei',  accept:['può']      },
+        { label:'noi',      accept:['possiamo'] },
+        { label:'voi',      accept:['potete']   },
+        { label:'loro',     accept:['possono']  },
+      ] },
+
+    { id:'m12-ft-02', type:'FT',
+      prompt:'Konjugiere "sapere" im Presente:',
+      rows:[
+        { label:'io',       accept:['so']       },
+        { label:'tu',       accept:['sai']      },
+        { label:'lui/lei',  accept:['sa']       },
+        { label:'noi',      accept:['sappiamo'] },
+        { label:'voi',      accept:['sapete']   },
+        { label:'loro',     accept:['sanno']    },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m12-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Non devo venire domani, sei libero.',
+      solution:'Non devi venire domani, sei libero.',
+      errorToken:'devo',
+      translation:'Du musst morgen nicht kommen, du bist frei.',
+      explain:'Subjekt ist "tu" -> devi (nicht devo, das wäre ich). Non devi venire = Du musst nicht kommen.' },
+
+    { id:'m12-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Voglio lo comprare adesso.',
+      solution:'Lo voglio comprare adesso.',
+      errorToken:'Voglio lo',
+      translation:'Ich will es jetzt kaufen.',
+      explain:'Das Pronomen lo steht VOR dem Modalverb: Lo voglio comprare. Oder an den Infinitiv: Voglio comprarlo.' },
+
+    { id:'m12-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Sai venire alla festa stasera?',
+      solution:'Puoi venire alla festa stasera?',
+      errorToken:'Sai',
+      translation:'Kannst du heute Abend zur Party kommen?',
+      explain:'Möglichkeit / Verfügbarkeit: potere (puoi). sapere wäre für erlernte Fähigkeiten (wissen wie).' },
+
+    /* === KA 2 === */
+    { id:'m12-ka-01', type:'KA',
+      prompt:'Kategorisiere: sapere oder potere?',
+      categories:['sapere (erlernte Fähigkeit)', 'potere (Möglichkeit / Erlaubnis)'],
+      items:[
+        { text:'So suonare il piano.',     cat:0 },
+        { text:'Posso venire domani.',     cat:1 },
+        { text:'Sai cucinare?',            cat:0 },
+        { text:'Puoi aprire la finestra?', cat:1 },
+        { text:'Non so sciare.',           cat:0 },
+        { text:'Non posso uscire.',        cat:1 },
+      ] },
+
+    { id:'m12-ka-02', type:'KA',
+      prompt:'Kategorisiere: dovere positiv oder negiert',
+      categories:['Pflicht / Gebot (devo...)', 'kein Zwang / Verbot (non devo...)'],
+      items:[
+        { text:'Devo studiare.',             cat:0 },
+        { text:'Non devi venire.',           cat:1 },
+        { text:'Dobbiamo partire presto.',   cat:0 },
+        { text:'Non dovete fumare qui.',     cat:1 },
+        { text:'Deve lavorare oggi.',        cat:0 },
+        { text:'Non devo alzarmi presto.',   cat:1 },
+      ] },
+
+    /* === KO 1 === */
+    { id:'m12-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Non devi venire.', tag:'non dovere: kein Zwang' },
+      b:{ sentence:'Non puoi venire.', tag:'non potere: keine Möglichkeit' },
+      reveal:'"Non devi venire" = Du musst nicht kommen (kein Zwang, du kannst aber). "Non puoi venire" = Du kannst nicht kommen (Möglichkeit fehlt — z.B. wegen Arbeit). Im Deutschen sagen wir für beides oft "kannst nicht", aber das Italienische unterscheidet präzise.' },
+
+    /* === DE 3 === */
+    { id:'m12-de-01', type:'DE',
+      prompt:'"Ich muss morgen früh aufstehen, weil ich um acht Uhr arbeiten muss."',
+      solutions:['Devo alzarmi presto domani perché devo lavorare alle otto.','Domani devo alzarmi presto perché devo lavorare alle otto.'],
+      note:'devo (dovere, 1. Sg.) + Infinitiv. alzarmi = alzarsi an Infinitiv.' },
+
+    { id:'m12-de-02', type:'DE',
+      prompt:'"Kannst du mir helfen? Ich kann das Problem nicht lösen."',
+      solutions:['Puoi aiutarmi? Non riesco a risolvere il problema.','Mi puoi aiutare? Non posso risolvere il problema.'],
+      note:'puoi aiutarmi / mi puoi aiutare (beide Positionen); non riesco a / non posso.' },
+
+    { id:'m12-de-03', type:'DE',
+      prompt:'"Sie (pl.) wollten gestern kommen, aber konnten nicht."',
+      solutions:['Volevano venire ieri ma non potevano.','Ieri volevano venire ma non sono potuti venire.'],
+      note:'Imperfetto: volevano / potevano (andauernder Zustand in der Vergangenheit). Oder PP: non sono potuti venire.' },
+
+    /* === IT 3 === */
+    { id:'m12-it-01', type:'IT',
+      prompt:'"Sai parlare tedesco?" — "No, non lo so parlare ma voglio impararlo."',
+      solutions:['Kannst du Deutsch sprechen? — Nein, ich kann es nicht sprechen, aber ich will es lernen.'],
+      note:'sai parlare (Fähigkeit); non lo so parlare / non so parlarlo; voglio impararlo.' },
+
+    { id:'m12-it-02', type:'IT',
+      prompt:'"Ho dovuto lavorare tutto il giorno e non sono potuto uscire."',
+      solutions:['Ich musste den ganzen Tag arbeiten und konnte nicht ausgehen.','Ich habe den ganzen Tag gearbeitet und konnte nicht rausgehen.'],
+      note:'ho dovuto (PP, avere da lavorare); non sono potuto (PP, essere da uscire).' },
+
+    { id:'m12-it-03', type:'IT',
+      prompt:'"Posso entrare?" — "Certo, puoi sederti dove vuoi."',
+      solutions:['Darf ich reinkommen? — Natürlich, du kannst dich setzen, wo du möchtest.','Kann ich eintreten? — Sicher, setz dich, wo du willst.'],
+      note:'posso entrare (Erlaubnis); puoi sederti (Möglichkeit + reflexiv an Inf.); dove vuoi.' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
