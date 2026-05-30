@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Substantive &amp; Plural</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Grundlagen · Modul 17</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>📦 Substantive &amp; Plural</h1>
+    <p>Genus erkennen, Plural bilden — Regeln, Ausnahmen und Besonderheiten</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm17',
+  block: 'grundlagen',
+  title: 'Substantive & Plural',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Jedes italienische Substantiv hat ein <strong>Genus</strong> (maskulin oder feminin) und eine <strong>Zahl</strong> (Singular oder Plural). Die Endung gibt meistens einen Hinweis auf das Genus — aber nicht immer.' },
+
+    { type:'table', head:['Endung', 'Genus', 'Beispiele'],
+      rows:[
+        ['-o',  'maskulin (meist)',  'il libro, il cane, il ragazzo'],
+        ['-a',  'feminin (meist)',   'la casa, la pizza, la ragazza'],
+        ['-e',  'm oder f',          'il cane (m), la chiave (f), il mare (m), la notte (f)'],
+        ['-ità/-tà', 'feminin',      'la città, la verità, l\'università'],
+        ['-ione', 'feminin',         'la stazione, la situazione, la conversazione'],
+        ['-ore', 'maskulin',         'il colore, il dottore, il valore'],
+        ['-ema/-amma', 'maskulin',   'il problema, il programma, il tema'],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Wichtige Ausnahmen maskulin trotz -a:</strong> il problema, il programma, il tema, il sistema, il clima, il panorama, il diploma. Diese Wörter stammen aus dem Griechischen und sind trotz der -a-Endung maskulin.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Pluralbildung — die Hauptregeln:</strong>' },
+
+    { type:'table', head:['Sg.-Endung', 'Pl.-Endung', 'Beispiele'],
+      rows:[
+        ['-o (m)',   '-i',     'libro → libri, cane → cani, ragazzo → ragazzi'],
+        ['-a (f)',   '-e',     'casa → case, pizza → pizze, ragazza → ragazze'],
+        ['-e (m/f)', '-i',     'cane → cani, chiave → chiavi, notte → notti'],
+        ['-a (m)',   '-i',     'problema → problemi, programma → programmi'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Besonderheiten bei der Pluralbildung:</strong>' },
+
+    { type:'table', head:['Regel', 'Beispiele'],
+      rows:[
+        ['-ca/-ga (f) → -che/-ghe',  'amica → amiche, bottega → botteghe, collega (f) → colleghe'],
+        ['-co/-go (m) → -chi/-ghi',  'fuoco → fuochi, albergo → alberghi'],
+        ['-co (m, Betonung vor -co) → -ci', 'amico → amici, medico → medici, nemico → nemici'],
+        ['-cia/-gia (nach Kons.) → -ce/-ge', 'arancia → arance, pioggia → piogge'],
+        ['-cia/-gia (nach Vokal) → -cie/-gie', 'camicia → camicie, bugia → bugie'],
+        ['Akzent auf letzter Silbe → unveränderlich', 'città → città, caffè → caffè, università → università'],
+        ['Fremdwörter und Abkürzungen → unveränderlich', 'film → film, bar → bar, foto → foto, moto → moto'],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Foto und moto sind feminin und unveränderlich:</strong> la foto → le foto, la moto → le moto. Obwohl sie auf -o enden, sind sie eigentlich Kurzformen von la fotografia und la motocicletta.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Unregelmäßige Plurale:</strong> Einige häufige Wörter haben unregelmäßige Pluralformen, die auswendig gelernt werden müssen.' },
+
+    { type:'table', head:['Singular', 'Plural', 'Deutsch'],
+      rows:[
+        ['l\'uomo',    'gli uomini',    'der Mann / die Männer'],
+        ['la mano',    'le mani',       'die Hand / die Hände'],
+        ['il braccio', 'le braccia',    'der Arm / die Arme'],
+        ['il ginocchio','le ginocchia', 'das Knie / die Knie'],
+        ['l\'uovo',    'le uova',       'das Ei / die Eier'],
+        ['il labbro',  'le labbra',     'die Lippe / die Lippen'],
+        ['il dito',    'le dita',       'der Finger / die Finger'],
+        ['il paio',    'le paia',       'das Paar / die Paare'],
+      ]
+    },
+
+    { type:'note', body:'Viele Körperteilwörter wechseln im Plural von maskulin zu feminin: il braccio (m) → le braccia (f). Das ist ein Rest aus dem Lateinischen und gilt für Körperteile in Paaren.' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m17-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['i', 'libri', 'sul', 'sono', 'tavolo'],
+      solution:['i', 'libri', 'sono', 'sul', 'tavolo'],
+      translation:'Die Bücher liegen auf dem Tisch.',
+      explain:'libro → libri (-o → -i). i = Artikel m/Pl.' },
+
+    { id:'m17-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['le', 'amiche', 'mie', 'simpatiche', 'sono'],
+      solution:['le', 'mie', 'amiche', 'sono', 'simpatiche'],
+      translation:'Meine Freundinnen sind nett.',
+      explain:'amica → amiche (-ca → -che). le = Artikel f/Pl.' },
+
+    /* === ZO 9 === */
+    { id:'m17-zo-01', type:'ZO',
+      prompt:'Ordne zu: Singular → Plural (-o → -i)',
+      pairs:[
+        { de:'libro',   it:'libri'   },
+        { de:'ragazzo', it:'ragazzi' },
+        { de:'cane',    it:'cani'    },
+        { de:'amico',   it:'amici'   },
+        { de:'giorno',  it:'giorni'  },
+        { de:'anno',    it:'anni'    },
+      ] },
+
+    { id:'m17-zo-02', type:'ZO',
+      prompt:'Ordne zu: Singular → Plural (-a → -e)',
+      pairs:[
+        { de:'casa',    it:'case'    },
+        { de:'pizza',   it:'pizze'   },
+        { de:'ragazza', it:'ragazze' },
+        { de:'scuola',  it:'scuole'  },
+        { de:'mela',    it:'mele'    },
+        { de:'porta',   it:'porte'   },
+      ] },
+
+    { id:'m17-zo-03', type:'ZO',
+      prompt:'Ordne zu: Singular → Plural (-e → -i)',
+      pairs:[
+        { de:'chiave',  it:'chiavi'  },
+        { de:'notte',   it:'notti'   },
+        { de:'classe',  it:'classi'  },
+        { de:'stazione',it:'stazioni'},
+        { de:'madre',   it:'madri'   },
+        { de:'parte',   it:'parti'   },
+      ] },
+
+    { id:'m17-zo-04', type:'ZO',
+      prompt:'Ordne zu: Besonderheiten -ca/-ga → -che/-ghe',
+      pairs:[
+        { de:'amica',    it:'amiche'   },
+        { de:'bottega',  it:'botteghe' },
+        { de:'buca',     it:'buche'    },
+        { de:'collega (f)', it:'colleghe' },
+        { de:'riga',     it:'righe'    },
+        { de:'vacca',    it:'vacche'   },
+      ] },
+
+    { id:'m17-zo-05', type:'ZO',
+      prompt:'Ordne zu: Besonderheiten -co/-go → -chi/-ghi oder -ci',
+      pairs:[
+        { de:'fuoco',    it:'fuochi'   },
+        { de:'albergo',  it:'alberghi' },
+        { de:'amico',    it:'amici'    },
+        { de:'medico',   it:'medici'   },
+        { de:'lungo',    it:'lunghi'   },
+        { de:'nemico',   it:'nemici'   },
+      ] },
+
+    { id:'m17-zo-06', type:'ZO',
+      prompt:'Ordne zu: unveränderliche Plurale',
+      pairs:[
+        { de:'la città',        it:'le città'       },
+        { de:'il caffè',        it:'i caffè'        },
+        { de:'la foto',         it:'le foto'        },
+        { de:'la moto',         it:'le moto'        },
+        { de:'il film',         it:'i film'         },
+        { de:'il bar',          it:'i bar'          },
+      ] },
+
+    { id:'m17-zo-07', type:'ZO',
+      prompt:'Ordne zu: maskulin trotz -a-Endung',
+      pairs:[
+        { de:'il problema',    it:'i problemi'   },
+        { de:'il programma',   it:'i programmi'  },
+        { de:'il tema',        it:'i temi'       },
+        { de:'il sistema',     it:'i sistemi'    },
+        { de:'il clima',       it:'i climi'      },
+        { de:'il diploma',     it:'i diplomi'    },
+      ] },
+
+    { id:'m17-zo-08', type:'ZO',
+      prompt:'Ordne zu: unregelmäßige Plurale',
+      pairs:[
+        { de:'l\'uomo',    it:'gli uomini'    },
+        { de:'la mano',    it:'le mani'       },
+        { de:'il braccio', it:'le braccia'    },
+        { de:'l\'uovo',    it:'le uova'       },
+        { de:'il dito',    it:'le dita'       },
+        { de:'il paio',    it:'le paia'       },
+      ] },
+
+    { id:'m17-zo-09', type:'ZO',
+      prompt:'Ordne zu: Genus erkennen (maskulin oder feminin?)',
+      pairs:[
+        { de:'il problema (trotz -a)',   it:'maskulin' },
+        { de:'la mano (trotz -o)',       it:'feminin'  },
+        { de:'la stazione (-ione)',      it:'feminin'  },
+        { de:'il colore (-ore)',         it:'maskulin' },
+        { de:'la città (-ità)',          it:'feminin'  },
+        { de:'la foto (Kurzwort)',       it:'feminin'  },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m17-mc-01', type:'MC',
+      prompt:'Wie lautet der Plural von "libro"?',
+      options:['libre','libra','libri','libros'],
+      correctValue:'libri',
+      explain:'-o → -i. libro → libri.' },
+
+    { id:'m17-mc-02', type:'MC',
+      prompt:'Wie lautet der Plural von "casa"?',
+      options:['casi','casas','casis','case'],
+      correctValue:'case',
+      explain:'-a → -e. casa → case.' },
+
+    { id:'m17-mc-03', type:'MC',
+      prompt:'Wie lautet der Plural von "amica"?',
+      options:['amice','amicas','amiche','amici'],
+      correctValue:'amiche',
+      explain:'-ca → -che (um den k-Laut zu erhalten). amica → amiche.' },
+
+    { id:'m17-mc-04', type:'MC',
+      prompt:'Wie lautet der Plural von "albergo"?',
+      options:['albergos','albergi','alberghi','albergo'],
+      correctValue:'alberghi',
+      explain:'-go → -ghi (g-Laut bleibt hart). albergo → alberghi.' },
+
+    { id:'m17-mc-05', type:'MC',
+      prompt:'Wie lautet der Plural von "città"?',
+      options:['cittas','cittàs','città','cittadi'],
+      correctValue:'città',
+      explain:'Wörter mit Akzent auf der letzten Silbe sind unveränderlich. città → città.' },
+
+    { id:'m17-mc-06', type:'MC',
+      prompt:'Wie lautet der Plural von "uomo"?',
+      options:['uomi','uomini','uomins','uomos'],
+      correctValue:'uomini',
+      explain:'uomo hat einen unregelmäßigen Plural: uomini.' },
+
+    { id:'m17-mc-07', type:'MC',
+      prompt:'Welches Genus hat "il problema"?',
+      options:['feminin, wegen -a','maskulin, trotz -a','feminin und maskulin','es gibt kein Genus'],
+      correctValue:'maskulin, trotz -a',
+      explain:'problema kommt aus dem Griechischen und ist maskulin: il problema → i problemi.' },
+
+    { id:'m17-mc-08', type:'MC',
+      prompt:'Wie lautet der Plural von "braccio"?',
+      options:['bracci','braccia','braccie','braccio'],
+      correctValue:'braccia',
+      explain:'braccio hat einen unregelmäßigen Plural: le braccia (wechselt zu feminin!).' },
+
+    { id:'m17-mc-09', type:'MC',
+      prompt:'Wie lautet der Plural von "amico"?',
+      options:['amichi','amiche','amici','amicos'],
+      correctValue:'amici',
+      explain:'amico → amici (-co → -ci, da die Betonung vor -co liegt). Vgl. fuoco → fuochi.' },
+
+    { id:'m17-mc-10', type:'MC',
+      prompt:'Wie lautet der Plural von "chiave"?',
+      options:['chiaves','chiave','chiave','chiavi'],
+      correctValue:'chiavi',
+      explain:'-e → -i. chiave → chiavi.' },
+
+    { id:'m17-mc-11', type:'MC',
+      prompt:'Welches Wort ist feminin?',
+      options:['il cane','il colore','la notte','il problema'],
+      correctValue:'la notte',
+      explain:'la notte ist feminin (-e kann m oder f sein; hier f). Der Artikel la verrät es.' },
+
+    { id:'m17-mc-12', type:'MC',
+      prompt:'Wie lautet der Plural von "arancia"?',
+      options:['arancie','arancias','arance','aranci'],
+      correctValue:'arance',
+      explain:'-cia nach Konsonant → -ce. arancia (r+cia) → arance.' },
+
+    /* === MCL 5 === */
+    { id:'m17-mcl-01', type:'MC',
+      prompt:'Wähle den richtigen Plural: "Ho visto due ___." (film)',
+      options:['films','filmi','filme','film'],
+      correctValue:'film',
+      translation:'Ich habe zwei Filme gesehen.',
+      explain:'film ist ein Fremdwort und unveränderlich: due film.' },
+
+    { id:'m17-mcl-02', type:'MC',
+      prompt:'Wähle den richtigen Plural: "Quante ___ hai?" (foto)',
+      options:['fotos','fotografie','foto','foti'],
+      correctValue:'foto',
+      translation:'Wie viele Fotos hast du?',
+      explain:'foto ist unveränderlich (Kurzwort von fotografia): le foto.' },
+
+    { id:'m17-mcl-03', type:'MC',
+      prompt:'Wähle den richtigen Plural: "I ___ dell\'ospedale lavorano molto." (medico)',
+      options:['medici','medichi','medicos','medicis'],
+      correctValue:'medici',
+      translation:'Die Ärzte des Krankenhauses arbeiten viel.',
+      explain:'medico → medici (-co → -ci, Betonung auf Vorsilbe).' },
+
+    { id:'m17-mcl-04', type:'MC',
+      prompt:'Wähle den richtigen Plural: "Le ___ di Marco sono lunghe." (mano)',
+      options:['manos','mane','mani','mano'],
+      correctValue:'mani',
+      translation:'Marcos Hände sind lang.',
+      explain:'la mano hat unregelmäßigen Plural: le mani.' },
+
+    { id:'m17-mcl-05', type:'MC',
+      prompt:'Wähle den richtigen Plural: "Ho comprato tre ___." (uovo)',
+      options:['uovi','uovos','uovo','uova'],
+      correctValue:'uova',
+      translation:'Ich habe drei Eier gekauft.',
+      explain:'l\'uovo → le uova (unregelmäßig, wechselt zu feminin).' },
+
+    /* === LT 5 === */
+    { id:'m17-lt-01', type:'LT',
+      text:'Il {0} è sul tavolo. I {1} sono sul tavolo.',
+      blanks:[ { accept:['libro'] }, { accept:['libri'] } ],
+      translation:'Das Buch liegt auf dem Tisch. Die Bücher liegen auf dem Tisch.',
+      explain:'libro (Sg.) → libri (Pl., -o → -i).' },
+
+    { id:'m17-lt-02', type:'LT',
+      text:'La mia {0} si chiama Sara. Le mie {1} si chiamano Sara e Lucia.',
+      blanks:[ { accept:['amica'] }, { accept:['amiche'] } ],
+      translation:'Meine Freundin heißt Sara. Meine Freundinnen heißen Sara und Lucia.',
+      explain:'amica (Sg.) → amiche (Pl., -ca → -che).' },
+
+    { id:'m17-lt-03', type:'LT',
+      text:'C\'è un grande {0} in questa città. Ci sono tre {1} in questa regione.',
+      blanks:[ { accept:['albergo'] }, { accept:['alberghi'] } ],
+      translation:'Es gibt ein großes Hotel in dieser Stadt. Es gibt drei Hotels in dieser Region.',
+      explain:'albergo (Sg.) → alberghi (Pl., -go → -ghi).' },
+
+    { id:'m17-lt-04', type:'LT',
+      text:'Ho un grosso {0} da risolvere. Ho molti {1} da risolvere.',
+      blanks:[ { accept:['problema'] }, { accept:['problemi'] } ],
+      translation:'Ich habe ein großes Problem zu lösen. Ich habe viele Probleme zu lösen.',
+      explain:'il problema (maskulin trotz -a) → i problemi (-a → -i, maskulin).' },
+
+    { id:'m17-lt-05', type:'LT',
+      text:'Mi fa male il {0}. Mi fanno male le {1}.',
+      blanks:[ { accept:['braccio'] }, { accept:['braccia'] } ],
+      translation:'Mein Arm tut weh. Meine Arme tun weh.',
+      explain:'il braccio (m/Sg.) → le braccia (f/Pl., unregelmäßig).' },
+
+    /* === FT 3 === */
+    { id:'m17-ft-01', type:'FT',
+      prompt:'Bilde den Plural (-o → -i):',
+      rows:[
+        { label:'ragazzo',    accept:['ragazzi']   },
+        { label:'giorno',     accept:['giorni']    },
+        { label:'anno',       accept:['anni']      },
+        { label:'numero',     accept:['numeri']    },
+        { label:'mondo',      accept:['mondi']     },
+        { label:'momento',    accept:['momenti']   },
+      ] },
+
+    { id:'m17-ft-02', type:'FT',
+      prompt:'Bilde den Plural (-a → -e und Besonderheiten):',
+      rows:[
+        { label:'ragazza',    accept:['ragazze']   },
+        { label:'scuola',     accept:['scuole']    },
+        { label:'amica',      accept:['amiche']    },
+        { label:'bottega',    accept:['botteghe']  },
+        { label:'arancia',    accept:['arance']    },
+        { label:'pioggia',    accept:['piogge']    },
+      ] },
+
+    { id:'m17-ft-03', type:'FT',
+      prompt:'Bilde den Plural (Besonderheiten und Unregelmäßige):',
+      rows:[
+        { label:'amico (m)',   accept:['amici']    },
+        { label:'fuoco (m)',   accept:['fuochi']   },
+        { label:'uomo',        accept:['uomini']   },
+        { label:'mano',        accept:['mani']     },
+        { label:'città',       accept:['città']    },
+        { label:'film',        accept:['film']     },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m17-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Ho due amici e tre amice.',
+      solution:'Ho due amici e tre amiche.',
+      errorToken:'amice',
+      translation:'Ich habe zwei männliche Freunde und drei weibliche Freundinnen.',
+      explain:'amica → amiche (-ca → -che, um den k-Laut zu erhalten). amice existiert nicht.' },
+
+    { id:'m17-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Ho visto tre films ieri sera.',
+      solution:'Ho visto tre film ieri sera.',
+      errorToken:'films',
+      translation:'Ich habe gestern Abend drei Filme gesehen.',
+      explain:'film ist ein unveränderliches Fremdwort: tre film (kein -s im Plural!).' },
+
+    { id:'m17-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'I problemas sono grandi.',
+      solution:'I problemi sono grandi.',
+      errorToken:'problemas',
+      translation:'Die Probleme sind groß.',
+      explain:'problema ist maskulin: i problemi (nicht problemas — -a maskulin → -i im Plural).' },
+
+    /* === KA 4 === */
+    { id:'m17-ka-01', type:'KA',
+      prompt:'Kategorisiere: maskulin oder feminin?',
+      categories:['maskulin (il/lo)', 'feminin (la)'],
+      items:[
+        { text:'libro',      cat:0 },
+        { text:'casa',       cat:1 },
+        { text:'problema',   cat:0 },
+        { text:'stazione',   cat:1 },
+        { text:'colore',     cat:0 },
+        { text:'mano',       cat:1 },
+      ] },
+
+    { id:'m17-ka-02', type:'KA',
+      prompt:'Kategorisiere: Pluralregel?',
+      categories:['-o → -i oder -a (m/f)', '-a → -e oder Besonderheit'],
+      items:[
+        { text:'libro → libri',      cat:0 },
+        { text:'casa → case',        cat:1 },
+        { text:'uomo → uomini',      cat:0 },
+        { text:'amica → amiche',     cat:1 },
+        { text:'cane → cani',        cat:0 },
+        { text:'pioggia → piogge',   cat:1 },
+      ] },
+
+    { id:'m17-ka-03', type:'KA',
+      prompt:'Kategorisiere: unveränderlich oder veränderlich im Plural?',
+      categories:['unveränderlich (Sg. = Pl.)', 'veränderlich'],
+      items:[
+        { text:'città',     cat:0 },
+        { text:'libro',     cat:1 },
+        { text:'film',      cat:0 },
+        { text:'casa',      cat:1 },
+        { text:'caffè',     cat:0 },
+        { text:'cane',      cat:1 },
+      ] },
+
+    { id:'m17-ka-04', type:'KA',
+      prompt:'Kategorisiere: Körperteile — wechseln m → f im Plural?',
+      categories:['wechselt m → f (le braccia...)', 'bleibt gleich (i piedi...)'],
+      items:[
+        { text:'il braccio → le braccia',   cat:0 },
+        { text:'il piede → i piedi',        cat:1 },
+        { text:'l\'uovo → le uova',         cat:0 },
+        { text:'il naso → i nasi',          cat:1 },
+        { text:'il dito → le dita',         cat:0 },
+        { text:'il collo → i colli',        cat:1 },
+      ] },
+
+    /* === KO 2 === */
+    { id:'m17-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Plurale?',
+      a:{ sentence:'gli amici', tag:'amico → amici (-co → -ci)' },
+      b:{ sentence:'i fuochi', tag:'fuoco → fuochi (-co → -chi)' },
+      reveal:'Beide enden auf -co, aber der Plural ist verschieden. Bei amico liegt die Betonung auf "ami-co" (Betonung vor -co) → -ci. Bei fuoco liegt die Betonung auf "fuo-co" (Betonung direkt auf -co) → -chi. Faustregel: Wörter mit betontem -co (medico, amico, nemico) → -ci. Wörter mit nicht-betontem -co (fuoco, albergo) → -chi/-ghi.' },
+
+    { id:'m17-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese Wörter?',
+      a:{ sentence:'il braccio → le braccia', tag:'Körperteil: wechselt zu feminin' },
+      b:{ sentence:'il naso → i nasi', tag:'Körperteil: bleibt maskulin' },
+      reveal:'Viele paarige Körperteile (braccio, dito, ginocchio, labbro, orecchio) wechseln im Plural von maskulin zu feminin: le braccia, le dita, le ginocchia, le labbra, le orecchie. Andere Körperteile (naso, occhio, capello) folgen der normalen Regel: i nasi, gli occhi, i capelli.' },
+
+    /* === DE 3 === */
+    { id:'m17-de-01', type:'DE',
+      prompt:'"Ich habe zwei Probleme und keine Lösung."',
+      solutions:['Ho due problemi e nessuna soluzione.'],
+      note:'problema → problemi (maskulin trotz -a). soluzione (f) → nessuna soluzione.' },
+
+    { id:'m17-de-02', type:'DE',
+      prompt:'"Die Ärzte des Krankenhauses sind sehr gut."',
+      solutions:['I medici dell\'ospedale sono molto bravi.'],
+      note:'medico → medici (-co → -ci). ospedale (m) mit dell\'.' },
+
+    { id:'m17-de-03', type:'DE',
+      prompt:'"Meine Freundinnen kommen aus verschiedenen Städten."',
+      solutions:['Le mie amiche vengono da città diverse.','Le mie amiche provengono da città diverse.'],
+      note:'amica → amiche (-ca → -che). città ist unveränderlich (Pl. = Sg.).' },
+
+    /* === IT 3 === */
+    { id:'m17-it-01', type:'IT',
+      prompt:'"Quante foto hai fatto in vacanza?"',
+      solutions:['Wie viele Fotos hast du im Urlaub gemacht?','Wie viele Fotos hast du im Urlaub aufgenommen?'],
+      note:'foto ist unveränderlich (le foto). quante = wie viele (f/Pl.).' },
+
+    { id:'m17-it-02', type:'IT',
+      prompt:'"Gli uomini e le donne lavorano insieme in questo ufficio."',
+      solutions:['Die Männer und die Frauen arbeiten in diesem Büro zusammen.'],
+      note:'uomo → uomini (unregelmäßig). donna → donne (-a → -e). insieme = zusammen.' },
+
+    { id:'m17-it-03', type:'IT',
+      prompt:'"Mi fanno male le braccia dopo l\'allenamento."',
+      solutions:['Meine Arme tun nach dem Training weh.','Nach dem Training tun mir die Arme weh.'],
+      note:'braccio → le braccia (unregelmäßig, feminin Plural). fare male = wehtun.' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
