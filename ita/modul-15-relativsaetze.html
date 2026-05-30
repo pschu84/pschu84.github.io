@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Relativsätze</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Satzbau · Modul 15</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>🔀 Relativsätze</h1>
+    <p>che / cui / quello che — Relativpronomen im Vergleich mit der/die/das/was</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm15',
+  block: 'satzbau',
+  title: 'Relativsätze',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Relativsätze beschreiben ein Nomen genauer. Das Relativpronomen richtet sich nicht nach Genus oder Numerus, sondern nach seiner <strong>Funktion im Relativsatz</strong> (Subjekt/Objekt = che, nach Präposition = cui).' },
+
+    { type:'table', head:['Pronomen', 'Funktion', 'Deutsch', 'Beispiel'],
+      rows:[
+        ['<strong>che</strong>', 'Subjekt oder direktes Objekt', 'der/die/das, den/die/das', 'Il libro <strong>che</strong> leggo è bello.'],
+        ['<strong>cui</strong>', 'nach einer Präposition', 'dem/der, dessen/deren, über den...', 'La persona <strong>di cui</strong> parlo è Marco.'],
+        ['<strong>quello che</strong>', '"was" ohne Bezugsnomen', 'was', '<strong>Quello che</strong> dici è vero.'],
+        ['<strong>ciò che</strong>', '"was" (etwas formeller)', 'was', 'Faccio <strong>ciò che</strong> posso.'],
+      ]
+    },
+
+    { type:'tip', body:'<strong>che ist unveränderlich</strong> — kein Genus, kein Numerus. Es steht für Subjekte und direkte Objekte, egal ob maskulin, feminin, Singular oder Plural. Il libro che leggo / La donna che vedo / I ragazzi che conosco.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>che — Subjekt oder Objekt?</strong>' },
+
+    { type:'table', head:['Funktion', 'Erkennung', 'Beispiel'],
+      rows:[
+        ['Subjekt',  'Das Verb im Relativsatz hat kein anderes Subjekt.',  'Il cane <strong>che</strong> abbaia è mio. (der Hund, der bellt)'],
+        ['Objekt',   'Das Verb hat bereits ein anderes Subjekt.',          'Il libro <strong>che</strong> Marco legge è bello. (das Buch, das Marco liest)'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>cui — nach Präposition:</strong> Wenn das Relativpronomen nach einer Präposition (di, a, da, in, su, con, per...) steht, muss cui verwendet werden, nie che.' },
+
+    { type:'example', it:'La persona di cui parlo è Marco.', de:'Die Person, über die ich spreche, ist Marco.' },
+    { type:'example', it:'Il motivo per cui vengo è chiaro.', de:'Der Grund, warum ich komme, ist klar.' },
+    { type:'example', it:'La città in cui vivo è bella.', de:'Die Stadt, in der ich wohne, ist schön.' },
+    { type:'example', it:'Lo studente a cui ho dato il libro.', de:'Der Student, dem ich das Buch gegeben habe.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>il cui / la cui / i cui / le cui — Possessivrelativ:</strong> Steht zwischen Artikel und Nomen, entspricht "dessen/deren".' },
+
+    { type:'example', it:'Lo studente il cui libro è sul tavolo.', de:'Der Student, dessen Buch auf dem Tisch liegt.' },
+    { type:'example', it:'La ragazza la cui sorella conosco.', de:'Das Mädchen, deren Schwester ich kenne.' },
+
+    { type:'tip', body:'<strong>quello che vs. ciò che:</strong> Beide bedeuten "was" ohne konkretes Bezugsnomen. quello che ist alltagssprachlicher, ciò che etwas formeller. "Quello che dici è vero" und "Ciò che dici è vero" bedeuten dasselbe.' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m15-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['il', 'che', 'libro', 'bello', 'leggo', 'è'],
+      solution:['il', 'libro', 'che', 'leggo', 'è', 'bello'],
+      translation:'Das Buch, das ich lese, ist schön.',
+      explain:'che = Relativpronomen (direktes Objekt). Il libro che leggo è bello.' },
+
+    { id:'m15-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['di', 'parlo', 'è', 'cui', 'la', 'persona', 'Marco'],
+      solution:['la', 'persona', 'di', 'cui', 'parlo', 'è', 'Marco'],
+      translation:'Die Person, über die ich spreche, ist Marco.',
+      explain:'cui nach Präposition di. La persona di cui parlo = über die ich spreche.' },
+
+    /* === ZO 9 === */
+    { id:'m15-zo-01', type:'ZO',
+      prompt:'Ordne zu: che oder cui?',
+      pairs:[
+        { de:'il libro ___ leggo (Objekt)',          it:'che'  },
+        { de:'la persona ___ parlo (di)',             it:'cui'  },
+        { de:'il ragazzo ___ conosco (Objekt)',       it:'che'  },
+        { de:'la città ___ vivo (in)',                it:'cui'  },
+        { de:'la donna ___ ha telefonato (Subjekt)',  it:'che'  },
+        { de:'il motivo ___ vengo (per)',             it:'cui'  },
+      ] },
+
+    { id:'m15-zo-02', type:'ZO',
+      prompt:'Ordne zu: Satz -> Deutsch',
+      pairs:[
+        { de:'Il film che ho visto era bello.',       it:'Der Film, den ich gesehen habe, war schön.'     },
+        { de:'La ragazza che parla è Maria.',         it:'Das Mädchen, das spricht, ist Maria.'           },
+        { de:'Il libro di cui parlo è famoso.',       it:'Das Buch, über das ich spreche, ist berühmt.'   },
+        { de:'La città in cui vivo è Roma.',          it:'Die Stadt, in der ich wohne, ist Rom.'          },
+        { de:'Quello che dici è vero.',               it:'Was du sagst, stimmt.'                          },
+        { de:'L\'amico a cui ho scritto.',            it:'Der Freund, dem ich geschrieben habe.'          },
+      ] },
+
+    { id:'m15-zo-03', type:'ZO',
+      prompt:'Ordne zu: Funktion von che im Relativsatz',
+      pairs:[
+        { de:'Il cane che abbaia. (der Hund bellt)',      it:'Subjekt (kein anderes Subjekt im Relativsatz)'   },
+        { de:'Il cane che vedo. (ich sehe den Hund)',     it:'Objekt (io = Subjekt im Relativsatz)'            },
+        { de:'La donna che canta. (sie singt)',            it:'Subjekt'                                         },
+        { de:'La donna che amo. (ich liebe sie)',          it:'Objekt'                                          },
+        { de:'I ragazzi che studiano. (sie lernen)',       it:'Subjekt'                                         },
+        { de:'I ragazzi che conosco. (ich kenne sie)',     it:'Objekt'                                          },
+      ] },
+
+    { id:'m15-zo-04', type:'ZO',
+      prompt:'Ordne zu: Präposition + cui -> Deutsch',
+      pairs:[
+        { de:'di cui',   it:'über den/die/das / dessen/deren' },
+        { de:'a cui',    it:'dem/der (Dativ)'                  },
+        { de:'in cui',   it:'in dem/der / wo'                  },
+        { de:'con cui',  it:'mit dem/der'                      },
+        { de:'per cui',  it:'für den/die / weshalb'            },
+        { de:'da cui',   it:'von dem/der / woher'              },
+      ] },
+
+    { id:'m15-zo-05', type:'ZO',
+      prompt:'Ordne zu: quello che / ciò che -> Beispiel',
+      pairs:[
+        { de:'was du sagst',          it:'quello che dici'          },
+        { de:'was ich tue',           it:'ciò che faccio'           },
+        { de:'was er sieht',          it:'quello che vede'          },
+        { de:'was wir wollen',        it:'ciò che vogliamo'         },
+        { de:'was mir gefällt',       it:'quello che mi piace'      },
+        { de:'was du brauchst',       it:'ciò che ti serve'         },
+      ] },
+
+    { id:'m15-zo-06', type:'ZO',
+      prompt:'Ordne zu: il cui / la cui / i cui / le cui?',
+      pairs:[
+        { de:'dessen Buch (il libro)',         it:'il cui libro'       },
+        { de:'deren Schwester (la sorella)',   it:'la cui sorella'     },
+        { de:'dessen Freunde (gli amici)',     it:'i cui amici'        },
+        { de:'deren Töchter (le figlie)',      it:'le cui figlie'      },
+        { de:'dessen Arbeit (il lavoro)',      it:'il cui lavoro'      },
+        { de:'deren Meinung (l\'opinione)',    it:"la cui opinione"    },
+      ] },
+
+    { id:'m15-zo-07', type:'ZO',
+      prompt:'Ordne zu: che oder quello che?',
+      pairs:[
+        { de:'Das Buch, das ich lese (Bezugsnomen: libro)', it:'il libro <strong>che</strong> leggo' },
+        { de:'Was ich lese (kein Bezugsnomen)',              it:'<strong>quello che</strong> leggo'   },
+        { de:'Die Frau, die ich sehe (Bezugsnomen: donna)', it:'la donna <strong>che</strong> vedo'  },
+        { de:'Was ich sehe (kein Bezugsnomen)',              it:'<strong>quello che</strong> vedo'    },
+        { de:'Die Worte, die er sagt (Bezugsnomen: parole)',it:'le parole <strong>che</strong> dice'  },
+        { de:'Was er sagt (kein Bezugsnomen)',               it:'<strong>quello che</strong> dice'    },
+      ] },
+
+    { id:'m15-zo-08', type:'ZO',
+      prompt:'Ordne zu: Satz mit cui -> Präposition',
+      pairs:[
+        { de:'La persona ___ cui parlo lavora qui.',      it:'di'  },
+        { de:'Il libro ___ cui ti ho parlato è famoso.',  it:'di'  },
+        { de:'La città ___ cui abito è bella.',           it:'in'  },
+        { de:'L\'amico ___ cui ho scritto.',              it:'a'   },
+        { de:'Il motivo ___ cui sono qui.',               it:'per' },
+        { de:'La persona ___ cui vengo.',                 it:'da'  },
+      ] },
+
+    { id:'m15-zo-09', type:'ZO',
+      prompt:'Ordne zu: Relativsatz -> kompletter Satz auf Deutsch',
+      pairs:[
+        { de:'il ragazzo con cui studio',         it:'der Junge, mit dem ich lerne'           },
+        { de:'la ragione per cui parto',          it:'der Grund, weshalb ich abreise'         },
+        { de:'la casa in cui sono cresciuto',     it:'das Haus, in dem ich aufgewachsen bin'  },
+        { de:'l\'amico a cui telefono',           it:'der Freund, den ich anrufe (Dativ)'     },
+        { de:'il paese da cui vengo',             it:'das Land, aus dem ich komme'            },
+        { de:'la persona su cui conto',           it:'die Person, auf die ich zähle'          },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m15-mc-01', type:'MC',
+      prompt:'"Il libro ___ leggo è interessante."',
+      options:['cui','che','di cui','quello che'],
+      correctValue:'che',
+      explain:'che = direktes Objekt im Relativsatz. Il libro che leggo (das Buch, das ich lese).' },
+
+    { id:'m15-mc-02', type:'MC',
+      prompt:'"La ragazza ___ parla è mia sorella."',
+      options:['cui','quello che','di cui','che'],
+      correctValue:'che',
+      explain:'che = Subjekt im Relativsatz. La ragazza che parla (das Mädchen, das spricht).' },
+
+    { id:'m15-mc-03', type:'MC',
+      prompt:'"La persona ___ parlo è Marco."',
+      options:['che','cui','di cui','la cui'],
+      correctValue:'di cui',
+      explain:'parlare di = über etwas sprechen. Nach di: cui. La persona di cui parlo.' },
+
+    { id:'m15-mc-04', type:'MC',
+      prompt:'"La città ___ abito è Roma."',
+      options:['che','cui','in cui','di cui'],
+      correctValue:'in cui',
+      explain:'abitare in = wohnen in. Nach in: cui. La città in cui abito.' },
+
+    { id:'m15-mc-05', type:'MC',
+      prompt:'"___ dici è vero." (Was du sagst)',
+      options:['Che','Cui','Quello che','Di cui'],
+      correctValue:'Quello che',
+      explain:'Kein Bezugsnomen -> quello che (= was). Quello che dici è vero.' },
+
+    { id:'m15-mc-06', type:'MC',
+      prompt:'"Il motivo ___ sono qui è importante."',
+      options:['che','cui','per cui','di cui'],
+      correctValue:'per cui',
+      explain:'per cui = weshalb / für den. Il motivo per cui sono qui.' },
+
+    { id:'m15-mc-07', type:'MC',
+      prompt:'"L\'amico ___ ho dato il libro."',
+      options:['che','di cui','a cui','con cui'],
+      correctValue:'a cui',
+      explain:'dare a qualcuno = jemandem geben. Nach a: cui. L\'amico a cui ho dato il libro.' },
+
+    { id:'m15-mc-08', type:'MC',
+      prompt:'"Lo studente ___ libro è sul tavolo."',
+      options:['che','cui','il cui','di cui'],
+      correctValue:'il cui',
+      explain:'Possessivrelativ: il cui + Nomen = dessen. Lo studente il cui libro (dessen Buch, il = m).' },
+
+    { id:'m15-mc-09', type:'MC',
+      prompt:'"Faccio ___ posso." (Was ich kann)',
+      options:['quello che','che','cui','ciò'],
+      correctValue:'quello che',
+      explain:'Kein Bezugsnomen: quello che (oder ciò che). Faccio quello che posso.' },
+
+    { id:'m15-mc-10', type:'MC',
+      prompt:'Welche Aussage über che ist korrekt?',
+      options:[
+        'che kongruiert mit Genus und Numerus.',
+        'che steht nur für Subjekte.',
+        'che ist unveränderlich und steht für Subjekte und direkte Objekte.',
+        'che kann nach Präpositionen stehen.',
+      ],
+      correctValue:'che ist unveränderlich und steht für Subjekte und direkte Objekte.',
+      explain:'che ändert sich nie (kein -o/-a/-i/-e). Es steht für Subjekt und direktes Objekt. Nach Präpositionen: immer cui.' },
+
+    { id:'m15-mc-11', type:'MC',
+      prompt:'"Il paese ___ vengo è la Germania."',
+      options:['che','cui','da cui','in cui'],
+      correctValue:'da cui',
+      explain:'venire da = aus einem Land kommen. Nach da: cui. Il paese da cui vengo.' },
+
+    { id:'m15-mc-12', type:'MC',
+      prompt:'"La ragazza ___ sorella conosco è simpatica."',
+      options:['che','cui','la cui','di cui'],
+      correctValue:'la cui',
+      explain:'Possessivrelativ: la cui + Nomen = deren. La ragazza la cui sorella (deren Schwester, la = f).' },
+
+    /* === MCL 5 === */
+    { id:'m15-mcl-01', type:'MC',
+      prompt:'Wähle: "Il film ___ ho visto ieri era bellissimo."',
+      options:['cui','di cui','che','in cui'],
+      correctValue:'che',
+      translation:'Der Film, den ich gestern gesehen habe, war wunderschön.',
+      explain:'che = direktes Objekt. ho visto il film -> il film che ho visto.' },
+
+    { id:'m15-mcl-02', type:'MC',
+      prompt:'Wähle: "Non capisco ___ vuoi da me."',
+      options:['che','cui','quello che','di cui'],
+      correctValue:'quello che',
+      translation:'Ich verstehe nicht, was du von mir willst.',
+      explain:'Kein Bezugsnomen: quello che. Non capisco quello che vuoi.' },
+
+    { id:'m15-mcl-03', type:'MC',
+      prompt:'Wähle: "Il collega ___ lavoro è molto bravo."',
+      options:['di cui','con cui','che','a cui'],
+      correctValue:'con cui',
+      translation:'Der Kollege, mit dem ich arbeite, ist sehr gut.',
+      explain:'lavorare con qualcuno. Nach con: cui. Il collega con cui lavoro.' },
+
+    { id:'m15-mcl-04', type:'MC',
+      prompt:'Wähle: "La ragione ___ ho cambiato idea è semplice."',
+      options:['che','cui','per cui','di cui'],
+      correctValue:'per cui',
+      translation:'Der Grund, warum ich meine Meinung geändert habe, ist einfach.',
+      explain:'per cui = weshalb, aus welchem Grund.' },
+
+    { id:'m15-mcl-05', type:'MC',
+      prompt:'Wähle: "Lo studente ___ voti sono ottimi si chiama Luca."',
+      options:['che','cui','i cui','di cui'],
+      correctValue:'i cui',
+      translation:'Der Student, dessen Noten ausgezeichnet sind, heißt Luca.',
+      explain:'Possessivrelativ: i cui + Nomen (i voti, m/Pl.). Lo studente i cui voti.' },
+
+    /* === LT 5 === */
+    { id:'m15-lt-01', type:'LT',
+      text:'Il libro {0} sto leggendo è stato scritto da un autore italiano {1} non conosco.',
+      blanks:[ { accept:['che'] }, { accept:['che'] } ],
+      translation:'Das Buch, das ich gerade lese, wurde von einem italienischen Autor geschrieben, den ich nicht kenne.',
+      explain:'che = Objekt (sto leggendo il libro); che = Objekt (non conosco l\'autore).' },
+
+    { id:'m15-lt-02', type:'LT',
+      text:'La città {0} abito ha molti musei. Quello {1} preferisco è il Museo di Arte Moderna.',
+      blanks:[ { accept:['in cui'] }, { accept:['che'] } ],
+      translation:'Die Stadt, in der ich wohne, hat viele Museen. Das, das ich bevorzuge, ist das Museum für Moderne Kunst.',
+      explain:'in cui (abitare in); quello che (Bezugsnomen = il museo, che = Objekt).' },
+
+    { id:'m15-lt-03', type:'LT',
+      text:'{0} mi hai detto ieri mi ha fatto pensare molto.',
+      blanks:[ { accept:['Quello che','Ciò che'] } ],
+      translation:'Was du mir gestern gesagt hast, hat mich viel zum Nachdenken gebracht.',
+      explain:'Kein Bezugsnomen -> quello che / ciò che.' },
+
+    { id:'m15-lt-04', type:'LT',
+      text:'Il professore {0} lezione è interessante si chiama Rossi. È anche l\'uomo {1} libro ho comprato.',
+      blanks:[ { accept:['la cui'] }, { accept:['il cui'] } ],
+      translation:'Der Professor, dessen Stunde interessant ist, heißt Rossi. Er ist auch der Mann, dessen Buch ich gekauft habe.',
+      explain:'la cui lezione (f); il cui libro (m). Possessivrelativ kongruiert mit dem folgenden Nomen.' },
+
+    { id:'m15-lt-05', type:'LT',
+      text:'Non sempre capiamo {0} succede intorno a noi. Ma {1} è importante è non smettere di cercare.',
+      blanks:[ { accept:['quello che','ciò che'] }, { accept:['quello che','ciò che'] } ],
+      translation:'Wir verstehen nicht immer, was um uns herum passiert. Aber was wichtig ist, ist nicht aufzuhören zu suchen.',
+      explain:'Kein Bezugsnomen: quello che / ciò che. Beide Lücken gleich.' },
+
+    /* === FT 2 === */
+    { id:'m15-ft-01', type:'FT',
+      prompt:'Ergänze che oder cui (mit Präposition falls nötig):',
+      rows:[
+        { label:'il libro ___ leggo (lesen)',           accept:['che']    },
+        { label:'la persona ___ parlo (parlare di)',    accept:['di cui'] },
+        { label:'la città ___ abito (abitare in)',      accept:['in cui'] },
+        { label:'l\'amico ___ scrivo (scrivere a)',     accept:['a cui']  },
+        { label:'il film ___ ho visto (vedere)',        accept:['che']    },
+        { label:'il motivo ___ vengo (venire per)',     accept:['per cui']},
+      ] },
+
+    { id:'m15-ft-02', type:'FT',
+      prompt:'Possessivrelativ il cui / la cui / i cui / le cui:',
+      rows:[
+        { label:'lo studente ___ libro (il libro)',        accept:['il cui']  },
+        { label:'la ragazza ___ sorella (la sorella)',     accept:['la cui']  },
+        { label:'il professore ___ corsi (i corsi)',       accept:['i cui']   },
+        { label:'la donna ___ figlie (le figlie)',         accept:['le cui']  },
+        { label:'l\'autore ___ romanzi (i romanzi)',       accept:['i cui']   },
+        { label:'la scrittrice ___ opera (l\'opera, f)',   accept:['la cui']  },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m15-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'La persona di che parlo è famosa.',
+      solution:'La persona di cui parlo è famosa.',
+      errorToken:'di che',
+      translation:'Die Person, über die ich spreche, ist berühmt.',
+      explain:'Nach einer Präposition steht immer cui, nie che. di cui (nicht di che).' },
+
+    { id:'m15-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Quello che dici che è vero.',
+      solution:'Quello che dici è vero.',
+      errorToken:'che è',
+      translation:'Was du sagst, ist wahr.',
+      explain:'Ein Relativpronomen pro Relativsatz. Nach "quello che dici" kommt direkt das Hauptverb: è vero.' },
+
+    { id:'m15-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Lo studente la cui libro è sul tavolo.',
+      solution:'Lo studente il cui libro è sul tavolo.',
+      errorToken:'la cui',
+      translation:'Der Student, dessen Buch auf dem Tisch liegt.',
+      explain:'il cui kongruiert mit dem folgenden Nomen: libro ist m -> il cui libro (nicht la cui).' },
+
+    /* === KA 2 === */
+    { id:'m15-ka-01', type:'KA',
+      prompt:'Kategorisiere: che oder cui?',
+      categories:['che (Subjekt / direktes Objekt)', 'cui (nach Präposition)'],
+      items:[
+        { text:'il libro che leggo',         cat:0 },
+        { text:'la persona di cui parlo',    cat:1 },
+        { text:'la donna che vedo',          cat:0 },
+        { text:'la città in cui vivo',       cat:1 },
+        { text:'il ragazzo che canta',       cat:0 },
+        { text:'il motivo per cui vengo',    cat:1 },
+      ] },
+
+    { id:'m15-ka-02', type:'KA',
+      prompt:'Kategorisiere: che oder quello che?',
+      categories:['che (mit Bezugsnomen)', 'quello che (ohne Bezugsnomen)'],
+      items:[
+        { text:'il film che ho visto',         cat:0 },
+        { text:'quello che ho visto',          cat:1 },
+        { text:'la musica che ascolto',        cat:0 },
+        { text:'quello che ascolto',           cat:1 },
+        { text:'le parole che dice',           cat:0 },
+        { text:'quello che dice',              cat:1 },
+      ] },
+
+    /* === KO 2 === */
+    { id:'m15-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Il libro che leggo è bello.', tag:'che = direktes Objekt' },
+      b:{ sentence:'La persona di cui parlo è Marco.', tag:'cui nach Präposition' },
+      reveal:'"Il libro che leggo" — che ersetzt "il libro" als direktes Objekt (io leggo il libro). Keine Präposition. "La persona di cui parlo" — parlo di qualcuno = ich spreche über jemanden. Die Präposition di bleibt stehen, dahinter kommt cui. Merkhilfe: Präposition + che ist immer falsch — immer Präposition + cui.' },
+
+    { id:'m15-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'La donna che amo.', tag:'che = Objekt (ich liebe sie)' },
+      b:{ sentence:'La donna che mi ama.', tag:'che = Subjekt (sie liebt mich)' },
+      reveal:'In beiden Sätzen steht che, aber mit unterschiedlicher Funktion. In (a) ist "la donna" das Objekt (io amo la donna). In (b) ist "la donna" das Subjekt (la donna ama me). che bleibt in beiden Fällen unveränderlich — die Funktion ergibt sich aus dem Kontext des Relativsatzes.' },
+
+    /* === DE 3 === */
+    { id:'m15-de-01', type:'DE',
+      prompt:'"Das Buch, das ich dir empfohlen habe, ist wirklich interessant."',
+      solutions:['Il libro che ti ho consigliato è davvero interessante.','Il libro che ti ho raccomandato è davvero interessante.'],
+      note:'che = Objekt (ho consigliato il libro). davvero = wirklich.' },
+
+    { id:'m15-de-02', type:'DE',
+      prompt:'"Die Stadt, in der ich aufgewachsen bin, ist nicht sehr groß."',
+      solutions:['La città in cui sono cresciuto non è molto grande.','La città in cui sono cresciuta non è molto grande.'],
+      note:'in cui (crescere in, essere-Verb); cresciuto (m) / cresciuta (f).' },
+
+    { id:'m15-de-03', type:'DE',
+      prompt:'"Was mich am meisten überrascht, ist seine Geduld."',
+      solutions:['Quello che mi sorprende di più è la sua pazienza.','Ciò che mi sorprende di più è la sua pazienza.'],
+      note:'quello che / ciò che (kein Bezugsnomen); di più = am meisten; pazienza = Geduld.' },
+
+    /* === IT 3 === */
+    { id:'m15-it-01', type:'IT',
+      prompt:'"Il collega con cui lavoro si chiama Andrea."',
+      solutions:['Der Kollege, mit dem ich arbeite, heißt Andrea.','Mein Kollege, mit dem ich zusammenarbeite, heißt Andrea.'],
+      note:'con cui = mit dem. chiamarsi = heißen.' },
+
+    { id:'m15-it-02', type:'IT',
+      prompt:'"Non sempre otteniamo quello che vogliamo nella vita."',
+      solutions:['Wir bekommen im Leben nicht immer, was wir wollen.','Im Leben bekommt man nicht immer das, was man will.'],
+      note:'quello che vogliamo (kein Bezugsnomen). ottenere = erhalten/bekommen.' },
+
+    { id:'m15-it-03', type:'IT',
+      prompt:'"Lo scrittore i cui romanzi ho letto è Umberto Eco."',
+      solutions:['Der Schriftsteller, dessen Romane ich gelesen habe, ist Umberto Eco.'],
+      note:'i cui romanzi (m/Pl.). Possessivrelativ kongruiert mit romanzi.' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
