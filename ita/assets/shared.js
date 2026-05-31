@@ -646,16 +646,20 @@ function _renderZO(ex, box, onDone) {
     btn.addEventListener('click', () => {
       if (selectedLeft === null || btn.disabled) return;
       const origIdx = parseInt(btn.dataset.origidx);
+      const correctText = ex.pairs[selectedLeft].it;
+      const isCorrect = btn.textContent.trim() === correctText.trim();
 
-      if (origIdx === selectedLeft) {
-        // Richtig
-        matched.add(origIdx);
+      if (isCorrect) {
+        // Richtig — diesen rechten Button matchen, nicht zwingend origIdx===selectedLeft
+        matched.add(selectedLeft);
         const lBtn = leftBtns[selectedLeft];
         lBtn.classList.remove('zo-sel');
         lBtn.classList.add('zo-matched');
         lBtn.disabled = true;
         btn.classList.add('zo-matched');
         btn.disabled = true;
+        // Wenn noch weitere rechte Buttons mit gleichem Text existieren und noch
+        // ein linker Partner übrig ist, dürfen sie weiter klickbar bleiben.
         selectedLeft = null;
 
         if (matched.size === ex.pairs.length) {
