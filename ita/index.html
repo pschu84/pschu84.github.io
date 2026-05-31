@@ -297,16 +297,16 @@ const NIVEAU_GROUPS = [
             intro:'Würde-Form: höfliche Bitten, Wünsche, Hypothesen — Konjunktiv II auf Italienisch.' },
           { id:'m23', title:'Passato Remoto', icon:'📜', file:'modul-23-passato-remoto.html', ready:true, exerciseCount:49,
             intro:'Historische Vergangenheit: Bildung, unregelmäßige Verben, Nord/Süd-Unterschied.' },
-          { id:'m24', title:'Congiuntivo', icon:'🌀', file:'modul-24-congiuntivo.html', ready:false,
+          { id:'m24', title:'Congiuntivo', icon:'🌀', file:'modul-24-congiuntivo.html', ready:true, exerciseCount:48,
             intro:'Konjunktiv Präsens und Imperfekt: Auslöser, Bildung, Zeitenfolge.' },
         ]
       },
       {
         id: 'pronomen-b1', title: 'Pronomen (B1)', color: 'terra',
         modules: [
-          { id:'m25', title:'Kombinierte Pronomen', icon:'🔀', file:'modul-25-kombipron.html', ready:false,
+          { id:'m25', title:'Kombinierte Pronomen', icon:'🔀', file:'modul-25-kombipron.html', ready:true, exerciseCount:46,
             intro:'me lo, glielo, ce ne — direkte + indirekte Pronomen kombiniert.' },
-          { id:'m26', title:'Pronomen CI und NE', icon:'🧩', file:'modul-26-ci-ne.html', ready:false,
+          { id:'m26', title:'Pronomen CI und NE', icon:'🧩', file:'modul-26-ci-ne.html', ready:true, exerciseCount:48,
             intro:'CI als Ort, Objekt und in Pronominalverben. NE für Mengen und Bezüge.' },
         ]
       },
@@ -315,7 +315,7 @@ const NIVEAU_GROUPS = [
         modules: [
           { id:'m15', title:'Relativsätze', icon:'🔗', file:'modul-15-relativsaetze.html', ready:true, exerciseCount:48,
             intro:'che, cui, quello che — Relativpronomen im Vergleich mit der/die/das.' },
-          { id:'m27', title:'Pronominalverben', icon:'🧠', file:'modul-27-pronominalverben.html', ready:false,
+          { id:'m27', title:'Pronominalverben', icon:'🧠', file:'modul-27-pronominalverben.html', ready:true, exerciseCount:49,
             intro:'farcela, andarsene, metterci — Verben mit festem Pronomen und eigenem Sinn.' },
         ]
       },
@@ -347,17 +347,25 @@ function initDashboard() {
   const allMods = NIVEAU_GROUPS.flatMap(ng => ng.blocks.flatMap(b => b.modules));
   const allIds  = allMods.map(m => m.id);
 
-  // Gesamtfortschritt: abgeschlossene Läufe → bestScore; angefangen aber
-  // nicht beendet → Schätzung aus Einzelaufgaben; nie gestartet → 0.
-  const overall = allMods.reduce((sum, m) => {
-    const md = state.modules[m.id];
-    if (!md) return sum;
-    if (md.attempts > 0) return sum + md.bestScore;
-    const exStats = Store.moduleExerciseStats(m.id);
-    const total   = m.exerciseCount || exStats.total;
-    if (!total) return sum;
-    return sum + (exStats.correct / total);
-  }, 0) / allIds.length;
+  /**
+   * Berechnet den effektiven Fortschritts-Score für ein Modul (0–1).
+   * Nimmt immer das Maximum aus:
+   *   a) bestScore aus einem abgeschlossenen Lauf
+   *   b) Schätzung aus Einzelaufgaben (exercises / exerciseCount)
+   * Dadurch führen weder neue Module noch ein erhöhtes exerciseCount
+   * dazu, dass bereits erarbeiteter Fortschritt auf 0 springt.
+   */
+  function moduleScore(mod) {
+    const md      = state.modules[mod.id];
+    const saved   = md?.bestScore || 0;           // aus abgeschlossenem Lauf
+    const exStats = Store.moduleExerciseStats(mod.id);
+    const total   = mod.exerciseCount || exStats.total;
+    const fromEx  = total ? (exStats.correct / total) : 0; // aus Einzelaufgaben
+    return Math.max(saved, fromEx);               // immer das Bessere nehmen
+  }
+
+  // Gesamtfortschritt: alle Module, nie gestartete zählen als 0.
+  const overall = allMods.reduce((sum, m) => sum + moduleScore(m), 0) / allIds.length;
   const pct = Math.round(overall * 100);
   document.getElementById('overallPct').textContent = pct + ' %';
   document.getElementById('overallFill').style.width = pct + '%';
@@ -405,18 +413,24 @@ function initDashboard() {
     const stats = Store.moduleExerciseStats(modId);
 
     // Fallback: wenn keine Aufgaben erfasst oder totalExercises unbekannt,
-    // zeige Score-basierten grünen Ring
+    // zeige Score-basierten grünen Ring (Maximum aus bestScore und exercises)
+    const _md    = state.modules[modId];
+    const _saved = _md?.bestScore || 0;
     if (!totalExercises || stats.total === 0) {
-      const score = state.modules[modId]?.bestScore || 0;
-      const dash  = (score * C).toFixed(2);
+      const dash = (_saved * C).toFixed(2);
       return `<svg class="ring-svg" viewBox="0 0 36 36">
         <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
         <circle class="ring-fill ring-correct" cx="18" cy="18" r="15.9"
           stroke-dasharray="${dash} ${C.toFixed(2)}" stroke-dashoffset="0"/>
       </svg>`;
     }
+    // Wenn exerciseCount erhöht wurde aber bestScore aus altem Lauf existiert:
+    // Korrekte aus exercises + "bereits bekannte" aus bestScore kombinieren.
+    // Der Ring zeigt mindestens was bestScore verspricht.
+    const fromSaved = Math.round(_saved * totalExercises);
+    const correct   = Math.max(stats.correct, fromSaved);
 
-    const greenArc = Math.min(stats.correct / totalExercises, 1) * C;
+    const greenArc = Math.min(correct / totalExercises, 1) * C;
     const rawRed   = Math.min(stats.wrong   / totalExercises, 1) * C;
     // Rot darf grün nicht überlappen
     const redArc   = Math.min(rawRed, C - greenArc);
@@ -448,25 +462,15 @@ function initDashboard() {
       // Block-Prozent: Module gelten als "gestartet" wenn attempts > 0 ODER
       // wenn bereits Einzelaufgaben beantwortet wurden (exercises vorhanden,
       // z.B. Durchlauf nicht beendet). Score-Schätzung dann aus exercises.
-      const attempted = block.modules.filter(m => {
-        const md = state.modules[m.id];
-        if (!md) return false;
-        if (md.attempts > 0) return true;
-        return Object.keys(md.exercises || {}).length > 0;
-      });
+      // Gestartet = bestScore > 0 ODER bereits Einzelaufgaben beantwortet.
+      // moduleScore() gibt immer das Maximum aus beiden Quellen zurück,
+      // sodass ein erhöhtes exerciseCount keinen Rückschritt verursacht.
+      const attempted = block.modules.filter(m => moduleScore(m) > 0);
       let blockPctStr;
       if (attempted.length === 0) {
         blockPctStr = '— %';
       } else {
-        const sum = attempted.reduce((a, m) => {
-          const md = state.modules[m.id];
-          if (md.attempts > 0) return a + md.bestScore;
-          // Kein abgeschlossener Lauf: Score aus exercises schätzen
-          const exStats = Store.moduleExerciseStats(m.id);
-          const total = m.exerciseCount || exStats.total;
-          if (!total) return a;
-          return a + (exStats.correct / total);
-        }, 0);
+        const sum = attempted.reduce((a, m) => a + moduleScore(m), 0);
         blockPctStr = Math.round(sum / attempted.length * 100) + ' %';
       }
 
