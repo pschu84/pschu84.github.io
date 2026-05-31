@@ -91,15 +91,48 @@ const Store = (() => {
     return state.modules[mId]?.bestScore || 0;
   }
 
+  /**
+   * Gibt die Anzahl der eindeutigen Aufgaben zurück, die in diesem Modul
+   * jemals beantwortet wurden, aufgeteilt nach bestem Status.
+   * Rückgabe: { correct: number, wrong: number, total: number }
+   *   correct = Aufgaben mit bestem Status 'correct' oder 'self-ok'
+   *   wrong   = Aufgaben mit bestem Status 'wrong', 'self-no', 'self-mid', 'revealed'
+   *   total   = alle je beantworteten Aufgaben
+   */
+  function moduleExerciseStats(mId) {
+    const state = load();
+    const exs = state.modules[mId]?.exercises || {};
+    let correct = 0, wrong = 0;
+    const GOOD = new Set(['correct', 'self-ok']);
+    for (const ex of Object.values(exs)) {
+      if (!ex.status) continue;
+      if (GOOD.has(ex.status)) correct++;
+      else wrong++;
+    }
+    return { correct, wrong, total: correct + wrong };
+  }
+
+  /**
+   * Findet das schwächste Modul aus den gegebenen IDs.
+   * Priorisierung:
+   *   1. Module mit attempts > 0 und bestScore < 0.6 (nicht bestanden), nach Score aufsteigend
+   *   2. Module mit attempts > 0 und bestScore >= 0.6 (bestanden), nach Score aufsteigend
+   * Gibt null zurück wenn kein Modul je gestartet wurde.
+   */
   function findWeakest(moduleIds) {
     const state = load();
-    let worst = null, worstScore = Infinity;
-    for (const id of moduleIds) {
-      const m = state.modules[id];
-      if (!m || m.attempts === 0) continue;
-      if (m.bestScore < worstScore) { worstScore = m.bestScore; worst = id; }
+    const attempted = moduleIds
+      .map(id => ({ id, m: state.modules[id] }))
+      .filter(({ m }) => m && m.attempts > 0);
+    if (attempted.length === 0) return null;
+
+    // Nicht bestandene zuerst
+    const failed = attempted.filter(({ m }) => m.bestScore < 0.6);
+    if (failed.length > 0) {
+      return failed.reduce((a, b) => a.m.bestScore <= b.m.bestScore ? a : b).id;
     }
-    return worst;
+    // Alle bestanden — niedrigsten Score empfehlen
+    return attempted.reduce((a, b) => a.m.bestScore <= b.m.bestScore ? a : b).id;
   }
 
   function exportData()   { return JSON.stringify(load(), null, 2); }
@@ -115,7 +148,7 @@ const Store = (() => {
   function resetAll()       { save(DEFAULT()); }
   function getModule(state, mId) { return _getOrCreate(state, mId); }
 
-  return { load, save, recordAnswer, recordRun, setLastIndex, updateStreak, moduleProgress, findWeakest, exportData, importData, resetModule, resetAll, getModule };
+  return { load, save, recordAnswer, recordRun, setLastIndex, updateStreak, moduleProgress, moduleExerciseStats, findWeakest, exportData, importData, resetModule, resetAll, getModule };
 })();
 
 
