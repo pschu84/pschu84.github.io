@@ -16,6 +16,39 @@
     .brand { text-align: center; }
   }
 
+  /* Aktivitäts-Statistiken */
+  .activity-strip {
+    display: flex; gap: 0.8rem; margin: 1.2rem 0; flex-wrap: wrap;
+  }
+  .activity-stat {
+    flex: 1; min-width: 130px;
+    background: var(--paper-2);
+    border: 2px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 0.7rem 1rem;
+    display: flex; flex-direction: column; gap: 0.1rem;
+    box-shadow: var(--shadow);
+  }
+  .activity-stat-icon { font-size: 1rem; line-height: 1; }
+  .activity-stat-value {
+    font-family: var(--f-display); font-weight: 900;
+    font-size: 1.6rem; color: var(--ink); line-height: 1.1;
+  }
+  .activity-stat-label { font-size: 0.76rem; color: var(--ink-soft); font-weight: 500; }
+  .activity-msg {
+    font-size: 0.87rem; color: var(--ink-soft); font-style: italic;
+    margin: 0 0 1.1rem;
+    padding: 0.55rem 1rem;
+    background: var(--paper-2);
+    border-left: 3px solid var(--terra);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  }
+  @media (max-width: 640px) {
+    .activity-strip { gap: 0.5rem; }
+    .activity-stat { min-width: 100px; padding: 0.55rem 0.75rem; }
+    .activity-stat-value { font-size: 1.3rem; }
+  }
+
   /* Niveau-Label über jedem Block */
   .niveau-section { margin-bottom: 0.5rem; margin-top: 2.2rem; }
   .niveau-section:first-child { margin-top: 0; }
@@ -77,6 +110,26 @@
     </div>
     <div class="quote-box" id="quoteBox"></div>
   </div>
+
+  <!-- Aktivitäts-Statistiken -->
+  <div class="activity-strip" id="activityStrip" style="display:none">
+    <div class="activity-stat">
+      <span class="activity-stat-icon" id="statRecentIcon">📅</span>
+      <span class="activity-stat-value" id="statRecentValue">—</span>
+      <span class="activity-stat-label" id="statRecentLabel">Richtig heute</span>
+    </div>
+    <div class="activity-stat">
+      <span class="activity-stat-icon">🏅</span>
+      <span class="activity-stat-value" id="statRecord">—</span>
+      <span class="activity-stat-label">Tagesrekord</span>
+    </div>
+    <div class="activity-stat">
+      <span class="activity-stat-icon">📊</span>
+      <span class="activity-stat-value" id="statTotal">—</span>
+      <span class="activity-stat-label">Richtig gesamt</span>
+    </div>
+  </div>
+  <p class="activity-msg" id="activityMsg" style="display:none"></p>
 
   <!-- Schwachstellen-Empfehlung -->
   <div class="weakness-box hidden" id="weaknessBox">
@@ -293,8 +346,18 @@ function initDashboard() {
   // Alle Module flach für Gesamtfortschritt + Weakness
   const allMods = NIVEAU_GROUPS.flatMap(ng => ng.blocks.flatMap(b => b.modules));
   const allIds  = allMods.map(m => m.id);
-  const scores  = allIds.map(id => state.modules[id]?.bestScore || 0);
-  const overall = scores.reduce((a, b) => a + b, 0) / allIds.length;
+
+  // Gesamtfortschritt: abgeschlossene Läufe → bestScore; angefangen aber
+  // nicht beendet → Schätzung aus Einzelaufgaben; nie gestartet → 0.
+  const overall = allMods.reduce((sum, m) => {
+    const md = state.modules[m.id];
+    if (!md) return sum;
+    if (md.attempts > 0) return sum + md.bestScore;
+    const exStats = Store.moduleExerciseStats(m.id);
+    const total   = m.exerciseCount || exStats.total;
+    if (!total) return sum;
+    return sum + (exStats.correct / total);
+  }, 0) / allIds.length;
   const pct = Math.round(overall * 100);
   document.getElementById('overallPct').textContent = pct + ' %';
   document.getElementById('overallFill').style.width = pct + '%';
@@ -443,6 +506,136 @@ function initDashboard() {
 }
 
 initDashboard();
+renderActivityStats();
+
+function renderActivityStats() {
+  const act = Store.getActivityStats();
+
+  // Nichts anzeigen wenn noch gar keine Daten vorhanden
+  if (act.daysSinceLast === null && act.totalCorrect === 0) return;
+
+  // ── Stat-Karten befüllen ─────────────────────────────────────────────
+  const strip = document.getElementById('activityStrip');
+  strip.style.display = 'flex';
+
+  // Karte 1: Heute / Gestern / Letzter Tag
+  const valEl   = document.getElementById('statRecentValue');
+  const lblEl   = document.getElementById('statRecentLabel');
+  const iconEl  = document.getElementById('statRecentIcon');
+  if (act.daysSinceLast === 0) {
+    valEl.textContent  = act.todayCorrect;
+    lblEl.textContent  = 'Richtig heute';
+    iconEl.textContent = act.todayCorrect > 0 ? '✅' : '📅';
+  } else if (act.daysSinceLast === 1) {
+    valEl.textContent  = act.lastDayCorrect;
+    lblEl.textContent  = 'Richtig gestern';
+    iconEl.textContent = '📅';
+  } else if (act.daysSinceLast !== null) {
+    valEl.textContent  = act.lastDayCorrect;
+    lblEl.textContent  = 'Vor ' + act.daysSinceLast + ' Tagen';
+    iconEl.textContent = '📅';
+  }
+
+  // Karte 2: Tagesrekord
+  document.getElementById('statRecord').textContent =
+    act.bestCorrect > 0 ? act.bestCorrect : '—';
+
+  // Karte 3: Gesamt
+  document.getElementById('statTotal').textContent =
+    act.totalCorrect > 0 ? act.totalCorrect : '—';
+
+  // ── Motivations-Nachricht ────────────────────────────────────────────
+  const msgEl = document.getElementById('activityMsg');
+
+  // Zufalls-Picker (wechselt bei jedem Seitenaufruf, nicht nur täglich)
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  const N = act.daysSinceLast === 0 ? act.todayCorrect : act.lastDayCorrect;
+  const R = act.bestCorrect;
+  const D = act.daysSinceLast;
+  let msg = '';
+
+  if (D === 0) {
+    // Heute aktiv
+    if (N === 0) {
+      msg = pick([
+        'Noch keine Aufgaben heute — aber der Tag ist ja noch jung.',
+        'Heute noch auf null. Don Due wartet. Nicht zu lange.',
+        'Null richtige Aufgaben heute — das lässt sich noch ändern!',
+        'Oggi ancora niente. Starte dein erstes Modul des Tages.',
+      ]);
+    } else if (N < 5) {
+      msg = pick([
+        `Gut angefangen — ${N} richtig heute. Der Rest wartet.`,
+        `${N} Treffer heute. Don Due nickt. Weiter so.`,
+        `Erster Anlauf: ${N} richtige Aufgaben. Bleib dran!`,
+        `${N} richtig heute — ein solider Start. Mehr geht noch!`,
+      ]);
+    } else if (N < 15) {
+      msg = pick([
+        `Flotte Sache! ${N} richtige Aufgaben heute. 💪`,
+        `${N} richtig heute — das nenne ich Einsatz.`,
+        `Oggi bene — ${N} richtig. Continua così!`,
+        `${N} Aufgaben richtig gelöst. Don Due ist zufrieden.`,
+        `Nicht schlecht, ${N} richtig heute. Vielleicht noch eine Runde?`,
+      ]);
+    } else if (N < 30) {
+      msg = pick([
+        `Starker Tag! ${N} richtige Aufgaben heute. 🔥`,
+        `${N} Treffer — Don Due ist beeindruckt. Fast schon Rispetto.`,
+        `Un giorno di fuoco! ${N} richtig heute.`,
+        `${N} richtige Aufgaben — das Italiano hat heute Freude an dir.`,
+        `${N} richtig. Wenn das so weitergeht, kommt bald der Rispetto-Stern.`,
+      ]);
+    } else {
+      msg = pick([
+        `Incredibile! ${N} richtige Aufgaben heute. 🏆`,
+        `${N} Treffer an einem Tag — Don Due zieht den Hut.`,
+        `${N} richtig heute. Das Italiano hat neuen Respekt vor dir.`,
+        `Heute ${N} richtig. Das ist kein Lernen mehr — das ist Meisterschaft.`,
+        `${N} richtige Aufgaben. Cosa vuoi di più? Grandioso!`,
+      ]);
+    }
+    // Rekord-Zusatz wenn nah dran oder gebrochen
+    if (R > 0 && N >= R && N > 0) {
+      msg += ' 🏅 Neuer Tagesrekord!';
+    } else if (R > 0 && N > 0 && N >= R * 0.8 && N < R) {
+      msg += ` (Rekord: ${R} — fast geschafft!)`;
+    }
+  } else if (D === 1) {
+    // Gestern aktiv
+    msg = pick([
+      `Gestern ${N} richtige Aufgaben. Heute wieder?`,
+      `Guter Lauf gestern: ${N} richtig. Don Due erwartet eine Wiederholung.`,
+      `${N} richtig gestern. Das Italiano ruft — hörst du es?`,
+      `Gestern warst du stark: ${N} richtig. Oggi wieder?`,
+      `${N} richtig gestern. Den Schwung nicht verlieren!`,
+    ]);
+  } else if (D !== null && D <= 6) {
+    // Wenige Tage Pause
+    msg = pick([
+      `Vor ${D} Tagen zuletzt aktiv — ${N} richtig damals. Tiempo für eine neue Runde!`,
+      `${D} Tage Pause. Das Italiano vermisst dich. (${N} richtig beim letzten Mal)`,
+      `Dein letzter Besuch: vor ${D} Tagen, ${N} richtig. Willkommen zurück?`,
+      `${D} Tage ohne Übung. Erinnerst du dich noch an den Konjunktiv? Genau.`,
+      `Vor ${D} Tagen: ${N} richtig. Heute ein neues Kapitel aufschlagen?`,
+    ]);
+  } else if (D !== null) {
+    // Lange Pause
+    msg = pick([
+      `${D} Tage ohne Italiano. Don Due ist besorgt — und etwas enttäuscht.`,
+      `Vor ${D} Tagen: ${N} richtig. Ein Comeback wäre schön, oder?`,
+      `${D} Tage Pause. Das Passato Prossimo wartet schon eine Weile auf dich.`,
+      `Seit ${D} Tagen keine Übungen. Il primo passo è il più difficile — fang an.`,
+      `${D} Tage. Kein Kommentar. Don Due schaut dich nur an.`,
+    ]);
+  }
+
+  if (msg) {
+    msgEl.textContent  = msg;
+    msgEl.style.display = 'block';
+  }
+}
 </script>
 
 <!-- Don Due — Floating Mascot (fixed, unten rechts) -->
