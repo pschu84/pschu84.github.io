@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Pronominalverben</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Satzbau (B1) · Modul 27</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>🧠 Pronominalverben</h1>
+    <p>farcela, andarsene, metterci — Verben mit festem Pronomen und eigenem Sinn</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm27',
+  block: 'satzbau-b1',
+  title: 'Pronominalverben',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'<strong>Pronominalverben</strong> (verbi pronominali) sind Verben, die mit einem oder mehreren fest angehängten Pronomen eine <em>neue, eigenständige Bedeutung</em> erhalten. Die Pronomen sind nicht trennbar — sie verändern die Grundbedeutung des Verbs komplett.' },
+
+    { type:'table', head:['Pronominalverb', 'Grundverb', 'Bedeutung', 'Beispiel'],
+      rows:[
+        ['farcela',      'fare',      'es schaffen',                  'Non ce la faccio.'],
+        ['andarsene',    'andare',    'weggehen',                     'Me ne vado.'],
+        ['metterci',     'mettere',   'Zeit brauchen (Person)',        'Ci metto un\'ora.'],
+        ['volerci',      'volere',    'dauern (unpersönlich)',         'Ci vogliono due ore.'],
+        ['cavarsela',    'cavare',    'zurechtkommen, sich retten',    'Me la cavo.'],
+        ['avercela con', 'avere',     'es auf jmdn. abgesehen haben', 'Ce l\'ha con me.'],
+        ['entrarci',     'entrare',   'damit zu tun haben',           'Non c\'entra.'],
+        ['intendersene', 'intendere', 'sich auskennen',               'Me ne intendo.'],
+        ['fregarsene',   'fregare',   'sich einen Dreck darum scheren','Me ne frego.'],
+        ['vedersela',    'vedere',    'mit etw. zurechtkommen',       'Se la vede da solo.'],
+        ['sentirsela',   'sentire',   'sich in der Lage fühlen',      'Non me la sento.'],
+        ['passarsela',   'passare',   'es gut/schlecht haben',        'Se la passa bene.'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Konjugation:</strong> Die Pronomen passen sich dem Subjekt an. Das Verb selbst folgt der normalen Konjugation.' },
+
+    { type:'table', head:['Pronomen', 'farcela', 'andarsene', 'metterci'],
+      rows:[
+        ['io',      'ce la faccio',    'me ne vado',    'ci metto'    ],
+        ['tu',      'ce la fai',       'te ne vai',     'ci metti'    ],
+        ['lui/lei', 'ce la fa',        'se ne va',      'ci mette'    ],
+        ['noi',     'ce la facciamo',  'ce ne andiamo', 'ci mettiamo' ],
+        ['voi',     'ce la fate',      've ne andate',  'ci mettete'  ],
+        ['loro',    'ce la fanno',     'se ne vanno',   'ci mettono'  ],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Andarsene im Passato Prossimo:</strong> essere als Hilfsverb. me ne sono andato (m) / andata (f). Partizip kongruiert mit dem Subjekt.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Sentirsela und Farcela im Vergleich:</strong>' },
+
+    { type:'compare',
+      left:  { title:'farcela = es schaffen', body:'Ce la faccio.<br>Ich schaffe es. (aktives Können)<br><br>Non ce la faccio più.<br>Ich schaffe es nicht mehr.' },
+      right: { title:'sentirsela = sich in der Lage fühlen', body:'Me la sento.<br>Ich fühle mich dazu in der Lage.<br><br>Non me la sento di venire.<br>Ich fühle mich nicht in der Lage zu kommen.' }
+    },
+  ],
+
+  exercises: [
+
+    /* === SO 2 — mit Ablenkungstokens === */
+    { id:'m27-so-01', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['me', 'ne', 'se', 'vado', 'subito'],
+      solution:['me', 'ne', 'vado', 'subito'],
+      translation:'Ich gehe sofort weg.',
+      explain:'andarsene 1. Sg.: me ne vado. se ne vado wäre 3. Sg. (er/sie geht weg).' },
+
+    { id:'m27-so-02', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['ce', 'me', 'la', 'faccio', 'non', 'più'],
+      solution:['non', 'ce', 'la', 'faccio', 'più'],
+      translation:'Ich schaffe es nicht mehr.',
+      explain:'farcela 1. Sg.: ce la faccio. me la faccio existiert nicht. non … più = nicht mehr.' },
+
+    /* === ZO 9 === */
+    { id:'m27-zo-01', type:'ZO',
+      prompt:'Ordne zu: Pronominalverb → Bedeutung',
+      pairs:[
+        { de:'farcela',     it:'es schaffen'                },
+        { de:'andarsene',   it:'weggehen'                   },
+        { de:'metterci',    it:'Zeit brauchen (Person)'     },
+        { de:'cavarsela',   it:'zurechtkommen'              },
+        { de:'sentirsela',  it:'sich in der Lage fühlen'    },
+        { de:'intendersene',it:'sich auskennen'             },
+      ] },
+
+    { id:'m27-zo-02', type:'ZO',
+      prompt:'Ordne zu: Pronominalverb → Bedeutung',
+      pairs:[
+        { de:'volerci',      it:'dauern (unpersönlich)'         },
+        { de:'avercela con', it:'es auf jmdn. abgesehen haben'  },
+        { de:'entrarci',     it:'damit zu tun haben'            },
+        { de:'fregarsene',   it:'sich einen Dreck drum scheren' },
+        { de:'passarsela',   it:'es gut/schlecht haben'         },
+        { de:'vedersela',    it:'mit etw. zurechtkommen (allein)'},
+      ] },
+
+    { id:'m27-zo-03', type:'ZO',
+      prompt:'Ordne zu: farcela — alle Formen',
+      pairs:[
+        { de:'ich schaffe es',      it:'ce la faccio'   },
+        { de:'du schaffst es',      it:'ce la fai'      },
+        { de:'er/sie schafft es',   it:'ce la fa'       },
+        { de:'wir schaffen es',     it:'ce la facciamo' },
+        { de:'ihr schafft es',      it:'ce la fate'     },
+        { de:'sie schaffen es',     it:'ce la fanno'    },
+      ] },
+
+    { id:'m27-zo-04', type:'ZO',
+      prompt:'Ordne zu: andarsene — alle Formen',
+      pairs:[
+        { de:'ich gehe weg',      it:'me ne vado'      },
+        { de:'du gehst weg',      it:'te ne vai'       },
+        { de:'er/sie geht weg',   it:'se ne va'        },
+        { de:'wir gehen weg',     it:'ce ne andiamo'   },
+        { de:'ihr geht weg',      it:'ve ne andate'    },
+        { de:'sie gehen weg',     it:'se ne vanno'     },
+      ] },
+
+    { id:'m27-zo-05', type:'ZO',
+      prompt:'Ordne zu: Satz → Deutsch',
+      pairs:[
+        { de:'Me ne vado subito.',         it:'Ich gehe sofort weg.'                   },
+        { de:'Ce la facciamo!',            it:'Wir schaffen es!'                        },
+        { de:'Se la cava bene.',           it:'Er kommt gut zurecht.'                   },
+        { de:'Ci metto venti minuti.',     it:'Ich brauche zwanzig Minuten dafür.'      },
+        { de:'Non me la sento di venire.', it:'Ich fühle mich nicht in der Lage zu kommen.' },
+        { de:'Ce l\'ha con te.',           it:'Er hat es auf dich abgesehen.'           },
+      ] },
+
+    { id:'m27-zo-06', type:'ZO',
+      prompt:'Ordne zu: metterci vs. volerci',
+      pairs:[
+        { de:'Ci metto un\'ora. (ich, Person)',      it:'metterci: Person als Subjekt'  },
+        { de:'Ci vuole un\'ora. (es dauert)',         it:'volerci: unpersönlich'         },
+        { de:'Ci mettiamo due ore. (wir)',            it:'metterci: Person als Subjekt'  },
+        { de:'Ci vogliono due ore. (es dauern)',      it:'volerci: unpersönlich'         },
+        { de:'Quanto ci metti? (du)',                 it:'metterci: Person als Subjekt'  },
+        { de:'Quanto ci vuole? (es dauert wie lang)',  it:'volerci: unpersönlich'        },
+      ] },
+
+    { id:'m27-zo-07', type:'ZO',
+      prompt:'Ordne zu: Passato Prossimo — welches Hilfsverb?',
+      pairs:[
+        { de:'andarsene (me ne sono andato)',   it:'essere (Bewegung)'  },
+        { de:'farcela (ce l\'ho fatta)',        it:'avere'              },
+        { de:'cavarsela (me la sono cavata)',   it:'essere'             },
+        { de:'metterci (ci ho messo)',          it:'avere'              },
+        { de:'volerci (ci è voluta un\'ora)',   it:'essere (unpers.)'  },
+        { de:'sentirsela (non me la sono sentita)', it:'essere'        },
+      ] },
+
+    { id:'m27-zo-08', type:'ZO',
+      prompt:'Ordne zu: Kontext → passendes Pronominalverb',
+      pairs:[
+        { de:'Ich kann nicht mehr — zu viel Arbeit!',      it:'Non ce la faccio più.'     },
+        { de:'Er verlässt die Party ohne zu sagen.',       it:'Se ne va senza salutare.'  },
+        { de:'Wie lange brauchst du?',                     it:'Quanto ci metti?'          },
+        { de:'Das Problem betrifft mich nicht.',           it:'Non mi riguarda / Non c\'entro.' },
+        { de:'Sie kommt mit der Situation klar.',          it:'Se la cava bene.'          },
+        { de:'Er ist wütend auf mich.',                    it:"Ce l'ha con me."           },
+      ] },
+
+    { id:'m27-zo-09', type:'ZO',
+      prompt:'Ordne zu: Satz → Deutsch',
+      pairs:[
+        { de:'Se la passa bene.',          it:'Es geht ihm gut. / Er lebt gut.'          },
+        { de:'Me ne intendo di vini.',     it:'Ich kenne mich mit Weinen aus.'           },
+        { de:'Non me ne frega niente.',    it:'Es ist mir völlig egal / sch... egal.'    },
+        { de:'Ve la siete cavata?',        it:'Habt ihr es geschafft / seid zurecht?'    },
+        { de:'Non ce la fa più.',          it:'Er/Sie schafft es nicht mehr.'            },
+        { de:'Me la sono vista brutta.',   it:'Ich war in einer schlimmen Situation.'    },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m27-mc-01', type:'MC',
+      prompt:'"Io non ___ faccio più, sono esausto."',
+      options:['la','ce la','me la','ci'],
+      correctValue:'ce la',
+      explain:'farcela 1. Sg.: ce la faccio. "ce la" ist die 1./2./3.-Sg.-Form der Verbindung.' },
+
+    { id:'m27-mc-02', type:'MC',
+      prompt:'"Marco ___ va senza salutare."',
+      options:['ce ne','me ne','se ne','te ne'],
+      correctValue:'se ne',
+      explain:'andarsene 3. Sg.: se ne va. me ne wäre "ich gehe weg".' },
+
+    { id:'m27-mc-03', type:'MC',
+      prompt:'"Quanto ___ metti per arrivare?"',
+      options:['ne','vi','ci','si'],
+      correctValue:'ci',
+      explain:'metterci: il pronome ci è fisso per tutte le persone del soggetto. Ci metti = tu ci metti.' },
+
+    { id:'m27-mc-04', type:'MC',
+      prompt:'"Non ___ sento di venire alla festa stasera."',
+      options:['ce la','me la','me ne','ci'],
+      correctValue:'me la',
+      explain:'sentirsela 1. Sg.: me la sento. Non me la sento = Ich fühle mich nicht dazu in der Lage.' },
+
+    { id:'m27-mc-05', type:'MC',
+      prompt:'"___ sono andata subito dopo la riunione." (ich, f)',
+      options:['Ce ne','Me ne','Se ne','Te ne'],
+      correctValue:'Me ne',
+      explain:'andarsene Passato Prossimo 1. Sg. (f): me ne sono andata. essere als Hilfsverb, Partizip -a.' },
+
+    { id:'m27-mc-06', type:'MC',
+      prompt:'"Non ___ entra con quello che stiamo dicendo."',
+      options:['ce','ci','ne','vi'],
+      correctValue:'ci',
+      explain:'entrarci 3. Sg.: Non c\'entra. (ci → c\' vor entra). Damit zu tun haben.' },
+
+    { id:'m27-mc-07', type:'MC',
+      prompt:'"Alla fine ___ siamo cavati." (noi)',
+      options:['me la','ve la','ce la','se la'],
+      correctValue:'ce la',
+      explain:'cavarsela 1. Pl.: ce la siamo cavati. essere als Hilfsverb.' },
+
+    { id:'m27-mc-08', type:'MC',
+      prompt:'"___ vuolono tre giorni per finire."',
+      options:['Ci','Ce','Ne','Vi'],
+      correctValue:'Ci',
+      explain:'volerci Plural: Ci vogliono + tre giorni. "vuolono" ist falsch — korrekt: vogliono. Aber die Frage testet ci.' },
+
+    { id:'m27-mc-09', type:'MC',
+      prompt:'"Di calcio ___ intendo molto."',
+      options:['ce ne','me ne','me lo','ci'],
+      correctValue:'me ne',
+      explain:'intendersene 1. Sg.: me ne intendo. di calcio → ne. Ich kenne mich mit Fußball aus.' },
+
+    { id:'m27-mc-10', type:'MC',
+      prompt:'Was bedeutet "Se la passa bene"?',
+      options:['Er geht gut weg.','Es geht ihm gut / Er lebt gut.','Er schafft es gut.','Er kommt gut an.'],
+      correctValue:'Es geht ihm gut / Er lebt gut.',
+      explain:'passarsela bene/male = es gut/schlecht haben, gut/schlecht leben. 3. Sg.: se la passa.' },
+
+    { id:'m27-mc-11', type:'MC',
+      prompt:'"Ce ___ hanno con noi — non capisco perché."',
+      options:['lo','la','ne','li'],
+      correctValue:"l'",
+      explain:'avercela con: Ce l\'hanno con noi. la (→ l\' vor hanno) ist das feste Pronomen.' },
+
+    { id:'m27-mc-12', type:'MC',
+      prompt:'Welche Form von "andarsene" für "voi"?',
+      options:['se ne andate','ve ne andate','me ne andate','ce ne andate'],
+      correctValue:'ve ne andate',
+      explain:'andarsene 2. Pl.: vi → ve + ne + andate = ve ne andate.' },
+
+    /* === MCL 5 === */
+    { id:'m27-mcl-01', type:'MC',
+      prompt:'Wähle: "Questo lavoro è difficile ma ___ faccio."',
+      options:['ci la','ce lo','ce la','me la'],
+      correctValue:'ce la',
+      translation:'Diese Arbeit ist schwierig, aber ich schaffe es.',
+      explain:'farcela 1. Sg.: ce la faccio. (Affirmativ: ce la faccio.)' },
+
+    { id:'m27-mcl-02', type:'MC',
+      prompt:'Wähle: "Quanto tempo ___ vuole per cucinare?"',
+      options:['ci','ce','ne','vi'],
+      correctValue:'ci',
+      translation:'Wie viel Zeit dauert es zu kochen?',
+      explain:'volerci unpersönlich: Quanto ci vuole? (Singular, da "tempo" Sg.)' },
+
+    { id:'m27-mcl-03', type:'MC',
+      prompt:'Wähle: "Maria era arrabbiata — ___ aveva con tutti."',
+      options:["ce l'","me l'","ne la","ci la"],
+      correctValue:"ce l'",
+      translation:'Maria war wütend — sie hatte es auf alle abgesehen.',
+      explain:"avercela con: ce l'aveva (Imperfetto). 3. Sg. la → l' vor aveva." },
+
+    { id:'m27-mcl-04', type:'MC',
+      prompt:'Wähle: "Non ___ sento di partire così presto."',
+      options:['ce la','me la','me ne','ci'],
+      correctValue:'me la',
+      translation:'Ich fühle mich nicht in der Lage, so früh abzufahren.',
+      explain:'sentirsela 1. Sg.: me la sento. Non me la sento di + Infinitiv.' },
+
+    { id:'m27-mcl-05', type:'MC',
+      prompt:'Wähle: "Sei riuscito? — Sì, ___ siamo cavati bene."',
+      options:['me la','ce la','se la','ve la'],
+      correctValue:'ce la',
+      translation:'Hat es geklappt? — Ja, wir sind gut zurechtgekommen.',
+      explain:'cavarsela 1. Pl.: ce la siamo cavati. essere als Hilfsverb.' },
+
+    /* === LT 5 === */
+    { id:'m27-lt-01', type:'LT',
+      text:'Non {0} faccio — questo lavoro è troppo difficile per me.',
+      blanks:[ { accept:['ce la'] } ],
+      translation:'Ich schaffe es nicht — diese Arbeit ist zu schwierig für mich.',
+      explain:'farcela 1. Sg. negiert: non ce la faccio.' },
+
+    { id:'m27-lt-02', type:'LT',
+      text:'Quanto {0} metti di solito per andare al lavoro? — {1} metto circa mezz\'ora.',
+      blanks:[ { accept:['ci'] }, { accept:['Ci'] } ],
+      translation:'Wie lange brauchst du normalerweise zur Arbeit? — Ich brauche ungefähr eine halbe Stunde.',
+      explain:'metterci: ci metti (2. Sg.) / ci metto (1. Sg.). ci bleibt bei allen Personen gleich.' },
+
+    { id:'m27-lt-03', type:'LT',
+      text:'Dopo la riunione Marco {0} è andato senza salutare. Non capisco perché {1} abbia con noi.',
+      blanks:[ { accept:['se ne'] }, { accept:["ce l'"] } ],
+      translation:'Nach dem Meeting ging Marco weg ohne zu grüßen. Ich verstehe nicht, warum er es auf uns abgesehen hat.',
+      explain:"andarsene 3. Sg. PP: se ne è andato. avercela con: ce l'abbia (Congiuntivo dopo capisco perché)." },
+
+    { id:'m27-lt-04', type:'LT',
+      text:'Ci vogliono tre anni per laurearsi. Ma alla fine {0} si cava sempre.',
+      blanks:[ { accept:['ce la'] } ],
+      translation:'Es dauert drei Jahre bis zum Abschluss. Aber am Ende kommt man immer zurecht.',
+      explain:'cavarsela 3. Sg. (impersonale si): ce la si cava.' },
+
+    { id:'m27-lt-05', type:'LT',
+      text:'Non {0} sento di prendere questa decisione da sola. Hai sentito? {1} ne intendo poco di queste cose.',
+      blanks:[ { accept:['me la'] }, { accept:['Me'] } ],
+      translation:'Ich fühle mich nicht in der Lage, diese Entscheidung alleine zu treffen. Hast du gehört? Ich kenne mich mit diesen Dingen wenig aus.',
+      explain:'sentirsela 1. Sg.: non me la sento; intendersene 1. Sg.: me ne intendo (poco).' },
+
+    /* === FT 2 === */
+    { id:'m27-ft-01', type:'FT',
+      prompt:'Konjugiere "andarsene" im Presente:',
+      rows:[
+        { label:'io',       accept:['me ne vado']    },
+        { label:'tu',       accept:['te ne vai']     },
+        { label:'lui/lei',  accept:['se ne va']      },
+        { label:'noi',      accept:['ce ne andiamo'] },
+        { label:'voi',      accept:['ve ne andate']  },
+        { label:'loro',     accept:['se ne vanno']   },
+      ] },
+
+    { id:'m27-ft-02', type:'FT',
+      prompt:'Passato Prossimo — welches Hilfsverb und welche Form?',
+      rows:[
+        { label:'andarsene (io, m)',      accept:['me ne sono andato']     },
+        { label:'farcela (io)',           accept:["ce l'ho fatta"]         },
+        { label:'cavarsela (lei)',        accept:['se la è cavata','se l\'è cavata']   },
+        { label:'metterci (noi)',         accept:['ci abbiamo messo']      },
+        { label:'volerci (un\'ora, f)',   accept:["ci è voluta un'ora"]    },
+        { label:'sentirsela (tu, f)',     accept:['te la sei sentita']     },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m27-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Non me la faccio più.',
+      solution:'Non ce la faccio più.',
+      errorToken:'me la',
+      translation:'Ich schaffe es nicht mehr.',
+      explain:'farcela 1. Sg.: ce la faccio. "me la faccio" existiert nicht — die Verbindung ist immer ce la (nicht me la).' },
+
+    { id:'m27-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Me ne sono andato via subito. (er)',
+      solution:'Se ne è andato via subito.',
+      errorToken:'Me ne sono',
+      translation:'Er ist sofort weggegangen.',
+      explain:'andarsene 3. Sg. (lui): se ne è andato. me ne sono andato wäre 1. Sg. (ich).' },
+
+    { id:'m27-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Ci vuolono tre giorni per finire.',
+      solution:'Ci vogliono tre giorni per finire.',
+      errorToken:'vuolono',
+      translation:'Es dauern drei Tage bis zur Fertigstellung.',
+      explain:'volerci Pl.: ci vogliono (nicht vuolono — das ist keine korrekte Verbform). tre giorni (Pl.) → vogliono.' },
+
+    /* === KA 3 === */
+    { id:'m27-ka-01', type:'KA',
+      prompt:'Kategorisiere: farcela oder sentirsela?',
+      categories:['farcela (aktiv schaffen)', 'sentirsela (sich in der Lage fühlen)'],
+      items:[
+        { text:'Ce la faccio, è facile.',          cat:0 },
+        { text:'Non me la sento di parlare.',       cat:1 },
+        { text:'Dai, ce la fai!',                   cat:0 },
+        { text:'Non me la sento di venire.',        cat:1 },
+        { text:'Ce la fanno sempre.',               cat:0 },
+        { text:'Te la senti di farlo?',             cat:1 },
+      ] },
+
+    { id:'m27-ka-02', type:'KA',
+      prompt:'Kategorisiere: metterci oder volerci?',
+      categories:['metterci (Person braucht Zeit)', 'volerci (es dauert, unpersönlich)'],
+      items:[
+        { text:'Ci metto un\'ora.',         cat:0 },
+        { text:'Ci vuole un\'ora.',         cat:1 },
+        { text:'Quanto ci metti?',          cat:0 },
+        { text:'Quanto ci vuole?',          cat:1 },
+        { text:'Ci mettiamo due ore.',      cat:0 },
+        { text:'Ci vogliono due ore.',      cat:1 },
+      ] },
+
+    { id:'m27-ka-03', type:'KA',
+      prompt:'Kategorisiere: essere oder avere als Hilfsverb im PP?',
+      categories:['essere', 'avere'],
+      items:[
+        { text:'andarsene',    cat:0 },
+        { text:'farcela',      cat:1 },
+        { text:'cavarsela',    cat:0 },
+        { text:'metterci',     cat:1 },
+        { text:'sentirsela',   cat:0 },
+        { text:'volerci',      cat:0 },
+      ] },
+
+    /* === KO 2 === */
+    { id:'m27-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Ci metto un\'ora.', tag:'metterci: ich brauche eine Stunde' },
+      b:{ sentence:"Ci vuole un'ora.", tag:'volerci: es dauert eine Stunde' },
+      reveal:'"Ci metto un\'ora" — das Subjekt ist eine Person (io): Ich brauche eine Stunde. Das Verb konjugiert nach dem Subjekt (ci metto/metti/mette). "Ci vuole un\'ora" — unpersönlich: Es dauert eine Stunde. Das Verb richtet sich nach dem Zeitausdruck (un\'ora Sg. → vuole, due ore Pl. → vogliono). Kein persönliches Subjekt.' },
+
+    { id:'m27-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Non ce la faccio.', tag:'farcela: aktiv nicht schaffen' },
+      b:{ sentence:'Non me la sento.', tag:'sentirsela: sich nicht in der Lage fühlen' },
+      reveal:'"Non ce la faccio" — farcela drückt aus, dass man objektiv nicht in der Lage ist, etwas zu tun (zu müde, zu schwierig). "Non me la sento" — sentirsela drückt ein subjektives Gefühl aus: Ich fühle mich nicht in der Lage (psychologisch, emotional). Non me la sento di venire = Ich fühle mich nicht gut genug, um zu kommen.' },
+
+    /* === DE 3 === */
+    { id:'m27-de-01', type:'DE',
+      prompt:'"Ich schaffe es nicht mehr — ich brauche mindestens eine Stunde."',
+      solutions:['Non ce la faccio più — ci metto almeno un\'ora.','Non ce la faccio — ci vuole almeno un\'ora.'],
+      note:'Non ce la faccio più (farcela); ci metto / ci vuole almeno un\'ora.' },
+
+    { id:'m27-de-02', type:'DE',
+      prompt:'"Er ist wütend auf mich — er geht weg ohne zu reden."',
+      solutions:["Ce l'ha con me — se ne va senza parlare.",'Ce l\'ha con me — se ne va senza dire niente.'],
+      note:"avercela con: ce l'ha con me. andarsene 3. Sg.: se ne va." },
+
+    { id:'m27-de-03', type:'DE',
+      prompt:'"Ich kenne mich mit Wein aus — wenn du möchtest, erkläre ich es dir."',
+      solutions:['Me ne intendo di vino — se vuoi, te lo spiego.','Me ne intendo di vini — se vuoi te lo spiego.'],
+      note:'intendersene 1. Sg.: me ne intendo di vino. Te lo spiego = kombiniertes Pronomen.' },
+
+    /* === IT 3 === */
+    { id:'m27-it-01', type:'IT',
+      prompt:'"Ce la siamo cavata alla fine, anche se ci è voluto più tempo del previsto."',
+      solutions:['Wir haben es am Ende geschafft, auch wenn es mehr Zeit gebraucht hat als erwartet.','Am Ende haben wir es geschafft, auch wenn es länger gedauert hat als geplant.'],
+      note:'cavarsela PP (noi, f): ce la siamo cavata. volerci PP: ci è voluto (Sg., tempo).' },
+
+    { id:'m27-it-02', type:'IT',
+      prompt:'"Se ne sono andate senza salutare — non capisco perché ce l\'abbiano con noi."',
+      solutions:['Sie sind gegangen ohne zu grüßen — ich verstehe nicht, warum sie es auf uns abgesehen haben.'],
+      note:'andarsene PP (f/Pl.): se ne sono andate. avercela con: Congiuntivo dopo non capisco perché.' },
+
+    { id:'m27-it-03', type:'IT',
+      prompt:'"Non me la sento di prendere questa decisione da solo."',
+      solutions:['Ich fühle mich nicht in der Lage, diese Entscheidung alleine zu treffen.','Ich fühle mich nicht wohl dabei, diese Entscheidung alleine zu fällen.'],
+      note:'sentirsela 1. Sg.: non me la sento di + Infinitiv. da solo = alleine.' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

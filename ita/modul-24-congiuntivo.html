@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Congiuntivo</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Zeiten (B1) · Modul 24</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>🌀 Congiuntivo</h1>
+    <p>Presente und Imperfetto — Auslöser, Bildung, Zeitenfolge</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 48</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm24',
+  block: 'zeiten-b1',
+  title: 'Congiuntivo',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Der <strong>Congiuntivo</strong> (Konjunktiv) steht in Nebensätzen nach bestimmten Verben, Ausdrücken und Konjunktionen. Der Nebensatz wird durch <strong>che</strong> eingeleitet. Wichtig: nur wenn das Subjekt des Nebensatzes <em>verschieden</em> vom Hauptsatz ist — sonst Infinitiv.' },
+
+    { type:'compare',
+      left:  { title:'Gleiche Person → Infinitiv', body:'Voglio <strong>andare</strong>.<br>Spero di <strong>venire</strong>.<br>Penso di <strong>farlo</strong>.' },
+      right: { title:'Verschiedene Person → Congiuntivo', body:'Voglio che tu <strong>vada</strong>.<br>Spero che lui <strong>venga</strong>.<br>Penso che lei lo <strong>faccia</strong>.' }
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Congiuntivo Presente — Bildung:</strong>' },
+
+    { type:'table', head:['Pronomen', 'parlare', 'vedere', 'partire', 'essere', 'avere'],
+      rows:[
+        ['io/tu/lui',  'parli',    'veda',    'parta',    'sia',    'abbia'   ],
+        ['noi',        'parliamo', 'vediamo', 'partiamo', 'siamo',  'abbiamo' ],
+        ['voi',        'parliate', 'vediate', 'partiate', 'siate',  'abbiate' ],
+        ['loro',       'parlino',  'vedano',  'partano',  'siano',  'abbiano' ],
+      ]
+    },
+
+    { type:'tip', body:'<strong>io = tu = lui/lei</strong> im Congiuntivo Presente — alle drei Formen sind identisch. Deshalb steht das Subjektpronomen oft explizit: "Voglio che <em>tu</em> parli." vs. "Voglio che <em>lei</em> parli."' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Congiuntivo Imperfetto — Bildung:</strong> Stamm + Endungen -ssi/-ssi/-sse/-ssimo/-ste/-ssero.' },
+
+    { type:'table', head:['Pronomen', 'parlare', 'vedere', 'partire', 'essere'],
+      rows:[
+        ['io',      'parlassi',   'vedessi',   'partissi',   'fossi'   ],
+        ['tu',      'parlassi',   'vedessi',   'partissi',   'fossi'   ],
+        ['lui/lei', 'parlasse',   'vedesse',   'partisse',   'fosse'   ],
+        ['noi',     'parlassimo', 'vedessimo', 'partissimo', 'fossimo' ],
+        ['voi',     'parlaste',   'vedeste',   'partiste',   'foste'   ],
+        ['loro',    'parlassero', 'vedessero', 'partissero', 'fossero' ],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Zeitenfolge:</strong>' },
+
+    { type:'table', head:['Hauptsatz', 'Nebensatz-Zeit', 'Congiuntivo'],
+      rows:[
+        ['Präsens (penso che)',      'gleichzeitig',  'Presente: parli'],
+        ['Präsens (penso che)',      'vorzeitig',     'Passato: abbia parlato'],
+        ['Vergangenheit (pensavo che)', 'gleichzeitig', 'Imperfetto: parlasse'],
+        ['Vergangenheit (pensavo che)', 'vorzeitig',  'Trapassato: avesse parlato'],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Häufige Auslöser:</strong> Verben: volere che, pensare che, credere che, sperare che, temere che, dubitare che. Unpersönlich: è importante che, bisogna che, è possibile che, è strano che. Konjunktionen: sebbene/benché (obwohl), affinché (damit), a meno che (außer wenn), prima che (bevor), senza che (ohne dass).' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 — mit Ablenkungstokens === */
+    { id:'m24-so-01', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['che', 'voglio', 'tu', 'venga', 'viene', 'domani'],
+      solution:['voglio', 'che', 'tu', 'venga', 'domani'],
+      translation:'Ich möchte, dass du morgen kommst.',
+      explain:'venga = Congiuntivo Presente von venire (3./1./2. Sg.). viene wäre Präsens Indikativ — falsch nach voglio che.' },
+
+    { id:'m24-so-02', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['pensavo', 'che', 'fosse', 'era', 'difficile'],
+      solution:['pensavo', 'che', 'fosse', 'difficile'],
+      translation:'Ich dachte, es wäre schwierig.',
+      explain:'fosse = Congiuntivo Imperfetto von essere (nach pensavo, Vergangenheit). era wäre Imperfetto Indikativ — falsch nach pensavo che.' },
+
+    /* === ZO 9 — ohne Stammwort-Matching, mit Genus/Hinweisen === */
+    { id:'m24-zo-01', type:'ZO',
+      prompt:'Ordne zu: Auslöser → braucht Congiuntivo oder Infinitiv?',
+      pairs:[
+        { de:'Voglio andare. (gleiche Person)',          it:'Infinitiv'      },
+        { de:'Voglio che tu vada. (versch. Person)',     it:'Congiuntivo'    },
+        { de:'Spero di venire. (gleiche Person)',        it:'Infinitiv'      },
+        { de:'Spero che lui venga. (versch. Person)',    it:'Congiuntivo'    },
+        { de:'Penso di farlo. (gleiche Person)',         it:'Infinitiv'      },
+        { de:'Penso che lei lo faccia. (versch. Person)',it:'Congiuntivo'    },
+      ] },
+
+    { id:'m24-zo-02', type:'ZO',
+      prompt:'Ordne zu: Congiuntivo Presente von essere',
+      pairs:[
+        { de:'io/tu/lui — sein (Congiuntivo)',  it:'sia'    },
+        { de:'noi — sein (Congiuntivo)',         it:'siamo'  },
+        { de:'voi — sein (Congiuntivo)',         it:'siate'  },
+        { de:'loro — sein (Congiuntivo)',        it:'siano'  },
+        { de:'io — sein (Präsens Indikativ)',    it:'sono'   },
+        { de:'lui — sein (Präsens Indikativ)',   it:'è'      },
+      ] },
+
+    { id:'m24-zo-03', type:'ZO',
+      prompt:'Ordne zu: Congiuntivo Presente — welche Form?',
+      pairs:[
+        { de:'parlare — io/tu/lui (Conj. Pres.)', it:'parli'    },
+        { de:'parlare — noi (Conj. Pres.)',        it:'parliamo' },
+        { de:'parlare — voi (Conj. Pres.)',        it:'parliate' },
+        { de:'parlare — loro (Conj. Pres.)',       it:'parlino'  },
+        { de:'parlare — io (Präsens Ind.)',        it:'parlo'    },
+        { de:'parlare — loro (Präsens Ind.)',      it:'parlano'  },
+      ] },
+
+    { id:'m24-zo-04', type:'ZO',
+      prompt:'Ordne zu: Congiuntivo Imperfetto von essere',
+      pairs:[
+        { de:'io/tu — sein (Conj. Imperf.)',   it:'fossi'    },
+        { de:'lui/lei — sein (Conj. Imperf.)', it:'fosse'    },
+        { de:'noi — sein (Conj. Imperf.)',     it:'fossimo'  },
+        { de:'voi — sein (Conj. Imperf.)',     it:'foste'    },
+        { de:'loro — sein (Conj. Imperf.)',    it:'fossero'  },
+        { de:'io — sein (Imperf. Ind.)',       it:'ero'      },
+      ] },
+
+    { id:'m24-zo-05', type:'ZO',
+      prompt:'Ordne zu: Zeitenfolge — welcher Congiuntivo nach welchem Hauptsatz?',
+      pairs:[
+        { de:'Penso che (Präsens) → gleichzeitig',         it:'Congiuntivo Presente: parli'       },
+        { de:'Penso che (Präsens) → vorzeitig',            it:'Congiuntivo Passato: abbia parlato' },
+        { de:'Pensavo che (Vergangenheit) → gleichzeitig', it:'Congiuntivo Imperfetto: parlasse'  },
+        { de:'Pensavo che (Vergangenheit) → vorzeitig',    it:'Congiuntivo Trapassato: avesse parlato' },
+        { de:'È importante che (Präsens)',                  it:'Congiuntivo Presente: studi'       },
+        { de:'Era importante che (Vergangenheit)',          it:'Congiuntivo Imperfetto: studiasse' },
+      ] },
+
+    { id:'m24-zo-06', type:'ZO',
+      prompt:'Ordne zu: Konjunktion → Bedeutung',
+      pairs:[
+        { de:'sebbene / benché', it:'obwohl'           },
+        { de:'affinché',         it:'damit'            },
+        { de:'a meno che',       it:'außer wenn'       },
+        { de:'prima che',        it:'bevor'            },
+        { de:'senza che',        it:'ohne dass'        },
+        { de:'purché',           it:'vorausgesetzt dass'},
+      ] },
+
+    { id:'m24-zo-07', type:'ZO',
+      prompt:'Ordne zu: Satz → benötigter Congiuntivo',
+      pairs:[
+        { de:'Voglio che tu ___. (venire)',         it:'venga'    },
+        { de:'È importante che lei ___. (studiare)', it:'studi'   },
+        { de:'Pensavo che loro ___. (essere stanchi)', it:'fossero stanchi' },
+        { de:'Sebbene ___ tardi... (essere)',        it:'sia'      },
+        { de:'Speravo che tu ___. (venire)',         it:'venissi'  },
+        { de:'Prima che noi ___. (partire)',         it:'partiamo' },
+      ] },
+
+    { id:'m24-zo-08', type:'ZO',
+      prompt:'Ordne zu: Congiuntivo Imperfetto — io-Form',
+      pairs:[
+        { de:'parlare → io',    it:'parlassi'  },
+        { de:'vedere → io',     it:'vedessi'   },
+        { de:'dormire → io',    it:'dormissi'  },
+        { de:'avere → io',      it:'avessi'    },
+        { de:'fare → io',       it:'facessi'   },
+        { de:'dire → io',       it:'dicessi'   },
+      ] },
+
+    { id:'m24-zo-09', type:'ZO',
+      prompt:'Ordne zu: Satz → Deutsch',
+      pairs:[
+        { de:'Sebbene sia tardi, continuo.',        it:'Obwohl es spät ist, mache ich weiter.'      },
+        { de:'Affinché tu capisca, spiego.',        it:'Damit du verstehst, erkläre ich.'           },
+        { de:'Senza che lo sapesse, partii.',       it:'Ohne dass er es wusste, fuhr ich ab.'       },
+        { de:'Prima che piova, usciamo.',           it:'Bevor es regnet, gehen wir raus.'           },
+        { de:'Purché tu studi, puoi uscire.',       it:'Vorausgesetzt du lernst, kannst du rausgehen.' },
+        { de:'A meno che non venga, aspettiamo.',   it:'Außer wenn er kommt, warten wir.'           },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m24-mc-01', type:'MC',
+      prompt:'"Voglio che tu ___ domani." (venire)',
+      options:['vieni','venissi','venga','viene'],
+      correctValue:'venga',
+      explain:'Voglio che + Congiuntivo Presente (Hauptsatz im Präsens). venire → venga.' },
+
+    { id:'m24-mc-02', type:'MC',
+      prompt:'"È importante che tutti ___ la regola." (capire)',
+      options:['capiscono','capiscano','capissero','capisce'],
+      correctValue:'capiscano',
+      explain:'È importante che → Congiuntivo Presente. capire → capiscano (3. Pl., -isc-).' },
+
+    { id:'m24-mc-03', type:'MC',
+      prompt:'"Pensavo che lui ___ stanco." (essere)',
+      options:['sia','è','fosse','era'],
+      correctValue:'fosse',
+      explain:'Pensavo (Vergangenheit) + gleichzeitig → Congiuntivo Imperfetto. essere → fosse.' },
+
+    { id:'m24-mc-04', type:'MC',
+      prompt:'"___ stanco, continuo a lavorare." (sebbene / essere)',
+      options:['Sebbene sono','Sebbene sia','Anche se sono','Benché sono'],
+      correctValue:'Sebbene sia',
+      explain:'sebbene verlangt Congiuntivo. essere → sia. (Auch benché sia wäre korrekt.)' },
+
+    { id:'m24-mc-05', type:'MC',
+      prompt:'"Spero che voi ___ bene." (stare)',
+      options:['state','stiate','steste','stavate'],
+      correctValue:'stiate',
+      explain:'Spero che → Congiuntivo Presente. stare → stiate (2. Pl.).' },
+
+    { id:'m24-mc-06', type:'MC',
+      prompt:'"Speravo che tu ___." (venire)',
+      options:['venga','vieni','venissi','vieni'],
+      correctValue:'venissi',
+      explain:'Speravo (Vergangenheit) + gleichzeitig → Congiuntivo Imperfetto. venire → venissi.' },
+
+    { id:'m24-mc-07', type:'MC',
+      prompt:'Wann nimmt man den Infinitiv statt Congiuntivo?',
+      options:[
+        'Immer nach volere.',
+        'Wenn Haupt- und Nebensatz dieselbe Person haben.',
+        'Wenn der Hauptsatz im Präsens steht.',
+        'Nach sebbene und benché.',
+      ],
+      correctValue:'Wenn Haupt- und Nebensatz dieselbe Person haben.',
+      explain:'Voglio andare (ich will gehen) → Infinitiv. Voglio che tu vada → Congiuntivo.' },
+
+    { id:'m24-mc-08', type:'MC',
+      prompt:'"Bisogna che loro ___ subito." (partire)',
+      options:['partono','partiscono','partano','partissero'],
+      correctValue:'partano',
+      explain:'Bisogna che → Congiuntivo Presente. partire → partano (3. Pl., ohne -isc-).' },
+
+    { id:'m24-mc-09', type:'MC',
+      prompt:'"Non credo che Marco ___ ragione." (avere)',
+      options:['ha','abbia','avesse','aveva'],
+      correctValue:'abbia',
+      explain:'Non credo che → Congiuntivo Presente (Hauptsatz Präsens). avere → abbia.' },
+
+    { id:'m24-mc-10', type:'MC',
+      prompt:'"Prima che tu ___, dimmi una cosa." (partire)',
+      options:['parti','parta','partissi','partiresti'],
+      correctValue:'parta',
+      explain:'Prima che → immer Congiuntivo. partire → parta (Congiuntivo Presente, da Hauptsatz Präsens).' },
+
+    { id:'m24-mc-11', type:'MC',
+      prompt:'"Era strano che nessuno ___." (sapere)',
+      options:['sappia','sa','sapesse','sapeva'],
+      correctValue:'sapesse',
+      explain:'Era strano che (Vergangenheit) → Congiuntivo Imperfetto. sapere → sapesse.' },
+
+    { id:'m24-mc-12', type:'MC',
+      prompt:'"Affinché voi ___, vi spiego tutto." (capire)',
+      options:['capite','capiate','capissero','capiscano'],
+      correctValue:'capiate',
+      explain:'Affinché → Congiuntivo. Hauptsatz Präsens → Congiuntivo Presente. capire → capiate (2. Pl., kein -isc- bei voi).' },
+
+    /* === MCL 5 === */
+    { id:'m24-mcl-01', type:'MC',
+      prompt:'Wähle: "Non sono sicuro che lei ___ la verità."',
+      options:['dica','dice','dicesse','ha detto'],
+      correctValue:'dica',
+      translation:'Ich bin nicht sicher, dass sie die Wahrheit sagt.',
+      explain:'Non sono sicuro che → Congiuntivo Presente. dire → dica.' },
+
+    { id:'m24-mcl-02', type:'MC',
+      prompt:'Wähle: "Sebbene ___ difficile, ci proviamo."',
+      options:['è','sia','fosse','sarà'],
+      correctValue:'sia',
+      translation:'Obwohl es schwierig ist, versuchen wir es.',
+      explain:'sebbene → immer Congiuntivo. essere → sia (Presente, da Hauptsatz Präsens).' },
+
+    { id:'m24-mcl-03', type:'MC',
+      prompt:'Wähle: "Voleva che noi ___ prima delle otto."',
+      options:['arriviamo','arriviamo','arrivassimo','arrivammo'],
+      correctValue:'arrivassimo',
+      translation:'Er wollte, dass wir vor acht ankamen.',
+      explain:'Voleva (Vergangenheit) → Congiuntivo Imperfetto. arrivare → arrivassimo (1. Pl.).' },
+
+    { id:'m24-mcl-04', type:'MC',
+      prompt:'Wähle: "È necessario che tu ___ di più."',
+      options:['studi','studiassi','studii','studi'],
+      correctValue:'studi',
+      translation:'Es ist notwendig, dass du mehr lernst.',
+      explain:'È necessario che → Congiuntivo Presente. studiare → studi (io/tu/lui Form).' },
+
+    { id:'m24-mcl-05', type:'MC',
+      prompt:'Wähle: "Non sapevo che loro ___ già partiti."',
+      options:['siano','fossero','sono','erano'],
+      correctValue:'fossero',
+      translation:'Ich wusste nicht, dass sie schon abgefahren waren.',
+      explain:'Non sapevo (Vergangenheit) → Congiuntivo Imperfetto. essere → fossero.' },
+
+    /* === LT 5 === */
+    { id:'m24-lt-01', type:'LT',
+      text:'È importante che tutti {0} la regola e che nessuno la {1}.',
+      blanks:[ { accept:['capiscano'] }, { accept:['ignori'] } ],
+      translation:'Es ist wichtig, dass alle die Regel verstehen und niemand sie ignoriert.',
+      explain:'capire → capiscano (-isc-, 3. Pl.); ignorare → ignori (3. Sg., Conj. Pres.).' },
+
+    { id:'m24-lt-02', type:'LT',
+      text:'Voglio che tu {0} più attento e che {1} di interrompere.',
+      blanks:[ { accept:['sia'] }, { accept:['smetta'] } ],
+      translation:'Ich möchte, dass du aufmerksamer bist und aufhörst zu unterbrechen.',
+      explain:'essere → sia; smettere → smetta (Congiuntivo Presente, 3./2. Sg.).' },
+
+    { id:'m24-lt-03', type:'LT',
+      text:'Sebbene {0} stanco, Marco ha continuato a lavorare. Speravo che {1} riposarsi.',
+      blanks:[ { accept:['fosse'] }, { accept:['potesse'] } ],
+      translation:'Obwohl er müde war, arbeitete Marco weiter. Ich hoffte, dass er sich ausruhen könnte.',
+      explain:'sebbene + Conj. Imperf. (fosse); speravo + Conj. Imperf. (potere → potesse).' },
+
+    { id:'m24-lt-04', type:'LT',
+      text:'Prima che tu {0}, dimmi dove {1} le chiavi.',
+      blanks:[ { accept:['parta'] }, { accept:['siano'] } ],
+      translation:'Bevor du abfährst, sag mir, wo die Schlüssel sind.',
+      explain:'prima che → Conj. Presente: parta (partire); siano (essere, loro).' },
+
+    { id:'m24-lt-05', type:'LT',
+      text:'Non credevo che la situazione {0} così grave. Pensavo che {1} tutto bene.',
+      blanks:[ { accept:['fosse'] }, { accept:['andasse'] } ],
+      translation:'Ich glaubte nicht, dass die Lage so ernst war. Ich dachte, es ginge alles gut.',
+      explain:'Non credevo → Conj. Imperf. (fosse); pensavo → Conj. Imperf. (andare → andasse).' },
+
+    /* === FT 2 === */
+    { id:'m24-ft-01', type:'FT',
+      prompt:'Congiuntivo Presente — alle Formen von "avere":',
+      rows:[
+        { label:'io/tu/lui',  accept:['abbia']   },
+        { label:'noi',        accept:['abbiamo'] },
+        { label:'voi',        accept:['abbiate'] },
+        { label:'loro',       accept:['abbiano'] },
+        { label:'io (Indik.)',accept:['ho']      },
+        { label:'loro (Ind.)',accept:['hanno']   },
+      ] },
+
+    { id:'m24-ft-02', type:'FT',
+      prompt:'Congiuntivo Imperfetto — parlare (alle Formen):',
+      rows:[
+        { label:'io',       accept:['parlassi']   },
+        { label:'tu',       accept:['parlassi']   },
+        { label:'lui/lei',  accept:['parlasse']   },
+        { label:'noi',      accept:['parlassimo'] },
+        { label:'voi',      accept:['parlaste']   },
+        { label:'loro',     accept:['parlassero'] },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m24-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Voglio che tu vieni subito.',
+      solution:'Voglio che tu venga subito.',
+      errorToken:'vieni',
+      translation:'Ich möchte, dass du sofort kommst.',
+      explain:'Nach volere che → Congiuntivo, nicht Indikativ. vieni = Präsens Indikativ. Korrekt: venga (Conj. Pres.).' },
+
+    { id:'m24-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Sebbene è tardi, resto.',
+      solution:'Sebbene sia tardi, resto.',
+      errorToken:'è',
+      translation:'Obwohl es spät ist, bleibe ich.',
+      explain:'sebbene verlangt immer Congiuntivo. è = Indikativ. Korrekt: sia (Conj. Pres.).' },
+
+    { id:'m24-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Pensavo che Marco ha ragione.',
+      solution:'Pensavo che Marco avesse ragione.',
+      errorToken:'ha',
+      translation:'Ich dachte, dass Marco recht hat.',
+      explain:'Pensavo (Vergangenheit) → Conj. Imperfetto. ha = Präsens Indikativ. Korrekt: avesse.' },
+
+    /* === KA 2 === */
+    { id:'m24-ka-01', type:'KA',
+      prompt:'Kategorisiere: Congiuntivo Presente oder Imperfetto?',
+      categories:['Presente (nach Präsens-Hauptsatz)', 'Imperfetto (nach Vergangenheits-Hauptsatz)'],
+      items:[
+        { text:'Voglio che venga.',        cat:0 },
+        { text:'Volevo che venisse.',      cat:1 },
+        { text:'È importante che studi.', cat:0 },
+        { text:'Era importante che studiasse.', cat:1 },
+        { text:'Spero che sia bello.',     cat:0 },
+        { text:'Speravo che fosse bello.', cat:1 },
+      ] },
+
+    { id:'m24-ka-02', type:'KA',
+      prompt:'Kategorisiere: Congiuntivo oder Infinitiv?',
+      categories:['Infinitiv (gleiche Person)', 'Congiuntivo (verschiedene Person)'],
+      items:[
+        { text:'Voglio andare.',               cat:0 },
+        { text:'Voglio che tu vada.',          cat:1 },
+        { text:'Spero di venire.',             cat:0 },
+        { text:'Spero che lui venga.',         cat:1 },
+        { text:'È importante studiare.',       cat:0 },
+        { text:'È importante che studi.',      cat:1 },
+      ] },
+
+    /* === KO 2 === */
+    { id:'m24-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Penso che sia vero.', tag:'Congiuntivo Presente: gleichzeitig' },
+      b:{ sentence:'Penso che fosse vero.', tag:'Congiuntivo Imperfetto: zeitlich distanziert' },
+      reveal:'"Penso che sia vero" — ich denke, es ist (jetzt) wahr. Congiuntivo Presente, da Hauptsatz Präsens + gleichzeitige Handlung. "Penso che fosse vero" — ich denke, es war wahr (früher). Congiuntivo Imperfetto drückt hier zeitliche Distanz aus, obwohl der Hauptsatz im Präsens steht.' },
+
+    { id:'m24-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Voglio andare a Roma.', tag:'Infinitiv: gleiche Person' },
+      b:{ sentence:'Voglio che Marco vada a Roma.', tag:'Congiuntivo: verschiedene Person' },
+      reveal:'"Voglio andare" — ich will (selbst) gehen → Infinitiv, weil Subjekt beider Verben identisch ist (io). "Voglio che Marco vada" — ich will, dass Marco geht → Congiuntivo, weil Subjekt wechselt (io → Marco). Diese Regel gilt für alle volere/sperare/credere/pensare-Konstruktionen.' },
+
+    /* === DE 3 === */
+    { id:'m24-de-01', type:'DE',
+      prompt:'"Es ist wichtig, dass ihr jeden Tag übt."',
+      solutions:['È importante che voi esercitiate ogni giorno.','È importante che esercitiate ogni giorno.'],
+      note:'È importante che → Congiuntivo Presente. esercitare → esercitiate (voi).' },
+
+    { id:'m24-de-02', type:'DE',
+      prompt:'"Ich hoffte, dass er kommen würde — obwohl er müde war."',
+      solutions:['Speravo che venisse — sebbene fosse stanco.','Speravo che lui venisse, sebbene fosse stanco.'],
+      note:'speravo → Conj. Imperf.: venisse; sebbene → Conj. Imperf.: fosse.' },
+
+    { id:'m24-de-03', type:'DE',
+      prompt:'"Bevor es dunkel wird, müssen wir nach Hause."',
+      solutions:['Prima che faccia buio, dobbiamo tornare a casa.','Prima che diventi buio, dobbiamo tornare a casa.'],
+      note:'prima che → Conj. Presente (faccia / diventi). Hauptsatz Präsens.' },
+
+    /* === IT 3 === */
+    { id:'m24-it-01', type:'IT',
+      prompt:'"Non credo che abbiano capito la spiegazione."',
+      solutions:['Ich glaube nicht, dass sie die Erklärung verstanden haben.','Ich denke nicht, dass sie die Erklärung begriffen haben.'],
+      note:'abbiano capito = Congiuntivo Passato (vorzeitig zu Präsens-Hauptsatz).' },
+
+    { id:'m24-it-02', type:'IT',
+      prompt:'"Sebbene fosse difficile, alla fine ce l\'abbiamo fatta."',
+      solutions:['Obwohl es schwierig war, haben wir es am Ende geschafft.','Auch wenn es schwer war, haben wir es schließlich geschafft.'],
+      note:'sebbene fosse (Conj. Imperf.); farcela = es schaffen.' },
+
+    { id:'m24-it-03', type:'IT',
+      prompt:'"Affinché tutti capiscano, parla più lentamente."',
+      solutions:['Damit alle verstehen, sprich langsamer.','Damit alle es verstehen, rede langsamer.'],
+      note:'affinché capiscano → Congiuntivo Presente. parlare langsam = parlare lentamente.' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
