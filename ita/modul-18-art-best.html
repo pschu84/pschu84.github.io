@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Bestimmter Artikel</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Grundlagen · Modul 18</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>✏️ Bestimmter Artikel</h1>
+    <p>il / lo / la / l' / i / gli / le — Genus, Anlaut und alle Formen auf einen Blick</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm18',
+  block: 'grundlagen',
+  title: 'Bestimmter Artikel',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Der bestimmte Artikel richtet sich nach <strong>Genus</strong> (maskulin / feminin), <strong>Numerus</strong> (Singular / Plural) und dem <strong>Anlaut</strong> des folgenden Wortes. Es gibt 7 Formen.' },
+
+    { type:'table', head:['', 'Maskulin Sg.', 'Feminin Sg.', 'Maskulin Pl.', 'Feminin Pl.'],
+      rows:[
+        ['Normal',      'il',   'la',   'i',   'le'],
+        ['Vor s+K, z, gn, ps, x, y', 'lo', '—', 'gli', '—'],
+        ['Vor Vokal',   "l'",   "l'",   'gli', 'le'],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Wann lo / gli?</strong> Vor: s + Konsonant (lo studente, lo zaino), z (lo zio), gn (lo gnocco), ps (lo psicologo), x (lo xilofono), y (lo yogurt), und vor Vokal (lo studente NEIN — Vokal = l\'). Merke: lo steht nie vor einem Vokal — dann immer l\'.' },
+
+    { type:'divider' },
+
+    { type:'table', head:['Artikel', 'Verwendung', 'Beispiele'],
+      rows:[
+        ['il',   'm/Sg. vor normalem Konsonant',       'il libro, il cane, il ragazzo, il padre'],
+        ['lo',   'm/Sg. vor s+K, z, gn, ps, x, y',     'lo zaino, lo studente, lo zio, lo psicologo'],
+        ["l'",   'm/f Sg. vor Vokal',                   "l'amico, l'amica, l'uomo, l'ora"],
+        ['la',   'f/Sg. vor Konsonant',                 'la casa, la pizza, la mamma, la notte'],
+        ['i',    'm/Pl. vor normalem Konsonant',         'i libri, i cani, i ragazzi'],
+        ['gli',  'm/Pl. vor Vokal, s+K, z, gn...',      'gli amici, gli zaini, gli studenti'],
+        ['le',   'f/Pl. (alle Konsonanten und Vokale)', 'le case, le amiche, le ore'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Wann wird der bestimmte Artikel im Italienischen verwendet?</strong> Öfter als im Deutschen — nämlich auch bei:' },
+
+    { type:'table', head:['Verwendung', 'Beispiel', 'Deutsch'],
+      rows:[
+        ['Allgemeine Begriffe / Kategorien', 'Il cane è un animale fedele.', 'Der Hund ist ein treues Tier. (=Hunde allgemein)'],
+        ['Sprachen', 'Studio l\'italiano.', 'Ich lerne Italienisch.'],
+        ['Namen mit Titel', 'il signor Rossi, la professoressa Bianchi', 'Herr Rossi, Frau Bianchi'],
+        ['Wochentage (regelmäßig)', 'Il lunedì vado in palestra.', 'Montags gehe ich ins Fitnessstudio.'],
+        ['Körperteile (statt Possessiv)', 'Mi lavo le mani.', 'Ich wasche meine Hände.'],
+        ['Länder, Kontinente', 'L\'Italia è bella.', 'Italien ist schön.'],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Kein Artikel bei:</strong> Städtenamen (Vado a Roma.), Tagen ohne regelmäßige Wiederholung (Vengo martedì. = Ich komme am Dienstag.), Verwandten Sg. + Possessiv (mia madre, tuo fratello), und nach di + Städtename (Sono di Roma.).' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m18-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['lo', 'zaino', 'è', 'pesante'],
+      solution:['lo', 'zaino', 'è', 'pesante'],
+      translation:'Der Rucksack ist schwer.',
+      explain:'zaino beginnt mit z → lo zaino (nicht il).' },
+
+    { id:'m18-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['gli', 'amici', 'di', 'Marco', 'simpatici', 'sono'],
+      solution:['gli', 'amici', 'di', 'Marco', 'sono', 'simpatici'],
+      translation:'Marcos Freunde sind nett.',
+      explain:'amici beginnt mit Vokal → gli amici (m/Pl. vor Vokal).' },
+
+    /* === ZO 9 === */
+    { id:'m18-zo-01', type:'ZO',
+      prompt:'Ordne zu: Artikel → Verwendung',
+      pairs:[
+        { de:'il',   it:'m/Sg. vor normalem Konsonant'       },
+        { de:'lo',   it:'m/Sg. vor s+K, z, gn, ps, x, y'    },
+        { de:"l'",   it:'m/f Sg. vor Vokal'                  },
+        { de:'la',   it:'f/Sg. vor Konsonant'                },
+        { de:'gli',  it:'m/Pl. vor Vokal / s+K / z...'       },
+        { de:'le',   it:'f/Pl. (immer)'                      },
+      ] },
+
+    { id:'m18-zo-02', type:'ZO',
+      prompt:'Ordne zu: il oder lo? (maskulin Singular)',
+      pairs:[
+        { de:'libro',      it:'il libro'      },
+        { de:'zaino',      it:'lo zaino'      },
+        { de:'studente',   it:'lo studente'   },
+        { de:'cane',       it:'il cane'       },
+        { de:'zio',        it:'lo zio'        },
+        { de:'psicologo',  it:'lo psicologo'  },
+      ] },
+
+    { id:'m18-zo-03', type:'ZO',
+      prompt:"Ordne zu: l' oder la? (feminin Singular)",
+      pairs:[
+        { de:'amica',      it:"l'amica"   },
+        { de:'casa',       it:'la casa'   },
+        { de:'ora',        it:"l'ora"     },
+        { de:'pizza',      it:'la pizza'  },
+        { de:'estate',     it:"l'estate"  },
+        { de:'notte',      it:'la notte'  },
+      ] },
+
+    { id:'m18-zo-04', type:'ZO',
+      prompt:'Ordne zu: i oder gli? (maskulin Plural)',
+      pairs:[
+        { de:'libri',      it:'i libri'      },
+        { de:'amici',      it:'gli amici'    },
+        { de:'zaini',      it:'gli zaini'    },
+        { de:'cani',       it:'i cani'       },
+        { de:'studenti',   it:'gli studenti' },
+        { de:'ragazzi',    it:'i ragazzi'    },
+      ] },
+
+    { id:'m18-zo-05', type:'ZO',
+      prompt:'Ordne zu: Satz → richtiger Artikel',
+      pairs:[
+        { de:'___ madre di Marco è gentile.',    it:'La'  },
+        { de:'___ uomo alla porta è mio zio.',   it:"L'"  },
+        { de:'___ studenti sono bravi.',         it:'Gli' },
+        { de:'___ zaino è sul tavolo.',          it:'Lo'  },
+        { de:'___ case di questa via sono belle.',it:'Le' },
+        { de:'___ cane di Marco si chiama Rex.', it:'Il'  },
+      ] },
+
+    { id:'m18-zo-06', type:'ZO',
+      prompt:'Ordne zu: Artikel bei Ländern und Kontinenten',
+      pairs:[
+        { de:'Italia (f)',          it:"l'Italia"    },
+        { de:'Francia (f)',         it:'la Francia'  },
+        { de:'Germania (f)',        it:'la Germania' },
+        { de:'Giappone (m)',        it:'il Giappone' },
+        { de:'Stati Uniti (m/Pl.)',  it:'gli Stati Uniti' },
+        { de:'Europa (f)',          it:"l'Europa"    },
+      ] },
+
+    { id:'m18-zo-07', type:'ZO',
+      prompt:'Ordne zu: Artikel oder kein Artikel?',
+      pairs:[
+        { de:'Städtenamen (Vado a ...)',              it:'kein Artikel: a Roma, a Milano'      },
+        { de:'Länder / Kontinente',                   it:'Artikel: l\'Italia, la Francia'      },
+        { de:'Sprachen (studio ...)',                  it:'Artikel: l\'italiano, il tedesco'    },
+        { de:'Verwandte Sg. + Possessiv (mia ...)',   it:'kein Artikel: mia madre, tuo fratello' },
+        { de:'Wochentage regelmäßig (il ...)',         it:'Artikel: il lunedì, la domenica'     },
+        { de:'Wochentage einmalig (Vengo ...)',        it:'kein Artikel: Vengo martedì.'        },
+      ] },
+
+    { id:'m18-zo-08', type:'ZO',
+      prompt:'Ordne zu: welcher Anlaut → welcher Artikel?',
+      pairs:[
+        { de:'Wort beginnt mit: s + Konsonant (m)',   it:'lo / gli'  },
+        { de:'Wort beginnt mit: Vokal (m)',            it:"l' / gli"  },
+        { de:'Wort beginnt mit: normalem Konsonant (m)',it:'il / i'   },
+        { de:'Wort beginnt mit: z (m)',                it:'lo / gli'  },
+        { de:'Wort beginnt mit: Vokal (f)',            it:"l' / le"   },
+        { de:'Wort beginnt mit: normalem Konsonant (f)',it:'la / le'  },
+      ] },
+
+    { id:'m18-zo-09', type:'ZO',
+      prompt:'Ordne zu: Körperteile mit Artikel (statt Possessiv)',
+      pairs:[
+        { de:'Ich wasche mir die Hände.',    it:'Mi lavo le mani.'      },
+        { de:'Ich putze mir die Zähne.',     it:'Mi lavo i denti.'      },
+        { de:'Ich kämme mir die Haare.',     it:'Mi pettino i capelli.' },
+        { de:'Ich strecke die Arme aus.',    it:'Alzo le braccia.'      },
+        { de:'Ich schließe die Augen.',      it:'Chiudo gli occhi.'     },
+        { de:'Ich öffne den Mund.',          it:'Apro la bocca.'        },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m18-mc-01', type:'MC',
+      prompt:'Welcher Artikel? "___ zaino è pesante."',
+      options:['Il','Lo','La','L\''],
+      correctValue:'Lo',
+      explain:'zaino beginnt mit z → lo (m/Sg. vor z).' },
+
+    { id:'m18-mc-02', type:'MC',
+      prompt:'Welcher Artikel? "___ studenti sono bravi."',
+      options:['I','Gli','Le','Li'],
+      correctValue:'Gli',
+      explain:'studenti beginnt mit s+t → gli (m/Pl. vor s+Konsonant).' },
+
+    { id:'m18-mc-03', type:'MC',
+      prompt:'Welcher Artikel? "___ amica di Marco si chiama Sara."',
+      options:['La','Lo','L\'','Il'],
+      correctValue:"L'",
+      explain:'amica beginnt mit Vokal → l\' (f/Sg. vor Vokal).' },
+
+    { id:'m18-mc-04', type:'MC',
+      prompt:'Welcher Artikel? "Studio ___ italiano da due anni."',
+      options:['il','lo','l\'','la'],
+      correctValue:"l'",
+      explain:'italiano beginnt mit Vokal (i) → l\'. Sprachen nehmen den bestimmten Artikel.' },
+
+    { id:'m18-mc-05', type:'MC',
+      prompt:'Welcher Artikel? "___ lunedì vado sempre in palestra." (regelmäßig)',
+      options:['Kein Artikel','Il','Lo','L\''],
+      correctValue:'Il',
+      explain:'Wochentage bei regelmäßiger Wiederholung: il lunedì (= jeden Montag).' },
+
+    { id:'m18-mc-06', type:'MC',
+      prompt:'"Vado a ___ Roma domani." Welche Form?',
+      options:['la','il','l\'','kein Artikel'],
+      correctValue:'kein Artikel',
+      explain:'Städtenamen: kein Artikel. Vado a Roma (nicht alla Roma).' },
+
+    { id:'m18-mc-07', type:'MC',
+      prompt:'Welcher Artikel? "___ gnocchi sono buoni."',
+      options:['I','Gli','Le','Il'],
+      correctValue:'Gli',
+      explain:'gnocchi beginnt mit gn → gli (m/Pl. vor gn).' },
+
+    { id:'m18-mc-08', type:'MC',
+      prompt:'"___ mia madre è gentile." Welche Form?',
+      options:['La','L\'','kein Artikel','Il'],
+      correctValue:'kein Artikel',
+      explain:'Verwandte im Singular + Possessiv: kein Artikel. mia madre (nicht la mia madre).' },
+
+    { id:'m18-mc-09', type:'MC',
+      prompt:'Welcher Artikel? "___ psicologo parla con i pazienti."',
+      options:['Il','Lo','L\'','La'],
+      correctValue:'Lo',
+      explain:'psicologo beginnt mit ps → lo (m/Sg. vor ps).' },
+
+    { id:'m18-mc-10', type:'MC',
+      prompt:'Welcher Artikel? "___ ore di lavoro sono lunghe."',
+      options:['I','Gli','Le','L\''],
+      correctValue:'Le',
+      explain:'ore ist f/Pl. → le. (Auch: l\'ora beginnt mit Vokal → l\'ora im Singular.) Plural von f: immer le.' },
+
+    { id:'m18-mc-11', type:'MC',
+      prompt:'"Mi lavo ___ mani prima di mangiare." Welche Form?',
+      options:['mie','le','la','gli'],
+      correctValue:'le',
+      explain:'Körperteile: Artikel statt Possessiv. le mani (le wegen f/Pl.).' },
+
+    { id:'m18-mc-12', type:'MC',
+      prompt:'Welcher Artikel? "___ Italia è un paese molto bello."',
+      options:['La','L\'','Il','Lo'],
+      correctValue:"L'",
+      explain:'Italia beginnt mit Vokal → l\'. Länder nehmen den bestimmten Artikel.' },
+
+    /* === MCL 5 === */
+    { id:'m18-mcl-01', type:'MC',
+      prompt:'Wähle: "___ sport preferito di Marco è il calcio."',
+      options:['Il','Lo','L\'','La'],
+      correctValue:'Lo',
+      translation:'Marcos Lieblingssport ist Fußball.',
+      explain:'sport beginnt mit sp (s+p = s+Konsonant) → lo sport.' },
+
+    { id:'m18-mcl-02', type:'MC',
+      prompt:'Wähle: "___ zii di Maria abitano a Napoli."',
+      options:['I','Gli','Le','L\''],
+      correctValue:'Gli',
+      translation:'Marias Onkel wohnen in Neapel.',
+      explain:'zii beginnt mit z → gli (m/Pl. vor z).' },
+
+    { id:'m18-mcl-03', type:'MC',
+      prompt:'Wähle: "Vengo ___ venerdì." (einmalig, nicht regelmäßig)',
+      options:['il','lo','kein Artikel','l\''],
+      correctValue:'kein Artikel',
+      translation:'Ich komme am Freitag.',
+      explain:'Einmaliger Wochentag ohne Regelmäßigkeit: kein Artikel. Vengo venerdì.' },
+
+    { id:'m18-mcl-04', type:'MC',
+      prompt:'Wähle: "Ho parlato con ___ signor Bianchi."',
+      options:['il','lo','l\'','kein Artikel'],
+      correctValue:'il',
+      translation:'Ich habe mit Herrn Bianchi gesprochen.',
+      explain:'Titel + Nachname: Artikel. il signor Bianchi (s+B wäre s+Konsonant aber signor beginnt mit s+i = Vokal nach s? Nein: signor → si = s+Vokal → il signor). Hier: il.' },
+
+    { id:'m18-mcl-05', type:'MC',
+      prompt:'Wähle: "Studio ___ tedesco e ___ francese."',
+      options:["il / il","il / la","il / il","lo / la"],
+      correctValue:'il / il',
+      translation:'Ich lerne Deutsch und Französisch.',
+      explain:'Sprachen: bestimmter Artikel. tedesco (m) → il tedesco; francese (m) → il francese.' },
+
+    /* === LT 5 === */
+    { id:'m18-lt-01', type:'LT',
+      text:'{0} libro è sul tavolo e {1} zaino è per terra.',
+      blanks:[ { accept:['Il'] }, { accept:['lo'] } ],
+      translation:'Das Buch liegt auf dem Tisch und der Rucksack liegt auf dem Boden.',
+      explain:'Il libro (normaler Konsonant); lo zaino (z).' },
+
+    { id:'m18-lt-02', type:'LT',
+      text:'{0} studenti di questa scuola parlano {1} italiano molto bene.',
+      blanks:[ { accept:['Gli'] }, { accept:["l'"] } ],
+      translation:'Die Schüler dieser Schule sprechen Italienisch sehr gut.',
+      explain:'Gli studenti (m/Pl., s+Konsonant); l\'italiano (Sprache, vor Vokal).' },
+
+    { id:'m18-lt-03', type:'LT',
+      text:'{0} domenica vado sempre a trovare {1} mia nonna.',
+      blanks:[ { accept:['La'] }, { accept:['kein Artikel',''] } ],
+      translation:'Sonntags besuche ich immer meine Oma.',
+      explain:'La domenica (regelmäßiger Wochentag); mia nonna (Verwandte Sg. + Possessiv = kein Artikel).' },
+
+    { id:'m18-lt-04', type:'LT',
+      text:'{0} amiche di Sara vengono da {1} Germania.',
+      blanks:[ { accept:['Le'] }, { accept:['la'] } ],
+      translation:'Saras Freundinnen kommen aus Deutschland.',
+      explain:'Le amiche (f/Pl.); la Germania (Land, f).' },
+
+    { id:'m18-lt-05', type:'LT',
+      text:'Mi lavo {0} denti e poi mi pettino {1} capelli.',
+      blanks:[ { accept:['i'] }, { accept:['i'] } ],
+      translation:'Ich putze mir die Zähne und kämme mir dann die Haare.',
+      explain:'Körperteile: Artikel statt Possessiv. i denti / i capelli (m/Pl.).' },
+
+    /* === FT 3 === */
+    { id:'m18-ft-01', type:'FT',
+      prompt:'Welcher bestimmte Artikel — Singular?',
+      rows:[
+        { label:'libro (m)',          accept:['il']   },
+        { label:'zaino (m, z)',       accept:['lo']   },
+        { label:'studente (m, s+K)', accept:['lo']   },
+        { label:'amico (m, Vokal)',   accept:["l'"]   },
+        { label:'casa (f)',           accept:['la']   },
+        { label:'amica (f, Vokal)',   accept:["l'"]   },
+      ] },
+
+    { id:'m18-ft-02', type:'FT',
+      prompt:'Welcher bestimmte Artikel — Plural?',
+      rows:[
+        { label:'libri (m)',           accept:['i']    },
+        { label:'zaini (m, z)',        accept:['gli']  },
+        { label:'studenti (m, s+K)',  accept:['gli']  },
+        { label:'amici (m, Vokal)',    accept:['gli']  },
+        { label:'case (f)',            accept:['le']   },
+        { label:'amiche (f)',          accept:['le']   },
+      ] },
+
+    { id:'m18-ft-03', type:'FT',
+      prompt:'Artikel oder kein Artikel? Schreibe den Artikel oder "—":',
+      rows:[
+        { label:'Vado a Roma.',               accept:['—','kein Artikel'] },
+        { label:'Vivo in Italia.',            accept:["l'Italia","l'"] },
+        { label:'Studio l\'italiano.',        accept:["l'"] },
+        { label:'Il lunedì lavoro.',          accept:['il'] },
+        { label:'Vengo lunedì. (einmalig)',   accept:['—','kein Artikel'] },
+        { label:'mia madre (Possessiv+Verwandter)',accept:['—','kein Artikel'] },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m18-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Il zaino di Marco è pesante.',
+      solution:'Lo zaino di Marco è pesante.',
+      errorToken:'Il zaino',
+      translation:'Marcos Rucksack ist schwer.',
+      explain:'zaino beginnt mit z → lo (nicht il). il gilt nur vor normalem Konsonant.' },
+
+    { id:'m18-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Vado alla Roma domani.',
+      solution:'Vado a Roma domani.',
+      errorToken:'alla Roma',
+      translation:'Ich fahre morgen nach Rom.',
+      explain:'Städtenamen: kein Artikel. Vado a Roma (nie alla Roma).' },
+
+    { id:'m18-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'La mia madre lavora a Milano.',
+      solution:'Mia madre lavora a Milano.',
+      errorToken:'La mia madre',
+      translation:'Meine Mutter arbeitet in Mailand.',
+      explain:'Verwandte Sg. + Possessiv: kein Artikel. mia madre (nicht la mia madre).' },
+
+    /* === KA 3 === */
+    { id:'m18-ka-01', type:'KA',
+      prompt:'Kategorisiere: il oder lo?',
+      categories:['il (normaler Konsonant)', 'lo (s+K, z, gn, ps, x, y)'],
+      items:[
+        { text:'libro',      cat:0 },
+        { text:'zaino',      cat:1 },
+        { text:'cane',       cat:0 },
+        { text:'studente',   cat:1 },
+        { text:'ragazzo',    cat:0 },
+        { text:'psicologo',  cat:1 },
+      ] },
+
+    { id:'m18-ka-02', type:'KA',
+      prompt:'Kategorisiere: i oder gli?',
+      categories:['i (normaler Konsonant)', 'gli (Vokal, s+K, z, gn...)'],
+      items:[
+        { text:'libri',      cat:0 },
+        { text:'amici',      cat:1 },
+        { text:'cani',       cat:0 },
+        { text:'studenti',   cat:1 },
+        { text:'ragazzi',    cat:0 },
+        { text:'zaini',      cat:1 },
+      ] },
+
+    { id:'m18-ka-03', type:'KA',
+      prompt:'Kategorisiere: Artikel oder kein Artikel?',
+      categories:['mit Artikel', 'ohne Artikel'],
+      items:[
+        { text:'l\'Italia (Land)',              cat:0 },
+        { text:'a Roma (Stadt nach a)',         cat:1 },
+        { text:'il lunedì (regelmäßig)',        cat:0 },
+        { text:'vengo martedì (einmalig)',      cat:1 },
+        { text:'l\'italiano (Sprache)',         cat:0 },
+        { text:'mia madre (Possessiv+Verwandter)',cat:1 },
+      ] },
+
+    /* === KO 2 === */
+    { id:'m18-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Il lunedì vado in palestra.', tag:'Artikel: regelmäßige Wiederholung' },
+      b:{ sentence:'Vengo lunedì.', tag:'Kein Artikel: einmaliger Tag' },
+      reveal:'"Il lunedì" (mit Artikel) = jeden Montag, regelmäßig. "Lunedì" (ohne Artikel) = am (kommenden) Montag, einmalig. Dieselbe Regel gilt für alle Wochentage: il martedì = jeden Dienstag; martedì = am Dienstag.' },
+
+    { id:'m18-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese Formen?',
+      a:{ sentence:'lo studente', tag:'lo: s + Konsonant' },
+      b:{ sentence:"l'uomo", tag:"l': Vokal" },
+      reveal:'"lo" steht vor maskulinen Substantiven, die mit s+Konsonant, z, gn, ps, x oder y beginnen. "l\'" steht vor maskulinen (und femininen) Substantiven, die mit einem Vokal beginnen. lo niemals vor einem Vokal — dort immer l\'.' },
+
+    /* === DE 3 === */
+    { id:'m18-de-01', type:'DE',
+      prompt:'"Die Schüler meiner Klasse lernen Italienisch jeden Montag."',
+      solutions:["Gli studenti della mia classe studiano l'italiano il lunedì.","Gli studenti della mia classe imparano l'italiano il lunedì."],
+      note:"Gli studenti (m/Pl., s+K); l'italiano (Sprache, Vokal); il lunedì (regelmäßig)." },
+
+    { id:'m18-de-02', type:'DE',
+      prompt:'"Der Rucksack und die Bücher sind auf dem Tisch."',
+      solutions:['Lo zaino e i libri sono sul tavolo.'],
+      note:'Lo zaino (z); i libri (m/Pl., normaler Konsonant).' },
+
+    { id:'m18-de-03', type:'DE',
+      prompt:'"Meine Mutter und meine Schwester wohnen in Italien."',
+      solutions:["Mia madre e mia sorella abitano in Italia.","Mia madre e mia sorella vivono in Italia."],
+      note:'mia madre / mia sorella (Verwandte Sg. + Possessiv = kein Artikel); in Italia (Land, kein Artikel nach in f-Land).' },
+
+    /* === IT 3 === */
+    { id:'m18-it-01', type:'IT',
+      prompt:'"Lo psicologo parla con gli studenti ogni venerdì."',
+      solutions:['Der Psychologe spricht jeden Freitag mit den Schülern.'],
+      note:'lo psicologo (ps); gli studenti (s+K, m/Pl.); ogni venerdì = jeden Freitag.' },
+
+    { id:'m18-it-02', type:'IT',
+      prompt:'"L\'Italia è famosa per la pizza e il caffè."',
+      solutions:['Italien ist berühmt für die Pizza und den Kaffee.','Italien ist bekannt für Pizza und Kaffee.'],
+      note:"l'Italia (Vokal, Land); la pizza (f); il caffè (m, unveränderlich)." },
+
+    { id:'m18-it-03', type:'IT',
+      prompt:'"Gli occhi di mia sorella sono verdi."',
+      solutions:['Die Augen meiner Schwester sind grün.','Meine Schwester hat grüne Augen.'],
+      note:'Gli occhi (m/Pl., Vokal); mia sorella (Verwandte Sg., kein Artikel).' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

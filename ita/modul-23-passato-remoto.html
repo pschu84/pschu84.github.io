@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrammaticaViva — Passato Remoto</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Block: Zeiten (B1) · Modul 23</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>📜 Passato Remoto</h1>
+    <p>Historische Vergangenheit — Bildung, unregelmäßige Verben, Nord/Süd-Unterschied</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+  id: 'm23',
+  block: 'zeiten-b1',
+  title: 'Passato Remoto',
+  passThreshold: 0.6,
+
+  theory: [
+    { type:'text', html:'Das <strong>Passato Remoto</strong> beschreibt abgeschlossene Handlungen in der <strong>weit zurückliegenden Vergangenheit</strong> — historische Ereignisse, Biografien, Märchen. Im Norden Italiens wird es auch für die alltägliche Vergangenheit verwendet (wie das Passato Prossimo im Süden und der Schweiz).' },
+
+    { type:'table', head:['Pronomen', 'parlare (-ai)', 'vedere (-ei)', 'partire (-ii)', 'essere'],
+      rows:[
+        ['io',      'parlai',    'vidi',     'partii',    'fui'    ],
+        ['tu',      'parlasti',  'vedesti',  'partisti',  'fosti'  ],
+        ['lui/lei', 'parlò',     'vide',     'partì',     'fu'     ],
+        ['noi',     'parlammo',  'vedemmo',  'partimmo',  'fummo'  ],
+        ['voi',     'parlaste',  'vedeste',  'partiste',  'foste'  ],
+        ['loro',    'parlarono', 'videro',   'partirono', 'furono' ],
+      ]
+    },
+
+    { type:'tip', body:'<strong>Faustregel -ere:</strong> Bei -ere-Verben sind 1./3. Sg. und 3. Pl. oft unregelmäßig. Die Formen von tu/noi/voi sind immer regelmäßig: -esti/-emmo/-este. Lernt man die drei unregelmäßigen Personen, sind die anderen leicht.' },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Wichtige unregelmäßige Verben im Passato Remoto:</strong>' },
+
+    { type:'table', head:['Infinitiv', 'io', 'lui/lei', 'loro', 'Deutsch'],
+      rows:[
+        ['essere',   'fui',      'fu',        'furono',    'sein'   ],
+        ['avere',    'ebbi',     'ebbe',       'ebbero',    'haben'  ],
+        ['fare',     'feci',     'fece',       'fecero',    'machen' ],
+        ['dire',     'dissi',    'disse',      'dissero',   'sagen'  ],
+        ['venire',   'venni',    'venne',      'vennero',   'kommen' ],
+        ['volere',   'volli',    'volle',      'vollero',   'wollen' ],
+        ['sapere',   'seppi',    'seppe',      'seppero',   'wissen' ],
+        ['leggere',  'lessi',    'lesse',      'lessero',   'lesen'  ],
+        ['scrivere', 'scrissi',  'scrisse',    'scrissero', 'schreiben'],
+        ['vedere',   'vidi',     'vide',       'videro',    'sehen'  ],
+        ['conoscere','conobbi',  'conobbe',    'conobbero', 'kennen' ],
+        ['nascere',  'nacqui',   'nacque',     'nacquero',  'geboren werden'],
+        ['morire',   'morii',    'morì',       'morirono',  'sterben'],
+      ]
+    },
+
+    { type:'divider' },
+
+    { type:'text', html:'<strong>Nord/Süd-Unterschied:</strong> Im Norden Italiens (Norditalien, Schweiz) verwenden Sprecher das Passato Remoto auch für die jüngste Vergangenheit, wo Süditalien und Standard das Passato Prossimo bevorzugt.' },
+
+    { type:'compare',
+      left:  { title:'Norden (Passato Remoto)', body:'Ieri andai al cinema.<br>Stamattina mi svegliai tardi.<br>Un momento fa arrivò Marco.' },
+      right: { title:'Süden / Standard (PP)', body:'Ieri sono andato al cinema.<br>Stamattina mi sono svegliato tardi.<br>Un momento fa è arrivato Marco.' }
+    },
+
+    { type:'tip', body:'<strong>Für den Alltag:</strong> Passato Prossimo ist die sicherere Wahl für mündliche Kommunikation in ganz Italien. Passato Remoto braucht man aktiv vor allem für schriftliche Texte, Literatur und Geschichte — und um es beim Lesen zu verstehen.' }
+  ],
+
+  exercises: [
+
+    /* === SO 2 === */
+    { id:'m23-so-01', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['Dante', 'la', 'Commedia', 'scrisse', 'Divina'],
+      solution:['Dante', 'scrisse', 'la', 'Divina', 'Commedia'],
+      translation:'Dante schrieb die Göttliche Komödie.',
+      explain:'scrisse = Passato Remoto 3. Sg. von scrivere (unregelmäßig). Historische Tatsache.' },
+
+    { id:'m23-so-02', type:'SO',
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['Roma', 'nel', 'fondarono', 'i', 'Romani', '753', 'a.C.'],
+      solution:['i', 'Romani', 'fondarono', 'Roma', 'nel', '753', 'a.C.'],
+      translation:'Die Römer gründeten Rom im Jahr 753 v. Chr.',
+      explain:'fondarono = Passato Remoto 3. Pl. von fondare (-are, regelmäßig: -arono).' },
+
+    /* === ZO 9 === */
+    { id:'m23-zo-01', type:'ZO',
+      prompt:'Ordne zu: parlare im Passato Remoto',
+      pairs:[
+        { de:'ich sprach',      it:'parlai'    },
+        { de:'du sprachst',     it:'parlasti'  },
+        { de:'er/sie sprach',   it:'parlò'     },
+        { de:'wir sprachen',    it:'parlammo'  },
+        { de:'ihr spracht',     it:'parlaste'  },
+        { de:'sie sprachen',    it:'parlarono' },
+      ] },
+
+    { id:'m23-zo-02', type:'ZO',
+      prompt:'Ordne zu: essere im Passato Remoto (unregelmäßig)',
+      pairs:[
+        { de:'ich war',     it:'fui'    },
+        { de:'du warst',    it:'fosti'  },
+        { de:'er/sie war',  it:'fu'     },
+        { de:'wir waren',   it:'fummo'  },
+        { de:'ihr wart',    it:'foste'  },
+        { de:'sie waren',   it:'furono' },
+      ] },
+
+    { id:'m23-zo-03', type:'ZO',
+      prompt:'Ordne zu: fare im Passato Remoto',
+      pairs:[
+        { de:'ich machte',      it:'feci'    },
+        { de:'du machtest',     it:'facesti' },
+        { de:'er/sie machte',   it:'fece'    },
+        { de:'wir machten',     it:'facemmo' },
+        { de:'ihr machtet',     it:'faceste' },
+        { de:'sie machten',     it:'fecero'  },
+      ] },
+
+    { id:'m23-zo-04', type:'ZO',
+      prompt:'Ordne zu: Infinitiv → Passato Remoto 1. Sg.',
+      pairs:[
+        { de:'dire',      it:'dissi'    },
+        { de:'venire',    it:'venni'    },
+        { de:'leggere',   it:'lessi'    },
+        { de:'scrivere',  it:'scrissi'  },
+        { de:'vedere',    it:'vidi'     },
+        { de:'sapere',    it:'seppi'    },
+      ] },
+
+    { id:'m23-zo-05', type:'ZO',
+      prompt:'Ordne zu: Infinitiv → Passato Remoto 3. Sg.',
+      pairs:[
+        { de:'nascere (geboren werden)', it:'nacque'   },
+        { de:'morire (sterben)',         it:'morì'     },
+        { de:'conoscere (kennen)',       it:'conobbe'  },
+        { de:'volere (wollen)',          it:'volle'    },
+        { de:'avere (haben)',            it:'ebbe'     },
+        { de:'venire (kommen)',          it:'venne'    },
+      ] },
+
+    { id:'m23-zo-06', type:'ZO',
+      prompt:'Ordne zu: Wann Passato Remoto vs. Passato Prossimo?',
+      pairs:[
+        { de:'historische Ereignisse (Bücher, Geschichte)',  it:'Passato Remoto' },
+        { de:'Alltagsgespräch, jüngste Vergangenheit (Süd)', it:'Passato Prossimo' },
+        { de:'Literatur, Märchen, Erzählungen',              it:'Passato Remoto' },
+        { de:'Norditaliener im Alltag',                      it:'beide möglich'  },
+        { de:'Biografien berühmter Personen',                it:'Passato Remoto' },
+        { de:'"Ich habe gestern gegessen." (Standard)',      it:'Passato Prossimo' },
+      ] },
+
+    { id:'m23-zo-07', type:'ZO',
+      prompt:'Ordne zu: vedere im Passato Remoto (nur unregelmäßige Formen)',
+      pairs:[
+        { de:'io',      it:'vidi'    },
+        { de:'tu',      it:'vedesti' },
+        { de:'lui/lei', it:'vide'    },
+        { de:'noi',     it:'vedemmo' },
+        { de:'voi',     it:'vedeste' },
+        { de:'loro',    it:'videro'  },
+      ] },
+
+    { id:'m23-zo-08', type:'ZO',
+      prompt:'Ordne zu: partire im Passato Remoto',
+      pairs:[
+        { de:'ich fuhr ab',      it:'partii'    },
+        { de:'du fuhrest ab',    it:'partisti'  },
+        { de:'er/sie fuhr ab',   it:'partì'     },
+        { de:'wir fuhren ab',    it:'partimmo'  },
+        { de:'ihr fuhrt ab',     it:'partiste'  },
+        { de:'sie fuhren ab',    it:'partirono' },
+      ] },
+
+    { id:'m23-zo-09', type:'ZO',
+      prompt:'Ordne zu: historische Sätze → Deutsch',
+      pairs:[
+        { de:'Colombo scoprì l\'America nel 1492.',    it:'Kolumbus entdeckte Amerika 1492.'         },
+        { de:'Garibaldi unificò l\'Italia.',           it:'Garibaldi einigte Italien.'               },
+        { de:'Dante nacque a Firenze nel 1265.',       it:'Dante wurde 1265 in Florenz geboren.'     },
+        { de:'La Prima Guerra Mondiale finì nel 1918.',it:'Der 1. Weltkrieg endete 1918.'            },
+        { de:'Michelangelo dipinse la Cappella Sistina.',it:'Michelangelo malte die Sixtinische Kapelle.' },
+        { de:'Roma cadde nel 476 d.C.',                it:'Rom fiel 476 n. Chr.'                     },
+      ] },
+
+    /* === MC 12 === */
+    { id:'m23-mc-01', type:'MC',
+      prompt:'Welche Form? "Colombo ___ l\'America nel 1492." (scoprire)',
+      options:['ha scoperto','scopriva','scoprì','scopre'],
+      correctValue:'scoprì',
+      explain:'Historische Tatsache: Passato Remoto. scoprire 3. Sg.: scoprì (-ire: -ì).' },
+
+    { id:'m23-mc-02', type:'MC',
+      prompt:'Welche Form? "Dante ___ nel 1265." (nascere)',
+      options:['è nato','nacque','nasce','nasceva'],
+      correctValue:'nacque',
+      explain:'Historisches Datum: Passato Remoto. nascere 3. Sg.: nacque (unregelmäßig).' },
+
+    { id:'m23-mc-03', type:'MC',
+      prompt:'Welche Form? "Io ___ la verità." (dire, Passato Remoto, 1. Sg.)',
+      options:['ho detto','dissi','dicevo','dico'],
+      correctValue:'dissi',
+      explain:'dire im Passato Remoto, 1. Sg.: dissi (unregelmäßig).' },
+
+    { id:'m23-mc-04', type:'MC',
+      prompt:'Welche Form? "Marco Polo ___ in Cina molti anni." (vivere, 3. Sg.)',
+      options:['ha vissuto','viveva','visse','vive'],
+      correctValue:'visse',
+      explain:'Historische Biografie: Passato Remoto. vivere 3. Sg.: visse (unregelmäßig).' },
+
+    { id:'m23-mc-05', type:'MC',
+      prompt:'Welche Form? "I Romani ___ Roma nel 753 a.C." (fondare)',
+      options:['hanno fondato','fondavano','fondarono','fondano'],
+      correctValue:'fondarono',
+      explain:'Historisches Ereignis: Passato Remoto. fondare 3. Pl.: fondarono (-are: -arono).' },
+
+    { id:'m23-mc-06', type:'MC',
+      prompt:'Welche Form? "Tu ___ la Divina Commedia?" (leggere, jemals — historischer Kontext)',
+      options:['hai letto','leggesti','leggevi','leggi'],
+      correctValue:'leggesti',
+      explain:'tu im Passato Remoto von leggere: leggesti. (regelmäßige tu-Form: -esti).' },
+
+    { id:'m23-mc-07', type:'MC',
+      prompt:'Welche Formen von "vedere" sind regelmäßig?',
+      options:[
+        'io vidi und lui vide',
+        'tu vedesti, noi vedemmo, voi vedeste',
+        'solo loro videro',
+        'alle Formen sind unregelmäßig',
+      ],
+      correctValue:'tu vedesti, noi vedemmo, voi vedeste',
+      explain:'Bei -ere-Verben: tu/-esti, noi/-emmo, voi/-este sind immer regelmäßig. io/lui/loro sind oft unregelmäßig.' },
+
+    { id:'m23-mc-08', type:'MC',
+      prompt:'Welche Form? "Noi ___ a Roma durante il viaggio." (fermarsi)',
+      options:['ci siamo fermati','ci fermammo','ci fermavamo','ci fermiamo'],
+      correctValue:'ci fermammo',
+      explain:'fermarsi im Passato Remoto, 1. Pl.: ci fermammo (-are: -ammo).' },
+
+    { id:'m23-mc-09', type:'MC',
+      prompt:'Nord vs. Süd: Welcher Satz wäre typisch für Norditalien?',
+      options:[
+        'Ieri sono andato al cinema.',
+        'Ieri andai al cinema.',
+        'Ieri andavo al cinema.',
+        'Ieri vado al cinema.',
+      ],
+      correctValue:'Ieri andai al cinema.',
+      explain:'Norditalien: Passato Remoto auch für jüngste Vergangenheit. "Ieri andai" wäre im Süden ungewöhnlich (dort: sono andato).' },
+
+    { id:'m23-mc-10', type:'MC',
+      prompt:'Welche Form? "Shakespeare ___ nel 1616." (morire)',
+      options:['è morto','morì','moriva','muore'],
+      correctValue:'morì',
+      explain:'Historisches Datum, Tod einer Person: Passato Remoto. morire 3. Sg.: morì.' },
+
+    { id:'m23-mc-11', type:'MC',
+      prompt:'Welche Form? "Loro ___ la città di notte." (abbandonare, 3. Pl.)',
+      options:['hanno abbandonato','abbandonavano','abbandonarono','abbandonano'],
+      correctValue:'abbandonarono',
+      explain:'-are Passato Remoto 3. Pl.: -arono. abbandonare → abbandonarono.' },
+
+    { id:'m23-mc-12', type:'MC',
+      prompt:'Welche Form? "Lei ___ il premio Nobel nel 1903." (ricevere)',
+      options:['ha ricevuto','riceveva','ricevette','riceve'],
+      correctValue:'ricevette',
+      explain:'ricevere 3. Sg. Passato Remoto: ricevette (-ere regelmäßig: -ette). Marie Curie!' },
+
+    /* === MCL 5 === */
+    { id:'m23-mcl-01', type:'MC',
+      prompt:'Wähle: "Nel 1969 l\'uomo ___ sulla Luna per la prima volta."',
+      options:['è andato','andò','andava','andrà'],
+      correctValue:'andò',
+      translation:'1969 ging der Mensch zum ersten Mal auf den Mond.',
+      explain:'Historisches Ereignis: Passato Remoto. andare 3. Sg.: andò.' },
+
+    { id:'m23-mcl-02', type:'MC',
+      prompt:'Wähle: "Quando Napoleone ___ a Milano, la gente lo ___."',
+      options:['entrò / accolse','è entrato / ha accolto','entrava / accoglieva','entrò / accoglieva'],
+      correctValue:'entrò / accolse',
+      translation:'Als Napoleon in Mailand einzog, empfing ihn das Volk.',
+      explain:'Historische Erzählung: beide Passato Remoto. entrare 3. Sg.: entrò; accogliere 3. Sg.: accolse.' },
+
+    { id:'m23-mcl-03', type:'MC',
+      prompt:'Wähle: "Galileo Galilei ___ che la Terra gira intorno al Sole."',
+      options:['scoprì','ha scoperto','scopriva','scopre'],
+      correctValue:'scoprì',
+      translation:'Galileo Galilei entdeckte, dass die Erde sich um die Sonne dreht.',
+      explain:'Historische Entdeckung: Passato Remoto. scoprire 3. Sg.: scoprì.' },
+
+    { id:'m23-mcl-04', type:'MC',
+      prompt:'Wähle: "La Prima Guerra Mondiale ___ nel 1914 e ___ nel 1918."',
+      options:['cominciò / finì','è cominciata / è finita','cominciava / finiva','cominciai / finii'],
+      correctValue:'cominciò / finì',
+      translation:'Der Erste Weltkrieg begann 1914 und endete 1918.',
+      explain:'Historische Daten: Passato Remoto. 3. Sg. von cominciare / finire.' },
+
+    { id:'m23-mcl-05', type:'MC',
+      prompt:'Wähle: "C\'era una volta un re che ___ in un castello enorme." (Märchen)',
+      options:['viveva','visse','ha vissuto','vive'],
+      correctValue:'viveva',
+      translation:'Es war einmal ein König, der in einem riesigen Schloss lebte.',
+      explain:'C\'era una volta (Märchenanfang) + andauernder Zustand = Imperfetto: viveva. Der Märchenanfang selbst ist Imperfetto, Handlungen im Märchen oft PR.' },
+
+    /* === LT 5 === */
+    { id:'m23-lt-01', type:'LT',
+      text:'Leonardo da Vinci {0} a Vinci nel 1452 e {1} a Amboise nel 1519.',
+      blanks:[ { accept:['nacque'] }, { accept:['morì'] } ],
+      translation:'Leonardo da Vinci wurde 1452 in Vinci geboren und starb 1519 in Amboise.',
+      explain:'nascere 3. Sg. PR: nacque; morire 3. Sg. PR: morì.' },
+
+    { id:'m23-lt-02', type:'LT',
+      text:'Marco Polo {0} dalla Cina e {1} al suo ritorno in Italia.',
+      blanks:[ { accept:['tornò'] }, { accept:['scrisse'] } ],
+      translation:'Marco Polo kehrte aus China zurück und schrieb bei seiner Rückkehr nach Italien.',
+      explain:'tornare 3. Sg. PR: tornò (-are); scrivere 3. Sg. PR: scrisse (unregelm.).' },
+
+    { id:'m23-lt-03', type:'LT',
+      text:'Noi {0} la storia di Roma a scuola. La professoressa {1} molto bene.',
+      blanks:[ { accept:['studiammo'] }, { accept:['spiegò'] } ],
+      translation:'Wir lernten die Geschichte Roms in der Schule. Die Lehrerin erklärte sehr gut.',
+      explain:'studiare 1. Pl. PR: studiammo; spiegare 3. Sg. PR: spiegò.' },
+
+    { id:'m23-lt-04', type:'LT',
+      text:'Quando {0} al potere, Mussolini {1} tutte le libertà civili.',
+      blanks:[ { accept:['salì'] }, { accept:['eliminò'] } ],
+      translation:'Als er an die Macht kam, beseitigte Mussolini alle Bürgerfreiheiten.',
+      explain:'salire 3. Sg. PR: salì; eliminare 3. Sg. PR: eliminò.' },
+
+    { id:'m23-lt-05', type:'LT',
+      text:'I soldati {0} la città dopo mesi di resistenza. La guerra {1} finalmente.',
+      blanks:[ { accept:['liberarono'] }, { accept:['finì'] } ],
+      translation:'Die Soldaten befreiten die Stadt nach monatelangem Widerstand. Der Krieg endete schließlich.',
+      explain:'liberare 3. Pl. PR: liberarono; finire 3. Sg. PR: finì.' },
+
+    /* === FT 2 === */
+    { id:'m23-ft-01', type:'FT',
+      prompt:'Passato Remoto von "amare" (-are), regelmäßig:',
+      rows:[
+        { label:'io',       accept:['amai']    },
+        { label:'tu',       accept:['amasti']  },
+        { label:'lui/lei',  accept:['amò']     },
+        { label:'noi',      accept:['amammo']  },
+        { label:'voi',      accept:['amaste']  },
+        { label:'loro',     accept:['amarono'] },
+      ] },
+
+    { id:'m23-ft-02', type:'FT',
+      prompt:'Passato Remoto — 3. Sg. (wichtige Unregelmäßige):',
+      rows:[
+        { label:'dire → 3. Sg.',       accept:['disse']    },
+        { label:'venire → 3. Sg.',     accept:['venne']    },
+        { label:'fare → 3. Sg.',       accept:['fece']     },
+        { label:'scrivere → 3. Sg.',   accept:['scrisse']  },
+        { label:'nascere → 3. Sg.',    accept:['nacque']   },
+        { label:'conoscere → 3. Sg.',  accept:['conobbe']  },
+      ] },
+
+    /* === FK 3 === */
+    { id:'m23-fk-01', type:'FK',
+      prompt:'Finde und korrigiere den Fehler (historischer Text):',
+      sentence:'Garibaldi ha unificato l\'Italia nel 1861.',
+      solution:'Garibaldi unificò l\'Italia nel 1861.',
+      errorToken:'ha unificato',
+      translation:'Garibaldi einigte Italien 1861.',
+      explain:'Historische Tatsache in einem Lehrtext: Passato Remoto bevorzugt. unificare 3. Sg.: unificò.' },
+
+    { id:'m23-fk-02', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Dante scrissero la Divina Commedia.',
+      solution:'Dante scrisse la Divina Commedia.',
+      errorToken:'scrissero',
+      translation:'Dante schrieb die Göttliche Komödie.',
+      explain:'Dante ist singular → 3. Sg.: scrisse (nicht scrissero, das wäre 3. Pl.).' },
+
+    { id:'m23-fk-03', type:'FK',
+      prompt:'Finde und korrigiere den Fehler:',
+      sentence:'Nel 1492 Colombo scopriva l\'America.',
+      solution:'Nel 1492 Colombo scoprì l\'America.',
+      errorToken:'scopriva',
+      translation:'1492 entdeckte Kolumbus Amerika.',
+      explain:'Historisches Ereignis mit Datum: Passato Remoto (scoprì), nicht Imperfetto (scopriva wäre ein andauernder Zustand).' },
+
+    /* === KA 3 === */
+    { id:'m23-ka-01', type:'KA',
+      prompt:'Kategorisiere: regelmäßig oder unregelmäßig im Passato Remoto?',
+      categories:['regelmäßig (-ai/-etti/-ii)', 'unregelmäßig (verschiedene Stämme)'],
+      items:[
+        { text:'parlare → parlai',      cat:0 },
+        { text:'essere → fui',          cat:1 },
+        { text:'partire → partii',      cat:0 },
+        { text:'fare → feci',           cat:1 },
+        { text:'amare → amai',          cat:0 },
+        { text:'dire → dissi',          cat:1 },
+      ] },
+
+    { id:'m23-ka-02', type:'KA',
+      prompt:'Kategorisiere: Passato Remoto oder Imperfetto?',
+      categories:['Passato Remoto (abgeschlossen/historisch)', 'Imperfetto (Zustand/Gewohnheit)'],
+      items:[
+        { text:'Dante nacque nel 1265.',        cat:0 },
+        { text:'Dante era un poeta.',           cat:1 },
+        { text:'Roma cadde nel 476.',           cat:0 },
+        { text:'Roma era la capitale.',         cat:1 },
+        { text:'Colombo scoprì l\'America.',    cat:0 },
+        { text:'Colombo viaggiava spesso.',     cat:1 },
+      ] },
+
+    { id:'m23-ka-03', type:'KA',
+      prompt:'Kategorisiere: tu/noi/voi-Formen (immer regelmäßig) vs. io/lui/loro (oft unregelm.)?',
+      categories:['immer regelmäßig (tu/noi/voi)', 'oft unregelmäßig (io/lui/loro)'],
+      items:[
+        { text:'tu vedesti',     cat:0 },
+        { text:'io vidi',        cat:1 },
+        { text:'noi dicemmo',    cat:0 },
+        { text:'lui disse',      cat:1 },
+        { text:'voi faceste',    cat:0 },
+        { text:'loro fecero',    cat:1 },
+      ] },
+
+    /* === KO 2 === */
+    { id:'m23-ko-01', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Colombo scoprì l\'America nel 1492.', tag:'PR: historische Tatsache' },
+      b:{ sentence:'Colombo ha scoperto l\'America nel 1492.', tag:'PP: auch korrekt, aber ungewöhnlich für Geschichte' },
+      reveal:'Beide sind grammatisch korrekt. In historischen Texten, Schulbüchern und Literatur wird das Passato Remoto bevorzugt. Das Passato Prossimo kann auch verwendet werden (besonders in gesprochener Sprache oder im Süden), klingt aber in formellen historischen Texten seltsam.' },
+
+    { id:'m23-ko-02', type:'KO',
+      prompt:'Worin unterscheiden sich diese Sätze?',
+      a:{ sentence:'Garibaldi era coraggioso.', tag:'Imperfetto: Charaktereigenschaft' },
+      b:{ sentence:'Garibaldi unificò l\'Italia.', tag:'PR: abgeschlossene Handlung' },
+      reveal:'In einer historischen Erzählung gehen Imperfetto und Passato Remoto Hand in Hand: Imperfetto für Charakterbeschreibungen, Zustände und Hintergründe ("era coraggioso"); Passato Remoto für die eigentlichen historischen Handlungen ("unificò l\'Italia"). Genau wie PP + Imperfetto im Alltagsgebrauch.' },
+
+    /* === DE 3 === */
+    { id:'m23-de-01', type:'DE',
+      prompt:'"Michelangelo wurde 1475 geboren und malte die Sixtinische Kapelle."',
+      solutions:['Michelangelo nacque nel 1475 e dipinse la Cappella Sistina.'],
+      note:'nacque (nascere, unregelm.); dipinse (dipingere 3. Sg. PR, unregelm.).' },
+
+    { id:'m23-de-02', type:'DE',
+      prompt:'"Die Römer bauten viele Straßen und Aquädukte durch ganz Europa."',
+      solutions:['I Romani costruirono molte strade e acquedotti in tutta Europa.'],
+      note:'costruire 3. Pl. PR: costruirono (-ire: -irono).' },
+
+    { id:'m23-de-03', type:'DE',
+      prompt:'"Als Napoleon nach Russland marschierte, begann der Untergang seines Reiches."',
+      solutions:['Quando Napoleone marciò verso la Russia, cominciò la caduta del suo impero.','Quando Napoleone marciò in Russia, cominciò il declino del suo impero.'],
+      note:'Beide Verben: Passato Remoto. marciò / cominciò (3. Sg., -are: -ò). caduta/declino = Untergang.' },
+
+    /* === IT 3 === */
+    { id:'m23-it-01', type:'IT',
+      prompt:'"Giulio Cesare fu ucciso nel 44 a.C."',
+      solutions:['Julius Cäsar wurde 44 v. Chr. getötet / ermordet.','Gaius Julius Cäsar wurde im Jahr 44 v. Chr. ermordet.'],
+      note:'fu ucciso = wurde getötet (Passato Remoto Passiv). essere (fu) + Partizip.' },
+
+    { id:'m23-it-02', type:'IT',
+      prompt:'"La Prima Guerra Mondiale cominciò nel 1914 e coinvolse quasi tutta l\'Europa."',
+      solutions:['Der Erste Weltkrieg begann 1914 und erfasste fast ganz Europa.','Der Erste Weltkrieg begann 1914 und zog fast ganz Europa mit hinein.'],
+      note:'cominciò / coinvolse: Passato Remoto. coinvolgere 3. Sg.: coinvolse.' },
+
+    { id:'m23-it-03', type:'IT',
+      prompt:'"Marco Polo partì da Venezia nel 1271 e tornò solo nel 1295."',
+      solutions:['Marco Polo brach 1271 von Venedig auf und kehrte erst 1295 zurück.','Marco Polo verließ Venedig 1271 und kam erst 1295 zurück.'],
+      note:'partì (partire, -ì); tornò (tornare, -ò). solo = erst (zeitlich).' },
+
+  ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

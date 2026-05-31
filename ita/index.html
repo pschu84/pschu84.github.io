@@ -65,10 +65,7 @@
       <div class="progress-bar-fill" id="overallFill" style="width:0%"></div>
     </div>
   </div>
-<header class="dashboard-hero">
-    <h1 class="dashboard-title">Benvenuto! 👋</h1>
-    <p class="dashboard-intro">Meistere die italienische Grammatik Schritt für Schritt. Wähle ein Thema und starte deine Übung!</p>
-  </header><br>
+
   <!-- Streak + Zitat -->
   <div class="dashboard-meta">
     <div class="streak-box">
@@ -86,6 +83,74 @@
       <span id="weaknessText"></span>
     </div>
     <a id="weaknessLink" href="#" class="btn btn-cielo btn-sm">Jetzt üben</a>
+  </div>
+
+  <!-- Don Due — Mascot -->
+  <div id="don-due-box" style="
+    display:flex; align-items:center; gap:1.2rem;
+    background:#1a1a1a; border:2.5px solid #111;
+    border-radius:var(--r-md); box-shadow:4px 4px 0 #111;
+    padding:1rem 1.3rem; margin-bottom:1.8rem;
+    position:relative; overflow:hidden;
+  ">
+    <!-- Eule SVG -->
+    <div id="don-due-owl" style="flex-shrink:0; cursor:pointer;" title="Don Due spricht...">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Körper -->
+        <ellipse cx="36" cy="44" rx="20" ry="22" fill="#2d6a2d"/>
+        <!-- Kopf -->
+        <circle cx="36" cy="24" r="16" fill="#2d6a2d"/>
+        <!-- Hut (Fedora) -->
+        <rect x="18" y="14" width="36" height="5" rx="2.5" fill="#111"/>
+        <rect x="23" y="6" width="26" height="11" rx="5" fill="#1a1a1a"/>
+        <rect x="21" y="13" width="30" height="3" rx="1.5" fill="#333"/>
+        <!-- Hutband -->
+        <rect x="23" y="14" width="26" height="2" rx="1" fill="#8b0000" opacity="0.7"/>
+        <!-- Augen weiß -->
+        <circle cx="28" cy="26" r="6" fill="#fff"/>
+        <circle cx="44" cy="26" r="6" fill="#fff"/>
+        <!-- Iris (finster) -->
+        <circle cx="27" cy="27" r="3.5" fill="#1a1a1a"/>
+        <circle cx="43" cy="27" r="3.5" fill="#1a1a1a"/>
+        <!-- Pupille Glanz -->
+        <circle cx="26" cy="26" r="1" fill="#fff"/>
+        <circle cx="42" cy="26" r="1" fill="#fff"/>
+        <!-- Augenbrauen (böse, schräg) -->
+        <line x1="22" y1="20" x2="33" y2="22.5" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="38" y1="22.5" x2="49" y2="20" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Schnabel -->
+        <polygon points="36,32 32,38 40,38" fill="#d4a017"/>
+        <!-- Krawatte / Anzug -->
+        <polygon points="36,50 30,58 36,56 42,58" fill="#111"/>
+        <line x1="36" y1="50" x2="36" y2="62" stroke="#8b0000" stroke-width="2"/>
+        <!-- Flügel-Andeutung -->
+        <ellipse cx="18" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(-10 18 50)"/>
+        <ellipse cx="54" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(10 54 50)"/>
+        <!-- Rose im Knopfloch -->
+        <circle cx="42" cy="54" r="3" fill="#8b0000"/>
+        <circle cx="42" cy="54" r="1.5" fill="#c0392b"/>
+      </svg>
+    </div>
+    <!-- Sprechblase -->
+    <div style="flex:1; position:relative;">
+      <div style="
+        background:#111; border:1.5px solid #333;
+        border-radius:var(--r-sm); padding:0.7rem 1rem;
+        color:#e8e8e8; font-size:0.9rem; font-style:italic;
+        line-height:1.55; position:relative;
+      ">
+        <span style="color:#8b0000; font-style:normal; font-weight:700; font-size:0.75rem; display:block; margin-bottom:0.25rem; letter-spacing:0.05em;">DON DUE SPRICHT:</span>
+        <span id="don-due-quote"></span>
+      </div>
+      <!-- Pfeil zur Eule -->
+      <div style="
+        position:absolute; left:-10px; top:50%; transform:translateY(-50%);
+        width:0; height:0;
+        border-top:8px solid transparent;
+        border-bottom:8px solid transparent;
+        border-right:10px solid #333;
+      "></div>
+    </div>
   </div>
 
   <!-- Module nach Niveau -->
@@ -146,16 +211,16 @@ const NIVEAU_GROUPS = [
         modules: [
           { id:'m17', title:'Substantive & Plural', icon:'📦', file:'modul-17-plural.html', ready:true,
             intro:'Regelmäßige und unregelmäßige Pluralbildung: -o/-a/-e und Besonderheiten.' },
-          { id:'m18', title:'Bestimmter Artikel', icon:'✏️', file:'modul-18-art-best.html', ready:false,
+          { id:'m18', title:'Bestimmter Artikel', icon:'✏️', file:'modul-18-art-best.html', ready:true,
             intro:'il, lo, la, l\', i, gli, le — Genus, Anlaut und alle Formen auf einen Blick.' },
-          { id:'m19', title:'Unbestimmter Artikel', icon:'💼', file:'modul-19-art-unbest.html', ready:false,
+          { id:'m19', title:'Unbestimmter Artikel', icon:'💼', file:'modul-19-art-unbest.html', ready:true,
             intro:'un, uno, una, un\' — Regeln, Genus und typische Fehler.' },
         ]
       },
       {
         id: 'zeiten-a1', title: 'Zeiten (A1)', color: 'cielo',
         modules: [
-          { id:'m20', title:'Präsens: Regelmäßige Verben', icon:'⏳', file:'modul-20-presente.html', ready:false,
+          { id:'m20', title:'Präsens: Regelmäßige Verben', icon:'⏳', file:'modul-20-presente.html', ready:true,
             intro:'Konjugation der drei Verbgruppen -are, -ere, -ire im Presente.' },
           { id:'m01', title:'Passato Prossimo', icon:'🕰️', file:'modul-01-passato.html', ready:true,
             intro:'Einfache Vergangenheit mit avere/essere, regelmäßige und unregelmäßige Partizipien.' },
@@ -164,7 +229,7 @@ const NIVEAU_GROUPS = [
       {
         id: 'verben-a1', title: 'Verben (A1)', color: 'sun',
         modules: [
-          { id:'m21', title:'Essere & Avere', icon:'👑', file:'modul-21-essere-avere.html', ready:false,
+          { id:'m21', title:'Essere & Avere', icon:'👑', file:'modul-21-essere-avere.html', ready:true,
             intro:'Die wichtigsten Hilfsverben: Konjugation, Bedeutungen und häufigste Ausdrücke.' },
           { id:'m12', title:'Modalverben', icon:'💬', file:'modul-12-modali.html', ready:true,
             intro:'dovere, potere, volere + Infinitiv: Formen, Verneinung, Vergangenheit.' },
@@ -182,7 +247,7 @@ const NIVEAU_GROUPS = [
         modules: [
           { id:'m02', title:'Futuro Semplice', icon:'🔮', file:'modul-02-futuro.html', ready:true,
             intro:'Einfache Zukunft: Endungen, unregelmäßige Stämme, Verwendung auch für Vermutungen.' },
-          { id:'m22', title:'Imperfetto', icon:'📽️', file:'modul-22-imperfetto.html', ready:false,
+          { id:'m22', title:'Imperfetto', icon:'📽️', file:'modul-22-imperfetto.html', ready:true,
             intro:'Gewohnheiten, Zustände und Hintergründe in der Vergangenheit.' },
           { id:'m13', title:'Verlaufsform: stare + Gerundio', icon:'⏳', file:'modul-13-gerundio.html', ready:true,
             intro:'Gerade dabei sein: stare + -ando/-endo, Vergleich mit Deutsch und Englisch.' },
@@ -240,7 +305,7 @@ const NIVEAU_GROUPS = [
         modules: [
           { id:'m16', title:'Condizionale Presente', icon:'✨', file:'modul-16-condizionale.html', ready:true,
             intro:'Würde-Form: höfliche Bitten, Wünsche, Hypothesen — Konjunktiv II auf Italienisch.' },
-          { id:'m23', title:'Passato Remoto', icon:'📜', file:'modul-23-passato-remoto.html', ready:false,
+          { id:'m23', title:'Passato Remoto', icon:'📜', file:'modul-23-passato-remoto.html', ready:true,
             intro:'Historische Vergangenheit: Bildung, unregelmäßige Verben, Nord/Süd-Unterschied.' },
           { id:'m24', title:'Congiuntivo', icon:'🌀', file:'modul-24-congiuntivo.html', ready:false,
             intro:'Konjunktiv Präsens und Imperfekt: Auslöser, Bildung, Zeitenfolge.' },
@@ -367,6 +432,41 @@ function initDashboard() {
 }
 
 initDashboard();
+
+// ── Don Due — Der Pate der italienischen Grammatik ───────────────────────
+const DON_DUE_QUOTES = [
+  'Mach heute ein paar Aufgaben — oder ich mach dir ein Angebot, das du nicht ablehnen kannst.',
+  'Übe. Sonst landest du bei den Fischen.',
+  'Wer nicht übt, hat morgen früh einen Pferdekopf in seinem Bett.',
+  'Ich habe eine Armee von Konjunktionen. Und sie alle warten auf dich.',
+  'Die Familie lernt jeden Tag. Du lernst heute — oder du erklärst mir, warum nicht.',
+  'Eines Tages — und dieser Tag könnte heute sein — wirst du den Unterschied zwischen DI und DA kennen.',
+  'Ich mache dir kein zweites Mal ein Angebot. Klick auf ein Modul.',
+  'In dieser Stadt spricht man Italiano. Entweder du lernst es, oder... wir reden noch mal.',
+  'Vergiss die Ausreden. Der Don vergisst nie.',
+  'Meine Freunde nennen mich Don Due. Du darfst mich jetzt Modul öffnen nennen.',
+  'Wer fleißig lernt, dem zeige ich Rispetto. Wer nicht lernt — dem zeige ich was anderes.',
+  'Das Passato Prossimo hat mich einiges gelehrt. Zum Beispiel: Fehler wiederholen sich.',
+  'Heute Nacht werden wir das Futuro üben. Ob du willst oder nicht.',
+  'Ich habe Geduld. Aber nicht unendlich viel. Fang an.',
+  'Non si impara senza praticare. Das ist kein Bitten — das ist ein Auftrag.',
+];
+
+const donEl = document.getElementById('don-due-quote');
+const owlEl = document.getElementById('don-due-owl');
+let donIdx = Math.floor(Math.random() * DON_DUE_QUOTES.length);
+if (donEl) donEl.textContent = DON_DUE_QUOTES[donIdx];
+if (owlEl) owlEl.addEventListener('click', () => {
+  donIdx = (donIdx + 1) % DON_DUE_QUOTES.length;
+  if (donEl) {
+    donEl.style.opacity = '0';
+    donEl.style.transition = 'opacity 0.2s';
+    setTimeout(() => {
+      donEl.textContent = DON_DUE_QUOTES[donIdx];
+      donEl.style.opacity = '1';
+    }, 200);
+  }
+});
 </script>
 </body>
 </html>
