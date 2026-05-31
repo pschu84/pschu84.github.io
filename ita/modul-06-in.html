@@ -104,18 +104,18 @@ const MODULE = {
 
     /* === SO 2 === */
     { id:'m06-so-01', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['abito', 'in', 'Germania', 'da', 'anni', 'tre'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['abito', 'in', 'Germania', 'da', 'per', 'anni', 'tre'],
       solution:['abito', 'in', 'Germania', 'da', 'tre', 'anni'],
       translation:'Ich wohne seit drei Jahren in Deutschland.',
-      explain:'in + Ländername (f) ohne Artikel. da tre anni = seit drei Jahren.' },
+      explain:'da = seit (andauernde Handlung bis jetzt). per = für (abgeschlossene Dauer). in + f-Land ohne Artikel.' },
 
     { id:'m06-so-02', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['gatto', 'il', 'è', 'salotto', 'nel'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['gatto', 'il', 'è', 'salotto', 'nel', 'nella'],
       solution:['il', 'gatto', 'è', 'nel', 'salotto'],
       translation:'Die Katze ist im Wohnzimmer.',
-      explain:'nel = in + il (il salotto, m/Sg.).' },
+      explain:'nel = in + il (il salotto, m/Sg.). nella = in + la (feminin) — wäre z.B. nella stanza.' },
 
     /* === ZO 8 === */
     { id:'m06-zo-01', type:'ZO',
@@ -152,25 +152,25 @@ const MODULE = {
       ] },
 
     { id:'m06-zo-04', type:'ZO',
-      prompt:'Ordne zu: Land -> IN-Form',
+      prompt:'Ordne zu: Land -> welche IN-Form? (in / nel / negli)',
       pairs:[
-        { de:'Italia (f)',           it:'in Italia'           },
-        { de:'Francia (f)',          it:'in Francia'          },
-        { de:'Germania (f)',         it:'in Germania'         },
-        { de:'Portogallo (m)',       it:'nel Portogallo'      },
-        { de:'Stati Uniti (m/Pl.)', it:'negli Stati Uniti'   },
-        { de:'Giappone (m)',         it:'nel Giappone'        }
+        { de:'Italia (f)',           it:'in'     },
+        { de:'Francia (f)',          it:'in'     },
+        { de:'Germania (f)',         it:'in'     },
+        { de:'Portogallo (m)',       it:'nel'    },
+        { de:'Stati Uniti (m/Pl.)', it:'negli'  },
+        { de:'Giappone (m)',         it:'nel'    }
       ] },
 
     { id:'m06-zo-05', type:'ZO',
-      prompt:'Ordne zu: Raum -> richtige IN-Form',
+      prompt:'Ordne zu: Raum -> welche IN-Form? (in ohne Artikel / nel / nella / nello / nell\')',
       pairs:[
-        { de:'la cucina',      it:'in cucina (allg.) / nella cucina (spez.)' },
-        { de:'il salotto',     it:'nel salotto'    },
-        { de:'la stanza',      it:'nella stanza'   },
-        { de:'lo studio',      it:'nello studio'   },
-        { de:'l\'armadio',     it:"nell'armadio"   },
-        { de:'il bagno',       it:'in bagno (allg.) / nel bagno (spez.)' }
+        { de:'la cucina (Raum allg.)',   it:'in (cucina allg.) / nella (spez.)' },
+        { de:'il salotto (m/Sg.)',       it:'nel'        },
+        { de:'la stanza (f/Sg.)',        it:'nella'      },
+        { de:'lo studio (m/s-)',         it:'nello'      },
+        { de:"l'armadio (m/Vokal)",      it:"nell'"      },
+        { de:'il bagno (Raum allg.)',    it:'in (allg.) / nel (spez.)' }
       ] },
 
     { id:'m06-zo-06', type:'ZO',

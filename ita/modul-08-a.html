@@ -103,18 +103,18 @@ const MODULE = {
 
     /* === SO 2 === */
     { id:'m08-so-01', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['domani', 'vado', 'a', 'Roma'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['domani', 'vado', 'a', 'in', 'Roma'],
       solution:['domani', 'vado', 'a', 'Roma'],
       translation:'Morgen fahre ich nach Rom.',
-      explain:'Stadt: a + Stadtname ohne Artikel. Vado a Roma.' },
+      explain:'a + Stadtname (ohne Artikel). in + Ländername (in Italia). Roma ist eine Stadt → a Roma.' },
 
     { id:'m08-so-02', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['alle', 'ci', 'vediamo', 'tre'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['alle', "all'una", 'ci', 'vediamo', 'tre'],
       solution:['ci', 'vediamo', 'alle', 'tre'],
       translation:'Wir sehen uns um drei Uhr.',
-      explain:'Uhrzeit: alle + Zahl (a + le = alle). Ci vediamo alle tre.' },
+      explain:'alle tre = um drei Uhr (a + le = alle, Plural). all\'una = um ein Uhr (a + l\' = all\', Singular). Drei ist Plural → alle.' },
 
     /* === ZO 8 === */
     { id:'m08-zo-01', type:'ZO',
@@ -140,25 +140,25 @@ const MODULE = {
       ] },
 
     { id:'m08-zo-03', type:'ZO',
-      prompt:'Ordne zu: Stadt -> richtige Form mit A',
+      prompt:'Ordne zu: Stadt oder Land? — a oder in?',
       pairs:[
-        { de:'Roma (f)',      it:'a Roma'      },
-        { de:'Milano (f)',    it:'a Milano'    },
-        { de:'Berlino (f)',   it:'a Berlino'   },
-        { de:'Parigi (f)',    it:'a Parigi'    },
-        { de:'New York',     it:'a New York'  },
-        { de:'Londra (f)',   it:'a Londra'    }
+        { de:'Roma (Stadt)',         it:'a'   },
+        { de:'Italia (Land, f)',     it:'in'  },
+        { de:'Berlino (Stadt)',      it:'a'   },
+        { de:'Germania (Land, f)',   it:'in'  },
+        { de:'Parigi (Stadt)',       it:'a'   },
+        { de:'Francia (Land, f)',    it:'in'  }
       ] },
 
     { id:'m08-zo-04', type:'ZO',
-      prompt:'Ordne zu: Ort mit Artikelpräposition',
+      prompt:'Ordne zu: Welche A-Artikelpräposition? (al / alla / allo / all\' / agli / alle)',
       pairs:[
-        { de:'il mercato',    it:'al mercato'    },
-        { de:'la stazione',   it:'alla stazione' },
-        { de:'lo stadio',     it:'allo stadio'   },
-        { de:"l'aeroporto",   it:"all'aeroporto" },
-        { de:'gli amici',     it:'agli amici'    },
-        { de:'le tre',        it:'alle tre'      }
+        { de:'il mercato (m/Sg.)',      it:'al'    },
+        { de:'la stazione (f/Sg.)',     it:'alla'  },
+        { de:'lo stadio (m/s-)',        it:'allo'  },
+        { de:"l'aeroporto (m/Vokal)",   it:"all'"  },
+        { de:'gli amici (m/Pl.)',       it:'agli'  },
+        { de:'le tre (f/Pl.)',          it:'alle'  }
       ] },
 
     { id:'m08-zo-05', type:'ZO',

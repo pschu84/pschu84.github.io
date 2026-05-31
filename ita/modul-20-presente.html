@@ -104,18 +104,18 @@ const MODULE = {
 
     /* === SO 2 === */
     { id:'m20-so-01', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['ogni', 'mattina', 'parlo', 'italiano', 'io'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['ogni', 'mattina', 'parlo', 'parla', 'italiano', 'io'],
       solution:['io', 'parlo', 'italiano', 'ogni', 'mattina'],
       translation:'Jeden Morgen spreche ich Italienisch.',
-      explain:'parlo = 1. Pers. Sg. von parlare (-are). Regelmäßige Endung -o.' },
+      explain:'parlo = 1. Pers. Sg. (ich). parla wäre 3. Pers. Sg. (er/sie).' },
 
     { id:'m20-so-02', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['capiscono', 'non', 'loro', 'bene', 'italiano'],
-      solution:['loro', 'non', 'capiscono', 'bene', 'l\'italiano'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['capiscono', 'capisce', 'non', 'loro', 'bene', "l'italiano"],
+      solution:['loro', 'non', 'capiscono', 'bene', "l'italiano"],
       translation:'Sie verstehen Italienisch nicht gut.',
-      explain:'capiscono = 3. Pers. Pl. von capire (-isc-). Endung -iscono.' },
+      explain:'capiscono = 3. Pers. Pl. (sie/loro). capisce wäre 3. Pers. Sg. (er/sie).' },
 
     /* === ZO 9 === */
     { id:'m20-zo-01', type:'ZO',
@@ -185,14 +185,14 @@ const MODULE = {
       ] },
 
     { id:'m20-zo-07', type:'ZO',
-      prompt:'Ordne zu: -isc- oder kein -isc-? (-ire Verben)',
+      prompt:'Ordne zu: -ire mit -isc- oder ohne? (io / loro)',
       pairs:[
-        { de:'finire (zu Ende)',   it:'finisco / finiscono (-isc-)' },
-        { de:'partire (abfahren)', it:'parto / partono (kein -isc-)' },
-        { de:'capire (verstehen)', it:'capisco / capiscono (-isc-)' },
-        { de:'dormire (schlafen)', it:'dormo / dormono (kein -isc-)' },
-        { de:'preferire (vorziehen)', it:'preferisco / preferiscono (-isc-)' },
-        { de:'sentire (hören)',    it:'sento / sentono (kein -isc-)' },
+        { de:'finire (zu Ende)',       it:'mit -isc-'    },
+        { de:'partire (abfahren)',     it:'kein -isc-'   },
+        { de:'capire (verstehen)',     it:'mit -isc-'    },
+        { de:'dormire (schlafen)',     it:'kein -isc-'   },
+        { de:'preferire (vorziehen)', it:'mit -isc-'    },
+        { de:'sentire (hören)',        it:'kein -isc-'   },
       ] },
 
     { id:'m20-zo-08', type:'ZO',

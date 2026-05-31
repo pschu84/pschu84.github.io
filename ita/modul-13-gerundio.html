@@ -101,29 +101,29 @@ const MODULE = {
 
     /* === SO 2 === */
     { id:'m13-so-01', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['sto', 'una', 'leggendo', 'bella', 'storia'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['sto', 'sta', 'una', 'leggendo', 'bella', 'storia'],
       solution:['sto', 'leggendo', 'una', 'bella', 'storia'],
       translation:'Ich lese gerade eine schöne Geschichte.',
-      explain:'Verlaufsform: sto + Gerundio (leggendo). stare + Gerundio beschreibt laufende Handlung.' },
+      explain:'sto = stare 1. Sg. (ich). sta = 3. Sg. (er/sie). stare + Gerundio = Verlaufsform.' },
 
     { id:'m13-so-02', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['stava', 'quando', 'dormendo', 'ho', 'chiamato'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['stava', 'stavo', 'quando', 'dormendo', 'ho', 'chiamato'],
       solution:['stava', 'dormendo', 'quando', 'ho', 'chiamato'],
       translation:'Er schlief gerade, als ich angerufen habe.',
-      explain:'Passato progressivo: stava dormendo (Hintergrund) + Passato Prossimo (Ereignis).' },
+      explain:'stava = stare Imperfetto 3. Sg. (er/sie). stavo = 1. Sg. (ich). Passato progressivo: stava dormendo.' },
 
     /* === ZO 8 === */
     { id:'m13-zo-01', type:'ZO',
-      prompt:'Ordne zu: Infinitiv -> Gerundio',
+      prompt:'Ordne zu: Infinitiv -> Gerundio-Endung (-ando oder -endo)',
       pairs:[
-        { de:'parlare',   it:'parlando'   },
-        { de:'vedere',    it:'vedendo'    },
-        { de:'dormire',   it:'dormendo'   },
-        { de:'mangiare',  it:'mangiando'  },
-        { de:'leggere',   it:'leggendo'   },
-        { de:'partire',   it:'partendo'   },
+        { de:'parlare (-are)',   it:'-ando'  },
+        { de:'vedere (-ere)',    it:'-endo'  },
+        { de:'dormire (-ire)',   it:'-endo'  },
+        { de:'mangiare (-are)',  it:'-ando'  },
+        { de:'leggere (-ere)',   it:'-endo'  },
+        { de:'partire (-ire)',   it:'-endo'  },
       ] },
 
     { id:'m13-zo-02', type:'ZO',

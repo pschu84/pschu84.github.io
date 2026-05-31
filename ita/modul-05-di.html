@@ -95,18 +95,18 @@ const MODULE = {
 
     /* === SO 2 === */
     { id:'m05-so-01', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['il', 'libro', 'del', 'ragazzo'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['libro', 'il', 'del', 'della', 'ragazzo'],
       solution:['il', 'libro', 'del', 'ragazzo'],
       translation:'Das Buch des Jungen.',
-      explain:'di + il = del. Zugehörigkeit: il libro del ragazzo.' },
+      explain:'del = di + il (ragazzo ist m/Sg.). della = di + la (feminin) — wäre z.B. della ragazza.' },
 
     { id:'m05-so-02', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['vorrei', 'vino', 'del', 'rosso'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['vorrei', 'vino', 'del', 'della', 'rosso'],
       solution:['vorrei', 'del', 'vino', 'rosso'],
       translation:'Ich hätte gerne etwas roten Wein.',
-      explain:'del = Teilungsartikel (di + il). Vorrei del vino rosso.' },
+      explain:'del = Teilungsartikel di + il (vino ist m/Sg.). della = di + la (feminin) — wäre z.B. della birra.' },
 
     /* === ZO 8 === */
     { id:'m05-zo-01', type:'ZO',
@@ -165,14 +165,14 @@ const MODULE = {
       ] },
 
     { id:'m05-zo-06', type:'ZO',
-      prompt:'Ordne zu: Substantiv (Genus/Numerus) -> richtige Form',
+      prompt:'Ordne zu: Welche DI-Form passt zum Substantiv?',
       pairs:[
-        { de:'lo zaino (m/Sg. s-)',   it:'dello zaino'  },
-        { de:'gli occhi (m/Pl. s-)',  it:'degli occhi'  },
-        { de:'l\'amica (f/Sg. Vokal)',it:'dell\'amica'  },
-        { de:'le amiche (f/Pl.)',     it:'delle amiche' },
-        { de:'il cane (m/Sg.)',       it:'del cane'     },
-        { de:'la città (f/Sg.)',      it:'della città'  }
+        { de:'lo zaino (m/Sg., s-)',    it:'dello'  },
+        { de:'gli occhi (m/Pl., s-)',   it:'degli'  },
+        { de:"l'amica (f/Sg., Vokal)",  it:"dell'"  },
+        { de:'le amiche (f/Pl.)',       it:'delle'  },
+        { de:'il cane (m/Sg.)',         it:'del'    },
+        { de:'la città (f/Sg.)',        it:'della'  }
       ] },
 
     { id:'m05-zo-07', type:'ZO',

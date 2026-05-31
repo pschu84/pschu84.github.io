@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GrammaticaViva — Passato Prossimo</title>
+<title>GrammaticaViva \u2014 Passato Prossimo</title>
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
@@ -12,7 +12,7 @@
 <div class="container page-animate">
 
   <div class="topbar">
-    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
+    <a class="brand" href="index.html"><span class="brand-flag">\ud83c\uddee\ud83c\uddf9</span> GrammaticaViva</a>
     <div class="topbar-right">
       <span class="topbar-module">Block: Zeiten &middot; Modul 1</span>
     </div>
@@ -20,7 +20,7 @@
 
   <div class="module-page-header">
     <a href="index.html" class="back-link">&larr; Zur&uuml;ck zur &Uuml;bersicht</a>
-    <h1>⏰ Passato Prossimo</h1>
+    <h1>\u23f0 Passato Prossimo</h1>
     <p>Einfache Vergangenheit mit avere / essere &middot; Regelmä&szlig;ige und unregelmä&szlig;ige Partizipien</p>
   </div>
 
@@ -106,18 +106,18 @@ const MODULE = {
        SORTIERAUFGABEN (SO) — leicht, keine Eingabe nötig
        ========================================================= */
     { id:'m01-so-01', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['pizza','mangiato','ho','la'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['pizza','mangiato','ho','sono','la'],
       solution:['ho','mangiato','la','pizza'],
       translation:'Ich habe die Pizza gegessen.',
-      explain:'ho mangiato la pizza \u2014 Hilfsverb direkt vor Partizip.' },
+      explain:'mangiare bildet das PP mit avere (ho). sono wäre das Hilfsverb für Bewegungsverben wie andare.' },
 
     { id:'m01-so-02', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['andati','a','siamo','Roma'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['andati','andato','a','siamo','Roma'],
       solution:['siamo','andati','a','Roma'],
       translation:'Wir sind nach Rom gegangen.',
-      explain:'siamo andati a Roma \u2014 essere vor kongruierendem Partizip.' },
+      explain:'siamo = noi (Plural) → Partizip kongruiert: andati (m/Pl.). andato wäre m/Sg. (lui).' },
 
     /* =========================================================
        ZUORDNUNGSAUFGABEN (ZO) — 10 Sets à 6 Paare
@@ -474,97 +474,7 @@ const MODULE = {
     { id:'m01-it-02', type:'IT',
       prompt:'"Hanno visto un film."',
       solutions:['Sie haben einen Film gesehen.','Sie haben einen Film geschaut.'],
-      note:'vedere \u2192 avere; visto (unregelm\u00e4\u00dfig)' },
-
-
-    /* =========================================================
-       AVERE vs. ESSERE — Entscheidungs-Aufgaben (KA)
-       Typische Anfängerfehler: Bewegungsverben vs. transitive
-       ========================================================= */
-    { id:'m01-ka-01', type:'KA',
-      prompt:'Welches Hilfsverb? Wähle für jedes Verb avere oder essere.',
-      categories:['avere','essere'],
-      items:[
-        { text:'mangiare (essen)',   cat:0 },
-        { text:'andare (gehen)',     cat:1 },
-        { text:'vedere (sehen)',     cat:0 },
-        { text:'arrivare (ankommen)',cat:1 },
-        { text:'comprare (kaufen)',  cat:0 },
-      ],
-      explain:'Transitive Verben (mit direktem Objekt) → avere. Bewegungsverben → essere.' },
-
-    { id:'m01-ka-02', type:'KA',
-      prompt:'Avere oder essere? Entscheide für jedes Verb.',
-      categories:['avere','essere'],
-      items:[
-        { text:'partire (abfahren)',   cat:1 },
-        { text:'lavorare (arbeiten)',  cat:0 },
-        { text:'tornare (zurückkehren)', cat:1 },
-        { text:'scrivere (schreiben)', cat:0 },
-        { text:'nascere (geboren werden)', cat:1 },
-      ],
-      explain:'partire, tornare, nascere → essere (Bewegung/Zustandswechsel). lavorare, scrivere → avere.' },
-
-    { id:'m01-ka-03', type:'KA',
-      prompt:'Avere oder essere? Achtung: manche Verben können beides!',
-      categories:['avere','essere'],
-      items:[
-        { text:'uscire (ausgehen)',     cat:1 },
-        { text:'guardare (schauen)',    cat:0 },
-        { text:'venire (kommen)',       cat:1 },
-        { text:'rispondere (antworten)',cat:0 },
-        { text:'diventare (werden)',    cat:1 },
-      ],
-      explain:'uscire, venire, diventare → essere. guardare, rispondere → avere.' },
-
-    /* =========================================================
-       PARTIZIP-KONGRUENZ — MC (typische Anfängerfehler)
-       ========================================================= */
-    { id:'m01-mc-kq-01', type:'MC',
-      prompt:'Wähle die richtige Form: „Maria __ andata al mercato."',
-      options:['è andata','ha andata','è andato','ha andato'],
-      correctValue:'è andata',
-      explain:'andare → essere. Das Partizip richtet sich nach dem Subjekt: Maria (f/Sg.) → andata.' },
-
-    { id:'m01-mc-kq-02', type:'MC',
-      prompt:'Wähle die richtige Form: „I bambini __ mangiato la pizza."',
-      options:['hanno mangiato','sono mangiato','hanno mangiati','sono mangiati'],
-      correctValue:'hanno mangiato',
-      explain:'mangiare → avere. Bei avere-Verben bleibt das Partizip immer unveränderlich: mangiato.' },
-
-    { id:'m01-mc-kq-03', type:'MC',
-      prompt:'Wähle die richtige Form: „Le ragazze __ partite presto."',
-      options:['sono partite','hanno partite','sono partiti','hanno partiti'],
-      correctValue:'sono partite',
-      explain:'partire → essere. Subjekt: le ragazze (f/Pl.) → Partizip: partite.' },
-
-    { id:'m01-mc-kq-04', type:'MC',
-      prompt:'Welcher Satz ist FALSCH?',
-      options:[
-        'Marco è arrivato in ritardo.',
-        'Maria ha mangiato una mela.',
-        'I ragazzi sono andati a scuola.',
-        'Le studentesse hanno arrivate tardi.'
-      ],
-      correctValue:'Le studentesse hanno arrivate tardi.',
-      explain:'arrivare nimmt essere, nicht avere. Korrekt: Le studentesse sono arrivate tardi.' },
-
-    { id:'m01-mc-kq-05', type:'MC',
-      prompt:'„Ho guidato la macchina." — Warum avere, obwohl es Bewegung gibt?',
-      options:[
-        'guidare ist unregelmäßig.',
-        'guidare hat ein direktes Objekt (la macchina) → transitiv → avere.',
-        'Bei Maschinen nimmt man immer avere.',
-        'Es müsste eigentlich essere heißen.'
-      ],
-      correctValue:'guidare hat ein direktes Objekt (la macchina) → transitiv → avere.',
-      explain:'Entscheidend ist nicht Bewegung, sondern Transitivität. Hat das Verb ein direktes Objekt? → avere.' },
-
-    { id:'m01-mc-kq-06', type:'MC',
-      prompt:'„Noi __ rimasti a casa." — welche Form?',
-      options:['siamo rimasti','abbiamo rimasti','siamo rimasto','abbiamo rimasto'],
-      correctValue:'siamo rimasti',
-      explain:'rimanere → essere. Subjekt: noi (m/Pl. oder gemischt) → rimasti.' },
+      note:'vedere \u2192 avere; visto (unregelm\u00e4\u00dfig)' }
 
   ] /* end exercises */
 }; /* end MODULE */
