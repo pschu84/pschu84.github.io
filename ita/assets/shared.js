@@ -194,7 +194,9 @@ const Store = (() => {
       if (s.correct > bestCorrect) bestCorrect = s.correct;
     }
 
-    // Gesamt-Richtig: aus meta wenn vorhanden, sonst aus exercises aller Module berechnen
+    // Gesamt-Richtig: aus meta wenn vorhanden, sonst einmalig aus exercises
+    // berechnen und sofort in meta zurückschreiben, damit der Wert als Basis
+    // für alle künftigen Zuwächse dient.
     let totalCorrect = state.meta.totalCorrect || 0;
     if (totalCorrect === 0) {
       const GOOD = new Set(['correct', 'self-ok']);
@@ -202,6 +204,10 @@ const Store = (() => {
         for (const ex of Object.values(m.exercises || {})) {
           if (ex.status && GOOD.has(ex.status)) totalCorrect++;
         }
+      }
+      if (totalCorrect > 0) {
+        state.meta.totalCorrect = totalCorrect;
+        save(state);
       }
     }
 
