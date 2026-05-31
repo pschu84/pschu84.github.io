@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Don Due — Italiano lernen</title>
+<title>GrammaticaViva — Italiano lernen</title>
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
@@ -47,7 +47,7 @@
 <div class="container page-animate">
 
   <div class="topbar">
-    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
     <div class="topbar-right">
       <a href="grammatik.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;" title="Grammatik kompakt">📋 Grammatik kompakt</a>
       <a href="grammatik-niveau.html" style="font-size:0.83rem;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:0.22rem 0.65rem;" title="Grammatik A1–B1">🎓 Grammatik A1–B1</a>
@@ -65,10 +65,7 @@
       <div class="progress-bar-fill" id="overallFill" style="width:0%"></div>
     </div>
   </div>
-<header class="dashboard-hero">
-    <h1 class="dashboard-title">Benvenuto! 👋</h1>
-    <p class="dashboard-intro">Meistere die italienische Grammatik Schritt für Schritt. Wähle ein Thema und starte deine Übung, bevor Don Due für Gerechtigkeit sorgt!</p>
-  </header><br>
+
   <!-- Streak + Zitat -->
   <div class="dashboard-meta">
     <div class="streak-box">
@@ -87,8 +84,6 @@
     </div>
     <a id="weaknessLink" href="#" class="btn btn-cielo btn-sm">Jetzt üben</a>
   </div>
-
-  
 
   <!-- Module nach Niveau -->
   <div id="blocks"></div>
@@ -146,18 +141,18 @@ const NIVEAU_GROUPS = [
       {
         id: 'grundlagen', title: 'Substantive & Artikel', color: 'oliva',
         modules: [
-          { id:'m17', title:'Substantive & Plural', icon:'📦', file:'modul-17-plural.html', ready:true, exerciseCount:51,
+          { id:'m17', title:'Substantive & Plural', icon:'📦', file:'modul-17-plural.html', ready:true,
             intro:'Regelmäßige und unregelmäßige Pluralbildung: -o/-a/-e und Besonderheiten.' },
-          { id:'m18', title:'Bestimmter Artikel', icon:'✏️', file:'modul-18-art-best.html', ready:true, exerciseCount:50,
+          { id:'m18', title:'Bestimmter Artikel', icon:'✏️', file:'modul-18-art-best.html', ready:false,
             intro:'il, lo, la, l\', i, gli, le — Genus, Anlaut und alle Formen auf einen Blick.' },
-          { id:'m19', title:'Unbestimmter Artikel', icon:'💼', file:'modul-19-art-unbest.html', ready:true, exerciseCount:50,
+          { id:'m19', title:'Unbestimmter Artikel', icon:'💼', file:'modul-19-art-unbest.html', ready:false,
             intro:'un, uno, una, un\' — Regeln, Genus und typische Fehler.' },
         ]
       },
       {
         id: 'zeiten-a1', title: 'Zeiten (A1)', color: 'cielo',
         modules: [
-          { id:'m20', title:'Präsens: Regelmäßige Verben', icon:'⏳', file:'modul-20-presente.html', ready:true, exerciseCount:51,
+          { id:'m20', title:'Präsens: Regelmäßige Verben', icon:'⏳', file:'modul-20-presente.html', ready:false,
             intro:'Konjugation der drei Verbgruppen -are, -ere, -ire im Presente.' },
           { id:'m01', title:'Passato Prossimo', icon:'🕰️', file:'modul-01-passato.html', ready:true,
             intro:'Einfache Vergangenheit mit avere/essere, regelmäßige und unregelmäßige Partizipien.' },
@@ -166,9 +161,9 @@ const NIVEAU_GROUPS = [
       {
         id: 'verben-a1', title: 'Verben (A1)', color: 'sun',
         modules: [
-          { id:'m21', title:'Essere & Avere', icon:'👑', file:'modul-21-essere-avere.html', ready:true, exerciseCount:48,
+          { id:'m21', title:'Essere & Avere', icon:'👑', file:'modul-21-essere-avere.html', ready:false,
             intro:'Die wichtigsten Hilfsverben: Konjugation, Bedeutungen und häufigste Ausdrücke.' },
-          { id:'m12', title:'Modalverben', icon:'💬', file:'modul-12-modali.html', ready:true, exerciseCount:46,
+          { id:'m12', title:'Modalverben', icon:'💬', file:'modul-12-modali.html', ready:true,
             intro:'dovere, potere, volere + Infinitiv: Formen, Verneinung, Vergangenheit.' },
         ]
       },
@@ -182,51 +177,51 @@ const NIVEAU_GROUPS = [
       {
         id: 'zeiten-a2', title: 'Zeiten (A2)', color: 'cielo',
         modules: [
-          { id:'m02', title:'Futuro Semplice', icon:'🔮', file:'modul-02-futuro.html', ready:true, exerciseCount:52,
+          { id:'m02', title:'Futuro Semplice', icon:'🔮', file:'modul-02-futuro.html', ready:true,
             intro:'Einfache Zukunft: Endungen, unregelmäßige Stämme, Verwendung auch für Vermutungen.' },
-          { id:'m22', title:'Imperfetto', icon:'📽️', file:'modul-22-imperfetto.html', ready:true, exerciseCount:49,
+          { id:'m22', title:'Imperfetto', icon:'📽️', file:'modul-22-imperfetto.html', ready:false,
             intro:'Gewohnheiten, Zustände und Hintergründe in der Vergangenheit.' },
-          { id:'m13', title:'Verlaufsform: stare + Gerundio', icon:'⏳', file:'modul-13-gerundio.html', ready:true, exerciseCount:45,
+          { id:'m13', title:'Verlaufsform: stare + Gerundio', icon:'⏳', file:'modul-13-gerundio.html', ready:true,
             intro:'Gerade dabei sein: stare + -ando/-endo, Vergleich mit Deutsch und Englisch.' },
         ]
       },
       {
         id: 'pronomen-a2', title: 'Pronomen', color: 'terra',
         modules: [
-          { id:'m03', title:'Direkte Objektpronomen', icon:'🎯', file:'modul-03-direkte-pronomen.html', ready:true, exerciseCount:51,
+          { id:'m03', title:'Direkte Objektpronomen', icon:'🎯', file:'modul-03-direkte-pronomen.html', ready:true,
             intro:'lo/la/li/le — Akkusativ-Pronomen: Position, Elision, Kongruenz im Passato.' },
-          { id:'m04', title:'Indirekte Objektpronomen', icon:'📤', file:'modul-04-indirekte-pronomen.html', ready:true, exerciseCount:52,
+          { id:'m04', title:'Indirekte Objektpronomen', icon:'📤', file:'modul-04-indirekte-pronomen.html', ready:true,
             intro:'gli/le/ci — Dativ-Pronomen: Vergleich mit Deutsch, piacere, typische Fehler.' },
         ]
       },
       {
         id: 'praepos-a2', title: 'Präpositionen', color: 'oliva',
         modules: [
-          { id:'m05', title:'Präposition DI', icon:'🔗', file:'modul-05-di.html', ready:true, exerciseCount:51,
+          { id:'m05', title:'Präposition DI', icon:'🔗', file:'modul-05-di.html', ready:true,
             intro:'del/dello/della — Verschmelzung, Herkunft, Zugehörigkeit, Mengenangaben.' },
-          { id:'m06', title:'Präposition IN', icon:'📦', file:'modul-06-in.html', ready:true, exerciseCount:51,
+          { id:'m06', title:'Präposition IN', icon:'📦', file:'modul-06-in.html', ready:true,
             intro:'nel/nello/nella — Ort, Bewegung in Länder und Räume, Zeit.' },
-          { id:'m07', title:'Präposition SU', icon:'⬆️', file:'modul-07-su.html', ready:true, exerciseCount:52,
+          { id:'m07', title:'Präposition SU', icon:'⬆️', file:'modul-07-su.html', ready:true,
             intro:'sul/sulla/sui — Lage auf einer Fläche, Thema, ungefähre Zahlen.' },
-          { id:'m08', title:'Präposition A', icon:'📍', file:'modul-08-a.html', ready:true, exerciseCount:52,
+          { id:'m08', title:'Präposition A', icon:'📍', file:'modul-08-a.html', ready:true,
             intro:'al/alla/agli — Städte, indirektes Objekt, Uhrzeit, Art und Weise.' },
-          { id:'m09', title:'Präposition DA', icon:'↩️', file:'modul-09-da.html', ready:true, exerciseCount:52,
+          { id:'m09', title:'Präposition DA', icon:'↩️', file:'modul-09-da.html', ready:true,
             intro:'dal/dalla — Herkunft, seit + Zeitdauer, Zweck, bei jemandem.' },
-          { id:'m10', title:'Welche Präposition wann?', icon:'🗺️', file:'modul-10-prep-uso.html', ready:true, exerciseCount:53,
+          { id:'m10', title:'Welche Präposition wann?', icon:'🗺️', file:'modul-10-prep-uso.html', ready:true,
             intro:'Überblick und typische Verwechslungen: di/a/da/in/su im direkten Vergleich.' },
         ]
       },
       {
         id: 'verben-a2', title: 'Verben (A2)', color: 'sun',
         modules: [
-          { id:'m11', title:'Reflexive Verben', icon:'🔄', file:'modul-11-riflessivi.html', ready:true, exerciseCount:47,
+          { id:'m11', title:'Reflexive Verben', icon:'🔄', file:'modul-11-riflessivi.html', ready:true,
             intro:'alzarsi, vestirsi und co. — mi/ti/si, reflexiv im Passato Prossimo.' },
         ]
       },
       {
         id: 'satzbau-a2', title: 'Satzbau (A2)', color: 'lavanda',
         modules: [
-          { id:'m14', title:'Negation', icon:'🚫', file:'modul-14-negazione.html', ready:true, exerciseCount:47,
+          { id:'m14', title:'Negation', icon:'🚫', file:'modul-14-negazione.html', ready:true,
             intro:'non...mai, non...ancora, doppelte Negation — ganz anders als im Deutschen.' },
         ]
       },
@@ -240,9 +235,9 @@ const NIVEAU_GROUPS = [
       {
         id: 'zeiten-b1', title: 'Zeiten (B1)', color: 'cielo',
         modules: [
-          { id:'m16', title:'Condizionale Presente', icon:'✨', file:'modul-16-condizionale.html', ready:true, exerciseCount:50,
+          { id:'m16', title:'Condizionale Presente', icon:'✨', file:'modul-16-condizionale.html', ready:true,
             intro:'Würde-Form: höfliche Bitten, Wünsche, Hypothesen — Konjunktiv II auf Italienisch.' },
-          { id:'m23', title:'Passato Remoto', icon:'📜', file:'modul-23-passato-remoto.html', ready:true, exerciseCount:49,
+          { id:'m23', title:'Passato Remoto', icon:'📜', file:'modul-23-passato-remoto.html', ready:false,
             intro:'Historische Vergangenheit: Bildung, unregelmäßige Verben, Nord/Süd-Unterschied.' },
           { id:'m24', title:'Congiuntivo', icon:'🌀', file:'modul-24-congiuntivo.html', ready:false,
             intro:'Konjunktiv Präsens und Imperfekt: Auslöser, Bildung, Zeitenfolge.' },
@@ -260,7 +255,7 @@ const NIVEAU_GROUPS = [
       {
         id: 'satzbau-b1', title: 'Satzbau (B1)', color: 'lavanda',
         modules: [
-          { id:'m15', title:'Relativsätze', icon:'🔗', file:'modul-15-relativsaetze.html', ready:true, exerciseCount:48,
+          { id:'m15', title:'Relativsätze', icon:'🔗', file:'modul-15-relativsaetze.html', ready:true,
             intro:'che, cui, quello che — Relativpronomen im Vergleich mit der/die/das.' },
           { id:'m27', title:'Pronominalverben', icon:'🧠', file:'modul-27-pronominalverben.html', ready:false,
             intro:'farcela, andarsene, metterci — Verben mit festem Pronomen und eigenem Sinn.' },
@@ -299,77 +294,21 @@ function initDashboard() {
   document.getElementById('overallPct').textContent = pct + ' %';
   document.getElementById('overallFill').style.width = pct + '%';
 
-  // ── Weakness-Empfehlung ──────────────────────────────────────────────────
-  // Sucht zuerst nach nicht bestandenen Modulen (bestScore < 60 %), dann nach
-  // dem schwächsten bestandenen. Zeigt außerdem die Fehlerquote als Kontext.
+  // Weakness
   const weakestId = Store.findWeakest(allIds);
   if (weakestId) {
     const wMod = allMods.find(m => m.id === weakestId);
     if (wMod && wMod.ready) {
-      const wScore = Math.round((state.modules[weakestId]?.bestScore || 0) * 100);
-      const wStats = Store.moduleExerciseStats(weakestId);
-      const notPassed = wScore < 60;
-      let detail = wMod.title + ' — bisher ' + wScore + ' %';
-      if (wStats.total > 0) {
-        const errRate = Math.round((wStats.wrong / wStats.total) * 100);
-        if (errRate > 0) detail += ' (' + errRate + ' % Fehler)';
-      }
-      if (notPassed) detail += ' — noch nicht bestanden';
       document.getElementById('weaknessBox').classList.remove('hidden');
-      document.getElementById('weaknessText').textContent = detail;
+      const wScore = Math.round((state.modules[weakestId]?.bestScore || 0) * 100);
+      document.getElementById('weaknessText').textContent = wMod.title + ' — bisher ' + wScore + ' %';
       document.getElementById('weaknessLink').href = wMod.file;
     }
   }
 
-  // ── Render ───────────────────────────────────────────────────────────────
+  // Render
   const container = document.getElementById('blocks');
-  const C = 2 * Math.PI * 15.9; // Umfang des Rings
-
-  /**
-   * Baut den SVG-Ring für ein Modul.
-   * Der Ring zeigt grüne und rote Segmente relativ zur Gesamtzahl der
-   * Aufgaben im Modul (mod.exerciseCount). Wenn exerciseCount nicht gesetzt
-   * ist, fällt es auf den alten bestScore-basierten Ring zurück.
-   *
-   *   grüner Bogen  = richtig gelöste Aufgaben (correct + self-ok)
-   *   roter Bogen   = falsch gelöste Aufgaben (wrong + self-no + self-mid + revealed)
-   *   Rest          = noch nicht gemacht (grauer Hintergrund)
-   *
-   * Beide Bögen beginnen bei 12 Uhr (−90° Rotation bereits per CSS auf .ring-svg).
-   * Der grüne Bogen läuft zuerst, der rote direkt danach.
-   */
-  function buildRing(modId, totalExercises) {
-    const stats = Store.moduleExerciseStats(modId);
-
-    // Fallback: wenn keine Aufgaben erfasst oder totalExercises unbekannt,
-    // zeige Score-basierten grünen Ring
-    if (!totalExercises || stats.total === 0) {
-      const score = state.modules[modId]?.bestScore || 0;
-      const dash  = (score * C).toFixed(2);
-      return `<svg class="ring-svg" viewBox="0 0 36 36">
-        <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
-        <circle class="ring-fill ring-correct" cx="18" cy="18" r="15.9"
-          stroke-dasharray="${dash} ${C.toFixed(2)}" stroke-dashoffset="0"/>
-      </svg>`;
-    }
-
-    const greenArc = Math.min(stats.correct / totalExercises, 1) * C;
-    const rawRed   = Math.min(stats.wrong   / totalExercises, 1) * C;
-    // Rot darf grün nicht überlappen
-    const redArc   = Math.min(rawRed, C - greenArc);
-    // Negativer dashoffset verschiebt den Startpunkt im Uhrzeigersinn
-    const redStart = -(greenArc);
-
-    return `<svg class="ring-svg" viewBox="0 0 36 36">
-      <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
-      ${greenArc > 0.05 ? `<circle class="ring-fill ring-correct" cx="18" cy="18" r="15.9"
-        stroke-dasharray="${greenArc.toFixed(2)} ${C.toFixed(2)}"
-        stroke-dashoffset="0"/>` : ""}
-      ${redArc > 0.05 ? `<circle class="ring-fill ring-wrong" cx="18" cy="18" r="15.9"
-        stroke-dasharray="${redArc.toFixed(2)} ${C.toFixed(2)}"
-        stroke-dashoffset="${redStart.toFixed(2)}"/>` : ""}
-    </svg>`;
-  }
+  const C = 2 * Math.PI * 15.9;
 
   NIVEAU_GROUPS.forEach(ng => {
     // Niveau-Label
@@ -382,32 +321,24 @@ function initDashboard() {
 
     // Blöcke innerhalb des Niveaus
     ng.blocks.forEach(block => {
-      // Block-Prozent: nur Module mit mindestens 1 Versuch werden einbezogen.
-      // Das gibt an, wie gut du in dem Block abgeschnitten hast — nicht wie
-      // viel Prozent des Blocks erledigt sind (das wäre eine andere Zahl).
-      const attempted = block.modules.filter(m => (state.modules[m.id]?.attempts || 0) > 0);
-      let blockPctStr;
-      if (attempted.length === 0) {
-        blockPctStr = '— %';
-      } else {
-        const sum = attempted.reduce((a, m) => a + (state.modules[m.id]?.bestScore || 0), 0);
-        blockPctStr = Math.round(sum / attempted.length * 100) + ' %';
-      }
+      const blockScores = block.modules.map(m => state.modules[m.id]?.bestScore || 0);
+      const blockPct = Math.round(blockScores.reduce((a,b) => a+b, 0) / block.modules.length * 100);
 
       const section = document.createElement('div');
       section.className = 'block-section';
       section.innerHTML = `
         <div class="block-header">
           <h2 class="block-title">${block.title}</h2>
-          <span class="block-pct" title="${attempted.length} von ${block.modules.length} Modul(en) gestartet"
-            style="background:var(--${block.color}-soft);border-color:var(--${block.color})">${blockPctStr}</span>
+          <span class="block-pct" style="background:var(--${block.color}-soft);border-color:var(--${block.color})">${blockPct} %</span>
         </div>
         <div class="module-grid"></div>`;
       container.appendChild(section);
 
       const grid = section.querySelector('.module-grid');
       block.modules.forEach(mod => {
-        const done = state.modules[mod.id]?.done || false;
+        const progress = state.modules[mod.id]?.bestScore || 0;
+        const done     = state.modules[mod.id]?.done || false;
+        const dash     = (progress * C).toFixed(1);
 
         const card = document.createElement('div');
         card.className = 'module-card' + (done ? ' done' : '') + (!mod.ready ? ' locked' : '');
@@ -416,7 +347,10 @@ function initDashboard() {
             <span class="module-icon">${mod.icon}</span>
             <span class="module-title">${mod.title}</span>
             <div class="module-ring">
-              ${buildRing(mod.id, mod.exerciseCount)}
+              <svg class="ring-svg" viewBox="0 0 36 36">
+                <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+                <circle class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="${dash} ${C.toFixed(1)}"/>
+              </svg>
             </div>
           </div>
           <p class="module-intro">${mod.intro}</p>
@@ -430,142 +364,6 @@ function initDashboard() {
 }
 
 initDashboard();
-</script>
-
-<!-- Don Due — Floating Mascot (fixed, unten rechts) -->
-<div id="don-due-float" style="
-  position:fixed;
-  bottom:1.5rem;
-  right:1.5rem;
-  z-index:1000;
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:0.6rem;
-  pointer-events:none;
-">
-  <div id="don-due-bubble" style="
-    background:var(--paper);
-    border:2px solid var(--ink);
-    border-radius:var(--r-md);
-    padding:0.75rem 1rem;
-    max-width:240px;
-    color:var(--ink);
-    font-size:0.85rem;
-    font-style:italic;
-    line-height:1.5;
-    box-shadow:var(--shadow);
-    position:relative;
-    pointer-events:auto;
-    opacity:0;
-    transform:translateY(8px);
-    transition:opacity 0.35s ease, transform 0.35s ease;
-  ">
-    <span style="color:var(--terra);font-style:normal;font-weight:700;font-size:0.72rem;display:block;margin-bottom:0.25rem;letter-spacing:0.05em;">DON DUE SPRICHT:</span>
-    <span id="don-due-quote"></span>
-    <div style="
-      position:absolute;
-      bottom:-9px;
-      right:22px;
-      width:0;height:0;
-      border-left:8px solid transparent;
-      border-right:8px solid transparent;
-      border-top:9px solid var(--ink);
-    "></div>
-  </div>
-  <div id="don-due-owl" style="
-    cursor:pointer;
-    pointer-events:auto;
-    flex-shrink:0;
-    animation:donDueFloat 3.2s ease-in-out infinite;
-    filter:drop-shadow(2px 4px 6px rgba(0,0,0,0.35));
-  " title="Don Due — klicken für einen Spruch">
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="36" cy="44" rx="20" ry="22" fill="#2d6a2d"/>
-      <circle cx="36" cy="24" r="16" fill="#2d6a2d"/>
-      <rect x="18" y="14" width="36" height="5" rx="2.5" fill="#111"/>
-      <rect x="23" y="6" width="26" height="11" rx="5" fill="#1a1a1a"/>
-      <rect x="21" y="13" width="30" height="3" rx="1.5" fill="#333"/>
-      <rect x="23" y="14" width="26" height="2" rx="1" fill="#8b0000" opacity="0.7"/>
-      <circle cx="28" cy="26" r="6" fill="#fff"/>
-      <circle cx="44" cy="26" r="6" fill="#fff"/>
-      <circle cx="27" cy="27" r="3.5" fill="#1a1a1a"/>
-      <circle cx="43" cy="27" r="3.5" fill="#1a1a1a"/>
-      <circle cx="26" cy="26" r="1" fill="#fff"/>
-      <circle cx="42" cy="26" r="1" fill="#fff"/>
-      <line x1="22" y1="20" x2="33" y2="22.5" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="38" y1="22.5" x2="49" y2="20" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
-      <polygon points="36,32 32,38 40,38" fill="#d4a017"/>
-      <polygon points="36,50 30,58 36,56 42,58" fill="#111"/>
-      <line x1="36" y1="50" x2="36" y2="62" stroke="#8b0000" stroke-width="2"/>
-      <ellipse cx="18" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(-10 18 50)"/>
-      <ellipse cx="54" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(10 54 50)"/>
-      <circle cx="42" cy="54" r="3" fill="#8b0000"/>
-      <circle cx="42" cy="54" r="1.5" fill="#c0392b"/>
-    </svg>
-  </div>
-</div>
-
-<style>
-@keyframes donDueFloat {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-</style>
-
-<script>
-/* Läuft nach dem HTML-Block — getElementById findet die Elemente sicher */
-(function() {
-  const DON_DUE_QUOTES = [
-    'Mach heute ein paar Aufgaben — oder ich mach dir ein Angebot, das du nicht ablehnen kannst.',
-    'Du sprichst mich nicht einmal mit Don an.',
-    'Frag mich niemals nach meinen Geschäften.',
-    'Übe. Sonst landest du bei den Fischen.',
-    'Ich weiß, dass du es warst, der gestern nicht geübt hat und es bricht mir das Herz! Hörst du? Es bricht mir das Herz.',
-    'Ein Mann, der keine Zeit mit seinen Aufgaben verbringt, ist kein richtiger Mann.',
-    'Lass niemals jemanden außerhalb der Familie wissen, was du auf Italienisch denkst',
-    'halte deine Freunde nah, aber deine Feinde noch näher',
-    'Wer nicht übt, hat morgen früh einen Pferdekopf in seinem Bett.',
-    'Ich habe eine Armee von Konjunktionen. Und sie alle warten auf dich.',
-    'Die Familie lernt jeden Tag. Du lernst heute — oder du erklärst mir, warum nicht.',
-    'Eines Tages — und dieser Tag könnte heute sein — wirst du den Unterschied zwischen DI und DA kennen.',
-    'Ich mache dir kein zweites Mal ein Angebot. Klick auf ein Modul.',
-    'In dieser Stadt spricht man Italiano. Entweder du lernst es, oder... wir reden noch mal.',
-    'Vergiss die Ausreden. Der Don vergisst nie.',
-    'Meine Freunde nennen mich Don Due. Du darfst mich jetzt Modul öffnen nennen.',
-    'Wer fleißig lernt, dem zeige ich Rispetto. Wer nicht lernt — dem zeige ich was anderes.',
-    'Das Passato Prossimo hat mich einiges gelehrt. Zum Beispiel: Fehler wiederholen sich.',
-    'Heute Nacht werden wir das Futuro üben. Ob du willst oder nicht.',
-    'Ich habe Geduld. Aber nicht unendlich viel. Fang an.',
-    'Non si impara senza praticare. Das ist kein Bitten — das ist ein Auftrag.',
-  ];
-  const bubble  = document.getElementById('don-due-bubble');
-  const quoteEl = document.getElementById('don-due-quote');
-  const owlEl   = document.getElementById('don-due-owl');
-  let hideTimer = null;
-  let donIdx = Math.floor(Math.random() * DON_DUE_QUOTES.length);
-
-  function showBubble(text) {
-    if (hideTimer) clearTimeout(hideTimer);
-    quoteEl.textContent = text;
-    bubble.style.opacity = '1';
-    bubble.style.transform = 'translateY(0)';
-    hideTimer = setTimeout(() => {
-      bubble.style.opacity = '0';
-      bubble.style.transform = 'translateY(8px)';
-    }, 6000);
-  }
-
-  setTimeout(() => showBubble(DON_DUE_QUOTES[donIdx]), 800);
-
-  if (owlEl) {
-    owlEl.addEventListener('click', () => {
-      donIdx = (donIdx + 1) % DON_DUE_QUOTES.length;
-      showBubble(DON_DUE_QUOTES[donIdx]);
-    });
-  }
-})();
 </script>
 </body>
 </html>

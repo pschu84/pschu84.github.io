@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Don Due — Substantive &amp; Plural</title>
+<title>GrammaticaViva — Substantive &amp; Plural</title>
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
@@ -11,7 +11,7 @@
 <body>
 <div class="container page-animate">
   <div class="topbar">
-    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> GrammaticaViva</a>
     <div class="topbar-right">
       <span class="topbar-module">Block: Grundlagen · Modul 17</span>
     </div>
@@ -114,84 +114,84 @@ const MODULE = {
 
     /* === SO 2 === */
     { id:'m17-so-01', type:'SO',
-      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
-      tokens:['i', 'libri', 'libre', 'sul', 'sono', 'tavolo'],
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['i', 'libri', 'sul', 'sono', 'tavolo'],
       solution:['i', 'libri', 'sono', 'sul', 'tavolo'],
       translation:'Die Bücher liegen auf dem Tisch.',
-      explain:'libro → libri (-o → -i). libre existiert nicht. i = Artikel m/Pl.' },
+      explain:'libro → libri (-o → -i). i = Artikel m/Pl.' },
 
     { id:'m17-so-02', type:'SO',
-      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
-      tokens:['le', 'amiche', 'amici', 'mie', 'simpatiche', 'sono'],
+      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
+      tokens:['le', 'amiche', 'mie', 'simpatiche', 'sono'],
       solution:['le', 'mie', 'amiche', 'sono', 'simpatiche'],
       translation:'Meine Freundinnen sind nett.',
-      explain:'amica → amiche (-ca → -che). amici wäre maskulin. le = Artikel f/Pl.' },
+      explain:'amica → amiche (-ca → -che). le = Artikel f/Pl.' },
 
     /* === ZO 9 === */
     { id:'m17-zo-01', type:'ZO',
-      prompt:'Ordne zu: Welche Pluralendung? (-i oder -e)',
+      prompt:'Ordne zu: Singular → Plural (-o → -i)',
       pairs:[
-        { de:'libro (m, -o)',    it:'-i'  },
-        { de:'casa (f, -a)',     it:'-e'  },
-        { de:'ragazzo (m, -o)', it:'-i'  },
-        { de:'ragazza (f, -a)', it:'-e'  },
-        { de:'cane (m/f, -e)',  it:'-i'  },
-        { de:'notte (f, -e)',   it:'-i'  },
+        { de:'libro',   it:'libri'   },
+        { de:'ragazzo', it:'ragazzi' },
+        { de:'cane',    it:'cani'    },
+        { de:'amico',   it:'amici'   },
+        { de:'giorno',  it:'giorni'  },
+        { de:'anno',    it:'anni'    },
       ] },
 
     { id:'m17-zo-02', type:'ZO',
-      prompt:'Ordne zu: Wie lautet die Pluralendung? (-e, -i oder -che/-ghe)',
+      prompt:'Ordne zu: Singular → Plural (-a → -e)',
       pairs:[
-        { de:'pizza (f, -a)',      it:'-e'    },
-        { de:'amica (f, -ca)',     it:'-che'  },
-        { de:'scuola (f, -a)',     it:'-e'    },
-        { de:'bottega (f, -ga)',   it:'-ghe'  },
-        { de:'mela (f, -a)',       it:'-e'    },
-        { de:'vacca (f, -ca)',     it:'-che'  },
+        { de:'casa',    it:'case'    },
+        { de:'pizza',   it:'pizze'   },
+        { de:'ragazza', it:'ragazze' },
+        { de:'scuola',  it:'scuole'  },
+        { de:'mela',    it:'mele'    },
+        { de:'porta',   it:'porte'   },
       ] },
 
     { id:'m17-zo-03', type:'ZO',
-      prompt:'Ordne zu: Wie lautet die Pluralendung? (-i, -chi oder -ci)',
+      prompt:'Ordne zu: Singular → Plural (-e → -i)',
       pairs:[
-        { de:'chiave (f, -e)',       it:'-i'    },
-        { de:'fuoco (m, -co)',       it:'-chi'  },
-        { de:'stazione (f, -e)',     it:'-i'    },
-        { de:'amico (m, -co, betonung)', it:'-ci' },
-        { de:'madre (f, -e)',        it:'-i'    },
-        { de:'albergo (m, -go)',     it:'-ghi'  },
+        { de:'chiave',  it:'chiavi'  },
+        { de:'notte',   it:'notti'   },
+        { de:'classe',  it:'classi'  },
+        { de:'stazione',it:'stazioni'},
+        { de:'madre',   it:'madri'   },
+        { de:'parte',   it:'parti'   },
       ] },
 
     { id:'m17-zo-04', type:'ZO',
-      prompt:'Ordne zu: -ca/-ga → welche Pluralendung?',
+      prompt:'Ordne zu: Besonderheiten -ca/-ga → -che/-ghe',
       pairs:[
-        { de:'amica (-ca)',       it:'-che'  },
-        { de:'bottega (-ga)',     it:'-ghe'  },
-        { de:'buca (-ca)',        it:'-che'  },
-        { de:'collega (-ga, f)',  it:'-ghe'  },
-        { de:'riga (-ga)',        it:'-ghe'  },
-        { de:'vacca (-ca)',       it:'-che'  },
+        { de:'amica',    it:'amiche'   },
+        { de:'bottega',  it:'botteghe' },
+        { de:'buca',     it:'buche'    },
+        { de:'collega (f)', it:'colleghe' },
+        { de:'riga',     it:'righe'    },
+        { de:'vacca',    it:'vacche'   },
       ] },
 
     { id:'m17-zo-05', type:'ZO',
-      prompt:'Ordne zu: -co/-go → -chi/-ghi oder -ci/-gi? (Betonung entscheidet)',
+      prompt:'Ordne zu: Besonderheiten -co/-go → -chi/-ghi oder -ci',
       pairs:[
-        { de:'fuoco (-co, Betonung auf -co)',     it:'-chi'  },
-        { de:'albergo (-go)',                     it:'-ghi'  },
-        { de:'amico (-co, Betonung vor -co)',     it:'-ci'   },
-        { de:'medico (-co, Betonung vor -co)',    it:'-ci'   },
-        { de:'lungo (-go)',                       it:'-ghi'  },
-        { de:'nemico (-co, Betonung vor -co)',    it:'-ci'   },
+        { de:'fuoco',    it:'fuochi'   },
+        { de:'albergo',  it:'alberghi' },
+        { de:'amico',    it:'amici'    },
+        { de:'medico',   it:'medici'   },
+        { de:'lungo',    it:'lunghi'   },
+        { de:'nemico',   it:'nemici'   },
       ] },
 
     { id:'m17-zo-06', type:'ZO',
-      prompt:'Ordne zu: Welcher Plural-Artikel? (le, i — Wort bleibt gleich!)',
+      prompt:'Ordne zu: unveränderliche Plurale',
       pairs:[
-        { de:'la città (f)',   it:'le città'  },
-        { de:'il caffè (m)',   it:'i caffè'   },
-        { de:'la foto (f)',    it:'le foto'   },
-        { de:'la moto (f)',    it:'le moto'   },
-        { de:'il film (m)',    it:'i film'    },
-        { de:'il bar (m)',     it:'i bar'     },
+        { de:'la città',        it:'le città'       },
+        { de:'il caffè',        it:'i caffè'        },
+        { de:'la foto',         it:'le foto'        },
+        { de:'la moto',         it:'le moto'        },
+        { de:'il film',         it:'i film'         },
+        { de:'il bar',          it:'i bar'          },
       ] },
 
     { id:'m17-zo-07', type:'ZO',
