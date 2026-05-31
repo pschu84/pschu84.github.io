@@ -381,23 +381,23 @@ initDashboard();
   pointer-events:none;
 ">
   <div id="don-due-bubble" style="
-    background:#1a1a1a;
-    border:2px solid #333;
+    background:var(--paper);
+    border:2px solid var(--ink);
     border-radius:var(--r-md);
     padding:0.75rem 1rem;
     max-width:240px;
-    color:#e8e8e8;
+    color:var(--ink);
     font-size:0.85rem;
     font-style:italic;
     line-height:1.5;
-    box-shadow:3px 3px 0 #111;
+    box-shadow:var(--shadow);
     position:relative;
     pointer-events:auto;
     opacity:0;
     transform:translateY(8px);
     transition:opacity 0.35s ease, transform 0.35s ease;
   ">
-    <span style="color:#8b0000;font-style:normal;font-weight:700;font-size:0.72rem;display:block;margin-bottom:0.25rem;letter-spacing:0.05em;">DON DUE SPRICHT:</span>
+    <span style="color:var(--terra);font-style:normal;font-weight:700;font-size:0.72rem;display:block;margin-bottom:0.25rem;letter-spacing:0.05em;">DON DUE SPRICHT:</span>
     <span id="don-due-quote"></span>
     <div style="
       position:absolute;
@@ -406,7 +406,7 @@ initDashboard();
       width:0;height:0;
       border-left:8px solid transparent;
       border-right:8px solid transparent;
-      border-top:9px solid #333;
+      border-top:9px solid var(--ink);
     "></div>
   </div>
   <div id="don-due-owl" style="
