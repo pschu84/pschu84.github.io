@@ -753,10 +753,11 @@ class ExerciseSession {
     const state = Store.load();
     const mState = Store.getModule(state, this.mod.id);
 
-    // ── Gewichtetes Interleaving ──────────────────────────────────────────────
-    // Aufgaben werden in drei Schwierigkeitswellen eingeteilt und dann so
-    // gemischt, dass (a) leichte Aufgaben vorne stehen und (b) nie zwei
-    // Aufgaben desselben Typs direkt aufeinanderfolgen.
+    // ── Sequenz-Aufbau mit Typ-Abstand-Garantie ──────────────────────────────
+    // Ziel: Ein Aufgabentyp darf frühestens nach 4 anderen Aufgaben wieder
+    // erscheinen. Leichte Typen kommen tendenziell früher, aber wenn die
+    // Abstandsregel es erfordert, wird zwischendurch auch mal eine mittlere
+    // Aufgabe eingeschoben — statt stupide A-B-A-B zu wiederholen.
     if (!this._sequenceBuilt) {
       this._sequenceBuilt = true;
       const exs = this.mod.exercises;
@@ -768,40 +769,66 @@ class ExerciseSession {
         FK: 2, KA: 2, KO: 2, DE: 2, IT: 2,
       };
 
-      const groups = [[], [], []];
-      exs.forEach(ex => {
-        const g = DIFFICULTY[ex.type] ?? 1;
-        groups[g].push(ex);
-      });
-
-      // Innerhalb jeder Gruppe mischen
-      groups.forEach(g => {
-        for (let i = g.length - 1; i > 0; i--) {
+      // Innerhalb jeder Schwierigkeitsgruppe mischen (Fisher-Yates)
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
-          [g[i], g[j]] = [g[j], g[i]];
+          [arr[i], arr[j]] = [arr[j], arr[i]];
         }
-      });
-
-      // Gruppen zusammenfügen (leicht → mittel → schwer)
-      const merged = [...groups[0], ...groups[1], ...groups[2]];
-
-      // No-same-type-twice pass: tausche benachbarte gleiche Typen
-      for (let i = 1; i < merged.length; i++) {
-        if (merged[i].type === merged[i - 1].type) {
-          // suche nächsten Nachbarn mit anderem Typ
-          let swapIdx = -1;
-          for (let j = i + 1; j < merged.length; j++) {
-            if (merged[j].type !== merged[i - 1].type &&
-                (j + 1 >= merged.length || merged[j + 1].type !== merged[i - 1].type)) {
-              swapIdx = j;
-              break;
-            }
-          }
-          if (swapIdx !== -1) [merged[i], merged[swapIdx]] = [merged[swapIdx], merged[i]];
-        }
+        return arr;
       }
 
-      this._exercises = merged;
+      const pools = [[], [], []];
+      exs.forEach(ex => pools[DIFFICULTY[ex.type] ?? 1].push(ex));
+      pools.forEach(p => shuffle(p));
+
+      // Greedy-Sequenz: wähle bei jedem Schritt die beste verfügbare Aufgabe.
+      // "Beste" = niedrigste Schwierigkeitsgruppe, deren Typ zuletzt mehr als
+      // MIN_GAP Positionen zurückliegt. Falls keine leichte Aufgabe passt,
+      // weiche auf mittlere aus, dann auf schwere.
+      const MIN_GAP = 4;
+      const result = [];
+      const lastSeen = {}; // type → letzter Index in result
+
+      const remaining = [...pools[0], ...pools[1], ...pools[2]];
+      // Behalte Schwierigkeits-Info pro Item für Sortierung
+      const diffOf = ex => DIFFICULTY[ex.type] ?? 1;
+
+      while (remaining.length > 0) {
+        const pos = result.length;
+
+        // Kandidaten: alle, deren Typ den Mindestabstand einhält
+        const eligible = remaining.filter(ex => {
+          const last = lastSeen[ex.type];
+          return last === undefined || (pos - last) >= MIN_GAP;
+        });
+
+        // Fallback: Falls kein Typ den vollen Abstand schafft (z.B. nur
+        // noch viele ZO übrig), nimm denjenigen mit dem größtmöglichen Abstand.
+        let pool;
+        if (eligible.length > 0) {
+          pool = eligible;
+        } else {
+          const maxGap = Math.max(...remaining.map(ex => {
+            const last = lastSeen[ex.type];
+            return last === undefined ? Infinity : pos - last;
+          }));
+          pool = remaining.filter(ex => {
+            const last = lastSeen[ex.type];
+            const gap = last === undefined ? Infinity : pos - last;
+            return gap === maxGap;
+          });
+        }
+        const minDiff = Math.min(...pool.map(diffOf));
+        const best = pool.filter(ex => diffOf(ex) === minDiff);
+        const chosen = best[Math.floor(Math.random() * best.length)];
+
+        result.push(chosen);
+        lastSeen[chosen.type] = pos;
+        remaining.splice(remaining.indexOf(chosen), 1);
+      }
+
+      this._exercises = result;
     }
 
     // Temporäre exercises-Referenz auf die sortierte Sequenz zeigen lassen
