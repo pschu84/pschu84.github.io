@@ -450,7 +450,7 @@ function _renderSO(ex, box, onDone) {
       c.style.background = 'var(--paper-2)';
       tgtZone.appendChild(c);
     });
-    checkBtn.style.display = state.src.length === 0 ? 'inline-flex' : 'none';
+    checkBtn.style.display = state.tgt.length > 0 ? 'inline-flex' : 'none';
   }
 
   checkBtn.addEventListener('click', () => {
