@@ -112,20 +112,76 @@ const MODULE = {
 
   exercises: [
 
-    /* === SO 2 === */
+    /* === SO 10 === */
     { id:'m17-so-01', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['i', 'libri', 'sul', 'sono', 'tavolo'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['i', 'le', 'libri', 'libro', 'sono', 'sul', 'tavolo'],
       solution:['i', 'libri', 'sono', 'sul', 'tavolo'],
       translation:'Die Bücher liegen auf dem Tisch.',
-      explain:'libro → libri (-o → -i). i = Artikel m/Pl.' },
+      explain:'libro → libri (-o → -i, m/Pl.). Artikel: i libri (m/Pl.). le wäre f/Pl., libro wäre Singular.' },
 
     { id:'m17-so-02', type:'SO',
-      prompt:'Bringe die Wörter in die richtige Reihenfolge:',
-      tokens:['le', 'amiche', 'mie', 'simpatiche', 'sono'],
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['le', 'i', 'amiche', 'amici', 'mie', 'simpatiche', 'sono'],
       solution:['le', 'mie', 'amiche', 'sono', 'simpatiche'],
       translation:'Meine Freundinnen sind nett.',
-      explain:'amica → amiche (-ca → -che). le = Artikel f/Pl.' },
+      explain:'amica → amiche (-ca → -che, f/Pl.). Artikel: le amiche. i/amici wären maskulin.' },
+
+    { id:'m17-so-03', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['gli', 'i', 'studenti', 'studente', 'sono', 'bravi'],
+      solution:['gli', 'studenti', 'sono', 'bravi'],
+      translation:'Die Studenten sind gut.',
+      explain:'studente → studenti (-e → -i, m/Pl.). Vokalanlaut → gli studenti. i wäre vor Konsonant korrekt, nicht vor s+Konsonant/Vokal.' },
+
+    { id:'m17-so-04', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['le', 'gli', 'ragazze', 'ragazzi', 'ballano', 'bene'],
+      solution:['le', 'ragazze', 'ballano', 'bene'],
+      translation:'Die Mädchen tanzen gut.',
+      explain:'ragazza → ragazze (-a → -e, f/Pl.). Artikel: le ragazze. gli/ragazzi wären m/Pl.' },
+
+    { id:'m17-so-05', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['i', 'le', 'cani', 'gatte', 'sono', 'nel', 'giardino'],
+      solution:['i', 'cani', 'sono', 'nel', 'giardino'],
+      translation:'Die Hunde sind im Garten.',
+      explain:'cane → cani (-e → -i, m/Pl.). Artikel: i cani. le/gatte wären f/Pl. eines anderen Wortes.' },
+
+    { id:'m17-so-06', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['le', 'i', 'case', 'casas', 'sono', 'grandi'],
+      solution:['le', 'case', 'sono', 'grandi'],
+      translation:'Die Häuser sind groß.',
+      explain:'casa → case (-a → -e, f/Pl.). Artikel: le case. i wäre m/Pl., casas ist kein italienisches Wort.' },
+
+    { id:'m17-so-07', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['gli', 'i', 'zaini', 'zaino', 'sono', 'pesanti'],
+      solution:['gli', 'zaini', 'sono', 'pesanti'],
+      translation:'Die Rucksäcke sind schwer.',
+      explain:'zaino → zaini (-o → -i, m/Pl.). Anlaut z → gli zaini. i wäre falsch vor z (Sonderregel wie s+K, gn, ps).' },
+
+    { id:'m17-so-08', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['le', 'i', 'matite', 'matita', 'sono', 'rosse'],
+      solution:['le', 'matite', 'sono', 'rosse'],
+      translation:'Die Bleistifte sind rot.',
+      explain:'matita → matite (-a → -e, f/Pl.). Artikel: le matite. i wäre m/Pl., matita wäre Singular.' },
+
+    { id:'m17-so-09', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['i', 'le', 'fiori', 'fiore', 'sono', 'belli'],
+      solution:['i', 'fiori', 'sono', 'belli'],
+      translation:'Die Blumen sind schön.',
+      explain:'fiore → fiori (-e → -i, m/Pl.). Artikel: i fiori. le wäre f/Pl., fiore wäre Singular.' },
+
+    { id:'m17-so-10', type:'SO',
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['le', 'i', 'penne', 'penna', 'sono', 'sul', 'tavolo'],
+      solution:['le', 'penne', 'sono', 'sul', 'tavolo'],
+      translation:'Die Stifte sind auf dem Tisch.',
+      explain:'penna → penne (-a → -e, f/Pl.). Artikel: le penne. i wäre m/Pl., penna wäre Singular.' },
 
     /* === ZO 9 === */
     { id:'m17-zo-01', type:'ZO',
