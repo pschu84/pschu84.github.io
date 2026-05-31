@@ -424,14 +424,14 @@ const MODULE = {
       ] },
 
     { id:'m18-ft-03', type:'FT',
-      prompt:'Artikel oder kein Artikel? Schreibe den Artikel oder "—":',
+      prompt:'Artikel oder kein Artikel? Schreibe den Artikel oder "-":',
       rows:[
-        { label:'Vado a Roma.',               accept:['—','kein Artikel'] },
-        { label:'Vivo in Italia.',            accept:["l'Italia","l'"] },
-        { label:'Studio l\'italiano.',        accept:["l'"] },
+        { label:'Vado a Roma.',               accept:['-','kein Artikel',''] },
+        { label:'Vivo in Italia.',            accept:["l'Italia","l','l'"] },
+        { label:'Studio l\'italiano.',        accept:["l','l'"] },
         { label:'Il lunedì lavoro.',          accept:['il'] },
-        { label:'Vengo lunedì. (einmalig)',   accept:['—','kein Artikel'] },
-        { label:'mia madre (Possessiv+Verwandter)',accept:['—','kein Artikel'] },
+        { label:'Vengo lunedì. (einmalig)',   accept:['-','kein Artikel',''] },
+        { label:'mia madre (Possessiv+Verwandter)',accept:['-','kein Artikel',''] },
       ] },
 
     /* === FK 3 === */
