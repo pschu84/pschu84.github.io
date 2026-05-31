@@ -686,7 +686,7 @@ function _renderZO(ex, box, onDone) {
 
 /* --- helpers --- */
 function _prompt(box, text) {
-  const p = document.createElement('p'); p.className = 'ex-prompt'; p.innerHTML = text; box.appendChild(p);
+  const p = document.createElement('p'); p.className = 'ex-prompt'; p.textContent = text; box.appendChild(p);
 }
 function _chip(word, onClick) {
   const c = document.createElement('span'); c.className = 'so-chip'; c.textContent = word;
@@ -753,37 +753,66 @@ class ExerciseSession {
     const state = Store.load();
     const mState = Store.getModule(state, this.mod.id);
 
-    // Build a shuffled-by-type order once per session.
-    // Group exercises by type, shuffle within each group, then shuffle group order.
-    // This prevents long runs of the same exercise type.
-    const groups = {};
-    this.mod.exercises.forEach((ex, i) => {
-      const t = ex.type || 'XX';
-      if (!groups[t]) groups[t] = [];
-      groups[t].push(i);
-    });
-    const shuffledGroups = shuffle(Object.values(groups).map(g => shuffle([...g])));
-    // Interleave: pick one from each group in round-robin until all exhausted
-    this._order = [];
-    const queues = shuffledGroups.map(g => [...g]);
-    let remaining = true;
-    while (remaining) {
-      remaining = false;
-      for (const q of queues) {
-        if (q.length > 0) { this._order.push(q.shift()); remaining = true; }
+    // ── Gewichtetes Interleaving ──────────────────────────────────────────────
+    // Aufgaben werden in drei Schwierigkeitswellen eingeteilt und dann so
+    // gemischt, dass (a) leichte Aufgaben vorne stehen und (b) nie zwei
+    // Aufgaben desselben Typs direkt aufeinanderfolgen.
+    if (!this._sequenceBuilt) {
+      this._sequenceBuilt = true;
+      const exs = this.mod.exercises;
+
+      // Schwierigkeitsgruppen (Typ → Gruppe 0=leicht, 1=mittel, 2=schwer)
+      const DIFFICULTY = {
+        SO: 0, ZO: 0,
+        MC: 1, MCL: 1, LT: 1, FT: 1,
+        FK: 2, KA: 2, KO: 2, DE: 2, IT: 2,
+      };
+
+      const groups = [[], [], []];
+      exs.forEach(ex => {
+        const g = DIFFICULTY[ex.type] ?? 1;
+        groups[g].push(ex);
+      });
+
+      // Innerhalb jeder Gruppe mischen
+      groups.forEach(g => {
+        for (let i = g.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [g[i], g[j]] = [g[j], g[i]];
+        }
+      });
+
+      // Gruppen zusammenfügen (leicht → mittel → schwer)
+      const merged = [...groups[0], ...groups[1], ...groups[2]];
+
+      // No-same-type-twice pass: tausche benachbarte gleiche Typen
+      for (let i = 1; i < merged.length; i++) {
+        if (merged[i].type === merged[i - 1].type) {
+          // suche nächsten Nachbarn mit anderem Typ
+          let swapIdx = -1;
+          for (let j = i + 1; j < merged.length; j++) {
+            if (merged[j].type !== merged[i - 1].type &&
+                (j + 1 >= merged.length || merged[j + 1].type !== merged[i - 1].type)) {
+              swapIdx = j;
+              break;
+            }
+          }
+          if (swapIdx !== -1) [merged[i], merged[swapIdx]] = [merged[swapIdx], merged[i]];
+        }
       }
+
+      this._exercises = merged;
     }
 
-    // Resume: try to restore position; if first run start at 0
-    const savedIdx = mState.lastIndex || 0;
-    this.index = Math.min(savedIdx, this._order.length - 1);
+    // Temporäre exercises-Referenz auf die sortierte Sequenz zeigen lassen
+    this.mod.exercises = this._exercises || this.mod.exercises;
+    this.index = Math.min(mState.lastIndex || 0, this.mod.exercises.length - 1);
     this._render();
   }
 
   _render() {
-    if (this.index >= (this._order ? this._order.length : this.mod.exercises.length)) { this.finish(); return; }
-    const exIdx = this._order ? this._order[this.index] : this.index;
-    const ex    = this.mod.exercises[exIdx];
+    if (this.index >= this.mod.exercises.length) { this.finish(); return; }
+    const ex    = this.mod.exercises[this.index];
     const total = this.mod.exercises.length;
 
     this.textEl.textContent = `Aufgabe ${this.index + 1} von ${total}`;
