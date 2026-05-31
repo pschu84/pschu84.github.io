@@ -11,7 +11,8 @@ const Store = (() => {
     modules: {},
     streak: { count: 0, lastDay: null },
     settings: { accentHelp: true },
-    meta: { totalAnswered: 0, created: Date.now() }
+    meta: { totalAnswered: 0, totalCorrect: 0, lastAnswered: null, created: Date.now() },
+    daily: {}
   });
 
   function load() {
@@ -57,6 +58,22 @@ const Store = (() => {
     if (newRank > prevRank) prev.status = status;
     m.exercises[exId] = prev;
     state.meta.totalAnswered = (state.meta.totalAnswered || 0) + 1;
+
+    // Tages-Tracking
+    const _today = new Date().toISOString().slice(0, 10);
+    if (!state.daily) state.daily = {};
+    if (!state.daily[_today]) state.daily[_today] = { correct: 0, total: 0 };
+    state.daily[_today].total += 1;
+    const _isGood = (status === 'correct' || status === 'self-ok');
+    if (_isGood) {
+      state.daily[_today].correct += 1;
+      state.meta.totalCorrect = (state.meta.totalCorrect || 0) + 1;
+    }
+    state.meta.lastAnswered = Date.now();
+    // Nur letzte 90 Tage behalten
+    const _cutoff = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
+    Object.keys(state.daily).forEach(d => { if (d < _cutoff) delete state.daily[d]; });
+
     save(state);
   }
 
@@ -148,7 +165,58 @@ const Store = (() => {
   function resetAll()       { save(DEFAULT()); }
   function getModule(state, mId) { return _getOrCreate(state, mId); }
 
-  return { load, save, recordAnswer, recordRun, setLastIndex, updateStreak, moduleProgress, moduleExerciseStats, findWeakest, exportData, importData, resetModule, resetAll, getModule };
+  /**
+   * Gibt Aktivitäts-Statistiken für das Dashboard zurück.
+   * Funktioniert auch wenn daily/totalCorrect noch nicht befüllt sind
+   * (Altdaten): leitet totalCorrect dann aus exercises aller Module ab.
+   */
+  function getActivityStats() {
+    const state = load();
+    const today = new Date().toISOString().slice(0, 10);
+    const daily = state.daily || {};
+
+    // Letzter aktiver Tag (heute oder früher)
+    const sortedDays = Object.keys(daily).sort().reverse();
+    const lastDay    = sortedDays[0] || null;
+
+    // Tage seit letzter Aktivität
+    let daysSinceLast = null;
+    if (lastDay) {
+      const msPerDay = 86400000;
+      const todayMs  = new Date(today + 'T00:00:00').getTime();
+      const lastMs   = new Date(lastDay + 'T00:00:00').getTime();
+      daysSinceLast  = Math.round((todayMs - lastMs) / msPerDay);
+    }
+
+    // Tagesrekord
+    let bestCorrect = 0;
+    for (const s of Object.values(daily)) {
+      if (s.correct > bestCorrect) bestCorrect = s.correct;
+    }
+
+    // Gesamt-Richtig: aus meta wenn vorhanden, sonst aus exercises aller Module berechnen
+    let totalCorrect = state.meta.totalCorrect || 0;
+    if (totalCorrect === 0) {
+      const GOOD = new Set(['correct', 'self-ok']);
+      for (const m of Object.values(state.modules)) {
+        for (const ex of Object.values(m.exercises || {})) {
+          if (ex.status && GOOD.has(ex.status)) totalCorrect++;
+        }
+      }
+    }
+
+    return {
+      todayCorrect:   daily[today]?.correct || 0,
+      todayTotal:     daily[today]?.total   || 0,
+      lastDay,
+      lastDayCorrect: lastDay ? (daily[lastDay]?.correct || 0) : 0,
+      daysSinceLast,
+      bestCorrect,
+      totalCorrect,
+    };
+  }
+
+    return { load, save, recordAnswer, recordRun, setLastIndex, updateStreak, moduleProgress, moduleExerciseStats, getActivityStats, findWeakest, exportData, importData, resetModule, resetAll, getModule };
 })();
 
 
