@@ -85,73 +85,7 @@
     <a id="weaknessLink" href="#" class="btn btn-cielo btn-sm">Jetzt üben</a>
   </div>
 
-  <!-- Don Due — Mascot -->
-  <div id="don-due-box" style="
-    display:flex; align-items:center; gap:1.2rem;
-    background:#1a1a1a; border:2.5px solid #111;
-    border-radius:var(--r-md); box-shadow:4px 4px 0 #111;
-    padding:1rem 1.3rem; margin-bottom:1.8rem;
-    position:relative; overflow:hidden;
-  ">
-    <!-- Eule SVG -->
-    <div id="don-due-owl" style="flex-shrink:0; cursor:pointer;" title="Don Due spricht...">
-      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Körper -->
-        <ellipse cx="36" cy="44" rx="20" ry="22" fill="#2d6a2d"/>
-        <!-- Kopf -->
-        <circle cx="36" cy="24" r="16" fill="#2d6a2d"/>
-        <!-- Hut (Fedora) -->
-        <rect x="18" y="14" width="36" height="5" rx="2.5" fill="#111"/>
-        <rect x="23" y="6" width="26" height="11" rx="5" fill="#1a1a1a"/>
-        <rect x="21" y="13" width="30" height="3" rx="1.5" fill="#333"/>
-        <!-- Hutband -->
-        <rect x="23" y="14" width="26" height="2" rx="1" fill="#8b0000" opacity="0.7"/>
-        <!-- Augen weiß -->
-        <circle cx="28" cy="26" r="6" fill="#fff"/>
-        <circle cx="44" cy="26" r="6" fill="#fff"/>
-        <!-- Iris (finster) -->
-        <circle cx="27" cy="27" r="3.5" fill="#1a1a1a"/>
-        <circle cx="43" cy="27" r="3.5" fill="#1a1a1a"/>
-        <!-- Pupille Glanz -->
-        <circle cx="26" cy="26" r="1" fill="#fff"/>
-        <circle cx="42" cy="26" r="1" fill="#fff"/>
-        <!-- Augenbrauen (böse, schräg) -->
-        <line x1="22" y1="20" x2="33" y2="22.5" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="38" y1="22.5" x2="49" y2="20" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
-        <!-- Schnabel -->
-        <polygon points="36,32 32,38 40,38" fill="#d4a017"/>
-        <!-- Krawatte / Anzug -->
-        <polygon points="36,50 30,58 36,56 42,58" fill="#111"/>
-        <line x1="36" y1="50" x2="36" y2="62" stroke="#8b0000" stroke-width="2"/>
-        <!-- Flügel-Andeutung -->
-        <ellipse cx="18" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(-10 18 50)"/>
-        <ellipse cx="54" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(10 54 50)"/>
-        <!-- Rose im Knopfloch -->
-        <circle cx="42" cy="54" r="3" fill="#8b0000"/>
-        <circle cx="42" cy="54" r="1.5" fill="#c0392b"/>
-      </svg>
-    </div>
-    <!-- Sprechblase -->
-    <div style="flex:1; position:relative;">
-      <div style="
-        background:#111; border:1.5px solid #333;
-        border-radius:var(--r-sm); padding:0.7rem 1rem;
-        color:#e8e8e8; font-size:0.9rem; font-style:italic;
-        line-height:1.55; position:relative;
-      ">
-        <span style="color:#8b0000; font-style:normal; font-weight:700; font-size:0.75rem; display:block; margin-bottom:0.25rem; letter-spacing:0.05em;">DON DUE SPRICHT:</span>
-        <span id="don-due-quote"></span>
-      </div>
-      <!-- Pfeil zur Eule -->
-      <div style="
-        position:absolute; left:-10px; top:50%; transform:translateY(-50%);
-        width:0; height:0;
-        border-top:8px solid transparent;
-        border-bottom:8px solid transparent;
-        border-right:10px solid #333;
-      "></div>
-    </div>
-  </div>
+  
 
   <!-- Module nach Niveau -->
   <div id="blocks"></div>
@@ -193,247 +127,6 @@
 
 <script src="assets/shared.js"></script>
 <script>
-'use strict';
-
-// ─────────────────────────────────────────────────────────────
-// Kursstruktur: nach Niveau gruppiert, Fachgruppen als Blöcke
-// Dateinamen und IDs der fertigen Module bleiben unverändert.
-// Neue Module (m17+) für spätere Inhalte vorgesehen.
-// ─────────────────────────────────────────────────────────────
-const NIVEAU_GROUPS = [
-  {
-    niveau: 'a1',
-    label: '🌱 A1 — Die Grundlagen',
-    desc: 'Erste Zeitformen, Artikel, Plural, einfache Sätze und Verben.',
-    blocks: [
-      {
-        id: 'grundlagen', title: 'Substantive & Artikel', color: 'oliva',
-        modules: [
-          { id:'m17', title:'Substantive & Plural', icon:'📦', file:'modul-17-plural.html', ready:true,
-            intro:'Regelmäßige und unregelmäßige Pluralbildung: -o/-a/-e und Besonderheiten.' },
-          { id:'m18', title:'Bestimmter Artikel', icon:'✏️', file:'modul-18-art-best.html', ready:true,
-            intro:'il, lo, la, l\', i, gli, le — Genus, Anlaut und alle Formen auf einen Blick.' },
-          { id:'m19', title:'Unbestimmter Artikel', icon:'💼', file:'modul-19-art-unbest.html', ready:true,
-            intro:'un, uno, una, un\' — Regeln, Genus und typische Fehler.' },
-        ]
-      },
-      {
-        id: 'zeiten-a1', title: 'Zeiten (A1)', color: 'cielo',
-        modules: [
-          { id:'m20', title:'Präsens: Regelmäßige Verben', icon:'⏳', file:'modul-20-presente.html', ready:true,
-            intro:'Konjugation der drei Verbgruppen -are, -ere, -ire im Presente.' },
-          { id:'m01', title:'Passato Prossimo', icon:'🕰️', file:'modul-01-passato.html', ready:true,
-            intro:'Einfache Vergangenheit mit avere/essere, regelmäßige und unregelmäßige Partizipien.' },
-        ]
-      },
-      {
-        id: 'verben-a1', title: 'Verben (A1)', color: 'sun',
-        modules: [
-          { id:'m21', title:'Essere & Avere', icon:'👑', file:'modul-21-essere-avere.html', ready:true,
-            intro:'Die wichtigsten Hilfsverben: Konjugation, Bedeutungen und häufigste Ausdrücke.' },
-          { id:'m12', title:'Modalverben', icon:'💬', file:'modul-12-modali.html', ready:true,
-            intro:'dovere, potere, volere + Infinitiv: Formen, Verneinung, Vergangenheit.' },
-        ]
-      },
-    ]
-  },
-  {
-    niveau: 'a2',
-    label: '🌿 A2 — Vertiefung & Alltag',
-    desc: 'Mehr Zeitformen, Pronomen, Präpositionen und Satzbau für den Alltag.',
-    blocks: [
-      {
-        id: 'zeiten-a2', title: 'Zeiten (A2)', color: 'cielo',
-        modules: [
-          { id:'m02', title:'Futuro Semplice', icon:'🔮', file:'modul-02-futuro.html', ready:true,
-            intro:'Einfache Zukunft: Endungen, unregelmäßige Stämme, Verwendung auch für Vermutungen.' },
-          { id:'m22', title:'Imperfetto', icon:'📽️', file:'modul-22-imperfetto.html', ready:true,
-            intro:'Gewohnheiten, Zustände und Hintergründe in der Vergangenheit.' },
-          { id:'m13', title:'Verlaufsform: stare + Gerundio', icon:'⏳', file:'modul-13-gerundio.html', ready:true,
-            intro:'Gerade dabei sein: stare + -ando/-endo, Vergleich mit Deutsch und Englisch.' },
-        ]
-      },
-      {
-        id: 'pronomen-a2', title: 'Pronomen', color: 'terra',
-        modules: [
-          { id:'m03', title:'Direkte Objektpronomen', icon:'🎯', file:'modul-03-direkte-pronomen.html', ready:true,
-            intro:'lo/la/li/le — Akkusativ-Pronomen: Position, Elision, Kongruenz im Passato.' },
-          { id:'m04', title:'Indirekte Objektpronomen', icon:'📤', file:'modul-04-indirekte-pronomen.html', ready:true,
-            intro:'gli/le/ci — Dativ-Pronomen: Vergleich mit Deutsch, piacere, typische Fehler.' },
-        ]
-      },
-      {
-        id: 'praepos-a2', title: 'Präpositionen', color: 'oliva',
-        modules: [
-          { id:'m05', title:'Präposition DI', icon:'🔗', file:'modul-05-di.html', ready:true,
-            intro:'del/dello/della — Verschmelzung, Herkunft, Zugehörigkeit, Mengenangaben.' },
-          { id:'m06', title:'Präposition IN', icon:'📦', file:'modul-06-in.html', ready:true,
-            intro:'nel/nello/nella — Ort, Bewegung in Länder und Räume, Zeit.' },
-          { id:'m07', title:'Präposition SU', icon:'⬆️', file:'modul-07-su.html', ready:true,
-            intro:'sul/sulla/sui — Lage auf einer Fläche, Thema, ungefähre Zahlen.' },
-          { id:'m08', title:'Präposition A', icon:'📍', file:'modul-08-a.html', ready:true,
-            intro:'al/alla/agli — Städte, indirektes Objekt, Uhrzeit, Art und Weise.' },
-          { id:'m09', title:'Präposition DA', icon:'↩️', file:'modul-09-da.html', ready:true,
-            intro:'dal/dalla — Herkunft, seit + Zeitdauer, Zweck, bei jemandem.' },
-          { id:'m10', title:'Welche Präposition wann?', icon:'🗺️', file:'modul-10-prep-uso.html', ready:true,
-            intro:'Überblick und typische Verwechslungen: di/a/da/in/su im direkten Vergleich.' },
-        ]
-      },
-      {
-        id: 'verben-a2', title: 'Verben (A2)', color: 'sun',
-        modules: [
-          { id:'m11', title:'Reflexive Verben', icon:'🔄', file:'modul-11-riflessivi.html', ready:true,
-            intro:'alzarsi, vestirsi und co. — mi/ti/si, reflexiv im Passato Prossimo.' },
-        ]
-      },
-      {
-        id: 'satzbau-a2', title: 'Satzbau (A2)', color: 'lavanda',
-        modules: [
-          { id:'m14', title:'Negation', icon:'🚫', file:'modul-14-negazione.html', ready:true,
-            intro:'non...mai, non...ancora, doppelte Negation — ganz anders als im Deutschen.' },
-        ]
-      },
-    ]
-  },
-  {
-    niveau: 'b1',
-    label: '🌳 B1 — Fortgeschrittene Strukturen',
-    desc: 'Konditionalis, Konjunktiv, kombinierte Pronomen und komplexer Satzbau.',
-    blocks: [
-      {
-        id: 'zeiten-b1', title: 'Zeiten (B1)', color: 'cielo',
-        modules: [
-          { id:'m16', title:'Condizionale Presente', icon:'✨', file:'modul-16-condizionale.html', ready:true,
-            intro:'Würde-Form: höfliche Bitten, Wünsche, Hypothesen — Konjunktiv II auf Italienisch.' },
-          { id:'m23', title:'Passato Remoto', icon:'📜', file:'modul-23-passato-remoto.html', ready:true,
-            intro:'Historische Vergangenheit: Bildung, unregelmäßige Verben, Nord/Süd-Unterschied.' },
-          { id:'m24', title:'Congiuntivo', icon:'🌀', file:'modul-24-congiuntivo.html', ready:false,
-            intro:'Konjunktiv Präsens und Imperfekt: Auslöser, Bildung, Zeitenfolge.' },
-        ]
-      },
-      {
-        id: 'pronomen-b1', title: 'Pronomen (B1)', color: 'terra',
-        modules: [
-          { id:'m25', title:'Kombinierte Pronomen', icon:'🔀', file:'modul-25-kombipron.html', ready:false,
-            intro:'me lo, glielo, ce ne — direkte + indirekte Pronomen kombiniert.' },
-          { id:'m26', title:'Pronomen CI und NE', icon:'🧩', file:'modul-26-ci-ne.html', ready:false,
-            intro:'CI als Ort, Objekt und in Pronominalverben. NE für Mengen und Bezüge.' },
-        ]
-      },
-      {
-        id: 'satzbau-b1', title: 'Satzbau (B1)', color: 'lavanda',
-        modules: [
-          { id:'m15', title:'Relativsätze', icon:'🔗', file:'modul-15-relativsaetze.html', ready:true,
-            intro:'che, cui, quello che — Relativpronomen im Vergleich mit der/die/das.' },
-          { id:'m27', title:'Pronominalverben', icon:'🧠', file:'modul-27-pronominalverben.html', ready:false,
-            intro:'farcela, andarsene, metterci — Verben mit festem Pronomen und eigenem Sinn.' },
-        ]
-      },
-    ]
-  },
-];
-
-const QUOTES = [
-  '"Sbagliando si impara." — Durch Fehler lernt man.',
-  '"La pratica rende perfetti." — Übung macht den Meister.',
-  '"Piano piano si va lontano." — Schritt für Schritt kommt man weit.',
-  '"Chi studia, impara." — Wer lernt, gewinnt.',
-  '"Il bello dell\'italiano è la musica delle parole." — Die Schönheit des Italienischen liegt in der Musik der Wörter.',
-  '"Non smettere mai di imparare." — Hör nie auf zu lernen.',
-];
-
-function initDashboard() {
-  const state = Store.load();
-
-  // Streak
-  const sc = state.streak.count || 0;
-  document.getElementById('streakCount').textContent = sc;
-  if (sc > 0) document.getElementById('topbarStreak').textContent = `🔥 ${sc} ${sc === 1 ? 'Tag' : 'Tage'}`;
-
-  // Quote
-  document.getElementById('quoteBox').textContent = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-
-  // Alle Module flach für Gesamtfortschritt + Weakness
-  const allMods = NIVEAU_GROUPS.flatMap(ng => ng.blocks.flatMap(b => b.modules));
-  const allIds  = allMods.map(m => m.id);
-  const scores  = allIds.map(id => state.modules[id]?.bestScore || 0);
-  const overall = scores.reduce((a, b) => a + b, 0) / allIds.length;
-  const pct = Math.round(overall * 100);
-  document.getElementById('overallPct').textContent = pct + ' %';
-  document.getElementById('overallFill').style.width = pct + '%';
-
-  // Weakness
-  const weakestId = Store.findWeakest(allIds);
-  if (weakestId) {
-    const wMod = allMods.find(m => m.id === weakestId);
-    if (wMod && wMod.ready) {
-      document.getElementById('weaknessBox').classList.remove('hidden');
-      const wScore = Math.round((state.modules[weakestId]?.bestScore || 0) * 100);
-      document.getElementById('weaknessText').textContent = wMod.title + ' — bisher ' + wScore + ' %';
-      document.getElementById('weaknessLink').href = wMod.file;
-    }
-  }
-
-  // Render
-  const container = document.getElementById('blocks');
-  const C = 2 * Math.PI * 15.9;
-
-  NIVEAU_GROUPS.forEach(ng => {
-    // Niveau-Label
-    const nDiv = document.createElement('div');
-    nDiv.className = 'niveau-section';
-    nDiv.innerHTML = `
-      <div class="niveau-label niveau-label-${ng.niveau}">${ng.label}</div>
-      <p class="niveau-desc">${ng.desc}</p>`;
-    container.appendChild(nDiv);
-
-    // Blöcke innerhalb des Niveaus
-    ng.blocks.forEach(block => {
-      const blockScores = block.modules.map(m => state.modules[m.id]?.bestScore || 0);
-      const blockPct = Math.round(blockScores.reduce((a,b) => a+b, 0) / block.modules.length * 100);
-
-      const section = document.createElement('div');
-      section.className = 'block-section';
-      section.innerHTML = `
-        <div class="block-header">
-          <h2 class="block-title">${block.title}</h2>
-          <span class="block-pct" style="background:var(--${block.color}-soft);border-color:var(--${block.color})">${blockPct} %</span>
-        </div>
-        <div class="module-grid"></div>`;
-      container.appendChild(section);
-
-      const grid = section.querySelector('.module-grid');
-      block.modules.forEach(mod => {
-        const progress = state.modules[mod.id]?.bestScore || 0;
-        const done     = state.modules[mod.id]?.done || false;
-        const dash     = (progress * C).toFixed(1);
-
-        const card = document.createElement('div');
-        card.className = 'module-card' + (done ? ' done' : '') + (!mod.ready ? ' locked' : '');
-        card.innerHTML = `
-          <div class="module-card-top">
-            <span class="module-icon">${mod.icon}</span>
-            <span class="module-title">${mod.title}</span>
-            <div class="module-ring">
-              <svg class="ring-svg" viewBox="0 0 36 36">
-                <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
-                <circle class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="${dash} ${C.toFixed(1)}"/>
-              </svg>
-            </div>
-          </div>
-          <p class="module-intro">${mod.intro}</p>
-          ${mod.ready
-            ? `<a href="${mod.file}" class="btn btn-primary btn-sm">${done ? 'Wiederholen ↩' : 'Üben →'}</a>`
-            : `<span class="badge-soon">Demnächst</span>`}`;
-        grid.appendChild(card);
-      });
-    });
-  });
-}
-
-initDashboard();
-
-// ── Don Due — Der Pate der italienischen Grammatik ───────────────────────
 const DON_DUE_QUOTES = [
   'Mach heute ein paar Aufgaben — oder ich mach dir ein Angebot, das du nicht ablehnen kannst.',
   'Übe. Sonst landest du bei den Fischen.',
@@ -452,21 +145,134 @@ const DON_DUE_QUOTES = [
   'Non si impara senza praticare. Das ist kein Bitten — das ist ein Auftrag.',
 ];
 
-const donEl = document.getElementById('don-due-quote');
-const owlEl = document.getElementById('don-due-owl');
-let donIdx = Math.floor(Math.random() * DON_DUE_QUOTES.length);
-if (donEl) donEl.textContent = DON_DUE_QUOTES[donIdx];
-if (owlEl) owlEl.addEventListener('click', () => {
-  donIdx = (donIdx + 1) % DON_DUE_QUOTES.length;
-  if (donEl) {
-    donEl.style.opacity = '0';
-    donEl.style.transition = 'opacity 0.2s';
-    setTimeout(() => {
-      donEl.textContent = DON_DUE_QUOTES[donIdx];
-      donEl.style.opacity = '1';
-    }, 200);
+(function() {
+  const bubble = document.getElementById('don-due-bubble');
+  const quoteEl = document.getElementById('don-due-quote');
+  const owlEl  = document.getElementById('don-due-owl');
+  let hideTimer = null;
+  let donIdx = Math.floor(Math.random() * DON_DUE_QUOTES.length);
+
+  function showBubble(text) {
+    if (hideTimer) clearTimeout(hideTimer);
+    quoteEl.textContent = text;
+    // Einblenden
+    bubble.style.opacity = '1';
+    bubble.style.transform = 'translateY(0)';
+    // Nach 6 Sekunden ausblenden
+    hideTimer = setTimeout(() => {
+      bubble.style.opacity = '0';
+      bubble.style.transform = 'translateY(8px)';
+    }, 6000);
   }
-});
+
+  // Beim Laden: erster Spruch nach kurzer Verzögerung
+  setTimeout(() => showBubble(DON_DUE_QUOTES[donIdx]), 800);
+
+  // Klick: nächsten Spruch zeigen
+  if (owlEl) {
+    owlEl.addEventListener('click', () => {
+      donIdx = (donIdx + 1) % DON_DUE_QUOTES.length;
+      showBubble(DON_DUE_QUOTES[donIdx]);
+    });
+  }
+})();
 </script>
+
+<!-- Don Due — Floating Mascot (fixed, unten rechts) -->
+<div id="don-due-float" style="
+  position:fixed;
+  bottom:1.5rem;
+  right:1.5rem;
+  z-index:1000;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:0.6rem;
+  pointer-events:none;
+">
+  <!-- Sprechblase -->
+  <div id="don-due-bubble" style="
+    background:#1a1a1a;
+    border:2px solid #333;
+    border-radius:var(--r-md);
+    padding:0.75rem 1rem;
+    max-width:240px;
+    color:#e8e8e8;
+    font-size:0.85rem;
+    font-style:italic;
+    line-height:1.5;
+    box-shadow:3px 3px 0 #111;
+    position:relative;
+    pointer-events:auto;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity 0.35s ease, transform 0.35s ease;
+  ">
+    <span style="color:#8b0000;font-style:normal;font-weight:700;font-size:0.72rem;display:block;margin-bottom:0.25rem;letter-spacing:0.05em;">DON DUE SPRICHT:</span>
+    <span id="don-due-quote"></span>
+    <!-- Pfeil nach unten rechts zur Eule -->
+    <div style="
+      position:absolute;
+      bottom:-9px;
+      right:22px;
+      width:0;height:0;
+      border-left:8px solid transparent;
+      border-right:8px solid transparent;
+      border-top:9px solid #333;
+    "></div>
+  </div>
+  <!-- Eule -->
+  <div id="don-due-owl" style="
+    cursor:pointer;
+    pointer-events:auto;
+    flex-shrink:0;
+    animation:donDueFloat 3.2s ease-in-out infinite;
+    filter:drop-shadow(2px 4px 6px rgba(0,0,0,0.35));
+  " title="Don Due — klicken für einen Spruch">
+    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Körper -->
+      <ellipse cx="36" cy="44" rx="20" ry="22" fill="#2d6a2d"/>
+      <!-- Kopf -->
+      <circle cx="36" cy="24" r="16" fill="#2d6a2d"/>
+      <!-- Hut (Fedora) -->
+      <rect x="18" y="14" width="36" height="5" rx="2.5" fill="#111"/>
+      <rect x="23" y="6" width="26" height="11" rx="5" fill="#1a1a1a"/>
+      <rect x="21" y="13" width="30" height="3" rx="1.5" fill="#333"/>
+      <!-- Hutband -->
+      <rect x="23" y="14" width="26" height="2" rx="1" fill="#8b0000" opacity="0.7"/>
+      <!-- Augen weiß -->
+      <circle cx="28" cy="26" r="6" fill="#fff"/>
+      <circle cx="44" cy="26" r="6" fill="#fff"/>
+      <!-- Iris (finster) -->
+      <circle cx="27" cy="27" r="3.5" fill="#1a1a1a"/>
+      <circle cx="43" cy="27" r="3.5" fill="#1a1a1a"/>
+      <!-- Pupille Glanz -->
+      <circle cx="26" cy="26" r="1" fill="#fff"/>
+      <circle cx="42" cy="26" r="1" fill="#fff"/>
+      <!-- Augenbrauen (böse, schräg) -->
+      <line x1="22" y1="20" x2="33" y2="22.5" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="38" y1="22.5" x2="49" y2="20" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- Schnabel -->
+      <polygon points="36,32 32,38 40,38" fill="#d4a017"/>
+      <!-- Krawatte / Anzug -->
+      <polygon points="36,50 30,58 36,56 42,58" fill="#111"/>
+      <line x1="36" y1="50" x2="36" y2="62" stroke="#8b0000" stroke-width="2"/>
+      <!-- Flügel-Andeutung -->
+      <ellipse cx="18" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(-10 18 50)"/>
+      <ellipse cx="54" cy="50" rx="7" ry="12" fill="#235023" transform="rotate(10 54 50)"/>
+      <!-- Rose im Knopfloch -->
+      <circle cx="42" cy="54" r="3" fill="#8b0000"/>
+      <circle cx="42" cy="54" r="1.5" fill="#c0392b"/>
+    </svg>
+  </div>
+</div>
+
+<style>
+@keyframes donDueFloat {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+</style>
 </body>
 </html>
