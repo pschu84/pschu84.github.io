@@ -422,18 +422,27 @@ function renderExercise(ex, box, onDone) {
   if (fn[ex.type]) fn[ex.type](ex, box, onDone);
   else { const p = document.createElement('p'); p.textContent = 'Unbekannter Typ: ' + ex.type; box.appendChild(p); }
 
-  // Optional: Übersetzungsbutton für Aufgaben mit italienischen Sätzen
+  // Optional: Übersetzungsbutton für Aufgaben mit italienischen Sätzen.
+  // Ausnahme: Beim Typ SO (Sortieraufgabe) wird die Übersetzung sofort angezeigt,
+  // damit die Schüler wissen, welchen Satz sie sortieren sollen.
   if (ex.translation) {
     const tw = document.createElement('div');
     tw.style.marginTop = '0.8rem';
-    const tb = document.createElement('button');
-    tb.className = 'btn btn-ghost btn-sm';
-    tb.textContent = '\ud83c\udde9\ud83c\uddea Deutschen Satz einblenden';
     const td = document.createElement('div');
-    td.style.cssText = 'display:none;margin-top:0.4rem;padding:0.55rem 0.9rem;background:var(--paper-2);border:1.5px solid var(--line);border-radius:var(--r-sm);font-size:0.87rem;color:var(--ink-soft);font-style:italic;';
+    td.style.cssText = 'margin-top:0.4rem;padding:0.55rem 0.9rem;background:var(--paper-2);border:1.5px solid var(--line);border-radius:var(--r-sm);font-size:0.87rem;color:var(--ink-soft);font-style:italic;';
     td.textContent = ex.translation;
-    tb.addEventListener('click', () => { td.style.display = 'block'; tb.disabled = true; });
-    tw.appendChild(tb); tw.appendChild(td); box.appendChild(tw);
+    if (ex.type === 'SO') {
+      // Sofort eingeblendet — kein Button nötig
+      tw.appendChild(td);
+    } else {
+      const tb = document.createElement('button');
+      tb.className = 'btn btn-ghost btn-sm';
+      tb.textContent = '\ud83c\udde9\ud83c\uddea Deutschen Satz einblenden';
+      td.style.display = 'none';
+      tb.addEventListener('click', () => { td.style.display = 'block'; tb.disabled = true; });
+      tw.appendChild(tb); tw.appendChild(td);
+    }
+    box.appendChild(tw);
   }
 } /* end renderExercise */
 
