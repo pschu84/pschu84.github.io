@@ -32,7 +32,6 @@ const Store = (() => {
   }
 
   function _migrate(old) {
-    // Schema 1 is the first version; extend here for future upgrades
     const fresh = DEFAULT();
     if (old.meta) fresh.meta = old.meta;
     return fresh;
@@ -45,7 +44,6 @@ const Store = (() => {
     return state.modules[mId];
   }
 
-  // Status rank: higher = better result
   const STATUS_RANK = { correct: 5, 'self-ok': 4, 'self-mid': 3, revealed: 2, 'self-no': 1, wrong: 0 };
 
   function recordAnswer(mId, exId, status) {
@@ -59,7 +57,6 @@ const Store = (() => {
     m.exercises[exId] = prev;
     state.meta.totalAnswered = (state.meta.totalAnswered || 0) + 1;
 
-    // Tages-Tracking
     const _today = new Date().toISOString().slice(0, 10);
     if (!state.daily) state.daily = {};
     if (!state.daily[_today]) state.daily[_today] = { correct: 0, total: 0 };
@@ -70,7 +67,6 @@ const Store = (() => {
       state.meta.totalCorrect = (state.meta.totalCorrect || 0) + 1;
     }
     state.meta.lastAnswered = Date.now();
-    // Nur letzte 90 Tage behalten
     const _cutoff = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
     Object.keys(state.daily).forEach(d => { if (d < _cutoff) delete state.daily[d]; });
 
@@ -108,14 +104,6 @@ const Store = (() => {
     return state.modules[mId]?.bestScore || 0;
   }
 
-  /**
-   * Gibt die Anzahl der eindeutigen Aufgaben zurück, die in diesem Modul
-   * jemals beantwortet wurden, aufgeteilt nach bestem Status.
-   * Rückgabe: { correct: number, wrong: number, total: number }
-   *   correct = Aufgaben mit bestem Status 'correct' oder 'self-ok'
-   *   wrong   = Aufgaben mit bestem Status 'wrong', 'self-no', 'self-mid', 'revealed'
-   *   total   = alle je beantworteten Aufgaben
-   */
   function moduleExerciseStats(mId) {
     const state = load();
     const exs = state.modules[mId]?.exercises || {};
@@ -129,13 +117,6 @@ const Store = (() => {
     return { correct, wrong, total: correct + wrong };
   }
 
-  /**
-   * Findet das schwächste Modul aus den gegebenen IDs.
-   * Priorisierung:
-   *   1. Module mit attempts > 0 und bestScore < 0.6 (nicht bestanden), nach Score aufsteigend
-   *   2. Module mit attempts > 0 und bestScore >= 0.6 (bestanden), nach Score aufsteigend
-   * Gibt null zurück wenn kein Modul je gestartet wurde.
-   */
   function findWeakest(moduleIds) {
     const state = load();
     const attempted = moduleIds
@@ -143,12 +124,10 @@ const Store = (() => {
       .filter(({ m }) => m && m.attempts > 0);
     if (attempted.length === 0) return null;
 
-    // Nicht bestandene zuerst
     const failed = attempted.filter(({ m }) => m.bestScore < 0.6);
     if (failed.length > 0) {
       return failed.reduce((a, b) => a.m.bestScore <= b.m.bestScore ? a : b).id;
     }
-    // Alle bestanden — niedrigsten Score empfehlen
     return attempted.reduce((a, b) => a.m.bestScore <= b.m.bestScore ? a : b).id;
   }
 
@@ -165,21 +144,14 @@ const Store = (() => {
   function resetAll()       { save(DEFAULT()); }
   function getModule(state, mId) { return _getOrCreate(state, mId); }
 
-  /**
-   * Gibt Aktivitäts-Statistiken für das Dashboard zurück.
-   * Funktioniert auch wenn daily/totalCorrect noch nicht befüllt sind
-   * (Altdaten): leitet totalCorrect dann aus exercises aller Module ab.
-   */
   function getActivityStats() {
     const state = load();
     const today = new Date().toISOString().slice(0, 10);
     const daily = state.daily || {};
 
-    // Letzter aktiver Tag (heute oder früher)
     const sortedDays = Object.keys(daily).sort().reverse();
     const lastDay    = sortedDays[0] || null;
 
-    // Tage seit letzter Aktivität
     let daysSinceLast = null;
     if (lastDay) {
       const msPerDay = 86400000;
@@ -188,15 +160,11 @@ const Store = (() => {
       daysSinceLast  = Math.round((todayMs - lastMs) / msPerDay);
     }
 
-    // Tagesrekord
     let bestCorrect = 0;
     for (const s of Object.values(daily)) {
       if (s.correct > bestCorrect) bestCorrect = s.correct;
     }
 
-    // Gesamt-Richtig: aus meta wenn vorhanden, sonst einmalig aus exercises
-    // berechnen und sofort in meta zurückschreiben, damit der Wert als Basis
-    // für alle künftigen Zuwächse dient.
     let totalCorrect = state.meta.totalCorrect || 0;
     if (totalCorrect === 0) {
       const GOOD = new Set(['correct', 'self-ok']);
@@ -222,7 +190,7 @@ const Store = (() => {
     };
   }
 
-    return { load, save, recordAnswer, recordRun, setLastIndex, updateStreak, moduleProgress, moduleExerciseStats, getActivityStats, findWeakest, exportData, importData, resetModule, resetAll, getModule };
+  return { load, save, recordAnswer, recordRun, setLastIndex, updateStreak, moduleProgress, moduleExerciseStats, getActivityStats, findWeakest, exportData, importData, resetModule, resetAll, getModule };
 })();
 
 
@@ -231,13 +199,18 @@ const Store = (() => {
    ================================================================ */
 
 /**
- * Normalise a string for tolerant comparison.
- * strictAccents=false folds all diacritics (è→e), good for typing tolerance.
- * strictAccents=true leaves accents intact (use when accent IS the tested point).
+ * Normalisiert einen String für toleranten Vergleich.
+ * NEU: Apostrophe (', `, ') werden entfernt, danach Leerzeichen kollabiert.
+ * Damit sind "l'amica", "l amica" und "lamica" alle äquivalent.
  */
 function normalize(str, strictAccents = false) {
   if (str == null) return '';
-  let s = str.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?,;:]+$/, '').trim();
+  let s = str.trim().toLowerCase()
+    // Alle Apostroph-Varianten entfernen
+    .replace(/[''`\u2018\u2019\u0060\u00B4]/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/[.!?,;:]+$/, '')
+    .trim();
   if (!strictAccents) s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   return s;
 }
@@ -259,13 +232,6 @@ function createSpeechRecognizer(lang) {
   return rec;
 }
 
-/**
- * Normalisiert einen Satz für den Vergleich:
- * Kleinschreibung, Akzente entfernen, alle Nicht-Buchstaben/-Zahlen
- * (inkl. Apostrophe und Satzzeichen) entfernen, auf Leerzeichen splitten.
- * Ergebnis: Array normalisierter Strings.
- * Beispiel: "l'amico è bravo." → ["lamico", "e", "bravo"]
- */
 function _tokenizeSpeech(str) {
   return String(str).trim()
     .toLowerCase()
@@ -275,7 +241,6 @@ function _tokenizeSpeech(str) {
     .split(' ').filter(Boolean);
 }
 
-/** Levenshtein-Distanz zweier Strings */
 function _levenshtein(a, b) {
   const m = a.length, n = b.length;
   const dp = Array.from({length: m + 1}, (_, i) => [i, ...Array(n).fill(0)]);
@@ -287,13 +252,6 @@ function _levenshtein(a, b) {
   return dp[m][n];
 }
 
-/**
- * Gleicht erwartete Tokens mit gesprochenen Tokens ab.
- * Rückgabe: Array 'ok' | 'missing' — ein Eintrag pro erwartetem Token.
- * Toleranz: Levenshtein-Distanz ≤ 30 % der Token-Länge (mind. 1).
- * Reihenfolge wird nicht erzwungen (Set-basiert), was Spracherkennungs-
- * Ungenauigkeiten bei elidierter Aussprache besser verzeiht.
- */
 function _alignTokens(expected, spoken) {
   const result = new Array(expected.length).fill('missing');
   const used   = new Array(spoken.length).fill(false);
@@ -310,7 +268,6 @@ function _alignTokens(expected, spoken) {
   return result;
 }
 
-/** Self-Check-Fallback, wenn SpeechRecognition nicht verfügbar ist */
 function _speechFallbackSelfCheck(box, onDone) {
   const hint = document.createElement('div');
   hint.className = 'mic-hint';
@@ -377,10 +334,168 @@ function confetti(n = 50) {
 }
 
 /**
- * Build a shared accent-helper bar.
- * Tracks the last focused INPUT/TEXTAREA inside `container` and inserts the
- * character at the cursor. mousedown+preventDefault keeps focus on the input.
+ * Sterne-Regen Effekt (für Meilenstein 20)
  */
+function starBurst(n = 30) {
+  for (let i = 0; i < n; i++) {
+    const el = document.createElement('div');
+    el.textContent = ['⭐','🌟','✨'][i % 3];
+    el.style.cssText = `position:fixed;font-size:${20 + Math.random()*20}px;pointer-events:none;z-index:9999;`;
+    document.body.appendChild(el);
+    const sx = Math.random() * window.innerWidth;
+    const sy = Math.random() * window.innerHeight * 0.6;
+    const delay = Math.random() * 600;
+    const dur   = 1500 + Math.random() * 800;
+    let t0 = null;
+    (function frame(ts) {
+      if (!t0) t0 = ts + delay;
+      if (ts < t0) { requestAnimationFrame(frame); return; }
+      const t = Math.min((ts - t0) / dur, 1);
+      const bounce = Math.sin(t * Math.PI * 2) * 30;
+      el.style.left = sx + 'px';
+      el.style.top  = (sy + bounce - t * 200) + 'px';
+      el.style.transform = `scale(${1 - t * 0.5}) rotate(${t * 360}deg)`;
+      el.style.opacity = t > .7 ? String(1 - (t - .7) / .3) : '1';
+      if (t < 1) requestAnimationFrame(frame);
+      else el.remove();
+    })(performance.now());
+  }
+}
+
+/**
+ * Epic Feuerwerk Effekt (für Meilenstein 50)
+ */
+function fireworks(n = 80) {
+  const colors = ['#FFD700','#FF4500','#00CED1','#FF69B4','#7CFC00','#FF1493','#00BFFF'];
+  const emojis = ['🎆','🎇','✨','🌟','💥','🎉','🏆'];
+  // Konfetti
+  confetti(n);
+  // Emoji-Burst
+  for (let i = 0; i < 15; i++) {
+    const el = document.createElement('div');
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.cssText = `position:fixed;font-size:${24 + Math.random()*24}px;pointer-events:none;z-index:9999;`;
+    document.body.appendChild(el);
+    const sx = 0.2 * window.innerWidth + Math.random() * 0.6 * window.innerWidth;
+    const sy = 0.2 * window.innerHeight + Math.random() * 0.5 * window.innerHeight;
+    const delay = i * 120;
+    const dur = 2000;
+    let t0 = null;
+    (function frame(ts) {
+      if (!t0) t0 = ts + delay;
+      if (ts < t0) { requestAnimationFrame(frame); return; }
+      const t = Math.min((ts - t0) / dur, 1);
+      el.style.left = sx + 'px';
+      el.style.top  = (sy - t * 150) + 'px';
+      el.style.transform = `scale(${1 + Math.sin(t * Math.PI) * 0.5}) rotate(${t * 720}deg)`;
+      el.style.opacity = t > .7 ? String(1 - (t - .7) / .3) : '1';
+      if (t < 1) requestAnimationFrame(frame);
+      else el.remove();
+    })(performance.now());
+  }
+}
+
+/**
+ * Toast-Notification anzeigen
+ * @param {string} emoji
+ * @param {string} title
+ * @param {string} sub
+ * @param {string} color CSS-Farbe (var-Name oder Hex)
+ * @param {number} duration ms
+ */
+function showToast(emoji, title, sub, color = 'var(--terra)', duration = 3500) {
+  // Existing toast entfernen
+  document.querySelectorAll('.milestone-toast').forEach(t => t.remove());
+
+  const toast = document.createElement('div');
+  toast.className = 'milestone-toast';
+  toast.innerHTML = `
+    <span class="milestone-toast-emoji">${emoji}</span>
+    <div class="milestone-toast-text">
+      <strong>${escHtml(title)}</strong>
+      ${sub ? `<span>${escHtml(sub)}</span>` : ''}
+    </div>`;
+  toast.style.setProperty('--toast-color', color);
+  document.body.appendChild(toast);
+
+  // Animate in
+  requestAnimationFrame(() => {
+    toast.classList.add('milestone-toast--in');
+  });
+
+  setTimeout(() => {
+    toast.classList.remove('milestone-toast--in');
+    toast.classList.add('milestone-toast--out');
+    setTimeout(() => toast.remove(), 400);
+  }, duration);
+}
+
+/**
+ * Optionaler kurzer Ton (AudioContext)
+ * @param {'chime'|'fanfare'|'epic'} type
+ */
+function playMilestoneSound(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = type === 'chime'   ? [523, 659, 784]
+                : type === 'fanfare' ? [523, 659, 784, 1047]
+                :                     [392, 523, 659, 784, 1047, 1319];
+    let t = ctx.currentTime;
+    notes.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = type === 'epic' ? 'square' : 'sine';
+      osc.frequency.setValueAtTime(freq, t + i * 0.12);
+      gain.gain.setValueAtTime(0.18, t + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.12 + 0.35);
+      osc.start(t + i * 0.12);
+      osc.stop(t + i * 0.12 + 0.4);
+    });
+  } catch (e) { /* AudioContext nicht verfügbar */ }
+}
+
+/**
+ * Prüft Meilensteine und löst Effekte aus.
+ * sessionCount: Anzahl beantworteter Aufgaben in dieser Session
+ * todayTotal: Gesamtanzahl heute (aus Store)
+ * todayCorrect: Korrekte heute (aus Store)
+ */
+function checkMilestones(sessionCount, todayTotal, todayCorrect) {
+  // Session-Meilensteine (pro Seitenaufruf)
+  if (sessionCount === 5) {
+    confetti(40);
+    playMilestoneSound('chime');
+    showToast('🎉', '5 Aufgaben geschafft!', 'Weiter so — du wächst!', 'var(--oliva)');
+  } else if (sessionCount === 10) {
+    confetti(60);
+    starBurst(15);
+    playMilestoneSound('fanfare');
+    showToast('⭐', '10 Aufgaben in einer Runde!', 'Straordinario!', 'var(--cielo)');
+  } else if (sessionCount === 20) {
+    confetti(80);
+    starBurst(25);
+    playMilestoneSound('fanfare');
+    showToast('🌟', '20 Aufgaben — Fuoco!', 'Das Italiano brennt in dir!', 'var(--sun-deep)', 4500);
+  } else if (sessionCount === 50) {
+    fireworks(80);
+    playMilestoneSound('epic');
+    showToast('🏆', 'LEGGENDA! 50 Aufgaben!', 'Don Due zieht den Hut.', '#8B7BC4', 5000);
+  }
+
+  // Tagesziel: 5 korrekte Aufgaben
+  const DAILY_GOAL = 5;
+  if (todayCorrect === DAILY_GOAL) {
+    // Kleiner Verzögerung damit nicht gleichzeitig mit Session-Toast
+    setTimeout(() => {
+      confetti(50);
+      playMilestoneSound('fanfare');
+      showToast('🎯', 'Tagesziel erreicht!', `${DAILY_GOAL} korrekte Aufgaben heute — Bravissimo!`, 'var(--terra)', 4500);
+    }, 600);
+  }
+}
+
+
 function buildAccentHelper(container) {
   let lastFocused = null;
   container.addEventListener('focusin', e => {
@@ -487,9 +602,50 @@ function _renderSection(sec) {
 
 
 /* ================================================================
+   TAGESZIEL-BANNER
+   ================================================================ */
+
+/**
+ * Renders the daily goal progress bar at the top of exercise pages.
+ * @param {HTMLElement} container — where to inject it (before the exercise-progress div)
+ */
+function renderDailyGoalBanner(container) {
+  const GOAL = 5;
+  const act = Store.getActivityStats();
+  const done = act.todayCorrect;
+  const pct  = Math.min(Math.round(done / GOAL * 100), 100);
+  const finished = done >= GOAL;
+
+  const banner = document.createElement('div');
+  banner.className = 'daily-goal-banner' + (finished ? ' daily-goal-banner--done' : '');
+  banner.innerHTML = `
+    <div class="daily-goal-header">
+      <span class="daily-goal-label">
+        ${finished ? '🎯 Tagesziel erreicht!' : `🎯 Tagesziel: ${done} / ${GOAL} korrekte Aufgaben`}
+      </span>
+      <span class="daily-goal-pct">${pct} %</span>
+    </div>
+    <div class="daily-goal-track">
+      <div class="daily-goal-fill" style="width:${pct}%"></div>
+    </div>`;
+
+  container.appendChild(banner);
+
+  // Expose update function globally so ExerciseSession can update it
+  window._updateDailyGoalBanner = (newDone) => {
+    const newPct = Math.min(Math.round(newDone / GOAL * 100), 100);
+    const nowFinished = newDone >= GOAL;
+    banner.className = 'daily-goal-banner' + (nowFinished ? ' daily-goal-banner--done' : '');
+    banner.querySelector('.daily-goal-label').textContent =
+      nowFinished ? '🎯 Tagesziel erreicht!' : `🎯 Tagesziel: ${newDone} / ${GOAL} korrekte Aufgaben`;
+    banner.querySelector('.daily-goal-pct').textContent = newPct + ' %';
+    banner.querySelector('.daily-goal-fill').style.width = newPct + '%';
+  };
+}
+
+
+/* ================================================================
    EXERCISE RENDERERS
-   Contract: renderXX(ex, box, onDone)
-   onDone(status: string, isAutoGraded: boolean)
    ================================================================ */
 
 const TYPE_LABELS = {
@@ -511,27 +667,23 @@ function renderExercise(ex, box, onDone) {
   if (fn[ex.type]) fn[ex.type](ex, box, onDone);
   else { const p = document.createElement('p'); p.textContent = 'Unbekannter Typ: ' + ex.type; box.appendChild(p); }
 
-  // Optional: Übersetzungsbutton für Aufgaben mit italienischen Sätzen.
-  // Ausnahme: Beim Typ SO (Sortieraufgabe) wird die Übersetzung sofort angezeigt,
-  // damit die Schüler wissen, welchen Satz sie sortieren sollen.
+  // Übersetzungsbutton — bei SO: sofort anzeigen (oben), sonst per Button
   if (ex.translation) {
     const tw = document.createElement('div');
     tw.style.marginTop = '0.8rem';
     const td = document.createElement('div');
     td.style.cssText = 'margin-top:0.4rem;padding:0.55rem 0.9rem;background:var(--paper-2);border:1.5px solid var(--line);border-radius:var(--r-sm);font-size:0.87rem;color:var(--ink-soft);font-style:italic;';
     td.textContent = ex.translation;
-    if (ex.type === 'SO') {
-      // Sofort eingeblendet — kein Button nötig
-      tw.appendChild(td);
-    } else {
+    if (ex.type !== 'SO') {
       const tb = document.createElement('button');
       tb.className = 'btn btn-ghost btn-sm';
       tb.textContent = '\ud83c\udde9\ud83c\uddea Deutschen Satz einblenden';
       td.style.display = 'none';
       tb.addEventListener('click', () => { td.style.display = 'block'; tb.disabled = true; });
       tw.appendChild(tb); tw.appendChild(td);
+      box.appendChild(tw);
     }
-    box.appendChild(tw);
+    // SO: wird direkt in _renderSO behandelt (oben, hervorgehoben)
   }
 } /* end renderExercise */
 
@@ -625,12 +777,20 @@ function _renderFT(ex, box, onDone) {
   addFeedbackArea(box);
 }
 
-/* --- SO --- */
+/* --- SO --- NEU: Übersetzung oben, hervorgehoben --- */
 function _renderSO(ex, box, onDone) {
   _prompt(box, ex.prompt || 'Bringe die Wörter in die richtige Reihenfolge:');
+
+  // Übersetzung sofort und hervorgehoben OBEN anzeigen
+  if (ex.translation) {
+    const transBox = document.createElement('div');
+    transBox.className = 'so-translation-box';
+    transBox.innerHTML = `<span class="so-translation-flag">🇩🇪</span><span class="so-translation-text">${escHtml(ex.translation)}</span>`;
+    box.appendChild(transBox);
+  }
+
   let shuffled = shuffle(ex.tokens);
   if (JSON.stringify(shuffled) === JSON.stringify(ex.solution)) {
-    // accidentally in correct order — swap first two
     if (shuffled.length > 1) [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
   }
   const state = { src: [...shuffled], tgt: [] };
@@ -855,7 +1015,6 @@ function _renderZO(ex, box, onDone) {
       const isCorrect = btn.textContent.trim() === correctText.trim();
 
       if (isCorrect) {
-        // Richtig — diesen rechten Button matchen, nicht zwingend origIdx===selectedLeft
         matched.add(selectedLeft);
         const lBtn = leftBtns[selectedLeft];
         lBtn.classList.remove('zo-sel');
@@ -863,8 +1022,6 @@ function _renderZO(ex, box, onDone) {
         lBtn.disabled = true;
         btn.classList.add('zo-matched');
         btn.disabled = true;
-        // Wenn noch weitere rechte Buttons mit gleichem Text existieren und noch
-        // ein linker Partner übrig ist, dürfen sie weiter klickbar bleiben.
         selectedLeft = null;
 
         if (matched.size === ex.pairs.length) {
@@ -873,7 +1030,6 @@ function _renderZO(ex, box, onDone) {
           onDone(ok ? 'correct' : 'wrong', true);
         }
       } else {
-        // Falsch
         mistakes++;
         const lBtn = leftBtns[selectedLeft];
         btn.classList.add('zo-wrong'); lBtn.classList.add('zo-wrong');
@@ -893,28 +1049,21 @@ function _renderZO(ex, box, onDone) {
   addFeedbackArea(box);
 }
 
-
-/* --- EL (Lückenwahl: Satz mit Lücken, Chips zum Einsetzen) --- */
+/* --- EL (Lückenwahl) --- */
 function _renderEL(ex, box, onDone) {
   _prompt(box, ex.prompt || 'Wähle die richtigen Wörter für die Lücken:');
 
-  // Build the flat token pool: all correct answers + all distractors, shuffled
   const poolTokens = shuffle([
     ...ex.blanks.map(b => b.accept),
     ...ex.blanks.flatMap(b => b.distractors || [])
   ]);
 
-  // State: what's in each slot (null = empty)
   const slots = new Array(ex.blanks.length).fill(null);
-  // Available pool chips (by index in poolTokens)
   const available = new Array(poolTokens.length).fill(true);
 
-  // --- Sentence display ---
   const sentenceDiv = document.createElement('div');
   sentenceDiv.className = 'el-sentence';
 
-  // Parse ex.sentence into parts: text segments and slot placeholders
-  // Format: "Il {0} mangia con {1}." → ['Il ', {slot:0}, ' mangia con ', {slot:1}, '.']
   const parts = [];
   let remaining = ex.sentence;
   const re = /\{(\d+)\}/g;
@@ -926,7 +1075,6 @@ function _renderEL(ex, box, onDone) {
   }
   if (lastIdx < ex.sentence.length) parts.push({ text: ex.sentence.slice(lastIdx) });
 
-  // Build slot DOM elements (keyed by slot index)
   const slotEls = {};
 
   function buildSentenceDOM() {
@@ -943,10 +1091,8 @@ function _renderEL(ex, box, onDone) {
           slotEl.title = 'Klicken zum Entfernen';
           slotEl.addEventListener('click', () => {
             if (slotEl.classList.contains('el-locked')) return;
-            // Return token to pool
             const word = slots[part.slot];
             slots[part.slot] = null;
-            // Re-enable first matching available=false token
             for (let i = 0; i < poolTokens.length; i++) {
               if (!available[i] && poolTokens[i] === word) { available[i] = true; break; }
             }
@@ -962,7 +1108,6 @@ function _renderEL(ex, box, onDone) {
     });
   }
 
-  // --- Token pool ---
   const poolDiv = document.createElement('div');
   poolDiv.className = 'el-pool';
 
@@ -982,9 +1127,8 @@ function _renderEL(ex, box, onDone) {
       chip.textContent = word;
       chip.addEventListener('click', () => {
         if (chip.classList.contains('el-locked')) return;
-        // Find first empty slot
         const emptySlot = slots.indexOf(null);
-        if (emptySlot === -1) return; // no empty slots
+        if (emptySlot === -1) return;
         slots[emptySlot] = word;
         available[i] = false;
         refreshAll();
@@ -993,7 +1137,6 @@ function _renderEL(ex, box, onDone) {
     });
   }
 
-  // --- Check button ---
   const checkBtn = document.createElement('button');
   checkBtn.className = 'btn btn-primary btn-sm';
   checkBtn.style.marginTop = '0.8rem';
@@ -1006,9 +1149,7 @@ function _renderEL(ex, box, onDone) {
       if (!userVal) return false;
       return normalize(userVal) === normalize(blank.accept);
     });
-    // Lock all
     document.querySelectorAll('.el-slot, .el-chip').forEach(el => el.classList.add('el-locked'));
-    // Color slots
     ex.blanks.forEach((blank, i) => {
       const slotEl = slotEls[i];
       if (!slotEl) return;
@@ -1046,11 +1187,11 @@ function _chip(word, onClick) {
   c.addEventListener('click', onClick); return c;
 }
 
-/* --- SR (Speech Repeat: Satz nachsprechen) --- */
+
+/* --- SR (Speech Repeat) --- */
 function _renderSR(ex, box, onDone) {
   _prompt(box, ex.prompt || 'Sprich diesen Satz laut nach:');
 
-  // Satz und Übersetzung anzeigen
   const wrap = document.createElement('div'); wrap.className = 'speech-task';
   const itLine = document.createElement('div');
   itLine.className = 'speech-it'; itLine.textContent = ex.it;
@@ -1081,7 +1222,7 @@ function _renderSR(ex, box, onDone) {
     if (recording) { rec.stop(); return; }
     finalT = ''; transEl.textContent = ''; tokEl.innerHTML = '';
     checkBtn.style.display = 'none';
-    try { rec.start(); } catch (e) { /* bereits aktiv */ }
+    try { rec.start(); } catch (e) { }
   });
 
   rec.addEventListener('start', () => {
@@ -1118,10 +1259,9 @@ function _renderSR(ex, box, onDone) {
   });
 
   checkBtn.addEventListener('click', () => {
-    const expected  = _tokenizeSpeech(ex.it);   // normalisierte Soll-Tokens
-    const spoken    = _tokenizeSpeech(finalT);  // normalisierte Ist-Tokens
+    const expected  = _tokenizeSpeech(ex.it);
+    const spoken    = _tokenizeSpeech(finalT);
     const statuses  = _alignTokens(expected, spoken);
-    // Originalwörter aus ex.it für saubere Anzeige (inkl. Apostrophe, Großbuchstaben)
     const origWords = ex.it.split(/\s+/);
 
     tokEl.innerHTML = '';
@@ -1146,11 +1286,10 @@ function _renderSR(ex, box, onDone) {
   });
 }
 
-/* --- ST (Speech Translate: deutschen Satz auf Italienisch sprechen) --- */
+/* --- ST (Speech Translate) --- */
 function _renderST(ex, box, onDone) {
   _prompt(box, ex.prompt || 'Sprich diesen Satz auf Italienisch:');
 
-  // Deutschen Satz als Aufgabe anzeigen
   const wrap = document.createElement('div'); wrap.className = 'speech-task';
   const deLine = document.createElement('div');
   deLine.className = 'speech-de-prompt'; deLine.textContent = ex.de;
@@ -1174,7 +1313,6 @@ function _renderST(ex, box, onDone) {
       'blende dann die Musterlösung ein und bewerte dich.';
   }
 
-  // Hilfe-Button: Musterlösung einblenden
   const helpBtn = document.createElement('button');
   helpBtn.className = 'btn btn-cielo btn-sm'; helpBtn.style.marginTop = '0.8rem';
   helpBtn.textContent = '💡 Hilfe: Musterlösung anzeigen';
@@ -1187,7 +1325,6 @@ function _renderST(ex, box, onDone) {
     '</div>' +
     (ex.note ? '<div class="self-note">' + escHtml(ex.note) + '</div>' : '');
 
-  // Self-Rating (erscheint nach Aufnahme oder nach Hilfe-Klick)
   const rateRow = document.createElement('div');
   rateRow.className = 'self-rate-row'; rateRow.style.display = 'none';
   [['✅ Richtig','self-ok','btn-oliva'],
@@ -1214,7 +1351,7 @@ function _renderST(ex, box, onDone) {
     micBtn.addEventListener('click', () => {
       if (recording) { rec.stop(); return; }
       finalT = ''; transEl.textContent = '';
-      try { rec.start(); } catch (e) { /* aktiv */ }
+      try { rec.start(); } catch (e) { }
     });
     rec.addEventListener('start', () => {
       recording = true; micBtn.classList.add('recording');
@@ -1252,18 +1389,9 @@ function _renderST(ex, box, onDone) {
 
 /* ================================================================
    EXERCISE SESSION
-   Controls a module page: renders exercises in sequence,
-   tracks scores, persists progress.
    ================================================================ */
 
 class ExerciseSession {
-  /**
-   * @param {object} moduleData  - MODULE constant from the module file
-   * @param {HTMLElement} fillEl - the progress bar fill div
-   * @param {HTMLElement} textEl - "Aufgabe X von Y" span
-   * @param {HTMLElement} boxEl  - the exercise-box div
-   * @param {HTMLElement} navEl  - the exercise-nav div
-   */
   constructor(moduleData, fillEl, textEl, boxEl, navEl) {
     this.mod    = moduleData;
     this.fillEl = fillEl;
@@ -1271,11 +1399,13 @@ class ExerciseSession {
     this.boxEl  = boxEl;
     this.navEl  = navEl;
     this.index  = 0;
-    this.runCorrect   = 0; // auto-graded correct
-    this.runGraded    = 0; // auto-graded total
-    this.selfScoreSum = 0; // weighted self-ratings
+    this.runCorrect   = 0;
+    this.runGraded    = 0;
+    this.selfScoreSum = 0;
     this.selfCount    = 0;
-    this.counted      = new Set(); // exercise indices already scored in this run (no double-count on back-nav)
+    this.counted      = new Set();
+    // Milestone-Tracking: wie viele Aufgaben in dieser Session beantwortet
+    this.sessionAnswered = 0;
     this._buildNav();
   }
 
@@ -1309,23 +1439,16 @@ class ExerciseSession {
     const state = Store.load();
     const mState = Store.getModule(state, this.mod.id);
 
-    // ── Sequenz-Aufbau mit Typ-Abstand-Garantie ──────────────────────────────
-    // Ziel: Ein Aufgabentyp darf frühestens nach 4 anderen Aufgaben wieder
-    // erscheinen. Leichte Typen kommen tendenziell früher, aber wenn die
-    // Abstandsregel es erfordert, wird zwischendurch auch mal eine mittlere
-    // Aufgabe eingeschoben — statt stupide A-B-A-B zu wiederholen.
     if (!this._sequenceBuilt) {
       this._sequenceBuilt = true;
       const exs = this.mod.exercises;
 
-      // Schwierigkeitsgruppen (Typ → Gruppe 0=leicht, 1=mittel, 2=schwer)
       const DIFFICULTY = {
-        SO: 0, ZO: 0, EL: 0, SR: 0,            // SR: leicht → erscheint früh
-        MC: 1, MCL: 1, LT: 1, FT: 1, ST: 1,   // ST: mittel
+        SO: 0, ZO: 0, EL: 0, SR: 0,
+        MC: 1, MCL: 1, LT: 1, FT: 1, ST: 1,
         FK: 2, KA: 2, KO: 2, DE: 2, IT: 2,
       };
 
-      // Innerhalb jeder Schwierigkeitsgruppe mischen (Fisher-Yates)
       function shuffle(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -1338,29 +1461,21 @@ class ExerciseSession {
       exs.forEach(ex => pools[DIFFICULTY[ex.type] ?? 1].push(ex));
       pools.forEach(p => shuffle(p));
 
-      // Greedy-Sequenz: wähle bei jedem Schritt die beste verfügbare Aufgabe.
-      // "Beste" = niedrigste Schwierigkeitsgruppe, deren Typ zuletzt mehr als
-      // MIN_GAP Positionen zurückliegt. Falls keine leichte Aufgabe passt,
-      // weiche auf mittlere aus, dann auf schwere.
       const MIN_GAP = 4;
       const result = [];
-      const lastSeen = {}; // type → letzter Index in result
+      const lastSeen = {};
 
       const remaining = [...pools[0], ...pools[1], ...pools[2]];
-      // Behalte Schwierigkeits-Info pro Item für Sortierung
       const diffOf = ex => DIFFICULTY[ex.type] ?? 1;
 
       while (remaining.length > 0) {
         const pos = result.length;
 
-        // Kandidaten: alle, deren Typ den Mindestabstand einhält
         const eligible = remaining.filter(ex => {
           const last = lastSeen[ex.type];
           return last === undefined || (pos - last) >= MIN_GAP;
         });
 
-        // Fallback: Falls kein Typ den vollen Abstand schafft (z.B. nur
-        // noch viele ZO übrig), nimm denjenigen mit dem größtmöglichen Abstand.
         let pool;
         if (eligible.length > 0) {
           pool = eligible;
@@ -1387,10 +1502,17 @@ class ExerciseSession {
       this._exercises = result;
     }
 
-    // Temporäre exercises-Referenz auf die sortierte Sequenz zeigen lassen
     this.mod.exercises = this._exercises || this.mod.exercises;
     this.index = Math.min(mState.lastIndex || 0, this.mod.exercises.length - 1);
     this._render();
+  }
+
+  _updateProgressText() {
+    const act = Store.getActivityStats();
+    const n = act.todayCorrect;
+    this.textEl.textContent = n === 1
+      ? '1 Aufgabe heute gelöst'
+      : `${n} Aufgaben heute gelöst`;
   }
 
   _render() {
@@ -1398,7 +1520,7 @@ class ExerciseSession {
     const ex    = this.mod.exercises[this.index];
     const total = this.mod.exercises.length;
 
-    this.textEl.textContent = `Aufgabe ${this.index + 1} von ${total}`;
+    this._updateProgressText();
     this.fillEl.style.width = `${(this.index / total) * 100}%`;
     this.weiterBtn.disabled = true;
     this.weiterBtn.textContent = this.index === total - 1 ? 'Ergebnis \u2192' : 'Weiter \u2192';
@@ -1407,8 +1529,11 @@ class ExerciseSession {
     renderExercise(ex, this.boxEl, (status, isAutoGraded) => {
       Store.recordAnswer(this.mod.id, ex.id, status);
       Store.setLastIndex(this.mod.id, this.index);
+
       if (!this.counted.has(this.index)) {
         this.counted.add(this.index);
+        this.sessionAnswered++;
+
         if (isAutoGraded) {
           this.runGraded++;
           if (status === 'correct') this.runCorrect++;
@@ -1416,6 +1541,18 @@ class ExerciseSession {
           this.selfCount++;
           const selfVals = { 'self-ok': 1, 'self-mid': 0.5, 'self-no': 0, 'revealed': 0.4 };
           this.selfScoreSum += selfVals[status] ?? 0;
+        }
+
+        // Anzeige sofort aktualisieren (nach Store.recordAnswer bereits gespeichert)
+        this._updateProgressText();
+
+        // Milestone-Check
+        const act = Store.getActivityStats();
+        checkMilestones(this.sessionAnswered, act.todayTotal, act.todayCorrect);
+
+        // Daily goal banner aktualisieren
+        if (window._updateDailyGoalBanner) {
+          window._updateDailyGoalBanner(act.todayCorrect);
         }
       }
       this.weiterBtn.disabled = false;
@@ -1437,7 +1574,6 @@ class ExerciseSession {
   }
 
   finish() {
-    // Blended score: auto-graded is primary, self-assessed secondary (weight 0.8)
     let score;
     const a = this.runGraded, b = this.selfCount;
     if (a > 0 && b > 0) {
@@ -1457,7 +1593,7 @@ class ExerciseSession {
     const pct    = Math.round(score * 100);
 
     this.fillEl.style.width = '100%';
-    this.textEl.textContent = 'Abgeschlossen!';
+    this._updateProgressText();
     this.navEl.style.display = 'none';
 
     this.boxEl.innerHTML = `
