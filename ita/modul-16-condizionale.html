@@ -23,6 +23,7 @@
   </div>
   <div id="theory-mount"></div>
   <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
   <div class="exercise-progress">
     <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
     <div class="exercise-progress-track">
@@ -693,6 +694,9 @@ const MODULE = {
 
 function initModulePage() {
   renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
   const session = new ExerciseSession(
     MODULE,
     document.getElementById('ex-fill'),
