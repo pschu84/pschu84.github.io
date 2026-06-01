@@ -160,6 +160,78 @@ const MODULE = {
       translation:'Die Schuhe sind neu.',
       explain:'scarpe beginnt mit sc (s+K), f/Pl. → le scarpe. gli wäre m/Pl. vor s+K, aber scarpe ist feminin. l\' wäre f/Sg. vor Vokal.' },
 
+
+    /* === EL 10 === */
+    { id:'m18-el-01', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'{0} gatto e {1} madre mangiano insieme.',
+      blanks:[{accept:'Il', distractors:['Lo', 'La', 'L\'']}, {accept:'la', distractors:['le', 'il', 'lo']}],
+      translation:'Die Katze und die Mutter essen zusammen.',
+      explain:'gatto (m, Kons.) → il. madre (f, Kons.) → la.' },
+
+    { id:'m18-el-02', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'{0} zaino è pesante e {1} scuola è lontana.',
+      blanks:[{accept:'Lo', distractors:['Il', 'La', 'L\'']}, {accept:'la', distractors:['lo', 'il', 'l\'']}],
+      translation:'Der Rucksack ist schwer und die Schule ist weit.',
+      explain:'zaino (m, z) → lo. scuola (f, Kons.) → la.' },
+
+    { id:'m18-el-03', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'Ho comprato {0} pane e {1} acqua.',
+      blanks:[{accept:'il', distractors:['lo', 'la', 'l\'']}, {accept:'l\'', distractors:['la', 'il', 'lo']}],
+      translation:'Ich habe das Brot und das Wasser gekauft.',
+      explain:'pane (m, Kons.) → il. acqua (f, Vokal) → l\'.' },
+
+    { id:'m18-el-04', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'{0} studente studia e {1} professoressa spiega.',
+      blanks:[{accept:'Lo', distractors:['Il', 'La', 'L\'']}, {accept:'la', distractors:['lo', 'il', 'l\'']}],
+      translation:'Der Student lernt und die Professorin erklärt.',
+      explain:'studente (m, st=s+K) → lo. professoressa (f, Kons.) → la.' },
+
+    { id:'m18-el-05', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'Dove è {0} fermata? È vicino a {1} ufficio.',
+      blanks:[{accept:'la', distractors:['il', 'lo', 'l\'']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
+      translation:'Wo ist die Haltestelle? Sie ist nah am Büro.',
+      explain:'fermata (f, Kons.) → la. ufficio (m, Vokal) → l\'.' },
+
+    { id:'m18-el-06', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'{0} amica di Maria e {1} amico di Luca sono qui.',
+      blanks:[{accept:'L\'', distractors:['La', 'Il', 'Lo']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
+      translation:'Marias Freundin und Lukas Freund sind hier.',
+      explain:'amica (f, Vokal) → l\'. amico (m, Vokal) → l\'.' },
+
+    { id:'m18-el-07', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'Prendo {0} treno e poi {1} autobus.',
+      blanks:[{accept:'il', distractors:['lo', 'la', 'l\'']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
+      translation:'Ich nehme den Zug und dann den Bus.',
+      explain:'treno (m, Kons.) → il. autobus (m, Vokal) → l\'.' },
+
+    { id:'m18-el-08', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'Leggo {0} libro e ascolto {1} musica.',
+      blanks:[{accept:'il', distractors:['lo', 'la', 'l\'']}, {accept:'la', distractors:['il', 'lo', 'l\'']}],
+      translation:'Ich lese das Buch und höre die Musik.',
+      explain:'libro (m, Kons.) → il. musica (f, Kons.) → la.' },
+
+    { id:'m18-el-09', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'{0} gnomo è piccolo e {1} elefante è grande.',
+      blanks:[{accept:'Lo', distractors:['Il', 'La', 'L\'']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
+      translation:'Der Zwerg ist klein und der Elefant ist groß.',
+      explain:'gnomo (m, gn) → lo. elefante (m, Vokal) → l\'.' },
+
+    { id:'m18-el-10', type:'EL',
+      prompt:'Wähle die richtigen Wörter für die Lücken:',
+      sentence:'Vedo {0} sole e sento {1} vento.',
+      blanks:[{accept:'il', distractors:['lo', 'la', 'l\'']}, {accept:'il', distractors:['lo', 'la', 'l\'']}],
+      translation:'Ich sehe die Sonne und spüre den Wind.',
+      explain:'sole (m, Kons.) → il. vento (m, Kons.) → il.' },
+
     /* === ZO 9 === */
     { id:'m18-zo-01', type:'ZO',
       prompt:'Ordne zu: Artikel → Verwendung',
@@ -424,14 +496,14 @@ const MODULE = {
       ] },
 
     { id:'m18-ft-03', type:'FT',
-      prompt:'Artikel oder kein Artikel? Schreibe den Artikel oder "-":',
+      prompt:'Artikel oder kein Artikel? Schreibe den Artikel oder "—":',
       rows:[
-        { label:'Vado a Roma.',               accept:['-','kein Artikel',''] },
-        { label:'Vivo in Italia.',            accept:["l'Italia","l'",'l'] },
-        { label:'Studio l\'italiano.',        accept:["l'",'l'] },
+        { label:'Vado a Roma.',               accept:['—','kein Artikel'] },
+        { label:'Vivo in Italia.',            accept:["l'Italia","l'"] },
+        { label:'Studio l\'italiano.',        accept:["l'"] },
         { label:'Il lunedì lavoro.',          accept:['il'] },
-        { label:'Vengo lunedì. (einmalig)',   accept:['-','kein Artikel',''] },
-        { label:'mia madre (Possessiv+Verwandter)',accept:['-','kein Artikel',''] },
+        { label:'Vengo lunedì. (einmalig)',   accept:['—','kein Artikel'] },
+        { label:'mia madre (Possessiv+Verwandter)',accept:['—','kein Artikel'] },
       ] },
 
     /* === FK 3 === */
