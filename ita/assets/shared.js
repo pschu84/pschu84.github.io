@@ -408,7 +408,7 @@ const TYPE_LABELS = {
   MC:'Multiple Choice', LT:'Lückentext', FT:'Formtabelle',
   SO:'Sortieraufgabe', FK:'Fehlerkorrektur', DE:'Deutsch \u2192 Italienisch',
   IT:'Italienisch \u2192 Deutsch', KA:'Kategorisieren', KO:'Kontrast',
-  ZO:'Zuordnung'
+  ZO:'Zuordnung', EL:'Lückenwahl'
 };
 
 function renderExercise(ex, box, onDone) {
@@ -418,7 +418,7 @@ function renderExercise(ex, box, onDone) {
   badge.textContent = TYPE_LABELS[ex.type] || ex.type;
   box.appendChild(badge);
 
-  const fn = { MC:_renderMC, LT:_renderLT, FT:_renderFT, SO:_renderSO, FK:_renderFK, DE:_renderDE, IT:_renderIT, KA:_renderKA, KO:_renderKO, ZO:_renderZO };
+  const fn = { MC:_renderMC, LT:_renderLT, FT:_renderFT, SO:_renderSO, FK:_renderFK, DE:_renderDE, IT:_renderIT, KA:_renderKA, KO:_renderKO, ZO:_renderZO, EL:_renderEL };
   if (fn[ex.type]) fn[ex.type](ex, box, onDone);
   else { const p = document.createElement('p'); p.textContent = 'Unbekannter Typ: ' + ex.type; box.appendChild(p); }
 
@@ -795,6 +795,150 @@ function _renderZO(ex, box, onDone) {
   addFeedbackArea(box);
 }
 
+
+/* --- EL (Lückenwahl: Satz mit Lücken, Chips zum Einsetzen) --- */
+function _renderEL(ex, box, onDone) {
+  _prompt(box, ex.prompt || 'Wähle die richtigen Wörter für die Lücken:');
+
+  // Build the flat token pool: all correct answers + all distractors, shuffled
+  const poolTokens = shuffle([
+    ...ex.blanks.map(b => b.accept),
+    ...ex.blanks.flatMap(b => b.distractors || [])
+  ]);
+
+  // State: what's in each slot (null = empty)
+  const slots = new Array(ex.blanks.length).fill(null);
+  // Available pool chips (by index in poolTokens)
+  const available = new Array(poolTokens.length).fill(true);
+
+  // --- Sentence display ---
+  const sentenceDiv = document.createElement('div');
+  sentenceDiv.className = 'el-sentence';
+
+  // Parse ex.sentence into parts: text segments and slot placeholders
+  // Format: "Il {0} mangia con {1}." → ['Il ', {slot:0}, ' mangia con ', {slot:1}, '.']
+  const parts = [];
+  let remaining = ex.sentence;
+  const re = /\{(\d+)\}/g;
+  let lastIdx = 0, m;
+  while ((m = re.exec(ex.sentence)) !== null) {
+    if (m.index > lastIdx) parts.push({ text: ex.sentence.slice(lastIdx, m.index) });
+    parts.push({ slot: parseInt(m[1]) });
+    lastIdx = m.index + m[0].length;
+  }
+  if (lastIdx < ex.sentence.length) parts.push({ text: ex.sentence.slice(lastIdx) });
+
+  // Build slot DOM elements (keyed by slot index)
+  const slotEls = {};
+
+  function buildSentenceDOM() {
+    sentenceDiv.innerHTML = '';
+    parts.forEach(part => {
+      if (part.text !== undefined) {
+        sentenceDiv.appendChild(document.createTextNode(part.text));
+      } else {
+        const slotEl = document.createElement('span');
+        slotEl.className = 'el-slot' + (slots[part.slot] !== null ? ' el-slot-filled' : '');
+        slotEl.dataset.slot = part.slot;
+        if (slots[part.slot] !== null) {
+          slotEl.textContent = slots[part.slot];
+          slotEl.title = 'Klicken zum Entfernen';
+          slotEl.addEventListener('click', () => {
+            if (slotEl.classList.contains('el-locked')) return;
+            // Return token to pool
+            const word = slots[part.slot];
+            slots[part.slot] = null;
+            // Re-enable first matching available=false token
+            for (let i = 0; i < poolTokens.length; i++) {
+              if (!available[i] && poolTokens[i] === word) { available[i] = true; break; }
+            }
+            refreshAll();
+          });
+        } else {
+          slotEl.textContent = '________';
+          slotEl.title = 'Wähle ein Wort aus dem Pool';
+        }
+        slotEls[part.slot] = slotEl;
+        sentenceDiv.appendChild(slotEl);
+      }
+    });
+  }
+
+  // --- Token pool ---
+  const poolDiv = document.createElement('div');
+  poolDiv.className = 'el-pool';
+
+  const poolLabel = document.createElement('div');
+  poolLabel.className = 'so-zone-label';
+  poolLabel.textContent = 'Verfügbare Wörter — klicken zum Einsetzen';
+
+  const chipsDiv = document.createElement('div');
+  chipsDiv.className = 'el-chips';
+
+  function buildPoolDOM() {
+    chipsDiv.innerHTML = '';
+    poolTokens.forEach((word, i) => {
+      if (!available[i]) return;
+      const chip = document.createElement('span');
+      chip.className = 'so-chip el-chip';
+      chip.textContent = word;
+      chip.addEventListener('click', () => {
+        if (chip.classList.contains('el-locked')) return;
+        // Find first empty slot
+        const emptySlot = slots.indexOf(null);
+        if (emptySlot === -1) return; // no empty slots
+        slots[emptySlot] = word;
+        available[i] = false;
+        refreshAll();
+      });
+      chipsDiv.appendChild(chip);
+    });
+  }
+
+  // --- Check button ---
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn btn-primary btn-sm';
+  checkBtn.style.marginTop = '0.8rem';
+  checkBtn.textContent = 'Prüfen';
+  checkBtn.style.display = 'none';
+
+  checkBtn.addEventListener('click', () => {
+    const ok = ex.blanks.every((blank, i) => {
+      const userVal = slots[i];
+      if (!userVal) return false;
+      return normalize(userVal) === normalize(blank.accept);
+    });
+    // Lock all
+    document.querySelectorAll('.el-slot, .el-chip').forEach(el => el.classList.add('el-locked'));
+    // Color slots
+    ex.blanks.forEach((blank, i) => {
+      const slotEl = slotEls[i];
+      if (!slotEl) return;
+      const correct = normalize(slots[i]) === normalize(blank.accept);
+      slotEl.classList.add(correct ? 'el-slot-correct' : 'el-slot-wrong');
+      if (!correct) slotEl.title = 'Richtig: ' + blank.accept;
+    });
+    checkBtn.disabled = true;
+    showFeedback(box, ok, ex.explain || (!ok ? 'Richtig: ' + ex.blanks.map(b => b.accept).join(', ') : ''));
+    onDone(ok ? 'correct' : 'wrong', true);
+  });
+
+  function refreshAll() {
+    buildSentenceDOM();
+    buildPoolDOM();
+    const allFilled = slots.every(s => s !== null);
+    checkBtn.style.display = allFilled ? 'inline-flex' : 'none';
+  }
+
+  poolDiv.appendChild(poolLabel);
+  poolDiv.appendChild(chipsDiv);
+  box.appendChild(sentenceDiv);
+  box.appendChild(poolDiv);
+  box.appendChild(checkBtn);
+  addFeedbackArea(box);
+  refreshAll();
+}
+
 /* --- helpers --- */
 function _prompt(box, text) {
   const p = document.createElement('p'); p.className = 'ex-prompt'; p.textContent = text; box.appendChild(p);
@@ -875,7 +1019,7 @@ class ExerciseSession {
 
       // Schwierigkeitsgruppen (Typ → Gruppe 0=leicht, 1=mittel, 2=schwer)
       const DIFFICULTY = {
-        SO: 0, ZO: 0,
+        SO: 0, ZO: 0, EL: 0,
         MC: 1, MCL: 1, LT: 1, FT: 1,
         FK: 2, KA: 2, KO: 2, DE: 2, IT: 2,
       };

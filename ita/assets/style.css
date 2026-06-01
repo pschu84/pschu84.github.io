@@ -290,6 +290,39 @@ button { font-family: var(--f-body); }
 .so-chip:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
 .so-target .so-chip { background: var(--paper-2); }
 
+
+/* ===== EL (Lückenwahl) ===== */
+.el-sentence {
+  font-size: 1.15rem; line-height: 2.2; font-weight: 500;
+  margin-bottom: 1.1rem; padding: 0.8rem 1rem;
+  background: var(--paper-2); border: 2px solid var(--line);
+  border-radius: var(--r-md); display: flex; flex-wrap: wrap;
+  align-items: center; gap: 0.25rem 0.15rem;
+}
+.el-slot {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 4.5rem; height: 2.1rem; padding: 0 0.7rem;
+  border: 2px dashed var(--ink); border-radius: var(--r-sm);
+  background: var(--paper); color: var(--ink-soft);
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  transition: all 0.1s; user-select: none;
+}
+.el-slot-filled {
+  border-style: solid; background: var(--paper-2); color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.el-slot-filled:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
+.el-slot-correct { border-color: var(--oliva); background: var(--oliva-soft); color: var(--ink); }
+.el-slot-wrong   { border-color: var(--terra); background: var(--terra-soft); color: var(--ink); }
+.el-locked { pointer-events: none; }
+.el-chips {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  min-height: 52px; padding: 0.6rem;
+  border: 2px dashed var(--line); border-radius: var(--r-md);
+  align-items: flex-start; align-content: flex-start;
+}
+.el-chip { cursor: pointer; }
+
 /* ===== FK ===== */
 .fk-sentence { font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem; }
 .fk-error { color: var(--terra); text-decoration: underline wavy var(--terra); font-weight: 700; }
