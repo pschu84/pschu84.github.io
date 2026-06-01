@@ -247,6 +247,94 @@ function compareAnswer(input, acceptArr, opts = {}) {
   return acceptArr.some(a => normalize(a, opts.strictAccents || false) === ni);
 }
 
+/* ── Web Speech API ─────────────────────────────────────────── */
+function createSpeechRecognizer(lang) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return null;
+  const rec = new SR();
+  rec.lang = lang;
+  rec.interimResults = true;
+  rec.continuous = false;
+  rec.maxAlternatives = 1;
+  return rec;
+}
+
+/**
+ * Normalisiert einen Satz für den Vergleich:
+ * Kleinschreibung, Akzente entfernen, alle Nicht-Buchstaben/-Zahlen
+ * (inkl. Apostrophe und Satzzeichen) entfernen, auf Leerzeichen splitten.
+ * Ergebnis: Array normalisierter Strings.
+ * Beispiel: "l'amico è bravo." → ["lamico", "e", "bravo"]
+ */
+function _tokenizeSpeech(str) {
+  return String(str).trim()
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ').trim()
+    .split(' ').filter(Boolean);
+}
+
+/** Levenshtein-Distanz zweier Strings */
+function _levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m + 1}, (_, i) => [i, ...Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] :
+        1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+/**
+ * Gleicht erwartete Tokens mit gesprochenen Tokens ab.
+ * Rückgabe: Array 'ok' | 'missing' — ein Eintrag pro erwartetem Token.
+ * Toleranz: Levenshtein-Distanz ≤ 30 % der Token-Länge (mind. 1).
+ * Reihenfolge wird nicht erzwungen (Set-basiert), was Spracherkennungs-
+ * Ungenauigkeiten bei elidierter Aussprache besser verzeiht.
+ */
+function _alignTokens(expected, spoken) {
+  const result = new Array(expected.length).fill('missing');
+  const used   = new Array(spoken.length).fill(false);
+  for (let ei = 0; ei < expected.length; ei++) {
+    let bestMatch = -1, bestDist = Infinity;
+    const threshold = Math.max(1, Math.floor(expected[ei].length * 0.3));
+    for (let si = 0; si < spoken.length; si++) {
+      if (used[si]) continue;
+      const d = _levenshtein(expected[ei], spoken[si]);
+      if (d <= threshold && d < bestDist) { bestDist = d; bestMatch = si; }
+    }
+    if (bestMatch >= 0) { result[ei] = 'ok'; used[bestMatch] = true; }
+  }
+  return result;
+}
+
+/** Self-Check-Fallback, wenn SpeechRecognition nicht verfügbar ist */
+function _speechFallbackSelfCheck(box, onDone) {
+  const hint = document.createElement('div');
+  hint.className = 'mic-hint';
+  hint.textContent =
+    'ℹ️ Spracherkennung in diesem Browser nicht verfügbar. ' +
+    'Lies den Satz laut vor und bewerte dich selbst.';
+  box.appendChild(hint);
+  const rateRow = document.createElement('div');
+  rateRow.className = 'self-rate-row';
+  [['✅ Konnte ich','self-ok','btn-oliva'],
+   ['〜 Teilweise','self-mid','btn-sun'],
+   ['✗ Noch nicht','self-no','btn-ghost']]
+    .forEach(([label, status, cls]) => {
+      const b = document.createElement('button');
+      b.className = `btn ${cls} btn-sm`; b.textContent = label;
+      b.addEventListener('click', () => {
+        rateRow.querySelectorAll('button').forEach(x => x.disabled = true);
+        onDone(status, false);
+      });
+      rateRow.appendChild(b);
+    });
+  box.appendChild(rateRow);
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -408,7 +496,8 @@ const TYPE_LABELS = {
   MC:'Multiple Choice', LT:'Lückentext', FT:'Formtabelle',
   SO:'Sortieraufgabe', FK:'Fehlerkorrektur', DE:'Deutsch \u2192 Italienisch',
   IT:'Italienisch \u2192 Deutsch', KA:'Kategorisieren', KO:'Kontrast',
-  ZO:'Zuordnung', EL:'Lückenwahl'
+  ZO:'Zuordnung', EL:'Lückenwahl',
+  SR:'Nachsprechen', ST:'Frei sprechen'
 };
 
 function renderExercise(ex, box, onDone) {
@@ -418,7 +507,7 @@ function renderExercise(ex, box, onDone) {
   badge.textContent = TYPE_LABELS[ex.type] || ex.type;
   box.appendChild(badge);
 
-  const fn = { MC:_renderMC, LT:_renderLT, FT:_renderFT, SO:_renderSO, FK:_renderFK, DE:_renderDE, IT:_renderIT, KA:_renderKA, KO:_renderKO, ZO:_renderZO, EL:_renderEL };
+  const fn = { MC:_renderMC, LT:_renderLT, FT:_renderFT, SO:_renderSO, FK:_renderFK, DE:_renderDE, IT:_renderIT, KA:_renderKA, KO:_renderKO, ZO:_renderZO, EL:_renderEL, SR:_renderSR, ST:_renderST };
   if (fn[ex.type]) fn[ex.type](ex, box, onDone);
   else { const p = document.createElement('p'); p.textContent = 'Unbekannter Typ: ' + ex.type; box.appendChild(p); }
 
@@ -957,6 +1046,209 @@ function _chip(word, onClick) {
   c.addEventListener('click', onClick); return c;
 }
 
+/* --- SR (Speech Repeat: Satz nachsprechen) --- */
+function _renderSR(ex, box, onDone) {
+  _prompt(box, ex.prompt || 'Sprich diesen Satz laut nach:');
+
+  // Satz und Übersetzung anzeigen
+  const wrap = document.createElement('div'); wrap.className = 'speech-task';
+  const itLine = document.createElement('div');
+  itLine.className = 'speech-it'; itLine.textContent = ex.it;
+  const deLine = document.createElement('div');
+  deLine.className = 'speech-de'; deLine.textContent = ex.de;
+  wrap.appendChild(itLine); wrap.appendChild(deLine); box.appendChild(wrap);
+
+  const rec = createSpeechRecognizer('it-IT');
+  if (!rec) { _speechFallbackSelfCheck(box, onDone); return; }
+
+  const hint     = document.createElement('div'); hint.className = 'mic-hint';
+  hint.textContent = '🎤 Tippe auf das Mikrofon und sprich den Satz.';
+  const micBtn   = document.createElement('button');
+  micBtn.className = 'mic-btn'; micBtn.type = 'button'; micBtn.innerHTML = '🎤';
+  const transEl  = document.createElement('div'); transEl.className = 'speech-transcript';
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn btn-primary btn-sm'; checkBtn.textContent = 'Auswerten';
+  checkBtn.style.cssText = 'margin-top:0.6rem;display:none;';
+  const tokEl    = document.createElement('div'); tokEl.className = 'speech-tokens';
+
+  box.appendChild(hint); box.appendChild(micBtn); box.appendChild(transEl);
+  box.appendChild(checkBtn); box.appendChild(tokEl);
+  addFeedbackArea(box);
+
+  let finalT = '', recording = false;
+
+  micBtn.addEventListener('click', () => {
+    if (recording) { rec.stop(); return; }
+    finalT = ''; transEl.textContent = ''; tokEl.innerHTML = '';
+    checkBtn.style.display = 'none';
+    try { rec.start(); } catch (e) { /* bereits aktiv */ }
+  });
+
+  rec.addEventListener('start', () => {
+    recording = true; micBtn.classList.add('recording');
+    hint.textContent = '🔴 Aufnahme läuft … nochmal tippen zum Stoppen.';
+  });
+
+  rec.addEventListener('result', e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalT += t; else interim += t;
+    }
+    transEl.textContent = (finalT + ' ' + interim).trim();
+  });
+
+  rec.addEventListener('error', e => {
+    recording = false; micBtn.classList.remove('recording');
+    const msgs = {
+      'not-allowed': '⚠️ Mikrofon-Zugriff verweigert. Bitte Erlaubnis erteilen.',
+      'no-speech':   '🎤 Kein Geräusch erkannt. Nochmal versuchen?'
+    };
+    hint.textContent = msgs[e.error] || '⚠️ Fehler (' + e.error + '). Bitte erneut versuchen.';
+  });
+
+  rec.addEventListener('end', () => {
+    recording = false; micBtn.classList.remove('recording');
+    if (finalT.trim()) {
+      hint.textContent = '🎤 Aufnahme beendet. Tippe auf "Auswerten".';
+      checkBtn.style.display = 'inline-flex';
+    } else {
+      hint.textContent = '🎤 Nichts erkannt. Tippe erneut und sprich deutlich.';
+    }
+  });
+
+  checkBtn.addEventListener('click', () => {
+    const expected  = _tokenizeSpeech(ex.it);   // normalisierte Soll-Tokens
+    const spoken    = _tokenizeSpeech(finalT);  // normalisierte Ist-Tokens
+    const statuses  = _alignTokens(expected, spoken);
+    // Originalwörter aus ex.it für saubere Anzeige (inkl. Apostrophe, Großbuchstaben)
+    const origWords = ex.it.split(/\s+/);
+
+    tokEl.innerHTML = '';
+    statuses.forEach((st, i) => {
+      const s = document.createElement('span');
+      s.className = 'speech-tok ' + (st === 'ok' ? 'tok-ok' : 'tok-bad');
+      s.textContent = origWords[i] || expected[i] || '';
+      tokEl.appendChild(s);
+    });
+
+    const hits  = statuses.filter(s => s === 'ok').length;
+    const ratio = expected.length ? hits / expected.length : 0;
+    const ok    = ratio >= 0.75;
+
+    micBtn.disabled = true; checkBtn.style.display = 'none';
+    hint.textContent =
+      `Erkannt: ${hits} von ${expected.length} Wörtern (${Math.round(ratio * 100)} %).`;
+    showFeedback(box, ok,
+      ok ? 'Gut gesprochen!'
+         : 'Sieh dir die rot markierten Wörter an und versuche es noch einmal.');
+    onDone(ok ? 'correct' : 'wrong', true);
+  });
+}
+
+/* --- ST (Speech Translate: deutschen Satz auf Italienisch sprechen) --- */
+function _renderST(ex, box, onDone) {
+  _prompt(box, ex.prompt || 'Sprich diesen Satz auf Italienisch:');
+
+  // Deutschen Satz als Aufgabe anzeigen
+  const wrap = document.createElement('div'); wrap.className = 'speech-task';
+  const deLine = document.createElement('div');
+  deLine.className = 'speech-de-prompt'; deLine.textContent = ex.de;
+  wrap.appendChild(deLine); box.appendChild(wrap);
+
+  const rec  = createSpeechRecognizer('it-IT');
+  const hint = document.createElement('div'); hint.className = 'mic-hint';
+  box.appendChild(hint);
+
+  let micBtn = null, transEl = null, finalT = '', recording = false;
+
+  if (rec) {
+    hint.textContent = '🎤 Tippe auf das Mikrofon und sprich auf Italienisch.';
+    micBtn  = document.createElement('button');
+    micBtn.className = 'mic-btn'; micBtn.type = 'button'; micBtn.innerHTML = '🎤';
+    transEl = document.createElement('div'); transEl.className = 'speech-transcript';
+    box.appendChild(micBtn); box.appendChild(transEl);
+  } else {
+    hint.textContent =
+      'ℹ️ Spracherkennung nicht verfügbar. Sprich laut, ' +
+      'blende dann die Musterlösung ein und bewerte dich.';
+  }
+
+  // Hilfe-Button: Musterlösung einblenden
+  const helpBtn = document.createElement('button');
+  helpBtn.className = 'btn btn-cielo btn-sm'; helpBtn.style.marginTop = '0.8rem';
+  helpBtn.textContent = '💡 Hilfe: Musterlösung anzeigen';
+
+  const revDiv = document.createElement('div'); revDiv.className = 'self-reveal';
+  revDiv.innerHTML =
+    '<div class="self-reveal-label">Mögliche Lösung</div>' +
+    '<div class="self-solution">' +
+      ex.solutions.map(s => escHtml(s)).join('<br>') +
+    '</div>' +
+    (ex.note ? '<div class="self-note">' + escHtml(ex.note) + '</div>' : '');
+
+  // Self-Rating (erscheint nach Aufnahme oder nach Hilfe-Klick)
+  const rateRow = document.createElement('div');
+  rateRow.className = 'self-rate-row'; rateRow.style.display = 'none';
+  [['✅ Richtig','self-ok','btn-oliva'],
+   ['〜 Fast','self-mid','btn-sun'],
+   ['✗ Falsch','self-no','btn-ghost']]
+    .forEach(([label, status, cls]) => {
+      const b = document.createElement('button');
+      b.className = `btn ${cls} btn-sm`; b.textContent = label;
+      b.addEventListener('click', () => {
+        if (micBtn) micBtn.disabled = true;
+        helpBtn.disabled = true;
+        rateRow.querySelectorAll('button').forEach(x => x.disabled = true);
+        onDone(status, false);
+      });
+      rateRow.appendChild(b);
+    });
+
+  box.appendChild(helpBtn); box.appendChild(revDiv); box.appendChild(rateRow);
+
+  const showRating = () => { rateRow.style.display = 'flex'; };
+  helpBtn.addEventListener('click', () => { revDiv.classList.add('open'); showRating(); });
+
+  if (rec) {
+    micBtn.addEventListener('click', () => {
+      if (recording) { rec.stop(); return; }
+      finalT = ''; transEl.textContent = '';
+      try { rec.start(); } catch (e) { /* aktiv */ }
+    });
+    rec.addEventListener('start', () => {
+      recording = true; micBtn.classList.add('recording');
+      hint.textContent = '🔴 Aufnahme läuft … nochmal tippen zum Stoppen.';
+    });
+    rec.addEventListener('result', e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalT += t; else interim += t;
+      }
+      transEl.textContent = (finalT + ' ' + interim).trim();
+    });
+    rec.addEventListener('error', e => {
+      recording = false; micBtn.classList.remove('recording');
+      const msgs = {
+        'not-allowed': '⚠️ Mikrofon-Zugriff verweigert.',
+        'no-speech':   '🎤 Kein Geräusch erkannt. Nochmal versuchen?'
+      };
+      hint.textContent =
+        msgs[e.error] || '⚠️ Fehler (' + e.error + '). Erneut versuchen oder Hilfe nutzen.';
+    });
+    rec.addEventListener('end', () => {
+      recording = false; micBtn.classList.remove('recording');
+      if (finalT.trim()) {
+        hint.textContent = 'Erkannt. Vergleiche mit der Musterlösung und bewerte dich.';
+        showRating();
+      } else {
+        hint.textContent = '🎤 Nichts erkannt. Versuche es erneut.';
+      }
+    });
+  }
+}
+
 
 /* ================================================================
    EXERCISE SESSION
@@ -1028,8 +1320,8 @@ class ExerciseSession {
 
       // Schwierigkeitsgruppen (Typ → Gruppe 0=leicht, 1=mittel, 2=schwer)
       const DIFFICULTY = {
-        SO: 0, ZO: 0, EL: 0,
-        MC: 1, MCL: 1, LT: 1, FT: 1,
+        SO: 0, ZO: 0, EL: 0, SR: 0,            // SR: leicht → erscheint früh
+        MC: 1, MCL: 1, LT: 1, FT: 1, ST: 1,   // ST: mittel
         FK: 2, KA: 2, KO: 2, DE: 2, IT: 2,
       };
 
