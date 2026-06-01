@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Italiano Vivo</title>
+<style>
+  @import url('https://fonts.bunny.net/css?family=playfair-display:400,700,900|source-sans-3:400,600');
+
+  :root {
+    --terra: #c0392b;
+    --terra-dark: #922b21;
+    --gold: #d4a843;
+    --gold-light: #f0d080;
+    --cream: #fdf6ec;
+    --warm-white: #fffbf5;
+    --ink: #2c1810;
+    --ink-soft: #5c3d2e;
+    --sage: #7a9e7e;
+    --sky: #5b8db8;
+    --shadow: rgba(44,24,16,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px 40px;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(192,57,43,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(212,168,67,0.12) 0%, transparent 50%);
+  }
+
+  /* HEADER */
+  header {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0 16px;
+    border-bottom: 2px solid rgba(192,57,43,0.15);
+    margin-bottom: 32px;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--terra);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--gold); }
+
+  .stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--terra);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 28px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(192,57,43,0.12);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--terra), var(--gold));
+    border-radius: 99px;
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  /* CARD */
+  .card {
+    width: 100%;
+    max-width: 680px;
+    background: var(--warm-white);
+    border-radius: 20px;
+    padding: 36px 40px;
+    box-shadow: 0 4px 24px var(--shadow), 0 1px 0 rgba(255,255,255,0.9) inset;
+    border: 1px solid rgba(192,57,43,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--terra), var(--gold));
+  }
+
+  .exercise-type {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--terra);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .prompt-de {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+
+  .prompt-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .prompt-hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+  }
+  .prompt-hint strong { color: var(--terra); }
+
+  /* MIC BUTTON AREA */
+  .mic-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .mic-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background: var(--terra);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 4px 16px rgba(192,57,43,0.4);
+    transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+    position: relative;
+  }
+
+  .mic-btn:hover { transform: scale(1.05); box-shadow: 0 6px 24px rgba(192,57,43,0.5); }
+  .mic-btn:active { transform: scale(0.97); }
+
+  .mic-btn.listening {
+    background: #e74c3c;
+    animation: pulse-ring 1.2s ease-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(231,76,60,0.6), 0 4px 16px rgba(192,57,43,0.4); }
+    70% { box-shadow: 0 0 0 20px rgba(231,76,60,0), 0 4px 16px rgba(192,57,43,0.4); }
+    100% { box-shadow: 0 0 0 0 rgba(231,76,60,0), 0 4px 16px rgba(192,57,43,0.4); }
+  }
+
+  .mic-status {
+    font-size: 13px;
+    color: var(--ink-soft);
+    height: 18px;
+    text-align: center;
+  }
+  .mic-status.active { color: var(--terra); font-weight: 600; }
+
+  /* TRANSCRIPT BOX */
+  .transcript-box {
+    background: rgba(212,168,67,0.08);
+    border: 1.5px solid rgba(212,168,67,0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    min-height: 52px;
+    font-size: 18px;
+    font-family: 'Playfair Display', serif;
+    color: var(--ink);
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+
+  .transcript-box.has-content {
+    border-color: rgba(212,168,67,0.6);
+  }
+
+  .transcript-placeholder {
+    color: rgba(92,61,46,0.4);
+    font-style: italic;
+    font-size: 15px;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  /* TOKEN RESULT */
+  .token-result {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    min-height: 36px;
+    align-items: flex-start;
+  }
+
+  .token {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 17px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    transition: all 0.3s;
+  }
+
+  .token.correct {
+    background: rgba(122,158,126,0.2);
+    color: #2d6a32;
+    border: 1.5px solid rgba(122,158,126,0.5);
+  }
+
+  .token.wrong {
+    background: rgba(192,57,43,0.12);
+    color: var(--terra-dark);
+    border: 1.5px solid rgba(192,57,43,0.3);
+    text-decoration: line-through;
+  }
+
+  .token.missing {
+    background: rgba(91,141,184,0.12);
+    color: var(--sky);
+    border: 1.5px dashed rgba(91,141,184,0.5);
+    font-style: italic;
+  }
+
+  /* FEEDBACK BANNER */
+  .feedback {
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: none;
+    font-size: 15px;
+    font-weight: 600;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .feedback.show { display: flex; }
+  .feedback.correct-fb {
+    background: rgba(122,158,126,0.15);
+    color: #2d6a32;
+    border: 1.5px solid rgba(122,158,126,0.4);
+  }
+  .feedback.wrong-fb {
+    background: rgba(192,57,43,0.08);
+    color: var(--terra-dark);
+    border: 1.5px solid rgba(192,57,43,0.2);
+  }
+  .feedback-icon { font-size: 20px; flex-shrink: 0; }
+  .feedback-text { line-height: 1.4; font-weight: 400; }
+  .feedback-text strong { font-weight: 700; }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:not(:disabled):hover { transform: translateY(-1px); }
+  .btn:not(:disabled):active { transform: translateY(0); }
+
+  .btn-check {
+    background: var(--terra);
+    color: white;
+    box-shadow: 0 3px 10px rgba(192,57,43,0.35);
+  }
+  .btn-check:not(:disabled):hover { box-shadow: 0 5px 16px rgba(192,57,43,0.45); }
+
+  .btn-next {
+    background: var(--sage);
+    color: white;
+    box-shadow: 0 3px 10px rgba(122,158,126,0.35);
+    display: none;
+  }
+  .btn-next.show { display: inline-flex; align-items: center; gap: 6px; }
+
+  .btn-retry {
+    background: transparent;
+    color: var(--terra);
+    border: 1.5px solid var(--terra);
+    display: none;
+  }
+  .btn-retry.show { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* COMPLETED SCREEN */
+  .completed-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 0;
+  }
+  .completed-screen.show { display: flex; }
+
+  .trophy { font-size: 64px; margin-bottom: 16px; animation: bounce 0.6s ease; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    40% { transform: translateY(-16px); }
+    60% { transform: translateY(-8px); }
+  }
+
+  .completed-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .completed-sub {
+    color: var(--ink-soft);
+    font-size: 16px;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+  .completed-stats {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .cstat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .cstat-val { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--terra); }
+  .cstat-lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); }
+
+  .btn-restart {
+    background: var(--terra);
+    color: white;
+    padding: 14px 36px;
+    font-size: 16px;
+    box-shadow: 0 4px 16px rgba(192,57,43,0.35);
+  }
+
+  /* UNSUPPORTED */
+  .unsupported {
+    background: rgba(192,57,43,0.08);
+    border: 1.5px solid rgba(192,57,43,0.25);
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: var(--terra-dark);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .unsupported.show { display: block; }
+
+  /* TOOLTIP-Hinweis */
+  .info-note {
+    font-size: 11px;
+    color: rgba(92,61,46,0.5);
+    text-align: center;
+    margin-top: 24px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 500px) {
+    .card { padding: 24px 20px; }
+    .prompt-main { font-size: 22px; }
+    .logo { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">italiano<span>.</span>vivo</div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value" id="streak-val">0</div>
+      <div class="stat-label">🔥 Streak</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="score-val">0</div>
+      <div class="stat-label">Punkte</div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-meta">
+    <span id="progress-label">Aufgabe 1 von 8</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+</div>
+
+<div class="card" id="main-card">
+
+  <!-- Unsupported warning -->
+  <div class="unsupported" id="unsupported-box">
+    ⚠️ Dein Browser unterstützt keine Spracherkennung. Bitte nutze Chrome oder Edge (nicht Firefox).
+  </div>
+
+  <!-- Exercise -->
+  <div id="exercise-area">
+    <div class="exercise-type" id="ex-type">🎤 Sprich nach</div>
+    <div class="prompt-de" id="prompt-de"></div>
+    <div class="prompt-main" id="prompt-main"></div>
+    <div class="prompt-hint" id="prompt-hint"></div>
+
+    <div class="mic-area">
+      <button class="mic-btn" id="mic-btn" title="Aufnahme starten">🎤</button>
+      <div class="mic-status" id="mic-status">Mikrofon-Taste drücken und sprechen</div>
+    </div>
+
+    <div class="transcript-box" id="transcript-box">
+      <span class="transcript-placeholder" id="transcript-placeholder">Deine Antwort erscheint hier...</span>
+      <span id="transcript-text" style="display:none"></span>
+    </div>
+
+    <div class="token-result" id="token-result"></div>
+
+    <div class="feedback" id="feedback">
+      <div class="feedback-icon" id="fb-icon"></div>
+      <div class="feedback-text" id="fb-text"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-retry" id="btn-retry">↩ Nochmal</button>
+      <button class="btn btn-check" id="btn-check" disabled>Prüfen</button>
+      <button class="btn btn-next" id="btn-next">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- Completed -->
+  <div class="completed-screen" id="completed-screen">
+    <div class="trophy">🏆</div>
+    <div class="completed-title">Bravissimo!</div>
+    <div class="completed-sub" id="completed-sub"></div>
+    <div class="completed-stats">
+      <div class="cstat">
+        <div class="cstat-val" id="c-correct">0</div>
+        <div class="cstat-lbl">Richtig</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-val" id="c-wrong">0</div>
+        <div class="cstat-lbl">Falsch</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-val" id="c-score">0</div>
+        <div class="cstat-lbl">Punkte</div>
+      </div>
+    </div>
+    <button class="btn btn-restart" onclick="restartApp()">Nochmal üben 🔄</button>
+  </div>
+</div>
+
+<div class="info-note">
+  Spracherkennung läuft lokal via Web Speech API (Chrome/Edge).<br>
+  Audio wird zur Verarbeitung an Google-Server übertragen – nur für persönlichen Gebrauch.
+</div>
+
+<script>
+// ============================================================
+// ÜBUNGSSET: Italienisch
+// ============================================================
+const exercises = [
+  {
+    type: "Sprich nach",
+    icon: "🎤",
+    promptDe: "Übersetze und sprich:",
+    promptMain: "Guten Morgen! Wie heißt du?",
+    promptHint: "Auf Italienisch: <strong>Buongiorno! Come ti chiami?</strong>",
+    solution: "buongiorno come ti chiami",
+    solutionDisplay: "Buongiorno! Come ti chiami?",
+    tip: "Vergiss nicht: <em>buongiorno</em> (ein Wort!)"
+  },
+  {
+    type: "Satz übersetzen",
+    icon: "🗣️",
+    promptDe: "Übersetze und sprich:",
+    promptMain: "Ich heiße Paul und ich bin Lehrer.",
+    promptHint: "Auf Italienisch: <strong>Mi chiamo Paul e sono insegnante.</strong>",
+    solution: "mi chiamo paul e sono insegnante",
+    solutionDisplay: "Mi chiamo Paul e sono insegnante.",
+    tip: "<em>insegnante</em> = Lehrer/in (kein Artikel nötig!)"
+  },
+  {
+    type: "Sprich nach",
+    icon: "🎤",
+    promptDe: "Übersetze und sprich:",
+    promptMain: "Entschuldigung, wo ist der Bahnhof?",
+    promptHint: "Auf Italienisch: <strong>Scusi, dov'è la stazione?</strong>",
+    solution: "scusi dove la stazione",
+    solutionDisplay: "Scusi, dov'è la stazione?",
+    tip: "<em>dov'è</em> = wo ist (dove + è zusammengezogen)"
+  },
+  {
+    type: "Satz übersetzen",
+    icon: "🗣️",
+    promptDe: "Übersetze und sprich:",
+    promptMain: "Ich möchte einen Kaffee, bitte.",
+    promptHint: "Auf Italienisch: <strong>Vorrei un caffè, per favore.</strong>",
+    solution: "vorrei un caffe per favore",
+    solutionDisplay: "Vorrei un caffè, per favore.",
+    tip: "<em>vorrei</em> = ich möchte (höflicher als <em>voglio</em>)"
+  },
+  {
+    type: "Sprich nach",
+    icon: "🎤",
+    promptDe: "Übersetze und sprich:",
+    promptMain: "Das ist sehr schön! Ich liebe Italien.",
+    promptHint: "Auf Italienisch: <strong>È molto bello! Amo l'Italia.</strong>",
+    solution: "e molto bello amo l italia",
+    solutionDisplay: "È molto bello! Amo l'Italia.",
+    tip: "<em>amo l'Italia</em> – der Apostroph entsteht durch Elision von <em>la</em>"
+  },
+  {
+    type: "Satz übersetzen",
+    icon: "🗣️",
+    promptDe: "Übersetze und sprich:",
+    promptMain: "Wie viel kostet das?",
+    promptHint: "Auf Italienisch: <strong>Quanto costa?</strong>",
+    solution: "quanto costa",
+    solutionDisplay: "Quanto costa?",
+    tip: "Super kurz und häufig nützlich beim Einkaufen!"
+  },
+  {
+    type: "Sprich nach",
+    icon: "🎤",
+    promptDe: "Übersetze und sprich:",
+    promptMain: "Wir essen heute Abend Pizza.",
+    promptHint: "Auf Italienisch: <strong>Stasera mangiamo la pizza.</strong>",
+    solution: "stasera mangiamo la pizza",
+    solutionDisplay: "Stasera mangiamo la pizza.",
+    tip: "<em>stasera</em> = heute Abend (sta + sera)"
+  },
+  {
+    type: "Satz übersetzen",
+    icon: "🗣️",
+    promptDe: "Abschluss! Übersetze und sprich:",
+    promptMain: "Auf Wiedersehen und bis bald!",
+    promptHint: "Auf Italienisch: <strong>Arrivederci e a presto!</strong>",
+    solution: "arrivederci e a presto",
+    solutionDisplay: "Arrivederci e a presto!",
+    tip: "<em>a presto</em> = bis bald – klingt schöner als <em>ciao</em> beim Abschied"
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentIdx = 0;
+let score = 0;
+let streak = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let transcript = "";
+let checked = false;
+let recognition = null;
+let isListening = false;
+
+// ============================================================
+// INIT
+// ============================================================
+function initSpeech() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('unsupported-box').classList.add('show');
+    document.getElementById('mic-btn').disabled = true;
+    return false;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'it-IT';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('mic-btn').classList.add('listening');
+    document.getElementById('mic-status').textContent = '🔴 Aufnahme läuft... jetzt sprechen!';
+    document.getElementById('mic-status').classList.add('active');
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += t;
+      else interim += t;
+    }
+    transcript = (final || interim).trim();
+    showTranscript(transcript, !final);
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('mic-btn').classList.remove('listening');
+    document.getElementById('mic-status').textContent = 'Aufnahme beendet.';
+    document.getElementById('mic-status').classList.remove('active');
+    if (transcript) {
+      document.getElementById('btn-check').disabled = false;
+    }
+  };
+
+  recognition.onerror = (e) => {
+    isListening = false;
+    document.getElementById('mic-btn').classList.remove('listening');
+    let msg = 'Fehler bei der Aufnahme.';
+    if (e.error === 'not-allowed') msg = '⚠️ Mikrofon-Zugriff verweigert. Bitte Erlaubnis erteilen.';
+    if (e.error === 'no-speech') msg = 'Kein Geräusch erkannt. Nochmal versuchen?';
+    document.getElementById('mic-status').textContent = msg;
+    document.getElementById('mic-status').classList.remove('active');
+  };
+
+  return true;
+}
+
+function showTranscript(text, interim) {
+  const box = document.getElementById('transcript-box');
+  const placeholder = document.getElementById('transcript-placeholder');
+  const textEl = document.getElementById('transcript-text');
+  placeholder.style.display = 'none';
+  textEl.style.display = 'inline';
+  textEl.textContent = text + (interim ? ' ...' : '');
+  box.classList.add('has-content');
+}
+
+// ============================================================
+// LOAD EXERCISE
+// ============================================================
+function loadExercise(idx) {
+  const ex = exercises[idx];
+  transcript = '';
+  checked = false;
+
+  // Reset UI
+  document.getElementById('ex-type').textContent = ex.icon + ' ' + ex.type;
+  document.getElementById('prompt-de').textContent = ex.promptDe;
+  document.getElementById('prompt-main').textContent = ex.promptMain;
+  document.getElementById('prompt-hint').innerHTML = ex.promptHint;
+
+  document.getElementById('transcript-placeholder').style.display = '';
+  document.getElementById('transcript-text').style.display = 'none';
+  document.getElementById('transcript-text').textContent = '';
+  document.getElementById('transcript-box').classList.remove('has-content');
+
+  document.getElementById('token-result').innerHTML = '';
+  document.getElementById('feedback').className = 'feedback';
+
+  document.getElementById('btn-check').disabled = true;
+  document.getElementById('btn-check').style.display = 'inline-flex';
+  document.getElementById('btn-retry').classList.remove('show');
+  document.getElementById('btn-next').classList.remove('show');
+
+  document.getElementById('mic-status').textContent = 'Mikrofon-Taste drücken und sprechen';
+  document.getElementById('mic-status').classList.remove('active');
+  document.getElementById('mic-btn').classList.remove('listening');
+  document.getElementById('mic-btn').disabled = false;
+
+  // Progress
+  const pct = Math.round((idx / exercises.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Aufgabe ${idx + 1} von ${exercises.length}`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// ============================================================
+// TOKENIZE & COMPARE
+// ============================================================
+function normalize(str) {
+  return str
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Akzente entfernen (è→e, à→a, ecc.)
+    .replace(/[^a-z0-9\s]/g, '') // Satzzeichen raus
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function tokenize(str) {
+  return normalize(str).split(' ').filter(t => t.length > 0);
+}
+
+function compareTokens(spokenTokens, solutionTokens) {
+  // Einfacher Vergleich: Levenshtein-Distanz pro Token-Paar
+  const results = [];
+  const used = new Array(spokenTokens.length).fill(false);
+
+  for (let si = 0; si < solutionTokens.length; si++) {
+    const sol = solutionTokens[si];
+    let bestMatch = -1;
+    let bestDist = Infinity;
+    for (let pi = 0; pi < spokenTokens.length; pi++) {
+      if (used[pi]) continue;
+      const d = levenshtein(sol, spokenTokens[pi]);
+      const threshold = Math.max(1, Math.floor(sol.length * 0.3));
+      if (d <= threshold && d < bestDist) {
+        bestDist = d;
+        bestMatch = pi;
+      }
+    }
+    if (bestMatch >= 0) {
+      results.push({ word: spokenTokens[bestMatch], type: 'correct' });
+      used[bestMatch] = true;
+    } else {
+      results.push({ word: sol, type: 'missing' });
+    }
+  }
+
+  // Überschüssige Token als falsch markieren
+  for (let pi = 0; pi < spokenTokens.length; pi++) {
+    if (!used[pi]) {
+      results.push({ word: spokenTokens[pi], type: 'wrong' });
+    }
+  }
+
+  return results;
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, (_, i) => [i, ...Array(n).fill(0)]);
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] :
+        1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+// ============================================================
+// CHECK
+// ============================================================
+function checkAnswer() {
+  if (!transcript || checked) return;
+  checked = true;
+
+  const ex = exercises[currentIdx];
+  const spokenTokens = tokenize(transcript);
+  const solutionTokens = tokenize(ex.solution);
+  const results = compareTokens(spokenTokens, solutionTokens);
+
+  // Render tokens
+  const container = document.getElementById('token-result');
+  container.innerHTML = '';
+  results.forEach(r => {
+    const el = document.createElement('span');
+    el.className = 'token ' + r.type;
+    el.textContent = r.word;
+    container.appendChild(el);
+  });
+
+  const correctTokens = results.filter(r => r.type === 'correct').length;
+  const ratio = correctTokens / solutionTokens.length;
+  const isCorrect = ratio >= 0.75;
+
+  // Feedback
+  const fb = document.getElementById('feedback');
+  const fbIcon = document.getElementById('fb-icon');
+  const fbText = document.getElementById('fb-text');
+
+  if (isCorrect) {
+    fb.className = 'feedback correct-fb show';
+    fbIcon.textContent = '✅';
+    const pts = Math.round(ratio * 10);
+    fbText.innerHTML = `<strong>Ottimo!</strong> ${ratio === 1 ? 'Perfetto! ' : 'Fast perfekt! '}+${pts} Punkte.<br><small>💡 ${ex.tip}</small>`;
+    score += pts;
+    streak++;
+    correctCount++;
+    document.getElementById('score-val').textContent = score;
+    document.getElementById('streak-val').textContent = streak;
+  } else {
+    fb.className = 'feedback wrong-fb show';
+    fbIcon.textContent = '❌';
+    fbText.innerHTML = `<strong>Noch nicht ganz.</strong> Richtig wäre: <em>${ex.solutionDisplay}</em><br><small>💡 ${ex.tip}</small>`;
+    streak = 0;
+    wrongCount++;
+    document.getElementById('streak-val').textContent = streak;
+  }
+
+  document.getElementById('btn-check').style.display = 'none';
+  document.getElementById('btn-retry').classList.add('show');
+  document.getElementById('btn-next').classList.add('show');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function nextExercise() {
+  currentIdx++;
+  if (currentIdx >= exercises.length) {
+    showCompleted();
+  } else {
+    loadExercise(currentIdx);
+  }
+}
+
+function retryExercise() {
+  transcript = '';
+  checked = false;
+  document.getElementById('transcript-placeholder').style.display = '';
+  document.getElementById('transcript-text').style.display = 'none';
+  document.getElementById('transcript-text').textContent = '';
+  document.getElementById('transcript-box').classList.remove('has-content');
+  document.getElementById('token-result').innerHTML = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btn-check').disabled = true;
+  document.getElementById('btn-check').style.display = 'inline-flex';
+  document.getElementById('btn-retry').classList.remove('show');
+  document.getElementById('btn-next').classList.remove('show');
+  document.getElementById('mic-status').textContent = 'Mikrofon-Taste drücken und sprechen';
+}
+
+function showCompleted() {
+  document.getElementById('exercise-area').style.display = 'none';
+  document.getElementById('completed-screen').classList.add('show');
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-pct').textContent = '100%';
+  document.getElementById('c-correct').textContent = correctCount;
+  document.getElementById('c-wrong').textContent = wrongCount;
+  document.getElementById('c-score').textContent = score;
+
+  let msg = '';
+  const ratio = correctCount / exercises.length;
+  if (ratio === 1) msg = 'Perfekte Runde! Du klingst schon wie ein Römer.';
+  else if (ratio >= 0.75) msg = 'Sehr gut! Noch ein bisschen üben und du bist bereit für Rom.';
+  else if (ratio >= 0.5) msg = 'Guter Anfang! Wiederhole die Aufgaben, um sicherer zu werden.';
+  else msg = 'Übung macht den Meister! Probier die Runde nochmal.';
+  document.getElementById('completed-sub').textContent = msg;
+}
+
+function restartApp() {
+  currentIdx = 0;
+  score = 0;
+  streak = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  document.getElementById('score-val').textContent = '0';
+  document.getElementById('streak-val').textContent = '0';
+  document.getElementById('exercise-area').style.display = '';
+  document.getElementById('completed-screen').classList.remove('show');
+  loadExercise(0);
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+document.getElementById('mic-btn').addEventListener('click', () => {
+  if (!recognition) return;
+  if (isListening) {
+    recognition.stop();
+  } else {
+    transcript = '';
+    document.getElementById('btn-check').disabled = true;
+    recognition.start();
+  }
+});
+
+document.getElementById('btn-check').addEventListener('click', checkAnswer);
+document.getElementById('btn-next').addEventListener('click', nextExercise);
+document.getElementById('btn-retry').addEventListener('click', retryExercise);
+
+// ============================================================
+// START
+// ============================================================
+initSpeech();
+loadExercise(0);
+</script>
+</body>
+</html>
