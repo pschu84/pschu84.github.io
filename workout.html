@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Workout">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%230f1115'/%3E%3Ctext x='90' y='120' text-anchor='middle' font-family='-apple-system' font-size='110' fill='%23f59e0b' font-weight='bold'%3E▮%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="wo.png">
 <title>Workout</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
@@ -447,11 +447,11 @@ const EXERCISE_LIBRARY=[
 {id:'wadenheben',name:'Wadenheben (stehend)',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['wadenheben_sitzend']},
 {id:'wadenheben_sitzend',name:'Wadenheben (sitzend)',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['wadenheben']},
 // BAUCH/CORE (core)
-{id:'bauchmaschine',name:'Bauchmaschine',equipment:'Maschine',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['crunches','beinheben']},
+{id:'bauchmaschine',name:'Bauchmaschine',equipment:'Maschine',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['plank','crunches','beinheben']},
 {id:'crunches',name:'Crunches',equipment:'Eigengewicht',muscles:['bauch'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['bauchmaschine','beinheben']},
 {id:'beinheben',name:'Beinheben (hängend)',equipment:'Eigengewicht',muscles:['bauch'],secondary:['core'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['crunches','bauchmaschine']},
 {id:'cable_crunch',name:'Cable Crunch',equipment:'Kabelzug',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['crunches']},
-{id:'plank',name:'Plank',equipment:'Eigengewicht',muscles:['core'],secondary:['bauch'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['side_plank']},
+{id:'plank',name:'Plank',equipment:'Eigengewicht',muscles:['core'],secondary:['bauch'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['bauchmaschine','side_plank']},
 {id:'side_plank',name:'Seitlicher Plank',equipment:'Eigengewicht',muscles:['core'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['plank']},
 {id:'russian_twist',name:'Russian Twists',equipment:'Kurzhanteln',muscles:['bauch','core'],type:'reps',isIsolation:true,allowAddedWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['side_plank']}
 ];
@@ -721,9 +721,35 @@ function computeTargetSets(base,phase,wk,totalWeeks,deload){
   if(phase==='kraftausdauer')return base;
   return base;
 }
-function getWeeklyTargetSets(exercise){
+// Prüft ob eine Isolation-Übung in derselben Session bereits durch eine Compound-Übung
+// (primär oder sekundär) für dieselbe Muskelgruppe vorbelastet ist.
+// primaryMuscles: muscles[] der zu prüfenden Isolation-Übung
+// planExercises: alle Übungen des Plans (Array von {exerciseId, ...})
+// currentExerciseId: ID der Isolation-Übung selbst (wird übersprungen)
+function isIsolationAlreadyCovered(primaryMuscles,planExercises,currentExerciseId){
+  if(!planExercises||!primaryMuscles||primaryMuscles.length===0)return false;
+  for(const pe of planExercises){
+    if(pe.exerciseId===currentExerciseId)continue;
+    const peDef=getExerciseInfo(pe.exerciseId);
+    if(!peDef||peDef.isIsolation)continue; // nur Compound-Übungen prüfen
+    // Vorbelastung wenn primäre Muskeln überlappen (Brust→Butterfly, Bizeps ist secondary bei Pull)
+    const coveredMuscles=new Set([...(peDef.muscles||[]),...(peDef.secondary||[])]);
+    if(primaryMuscles.some(m=>coveredMuscles.has(m)))return true;
+  }
+  return false;
+}
+function getWeeklyTargetSets(exercise,planExercises){
   const base=exercise.targetSets||3;
   let sets=computeTargetSets(base,getCurrentPhase(),getCurrentWeek(),getMesoLength(),isDeloadWeek());
+  // Isolation-Cap: wenn dieselbe Muskelgruppe bereits durch Compound vorbelastet ist,
+  // maximal 3 Sätze -- gilt für primary-Muskeln (Brust/Isolation) und secondary-Überlapp
+  // (Bizeps durch Pull-Compounds, Trizeps durch Push-Compounds).
+  const def=getExerciseInfo(exercise.exerciseId);
+  if(def&&def.isIsolation&&planExercises){
+    if(isIsolationAlreadyCovered(def.muscles,planExercises,exercise.exerciseId)){
+      sets=Math.min(sets,3);
+    }
+  }
   // Plateau-Volumen-Boost: +1 Satz, nur in Hypertrophie-Woche 2 (nicht Woche 1, dort ist der Volumen-Reset normal), nicht in Deload
   if(exercise.exerciseId&&getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()===2){
     if(detectPlateau(exercise.exerciseId))sets+=1;
@@ -1208,7 +1234,7 @@ function initWorkoutDraft(planKey,force=false){
       const def=getExerciseInfo(ex.exerciseId);
       const isTime=def&&def.type==='time',isBW=def&&def.bodyweight&&!def.allowAddedWeight;
       const sets=[];
-      const n=getWeeklyTargetSets(ex);
+      const n=getWeeklyTargetSets(ex,plan.exercises);
       // Felder bleiben leer - Vorschlag wird über dem Set-Grid prominent angezeigt
       for(let i=0;i<n;i++)sets.push({weight:null,reps:null});
       return{exerciseId:ex.exerciseId,originalExerciseId:ex.exerciseId,targetSets:ex.targetSets||3,targetRepsMin:ex.targetRepsMin||8,targetRepsMax:ex.targetRepsMax||12,targetSeconds:ex.targetSeconds||null,plankBaseSec:ex.plankBaseSec||ex.targetSeconds||(isTime?(DATA.settings.plankBaseSec||120):null),currentWeight:ex.currentWeight||0,maxWeight:ex.maxWeight||null,sets};
@@ -2307,7 +2333,10 @@ function showSwapExercise(exIdx){
   if(!def)return;
   const altIds=def.alternatives||[];
   const recommendedAlts=altIds.map(id=>getExerciseInfo(id)).filter(Boolean);
-  const otherCandidates=EXERCISE_LIBRARY.filter(e=>e.id!==def.id&&!altIds.includes(e.id)&&e.muscles.some(m=>def.muscles.includes(m))).slice(0,12);
+  // Synonym-Expansion: bauch ↔ core tauschbar (wie in Recovery-Logik)
+  const swapMuscles=new Set();
+  (def.muscles||[]).forEach(m=>(RECOVERY_SYNONYMS[m]||[m]).forEach(x=>swapMuscles.add(x)));
+  const otherCandidates=EXERCISE_LIBRARY.filter(e=>e.id!==def.id&&!altIds.includes(e.id)&&e.muscles.some(m=>swapMuscles.has(m))).slice(0,12);
   // Custom Exercises mit überlappenden Muskeln
   const customCandidates=Object.values(DATA.customExercises||{}).filter(e=>e.id!==def.id&&(e.muscles||[]).some(m=>def.muscles.includes(m)));
   let html=`<h2>Übung wechseln</h2>
@@ -2346,10 +2375,11 @@ function swapForToday(exIdx,newId){
     if(last)startWeight=Math.max(0,...last.sets.map(s=>s.weight||0));
     else startWeight=20;
   }
-  const tempEx={targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:startWeight,maxWeight:null};
+  const tempEx={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:startWeight,maxWeight:null};
   const sug=progressionSuggestion(newId,tempEx);
   const sets=[];
-  const n=getWeeklyTargetSets(tempEx);
+  const planEx=DATA.plans[currentWorkoutDraft.planId]?DATA.plans[currentWorkoutDraft.planId].exercises:null;
+  const n=getWeeklyTargetSets(tempEx,planEx);
   for(let i=0;i<n;i++)sets.push({weight:null,reps:null});
   currentWorkoutDraft.exercises[exIdx]={exerciseId:newId,originalExerciseId:oldDraftEx.originalExerciseId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:startWeight,maxWeight:null,sets};
   saveWorkoutDraft();
@@ -2369,10 +2399,10 @@ function swapPermanent(exIdx,newId){
     if(!isBW&&!isTime){if(last)startWeight=Math.max(0,...last.sets.map(s=>s.weight||0));else startWeight=20;}
     plan.exercises[planExIdx]={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):undefined,currentWeight:isBW?0:startWeight,maxWeight:null};
   }
-  const tempEx={targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:(isBW||isTime)?0:plan.exercises[planExIdx].currentWeight,maxWeight:null};
+  const tempEx={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:(isBW||isTime)?0:plan.exercises[planExIdx].currentWeight,maxWeight:null};
   const sug=progressionSuggestion(newId,tempEx);
   const sets=[];
-  const n=getWeeklyTargetSets(tempEx);
+  const n=getWeeklyTargetSets(tempEx,plan.exercises);
   for(let i=0;i<n;i++)sets.push({weight:null,reps:null});
   currentWorkoutDraft.exercises[exIdx]={exerciseId:newId,originalExerciseId:newId,targetSets:tempEx.targetSets,targetRepsMin:tempEx.targetRepsMin,targetRepsMax:tempEx.targetRepsMax,targetSeconds:tempEx.targetSeconds,currentWeight:tempEx.currentWeight,maxWeight:null,sets};
   saveData(DATA);
