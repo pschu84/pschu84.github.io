@@ -2676,34 +2676,41 @@ body.lernmodus .voc.revealed .de{
 })();
 </script>
 
+
 <style>
-.ubg-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);
-  backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:1rem;}
+.ubg-overlay{display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(3px);
+  align-items:center;justify-content:center;padding:1rem;}
 .ubg-overlay.open{display:flex;}
-.ubg-modal{background:var(--paper-2);border:2px solid var(--ink);border-radius:var(--r-xl);
-  box-shadow:var(--shadow-lg);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.ubg-modal{background:var(--paper-2);border:2px solid var(--ink);
+  border-radius:var(--r-xl);box-shadow:var(--shadow-lg);
+  width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
 .ubg-head{display:flex;align-items:center;justify-content:space-between;
   padding:1rem 1rem .6rem;border-bottom:2px solid var(--line);}
 .ubg-title{font-family:var(--f-display);font-weight:900;font-size:1rem;flex:1;}
 .ubg-sec{color:var(--ink);}
 .ubg-close{background:none;border:1.5px solid var(--ink);border-radius:50%;
-  width:28px;height:28px;cursor:pointer;font-size:1rem;display:grid;place-items:center;}
+  width:28px;height:28px;cursor:pointer;font-size:1.1rem;
+  display:grid;place-items:center;transition:all .15s;}
+.ubg-close:hover{background:var(--ink);color:var(--paper-2);}
 .ubg-dir{display:flex;gap:.6rem;justify-content:center;padding:.7rem 1rem .3rem;}
 .ubg-dir-btn{font-family:var(--f-body);font-size:.82rem;font-weight:700;
   border:2px solid var(--ink);border-radius:99px;padding:.3rem .9rem;
   background:var(--paper-3);cursor:pointer;transition:all .15s;}
 .ubg-dir-btn.active{background:var(--ink);color:var(--paper-2);}
-.ubg-prog-wrap{display:flex;align-items:center;gap:.6rem;padding:.4rem 1rem .1rem;}
+.ubg-prog-wrap{display:flex;align-items:center;gap:.6rem;
+  padding:.4rem 1rem .1rem;}
 .ubg-prog{flex:1;height:7px;background:var(--line);border-radius:99px;overflow:hidden;}
 .ubg-prog-fill{height:100%;background:#2a9d8f;border-radius:99px;
   transition:width .3s ease;width:0;}
 .ubg-count{font-size:.78rem;color:var(--ink-soft);white-space:nowrap;font-weight:600;}
 .ubg-q-block{padding:.2rem 1rem 1rem;}
-.ubg-q-lbl{text-align:center;font-size:.76rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.05em;color:var(--ink-faint);padding:.6rem 0 .35rem;}
-.ubg-q{text-align:center;font-family:var(--f-display);font-size:1.45rem;font-weight:900;
-  min-height:70px;display:flex;align-items:center;justify-content:center;
-  padding:.3rem .5rem .9rem;line-height:1.25;}
+.ubg-q-lbl{text-align:center;font-size:.76rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);
+  padding:.6rem 0 .35rem;}
+.ubg-q{text-align:center;font-family:var(--f-display);font-size:1.45rem;
+  font-weight:900;min-height:70px;display:flex;align-items:center;
+  justify-content:center;padding:.3rem .5rem .9rem;line-height:1.25;}
 .ubg-opts{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
 .ubg-opt{font-family:var(--f-body);font-size:.88rem;font-weight:600;
   border:2px solid var(--ink);border-radius:var(--r-md);
@@ -2714,23 +2721,52 @@ body.lernmodus .voc.revealed .de{
 .ubg-opt.correct{background:#e6f6ee;border-color:#2a9d8f;color:#1d7468;}
 .ubg-opt.wrong{background:#fde8e8;border-color:#e63946;color:#b00;}
 .ubg-result{text-align:center;padding:1.5rem 1rem 1.2rem;
-  display:flex;flex-direction:column;align-items:center;gap:.8rem;}
+  flex-direction:column;align-items:center;gap:.8rem;}
 .ubg-pct{font-family:var(--f-display);font-size:2.4rem;font-weight:900;}
 .ubg-score-wrap{font-size:1rem;color:var(--ink-soft);}
 .ubg-score-wrap b{color:var(--ink);}
-.ubg-btns{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
-.ubg-btn{margin-left:auto;font-family:var(--f-body);font-size:.74rem;font-weight:700;
-  border:1.5px solid var(--acc);border-radius:99px;padding:.24rem .65rem;
-  background:var(--acc-soft);color:var(--acc-deep);cursor:pointer;
-  transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.ubg-btns{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;
+  margin-top:.4rem;}
+.ubg-btn{margin-left:auto;font-family:var(--f-body);font-size:.74rem;
+  font-weight:700;border:1.5px solid var(--acc);border-radius:99px;
+  padding:.24rem .65rem;background:var(--acc-soft);color:var(--acc-deep);
+  cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .ubg-btn:hover{background:var(--acc);color:#fff;}
 </style>
+<div id="ubgOverlay" class="ubg-overlay" role="dialog" aria-modal="true">
+  <div class="ubg-modal">
+    <div class="ubg-head">
+      <div class="ubg-title">&#x1F4DD;&nbsp;<span id="ubgSec"></span></div>
+      <button id="ubgClose" class="ubg-close" aria-label="Schliessen">&times;</button>
+    </div>
+    <div class="ubg-dir">
+      <button class="ubg-dir-btn active" data-dir="it2de">&#x1F1EE;&#x1F1F9; &rarr; &#x1F1E9;&#x1F1EA;</button>
+      <button class="ubg-dir-btn" data-dir="de2it">&#x1F1E9;&#x1F1EA; &rarr; &#x1F1EE;&#x1F1F9;</button>
+    </div>
+    <div class="ubg-prog-wrap">
+      <div class="ubg-prog"><div id="ubgProgFill" class="ubg-prog-fill"></div></div>
+      <span id="ubgCount" class="ubg-count">1 / 10</span>
+    </div>
+    <div id="ubgQBlock" class="ubg-q-block">
+      <div id="ubgQLbl" class="ubg-q-lbl"></div>
+      <div id="ubgQ" class="ubg-q"></div>
+      <div id="ubgOpts" class="ubg-opts"></div>
+    </div>
+    <div id="ubgResult" class="ubg-result" style="display:none">
+      <div id="ubgPct" class="ubg-pct"></div>
+      <div class="ubg-score-wrap">Richtig:&nbsp;<b id="ubgScore"></b></div>
+      <div class="ubg-btns">
+        <button id="ubgAgain" class="btn">&#x1F504; Nochmal</button>
+        <button id="ubgRetry" class="btn">&#x274C; Nur Fehler &uuml;ben</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
 (function(){
   "use strict";
-  var globalVocab=[], overlay, progFill, countEl, qLbl, qEl, optsEl, resultEl, secEl;
-  var currentSec, vocab, queue, missed, score, questionIdx, direction="it2de";
 
+  /* -- Vokabeln aus einer Sektion extrahieren -- */
   function getVocab(sec){
     var seen={}, result=[];
     sec.querySelectorAll(".voc[data-it]").forEach(function(v){
@@ -2738,28 +2774,108 @@ body.lernmodus .voc.revealed .de{
       if(!elI||!elD) return;
       var it=elI.textContent.trim(), de=elD.textContent.trim();
       if(!it||!de||it===de) return;
-      var k=it.toLowerCase(); if(seen[k]) return; seen[k]=true;
-      result.push({it:it,de:de});
+      var k=it.toLowerCase();
+      if(seen[k]) return;
+      seen[k]=true;
+      result.push({it:it, de:de});
     });
     return result;
   }
 
+  /* -- Array mischen -- */
   function shuffle(a){
     a=a.slice();
-    for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+    for(var i=a.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
     return a;
   }
 
+  /* -- Italienisch vorlesen -- */
   function speak(text){
     if(!window.speechSynthesis||!text) return;
-    try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text);u.lang="it-IT";u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){}
+    try{
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text);
+      u.lang="it-IT"; u.rate=0.9;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
+  /* -- Zustand -- */
+  var globalVocab=[];
+  var overlay, progFill, countEl, qLbl, qEl, optsEl, resultEl, secEl;
+  var currentSec, vocab, queue, missed=[], score=0, questionIdx=0, direction="it2de";
+
+  /* -- Initialisierung -- */
+  function init(){
+    /* Globale Vokabelliste aufbauen */
+    document.querySelectorAll(".vsec[id]").forEach(function(sec){
+      getVocab(sec).forEach(function(v){ globalVocab.push(v); });
+    });
+
+    /* "Ueben"-Button zu jeder Sektion mit >= 4 Vokabeln hinzufuegen */
+    document.querySelectorAll(".vsec[id]").forEach(function(sec){
+      var v=getVocab(sec);
+      if(v.length<4) return;
+      var head=sec.querySelector(".vsec-head");
+      if(!head) return;
+      var btn=document.createElement("button");
+      btn.className="ubg-btn";
+      btn.textContent="\uD83D\uDCDD \u00dcben";
+      btn.addEventListener("click",function(e){
+        e.stopPropagation();
+        openUbung(sec);
+      });
+      head.appendChild(btn);
+    });
+
+    /* Modal-Elemente referenzieren (Modal ist bereits im HTML) */
+    overlay  = document.getElementById("ubgOverlay");
+    progFill = document.getElementById("ubgProgFill");
+    countEl  = document.getElementById("ubgCount");
+    qLbl     = document.getElementById("ubgQLbl");
+    qEl      = document.getElementById("ubgQ");
+    optsEl   = document.getElementById("ubgOpts");
+    resultEl = document.getElementById("ubgResult");
+    secEl    = document.getElementById("ubgSec");
+
+    /* Event-Listener */
+    overlay.addEventListener("click",function(e){
+      if(e.target===overlay) closeUbung();
+    });
+    document.getElementById("ubgClose").addEventListener("click", closeUbung);
+    document.addEventListener("keydown",function(e){
+      if(e.key==="Escape") closeUbung();
+    });
+    overlay.querySelectorAll(".ubg-dir-btn").forEach(function(b){
+      b.addEventListener("click",function(){
+        direction=b.getAttribute("data-dir");
+        overlay.querySelectorAll(".ubg-dir-btn").forEach(function(x){
+          x.classList.toggle("active",x===b);
+        });
+        startRound(false);
+      });
+    });
+    document.getElementById("ubgAgain").addEventListener("click",function(){
+      startRound(false);
+    });
+    document.getElementById("ubgRetry").addEventListener("click",function(){
+      startRound(true);
+    });
   }
 
   function openUbung(sec){
-    currentSec=sec; direction="it2de";
-    overlay.querySelectorAll(".ubg-dir-btn").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-dir")==="it2de");});
-    secEl.textContent=sec.querySelector("h2").textContent.replace(/[—–]/g,"").trim();
-    vocab=getVocab(sec); missed=[];
+    currentSec=sec;
+    direction="it2de";
+    overlay.querySelectorAll(".ubg-dir-btn").forEach(function(b){
+      b.classList.toggle("active",b.getAttribute("data-dir")==="it2de");
+    });
+    secEl.textContent=sec.querySelector("h2").textContent
+      .replace(/\u2014|\u2013/g,"").trim();
+    vocab=getVocab(sec);
+    missed=[];
     overlay.classList.add("open");
     startRound(false);
   }
@@ -2772,9 +2888,10 @@ body.lernmodus .voc.revealed .de{
   function startRound(useMissed){
     score=0; questionIdx=0;
     resultEl.style.display="none";
-    overlay.querySelector(".ubg-q-block").style.display="";
+    document.getElementById("ubgQBlock").style.display="";
     var pool=(useMissed&&missed&&missed.length)?missed:vocab;
-    queue=shuffle(pool.slice()); if(queue.length>10) queue=queue.slice(0,10);
+    queue=shuffle(pool.slice());
+    if(queue.length>10) queue=queue.slice(0,10);
     missed=[];
     showQuestion();
   }
@@ -2783,92 +2900,84 @@ body.lernmodus .voc.revealed .de{
     var total=queue.length;
     progFill.style.width=(questionIdx/total*100)+"%";
     countEl.textContent=(questionIdx+1)+" / "+total;
-    var q=queue[questionIdx], isIT=(direction==="it2de");
-    qLbl.textContent=isIT?"Wie hei\u00dft das auf Deutsch?":"Wie hei\u00dft das auf Italienisch?";
-    qEl.textContent=isIT?q.it:q.de;
-    var correct=isIT?q.de:q.it;
-    var others=shuffle(vocab.filter(function(v){return v.it!==q.it;}));
+
+    var q=queue[questionIdx];
+    var isIT=(direction==="it2de");
+    qLbl.textContent=isIT
+      ? "Wie hei\u00dft das auf Deutsch?"
+      : "Wie hei\u00dft das auf Italienisch?";
+    qEl.textContent=isIT ? q.it : q.de;
+
+    var correct=isIT ? q.de : q.it;
+
+    /* Falsche Optionen: zuerst aus gleicher Sektion, dann global */
+    var others=shuffle(vocab.filter(function(v){ return v.it!==q.it; }));
     var wrongs=[];
-    others.forEach(function(v){var a=isIT?v.de:v.it; if(a!==correct&&wrongs.indexOf(a)===-1) wrongs.push(a);});
+    others.forEach(function(v){
+      var a=isIT?v.de:v.it;
+      if(a!==correct && wrongs.indexOf(a)===-1) wrongs.push(a);
+    });
     if(wrongs.length<3){
-      shuffle(globalVocab).forEach(function(v){var a=isIT?v.de:v.it; if(a!==correct&&wrongs.indexOf(a)===-1) wrongs.push(a);});
+      shuffle(globalVocab).forEach(function(v){
+        var a=isIT?v.de:v.it;
+        if(a!==correct && wrongs.indexOf(a)===-1) wrongs.push(a);
+      });
     }
+
     var opts=shuffle([correct].concat(wrongs.slice(0,3)));
     optsEl.innerHTML="";
     opts.forEach(function(opt){
       var btn=document.createElement("button");
-      btn.className="ubg-opt"; btn.textContent=opt;
-      btn.addEventListener("click",function(){pick(btn,opt,correct,q);});
+      btn.className="ubg-opt";
+      btn.textContent=opt;
+      btn.addEventListener("click",function(){ pick(btn,opt,correct,q); });
       optsEl.appendChild(btn);
     });
-    if(isIT) setTimeout(function(){speak(q.it);},180);
+
+    if(isIT) setTimeout(function(){ speak(q.it); }, 180);
   }
 
   function pick(btn,chosen,correct,q){
-    optsEl.querySelectorAll(".ubg-opt").forEach(function(b){b.disabled=true;});
+    optsEl.querySelectorAll(".ubg-opt").forEach(function(b){ b.disabled=true; });
     var right=(chosen===correct);
-    if(right){score++;btn.classList.add("correct");}
-    else{
-      btn.classList.add("wrong"); missed.push(q);
-      optsEl.querySelectorAll(".ubg-opt").forEach(function(b){if(b.textContent===correct)b.classList.add("correct");});
+    if(right){
+      score++;
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      missed.push(q);
+      optsEl.querySelectorAll(".ubg-opt").forEach(function(b){
+        if(b.textContent===correct) b.classList.add("correct");
+      });
     }
     speak(q.it);
-    setTimeout(function(){questionIdx++; if(questionIdx>=queue.length) showResult(); else showQuestion();}, right?850:1500);
+    setTimeout(function(){
+      questionIdx++;
+      if(questionIdx>=queue.length) showResult();
+      else showQuestion();
+    }, right ? 850 : 1500);
   }
 
   function showResult(){
-    overlay.querySelector(".ubg-q-block").style.display="none";
-    resultEl.style.display=""; progFill.style.width="100%";
+    document.getElementById("ubgQBlock").style.display="none";
+    resultEl.style.display="flex";
+    progFill.style.width="100%";
     countEl.textContent=queue.length+" / "+queue.length;
     var pct=Math.round(score/queue.length*100);
-    overlay.querySelector(".ubg-pct").textContent=(pct>=80?"\uD83C\uDF89":pct>=50?"\uD83D\uDE42":"\uD83D\uDE05")+" "+pct+"%";
-    overlay.querySelector(".ubg-score").textContent=score+" / "+queue.length;
-    overlay.querySelector(".ubg-retry").style.display=missed.length?"":"none";
+    var em=pct>=80?"\uD83C\uDF89":pct>=50?"\uD83D\uDE42":"\uD83D\uDE05";
+    document.getElementById("ubgPct").textContent=em+" "+pct+"%";
+    document.getElementById("ubgScore").textContent=score+" / "+queue.length;
+    document.getElementById("ubgRetry").style.display=missed.length?"":"none";
     if(window.speechSynthesis) window.speechSynthesis.cancel();
   }
 
-  function init(){
-    document.querySelectorAll(".vsec[id]").forEach(function(sec){
-      getVocab(sec).forEach(function(v){globalVocab.push(v);});
-    });
-    document.querySelectorAll(".vsec[id]").forEach(function(sec){
-      var v=getVocab(sec); if(v.length<4) return;
-      var head=sec.querySelector(".vsec-head"); if(!head) return;
-      var btn=document.createElement("button");
-      btn.className="ubg-btn"; btn.textContent="\uD83D\uDCDD \u00dcben";
-      btn.addEventListener("click",function(e){e.stopPropagation();openUbung(sec);});
-      head.appendChild(btn);
-    });
-
-    overlay=document.createElement("div");
-    overlay.className="ubg-overlay";
-    overlay.innerHTML="<div class="ubg-modal">\n  <div class="ubg-head">\n    <div class="ubg-title">&#x1F4DD; <span class="ubg-sec"></span></div>\n    <button class="ubg-close" aria-label="Schlie&szlig;en">&times;</button>\n  </div>\n  <div class="ubg-dir">\n    <button class="ubg-dir-btn active" data-dir="it2de">&#x1F1EE;&#x1F1F9; &rarr; &#x1F1E9;&#x1F1EA;</button>\n    <button class="ubg-dir-btn" data-dir="de2it">&#x1F1E9;&#x1F1EA; &rarr; &#x1F1EE;&#x1F1F9;</button>\n  </div>\n  <div class="ubg-prog-wrap">\n    <div class="ubg-prog"><div class="ubg-prog-fill"></div></div>\n    <span class="ubg-count">1 / 10</span>\n  </div>\n  <div class="ubg-q-block">\n    <div class="ubg-q-lbl"></div>\n    <div class="ubg-q"></div>\n    <div class="ubg-opts"></div>\n  </div>\n  <div class="ubg-result" style="display:none">\n    <div class="ubg-pct"></div>\n    <div class="ubg-score-wrap">Richtig: <b class="ubg-score"></b></div>\n    <div class="ubg-btns">\n      <button class="btn ubg-again">&#x1F504; Nochmal</button>\n      <button class="btn ubg-retry">&#x274C; Nur Fehler &uuml;ben</button>\n    </div>\n  </div>\n</div>";
-    document.body.appendChild(overlay);
-
-    progFill=overlay.querySelector(".ubg-prog-fill");
-    countEl=overlay.querySelector(".ubg-count");
-    qLbl=overlay.querySelector(".ubg-q-lbl");
-    qEl=overlay.querySelector(".ubg-q");
-    optsEl=overlay.querySelector(".ubg-opts");
-    resultEl=overlay.querySelector(".ubg-result");
-    secEl=overlay.querySelector(".ubg-sec");
-
-    overlay.addEventListener("click",function(e){if(e.target===overlay)closeUbung();});
-    overlay.querySelector(".ubg-close").addEventListener("click",closeUbung);
-    document.addEventListener("keydown",function(e){if(e.key==="Escape")closeUbung();});
-
-    overlay.querySelectorAll(".ubg-dir-btn").forEach(function(b){
-      b.addEventListener("click",function(){
-        direction=b.getAttribute("data-dir");
-        overlay.querySelectorAll(".ubg-dir-btn").forEach(function(x){x.classList.toggle("active",x===b);});
-        startRound(false);
-      });
-    });
-    overlay.querySelector(".ubg-again").addEventListener("click",function(){startRound(false);});
-    overlay.querySelector(".ubg-retry").addEventListener("click",function(){startRound(true);});
+  /* Starten wenn DOM fertig */
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
   }
 
-  if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",init);}else{init();}
 })();
 </script>
 </body>
