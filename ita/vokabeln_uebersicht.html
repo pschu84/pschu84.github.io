@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due &mdash; Vokabeln im Alltag</title>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=fraunces:400,600,700,900|dm-sans:400,500,600,700" rel="stylesheet">
+<style>
+/* ============================================================
+   DON DUE — VOKABELN IM ALLTAG
+   Eigenständige Seite, eigenes Design-System (kein style.css nötig)
+   ============================================================ */
+
+:root{
+  --ink:#2a2320; --ink-soft:#6b5d54; --ink-faint:#a59689;
+  --paper:#faf6ee; --paper-2:#fffdf8; --paper-3:#f3ebdd;
+  --line:#e6dccb; --line-strong:#d8cbb4;
+  --shadow:0 4px 0 rgba(42,35,32,.12);
+  --shadow-lg:0 10px 30px rgba(42,35,32,.13);
+  --r-sm:8px; --r-md:14px; --r-lg:22px; --r-xl:30px;
+  --f-display:'Fraunces',Georgia,serif;
+  --f-body:'DM Sans',system-ui,sans-serif;
+  /* aktuelle Akzentfarbe (pro Sektion überschrieben) */
+  --acc:#e8833a; --acc-soft:#fdeede; --acc-deep:#a9531c;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--f-body); line-height:1.55;
+  -webkit-text-size-adjust:100%;
+}
+h1,h2,h3,h4{font-family:var(--f-display); line-height:1.15; margin:0;}
+a{color:inherit;}
+
+/* sanfter Hintergrund-Verlauf */
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 8%, #fff4e6 0, transparent 38%),
+    radial-gradient(circle at 88% 4%, #eaf3ff 0, transparent 34%),
+    radial-gradient(circle at 80% 92%, #eafaf1 0, transparent 40%);
+}
+
+.container{max-width:1080px; margin:0 auto; padding:0 1.1rem 4rem;}
+
+/* ---------- TOPBAR ---------- */
+.topbar{
+  position:sticky; top:0; z-index:60;
+  background:rgba(255,253,248,.86); backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--ink);
+  display:flex; align-items:center; gap:.8rem;
+  padding:.55rem 1.1rem; flex-wrap:wrap;
+}
+.brand{
+  display:flex; align-items:center; gap:.45rem;
+  font-family:var(--f-display); font-weight:900; font-size:1.15rem;
+  text-decoration:none; color:var(--ink); white-space:nowrap;
+}
+.brand-flag{font-size:1.3rem;}
+.topbar-search{
+  flex:1 1 200px; min-width:140px; position:relative;
+}
+.topbar-search input{
+  width:100%; font-family:var(--f-body); font-size:.9rem;
+  padding:.42rem .7rem .42rem 2rem; border:2px solid var(--ink);
+  border-radius:99px; background:var(--paper-2); color:var(--ink);
+  outline:none;
+}
+.topbar-search input:focus{box-shadow:var(--shadow);}
+.topbar-search::before{
+  content:"🔍"; position:absolute; left:.7rem; top:50%;
+  transform:translateY(-50%); font-size:.85rem; pointer-events:none;
+}
+.lern-toggle{
+  display:inline-flex; align-items:center; gap:.45rem;
+  font-size:.82rem; font-weight:600; cursor:pointer; user-select:none;
+  border:2px solid var(--ink); border-radius:99px;
+  padding:.32rem .7rem; background:var(--paper-2); white-space:nowrap;
+}
+.lern-toggle .dot{
+  width:30px; height:17px; border-radius:99px; background:var(--line-strong);
+  position:relative; transition:background .2s;
+}
+.lern-toggle .dot::after{
+  content:""; position:absolute; top:2px; left:2px; width:13px; height:13px;
+  border-radius:50%; background:#fff; transition:transform .2s;
+  box-shadow:0 1px 2px rgba(0,0,0,.3);
+}
+body.lernmodus .lern-toggle .dot{background:#2a9d8f;}
+body.lernmodus .lern-toggle .dot::after{transform:translateX(13px);}
+
+/* ---------- HEADER ---------- */
+.page-head{
+  text-align:center; padding:2.6rem 1rem 1.4rem;
+}
+.page-head .kicker{
+  display:inline-block; font-weight:700; font-size:.72rem;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);
+  background:var(--paper-3); border:1.5px solid var(--line-strong);
+  padding:.2rem .7rem; border-radius:99px; margin-bottom:.9rem;
+}
+.page-head h1{
+  font-size:clamp(2rem,6vw,3.1rem); font-weight:900; letter-spacing:-.02em;
+}
+.page-head h1 .it{color:#2a9d8f;}
+.page-head p{
+  max-width:560px; margin:.7rem auto 0; color:var(--ink-soft); font-size:1.02rem;
+}
+.head-hint{
+  margin-top:1rem; font-size:.8rem; color:var(--ink-faint);
+}
+.head-hint b{color:var(--ink-soft);}
+
+/* ---------- INHALTSVERZEICHNIS ---------- */
+.toc{
+  background:var(--paper-2); border:2px solid var(--ink);
+  border-radius:var(--r-lg); box-shadow:var(--shadow);
+  padding:1.2rem 1.3rem; margin:0 0 2.4rem;
+}
+.toc h2{
+  font-size:.78rem; text-transform:uppercase; letter-spacing:.1em;
+  color:var(--ink-soft); margin:0 0 .9rem; font-weight:700;
+}
+.toc-group{margin-bottom:1rem;}
+.toc-group:last-child{margin-bottom:0;}
+.toc-group > span{
+  display:block; font-weight:700; font-size:.74rem; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--acc-deep); margin:0 0 .35rem;
+}
+.toc-group--num{--acc-deep:#a9531c;}
+.toc-links{
+  display:flex; flex-wrap:wrap; gap:.4rem;
+}
+.toc-links a{
+  text-decoration:none; font-size:.84rem; font-weight:500; color:var(--ink);
+  background:var(--paper-3); border:1.5px solid var(--line-strong);
+  border-radius:99px; padding:.22rem .65rem; transition:all .15s;
+  display:inline-flex; align-items:center; gap:.3rem;
+}
+.toc-links a:hover{background:var(--ink); color:var(--paper-2); transform:translateY(-1px);}
+.toc-links a.active{background:var(--ink); color:var(--paper-2);}
+
+/* ---------- SEKTION (Basis) ---------- */
+.vsec{
+  margin-bottom:2.8rem; scroll-margin-top:5rem;
+  --acc:#e8833a; --acc-soft:#fdeede; --acc-deep:#a9531c;
+}
+.vsec-head{
+  display:flex; align-items:center; gap:.7rem; margin-bottom:1.1rem;
+  border-bottom:3px solid var(--acc); padding-bottom:.5rem;
+}
+.vsec-icon{
+  font-size:1.5rem; line-height:1; width:2.6rem; height:2.6rem;
+  display:grid; place-items:center; flex-shrink:0;
+  background:var(--acc-soft); border:2px solid var(--acc);
+  border-radius:14px;
+}
+.vsec-head h2{font-size:clamp(1.25rem,3.5vw,1.6rem); font-weight:900;}
+.vsec-head .lvl{
+  margin-left:auto; font-size:.68rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--acc-deep); background:var(--acc-soft);
+  border:1.5px solid var(--acc); border-radius:99px; padding:.16rem .55rem;
+  white-space:nowrap;
+}
+.vsec-intro{
+  color:var(--ink-soft); font-size:.93rem; margin:-.4rem 0 1.1rem;
+  max-width:680px;
+}
+.card{
+  background:var(--paper-2); border:2px solid var(--ink);
+  border-radius:var(--r-lg); box-shadow:var(--shadow); padding:1.3rem;
+}
+
+/* ---------- VOKABEL-TOKEN ---------- */
+.voc{
+  cursor:pointer; position:relative; transition:color .12s;
+  border-radius:6px;
+}
+.voc .it{font-weight:700; color:var(--ink);}
+.voc .de{color:var(--ink-soft);}
+.voc:hover .it{color:var(--acc-deep);}
+.voc.speaking{background:var(--acc-soft);}
+/* Lernmodus: deutsche Bedeutung ausblenden */
+body.lernmodus .voc .de{
+  background:var(--line); color:transparent; border-radius:4px;
+  box-shadow:inset 0 0 0 1px var(--line-strong);
+}
+body.lernmodus .voc.revealed .de{
+  background:transparent; color:var(--ink-soft); box-shadow:none;
+}
+.spk{font-size:.7em; opacity:.45; margin-left:.15em;}
+.voc:hover .spk{opacity:.9;}
+
+/* ---------- Hilfsklassen ---------- */
+.muted{color:var(--ink-soft);}
+.center{text-align:center;}
+.grid{display:grid; gap:.8rem;}
+.note{
+  background:var(--acc-soft); border-left:4px solid var(--acc);
+  border-radius:0 var(--r-sm) var(--r-sm) 0; padding:.5rem .85rem;
+  font-size:.84rem; color:var(--acc-deep); margin-top:1rem;
+}
+.backlinks{
+  border-top:2px solid var(--line); padding-top:1.4rem; margin-top:1rem;
+  display:flex; flex-wrap:wrap; gap:.6rem;
+}
+.btn{
+  text-decoration:none; font-weight:600; font-size:.9rem;
+  border:2px solid var(--ink); border-radius:99px; padding:.45rem 1rem;
+  background:var(--paper-2); color:var(--ink); transition:all .15s;
+}
+.btn:hover{background:var(--ink); color:var(--paper-2);}
+
+.search-hidden{display:none !important;}
+.search-hit{outline:3px solid var(--acc); outline-offset:3px; border-radius:8px;}
+
+@media(max-width:600px){
+  .topbar{gap:.5rem;}
+  .brand span.brand-txt{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span><span class="brand-txt">Don Due</span></a>
+  <div class="topbar-search">
+    <input id="searchInput" type="search" placeholder="Vokabel suchen…" autocomplete="off">
+  </div>
+  <label class="lern-toggle" id="lernToggle">
+    <span class="dot"></span><span>Lernmodus</span>
+  </label>
+</div>
+
+<div class="container">
+
+  <header class="page-head">
+    <span class="kicker">Vocabolario &middot; A1 – B2</span>
+    <h1>🗺️ <span class="it">Le parole</span> di ogni giorno</h1>
+    <p>Über 600 Alltagswörter &mdash; nicht als Liste, sondern dort, wo sie hingehören: am Körper, im Raum, auf der Skala, in der Stadt.</p>
+    <div class="head-hint">👆 <b>Tippe ein Wort an</b>, um es zu hören &middot; 🎓 <b>Lernmodus</b> blendet die Übersetzung aus</div>
+  </header>
+
+  <!-- INHALTSVERZEICHNIS -->
+  <nav class="toc" id="toc">
+    <h2>Inhalt &mdash; 30 Themenräume</h2>
+
+    <div class="toc-group">
+      <span>① Zahlen &amp; Zeit</span>
+      <div class="toc-links">
+        <a href="#numeri">🔢 Zahlen</a>
+        <a href="#tempo">🕐 Tage, Monate &amp; Uhrzeit</a>
+      </div>
+    </div>
+
+    <div class="toc-group">
+      <span>② Eigenschaften &amp; Mengen</span>
+      <div class="toc-links">
+        <a href="#frequenza">📊 Häufigkeit</a>
+        <a href="#intensita">🌡️ Intensität</a>
+        <a href="#aggettivi">↔️ Gegensatz-Adjektive</a>
+        <a href="#colori">🎨 Farben</a>
+        <a href="#emozioni">😊 Gefühle</a>
+      </div>
+    </div>
+
+    <div class="toc-group">
+      <span>③ Verben in Aktion</span>
+      <div class="toc-links">
+        <a href="#movimento">🏃 Bewegung</a>
+        <a href="#sensi">👁️ Sinne</a>
+        <a href="#comunicazione">💬 Sprechen</a>
+        <a href="#quotidiano">☀️ Tagesablauf</a>
+      </div>
+    </div>
+
+    <div class="toc-group">
+      <span>④ Stadt &amp; Wege</span>
+      <div class="toc-links">
+        <a href="#strada">🗺️ Wegbeschreibung</a>
+        <a href="#negozi">🏪 Läden</a>
+        <a href="#trasporti">🚌 Verkehrsmittel</a>
+      </div>
+    </div>
+
+    <div class="toc-group">
+      <span>⑤ Zu Hause</span>
+      <div class="toc-links">
+        <a href="#cucina">🍳 Küche</a>
+        <a href="#soggiorno">🛋️ Wohnzimmer</a>
+        <a href="#bagno">🛁 Bad</a>
+        <a href="#ufficio">💻 Schreibtisch</a>
+      </div>
+    </div>
+
+    <div class="toc-group">
+      <span>⑥ Essen &amp; Welt</span>
+      <div class="toc-links">
+        <a href="#cibo">🍝 Essen &amp; Trinken</a>
+        <a href="#animali">🐘 Tiere</a>
+        <a href="#natura">🌳 Natur</a>
+        <a href="#meteo">⛅ Wetter</a>
+      </div>
+    </div>
+
+    <div class="toc-group">
+      <span>⑦ Mensch &amp; Leben</span>
+      <div class="toc-links">
+        <a href="#corpo">🙋 Körper</a>
+        <a href="#abbigliamento">👕 Kleidung</a>
+        <a href="#famiglia">👨‍👩‍👧 Familie</a>
+        <a href="#professioni">👨‍⚕️ Berufe</a>
+        <a href="#salute">🤒 Gesundheit</a>
+        <a href="#viaggio">✈️ Reise</a>
+      </div>
+    </div>
+
+    <div class="toc-group">
+      <span>⑧ Sprache &amp; Lage</span>
+      <div class="toc-links">
+        <a href="#saluti">👋 Begrüßung &amp; Floskeln</a>
+        <a href="#preposizioni">📍 Präpositionen</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== SEKTIONEN WERDEN HIER ANGEHÄNGT ========== -->
+
+  <!-- ============ 1. NUMERI ============ -->
+  <style>
+  #numeri{--acc:#e8833a;--acc-soft:#fdeede;--acc-deep:#a9531c;}
+  .num-row{display:flex;flex-wrap:wrap;gap:.4rem;}
+  .num-tile{
+    min-width:62px;flex:0 0 auto;text-align:center;padding:.45rem .3rem;
+    background:var(--paper-2);border:2px solid var(--ink);border-radius:12px;
+    box-shadow:var(--shadow);cursor:pointer;transition:transform .12s;
+  }
+  .num-tile:hover{transform:translateY(-2px);}
+  .num-tile .n{font-family:var(--f-display);font-weight:900;font-size:1.15rem;color:var(--acc-deep);}
+  .num-tile .w{display:block;font-size:.74rem;font-weight:600;margin-top:.1rem;}
+  .num-sub{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin:1.3rem 0 .55rem;}
+  .num-grow{display:flex;flex-direction:column;gap:.45rem;margin-top:.4rem;}
+  .num-grow .bar{
+    display:flex;align-items:center;gap:.7rem;
+  }
+  .num-grow .fill{
+    height:26px;border-radius:7px;background:linear-gradient(90deg,#f6b26b,#e8833a);
+    border:2px solid var(--ink);display:flex;align-items:center;padding:0 .5rem;
+    color:#fff;font-weight:700;font-size:.8rem;white-space:nowrap;min-width:46px;
+    box-shadow:var(--shadow);
+  }
+  .num-grow .lab{font-size:.84rem;font-weight:600;}
+  .num-grow .lab b{color:var(--acc-deep);}
+  .podium{display:flex;align-items:flex-end;justify-content:center;gap:.5rem;margin-top:.5rem;flex-wrap:wrap;}
+  .podium .step{
+    background:var(--acc-soft);border:2px solid var(--ink);border-radius:10px 10px 0 0;
+    width:74px;text-align:center;padding:.4rem .2rem;cursor:pointer;
+  }
+  .podium .step .o{font-family:var(--f-display);font-weight:900;color:var(--acc-deep);font-size:1.05rem;}
+  .podium .step .ow{display:block;font-size:.7rem;font-weight:600;margin-top:.1rem;}
+  </style>
+  <section class="vsec" id="numeri">
+    <div class="vsec-head">
+      <span class="vsec-icon">🔢</span>
+      <h2>I numeri &mdash; Zahlen</h2>
+      <span class="lvl">A1</span>
+    </div>
+    <p class="vsec-intro">Von <em>zero</em> bis zur Milliarde. Sieh, wie die großen Zahlen wachsen.</p>
+    <div class="card">
+      <div class="num-sub">0 – 20</div>
+      <div class="num-row">
+        <span class="num-tile voc" data-it="zero"><span class="n">0</span><span class="w de">zero</span></span>
+        <span class="num-tile voc" data-it="uno"><span class="n">1</span><span class="w de">uno</span></span>
+        <span class="num-tile voc" data-it="due"><span class="n">2</span><span class="w de">due</span></span>
+        <span class="num-tile voc" data-it="tre"><span class="n">3</span><span class="w de">tre</span></span>
+        <span class="num-tile voc" data-it="quattro"><span class="n">4</span><span class="w de">quattro</span></span>
+        <span class="num-tile voc" data-it="cinque"><span class="n">5</span><span class="w de">cinque</span></span>
+        <span class="num-tile voc" data-it="sei"><span class="n">6</span><span class="w de">sei</span></span>
+        <span class="num-tile voc" data-it="sette"><span class="n">7</span><span class="w de">sette</span></span>
+        <span class="num-tile voc" data-it="otto"><span class="n">8</span><span class="w de">otto</span></span>
+        <span class="num-tile voc" data-it="nove"><span class="n">9</span><span class="w de">nove</span></span>
+        <span class="num-tile voc" data-it="dieci"><span class="n">10</span><span class="w de">dieci</span></span>
+        <span class="num-tile voc" data-it="undici"><span class="n">11</span><span class="w de">undici</span></span>
+        <span class="num-tile voc" data-it="dodici"><span class="n">12</span><span class="w de">dodici</span></span>
+        <span class="num-tile voc" data-it="tredici"><span class="n">13</span><span class="w de">tredici</span></span>
+        <span class="num-tile voc" data-it="quattordici"><span class="n">14</span><span class="w de">quattordici</span></span>
+        <span class="num-tile voc" data-it="quindici"><span class="n">15</span><span class="w de">quindici</span></span>
+        <span class="num-tile voc" data-it="sedici"><span class="n">16</span><span class="w de">sedici</span></span>
+        <span class="num-tile voc" data-it="diciassette"><span class="n">17</span><span class="w de">diciassette</span></span>
+        <span class="num-tile voc" data-it="diciotto"><span class="n">18</span><span class="w de">diciotto</span></span>
+        <span class="num-tile voc" data-it="diciannove"><span class="n">19</span><span class="w de">diciannove</span></span>
+        <span class="num-tile voc" data-it="venti"><span class="n">20</span><span class="w de">venti</span></span>
+      </div>
+
+      <div class="num-sub">Die Zehner</div>
+      <div class="num-row">
+        <span class="num-tile voc" data-it="trenta"><span class="n">30</span><span class="w de">trenta</span></span>
+        <span class="num-tile voc" data-it="quaranta"><span class="n">40</span><span class="w de">quaranta</span></span>
+        <span class="num-tile voc" data-it="cinquanta"><span class="n">50</span><span class="w de">cinquanta</span></span>
+        <span class="num-tile voc" data-it="sessanta"><span class="n">60</span><span class="w de">sessanta</span></span>
+        <span class="num-tile voc" data-it="settanta"><span class="n">70</span><span class="w de">settanta</span></span>
+        <span class="num-tile voc" data-it="ottanta"><span class="n">80</span><span class="w de">ottanta</span></span>
+        <span class="num-tile voc" data-it="novanta"><span class="n">90</span><span class="w de">novanta</span></span>
+      </div>
+      <div class="note">Zusammensetzen: <b>21 = ventuno</b>, <b>38 = trentotto</b> (vor <em>uno/otto</em> fällt der Endvokal weg), sonst <b>45 = quarantacinque</b>.</div>
+
+      <div class="num-sub">Große Zahlen &mdash; sie wachsen!</div>
+      <div class="num-grow">
+        <div class="bar"><div class="fill voc" data-it="cento" style="width:46px;">100</div><span class="lab voc" data-it="cento"><b class="it">cento</b> <span class="de">hundert</span></span></div>
+        <div class="bar"><div class="fill voc" data-it="mille" style="width:80px;">1.000</div><span class="lab voc" data-it="mille"><b class="it">mille</b> <span class="de">tausend</span></span></div>
+        <div class="bar"><div class="fill voc" data-it="diecimila" style="width:120px;">10.000</div><span class="lab voc" data-it="diecimila"><b class="it">diecimila</b> <span class="de">zehntausend</span></span></div>
+        <div class="bar"><div class="fill voc" data-it="centomila" style="width:170px;">100.000</div><span class="lab voc" data-it="centomila"><b class="it">centomila</b> <span class="de">hunderttausend</span></span></div>
+        <div class="bar"><div class="fill voc" data-it="un milione" style="width:240px;">1.000.000</div><span class="lab voc" data-it="un milione"><b class="it">un milione</b> <span class="de">eine Million</span></span></div>
+        <div class="bar"><div class="fill voc" data-it="un miliardo" style="width:340px;">1.000.000.000</div><span class="lab voc" data-it="un miliardo"><b class="it">un miliardo</b> <span class="de">eine Milliarde</span></span></div>
+      </div>
+      <div class="note">Plural: <b>due milioni</b>, <b>tre miliardi</b>. <em>mille</em> wird zu <b>mila</b>: duemila, diecimila.</div>
+
+      <div class="num-sub">Ordnungszahlen &amp; Brüche</div>
+      <div class="podium">
+        <span class="step voc" data-it="terzo" style="height:60px;"><span class="o">3°</span><span class="ow de">terzo</span></span>
+        <span class="step voc" data-it="primo" style="height:92px;"><span class="o">1°</span><span class="ow de">primo</span></span>
+        <span class="step voc" data-it="secondo" style="height:76px;"><span class="o">2°</span><span class="ow de">secondo</span></span>
+      </div>
+      <div class="num-row" style="margin-top:.6rem;">
+        <span class="num-tile voc" data-it="quarto"><span class="n">4°</span><span class="w de">quarto</span></span>
+        <span class="num-tile voc" data-it="quinto"><span class="n">5°</span><span class="w de">quinto</span></span>
+        <span class="num-tile voc" data-it="sesto"><span class="n">6°</span><span class="w de">sesto</span></span>
+        <span class="num-tile voc" data-it="settimo"><span class="n">7°</span><span class="w de">settimo</span></span>
+        <span class="num-tile voc" data-it="ottavo"><span class="n">8°</span><span class="w de">ottavo</span></span>
+        <span class="num-tile voc" data-it="nono"><span class="n">9°</span><span class="w de">nono</span></span>
+        <span class="num-tile voc" data-it="decimo"><span class="n">10°</span><span class="w de">decimo</span></span>
+        <span class="num-tile voc" data-it="mezzo"><span class="n">½</span><span class="w de">mezzo</span></span>
+        <span class="num-tile voc" data-it="un terzo"><span class="n">⅓</span><span class="w de">un terzo</span></span>
+        <span class="num-tile voc" data-it="un quarto"><span class="n">¼</span><span class="w de">un quarto</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. TEMPO ============ -->
+  <style>
+  #tempo{--acc:#5b8def;--acc-soft:#e9f0ff;--acc-deep:#2f5fc4;}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;}
+  .day{
+    text-align:center;padding:.55rem .2rem;border:2px solid var(--ink);border-radius:11px;
+    background:var(--paper-2);box-shadow:var(--shadow);cursor:pointer;transition:transform .12s;
+  }
+  .day:hover{transform:translateY(-2px);}
+  .day .ab{font-family:var(--f-display);font-weight:900;font-size:1.1rem;color:var(--acc-deep);}
+  .day .full{display:block;font-size:.7rem;font-weight:600;margin-top:.15rem;}
+  .day.we{background:#fff4e6;border-color:#e8833a;}
+  .day.we .ab{color:#a9531c;}
+  .seasons{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin-top:.5rem;}
+  .season{border:2px solid var(--ink);border-radius:14px;padding:.7rem .8rem;box-shadow:var(--shadow);}
+  .season h4{font-size:.95rem;font-weight:800;display:flex;align-items:center;gap:.4rem;margin-bottom:.45rem;}
+  .season .mesi{display:flex;flex-wrap:wrap;gap:.3rem;}
+  .season .mese{font-size:.78rem;font-weight:600;background:rgba(255,255,255,.6);border:1.5px solid rgba(0,0,0,.18);border-radius:99px;padding:.15rem .5rem;cursor:pointer;}
+  .s-pri{background:#eafbe7;} .s-pri h4{color:#3a7d34;}
+  .s-est{background:#fff4d6;} .s-est h4{color:#b8860b;}
+  .s-aut{background:#fbe9d7;} .s-aut h4{color:#b05a1c;}
+  .s-inv{background:#e6f3fb;} .s-inv h4{color:#2f6f9e;}
+  .clock-wrap{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:center;margin-top:.5rem;}
+  .clock{flex:0 0 auto;}
+  .ore{flex:1 1 240px;display:flex;flex-direction:column;gap:.3rem;}
+  .ore .row{font-size:.86rem;}
+  .ore .row b{color:var(--acc-deep);}
+  .timeline{
+    display:flex;align-items:stretch;gap:0;margin-top:.6rem;border:2px solid var(--ink);
+    border-radius:12px;overflow:hidden;box-shadow:var(--shadow);
+  }
+  .timeline .tl{flex:1;text-align:center;padding:.6rem .3rem;font-size:.82rem;font-weight:600;cursor:pointer;border-right:2px solid var(--ink);}
+  .timeline .tl:last-child{border-right:none;}
+  .timeline .tl b{display:block;font-family:var(--f-display);color:var(--acc-deep);font-size:.95rem;}
+  .timeline .tl.now{background:var(--acc-soft);}
+  .tl-extra{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem;}
+  .tl-extra .voc{font-size:.82rem;background:var(--paper-3);border:1.5px solid var(--line-strong);border-radius:99px;padding:.18rem .55rem;}
+  </style>
+  <section class="vsec" id="tempo">
+    <div class="vsec-head">
+      <span class="vsec-icon">🕐</span>
+      <h2>Il tempo &mdash; Tage, Monate &amp; Uhrzeit</h2>
+      <span class="lvl">A1</span>
+    </div>
+    <p class="vsec-intro">Die Woche im Streifen, das Jahr im Kreislauf der Jahreszeiten, die Uhr zum Anfassen.</p>
+
+    <div class="card">
+      <div class="num-sub">I giorni della settimana</div>
+      <div class="week">
+        <span class="day voc" data-it="lunedì"><span class="ab">lun</span><span class="full de">lunedì &middot; Mo</span></span>
+        <span class="day voc" data-it="martedì"><span class="ab">mar</span><span class="full de">martedì &middot; Di</span></span>
+        <span class="day voc" data-it="mercoledì"><span class="ab">mer</span><span class="full de">mercoledì &middot; Mi</span></span>
+        <span class="day voc" data-it="giovedì"><span class="ab">gio</span><span class="full de">giovedì &middot; Do</span></span>
+        <span class="day voc" data-it="venerdì"><span class="ab">ven</span><span class="full de">venerdì &middot; Fr</span></span>
+        <span class="day we voc" data-it="sabato"><span class="ab">sab</span><span class="full de">sabato &middot; Sa</span></span>
+        <span class="day we voc" data-it="domenica"><span class="ab">dom</span><span class="full de">domenica &middot; So</span></span>
+      </div>
+
+      <div class="num-sub">I mesi &amp; le stagioni</div>
+      <div class="seasons">
+        <div class="season s-pri">
+          <h4>🌸 <span class="voc" data-it="primavera"><span class="it">primavera</span> <span class="de">Frühling</span></span></h4>
+          <div class="mesi">
+            <span class="mese voc" data-it="marzo">marzo</span>
+            <span class="mese voc" data-it="aprile">aprile</span>
+            <span class="mese voc" data-it="maggio">maggio</span>
+          </div>
+        </div>
+        <div class="season s-est">
+          <h4>☀️ <span class="voc" data-it="estate"><span class="it">estate</span> <span class="de">Sommer</span></span></h4>
+          <div class="mesi">
+            <span class="mese voc" data-it="giugno">giugno</span>
+            <span class="mese voc" data-it="luglio">luglio</span>
+            <span class="mese voc" data-it="agosto">agosto</span>
+          </div>
+        </div>
+        <div class="season s-aut">
+          <h4>🍂 <span class="voc" data-it="autunno"><span class="it">autunno</span> <span class="de">Herbst</span></span></h4>
+          <div class="mesi">
+            <span class="mese voc" data-it="settembre">settembre</span>
+            <span class="mese voc" data-it="ottobre">ottobre</span>
+            <span class="mese voc" data-it="novembre">novembre</span>
+          </div>
+        </div>
+        <div class="season s-inv">
+          <h4>❄️ <span class="voc" data-it="inverno"><span class="it">inverno</span> <span class="de">Winter</span></span></h4>
+          <div class="mesi">
+            <span class="mese voc" data-it="dicembre">dicembre</span>
+            <span class="mese voc" data-it="gennaio">gennaio</span>
+            <span class="mese voc" data-it="febbraio">febbraio</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="num-sub">Che ore sono? &mdash; Wie spät ist es?</div>
+      <div class="clock-wrap">
+        <svg class="clock" width="130" height="130" viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="60" fill="#fffdf8" stroke="#2a2320" stroke-width="3"/>
+          <g stroke="#2a2320" stroke-width="2">
+            <line x1="65" y1="9" x2="65" y2="18"/><line x1="65" y1="112" x2="65" y2="121"/>
+            <line x1="9" y1="65" x2="18" y2="65"/><line x1="112" y1="65" x2="121" y2="65"/>
+          </g>
+          <line x1="65" y1="65" x2="65" y2="32" stroke="#2f5fc4" stroke-width="4" stroke-linecap="round"/>
+          <line x1="65" y1="65" x2="95" y2="65" stroke="#e8833a" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="65" cy="65" r="4" fill="#2a2320"/>
+        </svg>
+        <div class="ore">
+          <span class="row voc" data-it="È l'una"><b>È l'una.</b> <span class="de">Es ist ein Uhr.</span></span>
+          <span class="row voc" data-it="Sono le due"><b>Sono le due.</b> <span class="de">Es ist zwei Uhr.</span></span>
+          <span class="row voc" data-it="Sono le tre e un quarto"><b>… e un quarto.</b> <span class="de">Viertel nach.</span></span>
+          <span class="row voc" data-it="Sono le tre e mezza"><b>… e mezza.</b> <span class="de">halb (nach).</span></span>
+          <span class="row voc" data-it="Sono le quattro meno un quarto"><b>… meno un quarto.</b> <span class="de">Viertel vor.</span></span>
+          <span class="row voc" data-it="mezzogiorno"><b>mezzogiorno</b> <span class="de">Mittag</span> &middot; <b>mezzanotte</b> <span class="de">Mitternacht</span></span>
+        </div>
+      </div>
+
+      <div class="num-sub">Auf dem Zeitstrahl</div>
+      <div class="timeline">
+        <span class="tl voc" data-it="l'altro ieri"><b>l'altro ieri</b><span class="de">vorgestern</span></span>
+        <span class="tl voc" data-it="ieri"><b>ieri</b><span class="de">gestern</span></span>
+        <span class="tl now voc" data-it="oggi"><b>oggi</b><span class="de">heute</span></span>
+        <span class="tl voc" data-it="domani"><b>domani</b><span class="de">morgen</span></span>
+        <span class="tl voc" data-it="dopodomani"><b>dopodomani</b><span class="de">übermorgen</span></span>
+      </div>
+      <div class="tl-extra">
+        <span class="voc" data-it="adesso"><span class="it">adesso / ora</span> <span class="de">jetzt</span></span>
+        <span class="voc" data-it="questa settimana"><span class="it">questa settimana</span> <span class="de">diese Woche</span></span>
+        <span class="voc" data-it="il mese scorso"><span class="it">il mese scorso</span> <span class="de">letzten Monat</span></span>
+        <span class="voc" data-it="l'anno prossimo"><span class="it">l'anno prossimo</span> <span class="de">nächstes Jahr</span></span>
+        <span class="voc" data-it="due giorni fa"><span class="it">… fa</span> <span class="de">vor …</span></span>
+        <span class="voc" data-it="tra due giorni"><span class="it">tra …</span> <span class="de">in … (Zukunft)</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. FREQUENZA ============ -->
+  <style>
+  #frequenza{--acc:#2a9d8f;--acc-soft:#e3f5f2;--acc-deep:#1d7468;}
+  .ray{position:relative;margin:2.6rem .5rem 1rem;height:14px;border-radius:99px;
+    background:linear-gradient(90deg,#e63946 0%,#f4a261 30%,#e9c46a 50%,#a8d08d 72%,#2a9d8f 100%);
+    border:2px solid var(--ink);}
+  .ray::before,.ray::after{position:absolute;top:50%;transform:translateY(-50%);font-size:1.3rem;}
+  .ray::before{content:"🚫";left:-1.7rem;} .ray::after{content:"♾️";right:-1.7rem;}
+  .pin{position:absolute;top:50%;transform:translate(-50%,-50%);}
+  .pin .dot{width:15px;height:15px;border-radius:50%;background:#fff;border:3px solid var(--ink);margin:0 auto;cursor:pointer;}
+  .pin .lab{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.76rem;font-weight:700;cursor:pointer;text-align:center;}
+  .pin.up .lab{bottom:18px;} .pin.down .lab{top:18px;}
+  .pin .lab .de{display:block;font-weight:500;color:var(--ink-soft);font-size:.7rem;}
+  </style>
+  <section class="vsec" id="frequenza">
+    <div class="vsec-head">
+      <span class="vsec-icon">📊</span>
+      <h2>Quanto spesso? &mdash; Häufigkeit</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Von <em>nie</em> bis <em>immer</em> &mdash; jedes Wort sitzt auf seiner Position der Skala.</p>
+    <div class="card">
+      <div class="ray">
+        <span class="pin up" style="left:2%;"><span class="lab voc" data-it="mai">mai<span class="de">nie</span></span><span class="dot voc" data-it="mai"></span></span>
+        <span class="pin down" style="left:16%;"><span class="dot voc" data-it="raramente"></span><span class="lab voc" data-it="raramente">raramente<span class="de">selten</span></span></span>
+        <span class="pin up" style="left:32%;"><span class="lab voc" data-it="qualche volta">qualche volta<span class="de">ab und zu</span></span><span class="dot voc" data-it="qualche volta"></span></span>
+        <span class="pin down" style="left:46%;"><span class="dot voc" data-it="a volte"></span><span class="lab voc" data-it="a volte">a volte<span class="de">manchmal</span></span></span>
+        <span class="pin up" style="left:60%;"><span class="lab voc" data-it="spesso">spesso<span class="de">oft</span></span><span class="dot voc" data-it="spesso"></span></span>
+        <span class="pin down" style="left:74%;"><span class="dot voc" data-it="di solito"></span><span class="lab voc" data-it="di solito">di solito<span class="de">normalerweise</span></span></span>
+        <span class="pin up" style="left:87%;"><span class="lab voc" data-it="quasi sempre">quasi sempre<span class="de">fast immer</span></span><span class="dot voc" data-it="quasi sempre"></span></span>
+        <span class="pin down" style="left:98%;"><span class="dot voc" data-it="sempre"></span><span class="lab voc" data-it="sempre">sempre<span class="de">immer</span></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. INTENSITÀ ============ -->
+  <style>
+  #intensita{--acc:#e74c3c;--acc-soft:#fdeae7;--acc-deep:#b03325;}
+  .thermo-wrap{display:flex;gap:1.4rem;align-items:flex-end;flex-wrap:wrap;}
+  .thermo{position:relative;width:54px;height:230px;flex:0 0 auto;margin:0 auto;}
+  .thermo .tube{position:absolute;left:50%;transform:translateX(-50%);top:0;width:22px;height:200px;
+    background:var(--paper-3);border:3px solid var(--ink);border-radius:99px;overflow:hidden;}
+  .thermo .merc{position:absolute;bottom:0;left:0;width:100%;
+    background:linear-gradient(0deg,#e74c3c,#f4a261);height:62%;}
+  .thermo .bulb{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:44px;height:44px;
+    background:#e74c3c;border:3px solid var(--ink);border-radius:50%;}
+  .thermo-scale{flex:1 1 220px;display:flex;flex-direction:column-reverse;gap:.18rem;}
+  .thermo-scale .lv{display:flex;align-items:center;gap:.6rem;font-size:.86rem;cursor:pointer;padding:.12rem .3rem;border-radius:7px;}
+  .thermo-scale .lv:hover{background:var(--acc-soft);}
+  .thermo-scale .lv .bx{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--ink);flex:0 0 auto;}
+  .thermo-scale .lv b{color:var(--acc-deep);}
+  </style>
+  <section class="vsec" id="intensita">
+    <div class="vsec-head">
+      <span class="vsec-icon">🌡️</span>
+      <h2>Quanto? &mdash; Intensität</h2>
+      <span class="lvl">A2</span>
+    </div>
+    <p class="vsec-intro">Wie stark? Das Thermometer steigt von <em>gar nicht</em> bis <em>zu viel</em>.</p>
+    <div class="card">
+      <div class="thermo-wrap">
+        <div class="thermo">
+          <div class="tube"><div class="merc"></div></div>
+          <div class="bulb"></div>
+        </div>
+        <div class="thermo-scale">
+          <span class="lv voc" data-it="per niente"><span class="bx" style="background:#cfe8e3;"></span><span><b>per niente</b> &mdash; <span class="de">gar nicht</span></span></span>
+          <span class="lv voc" data-it="poco"><span class="bx" style="background:#a8d0c9;"></span><span><b>poco</b> &mdash; <span class="de">wenig</span></span></span>
+          <span class="lv voc" data-it="abbastanza"><span class="bx" style="background:#e9c46a;"></span><span><b>abbastanza</b> &mdash; <span class="de">ziemlich / genug</span></span></span>
+          <span class="lv voc" data-it="piuttosto"><span class="bx" style="background:#f4a261;"></span><span><b>piuttosto</b> &mdash; <span class="de">recht / eher</span></span></span>
+          <span class="lv voc" data-it="molto"><span class="bx" style="background:#ee8959;"></span><span><b>molto</b> &mdash; <span class="de">sehr / viel</span></span></span>
+          <span class="lv voc" data-it="tantissimo"><span class="bx" style="background:#e95f43;"></span><span><b>tantissimo</b> &mdash; <span class="de">ganz viel</span></span></span>
+          <span class="lv voc" data-it="troppo"><span class="bx" style="background:#e74c3c;"></span><span><b>troppo</b> &mdash; <span class="de">zu viel</span></span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. AGGETTIVI (Gegensatzpaare) ============ -->
+  <style>
+  #aggettivi{--acc:#9b59b6;--acc-soft:#f3e8f8;--acc-deep:#6f3b87;}
+  .pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.8rem;}
+  .pair{background:var(--paper-2);border:2px solid var(--ink);border-radius:16px;box-shadow:var(--shadow);
+    padding:.7rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.3rem;}
+  .pair .side{text-align:center;}
+  .pair .viz{height:54px;display:flex;align-items:center;justify-content:center;margin-bottom:.3rem;font-size:2rem;}
+  .pair .word{cursor:pointer;font-size:.86rem;line-height:1.2;}
+  .pair .word .it{font-weight:700;display:block;color:var(--acc-deep);}
+  .pair .word .de{font-size:.74rem;}
+  .pair .vs{color:var(--ink-faint);font-weight:700;font-size:.9rem;}
+  /* CSS-Formen */
+  .sh-circle{border-radius:50%;background:#9b59b6;border:2.5px solid var(--ink);}
+  .big-c{width:46px;height:46px;} .small-c{width:20px;height:20px;}
+  .barH{background:#9b59b6;border:2.5px solid var(--ink);border-radius:4px;height:14px;}
+  .long-b{width:54px;} .short-b{width:20px;}
+  .barV{background:#9b59b6;border:2.5px solid var(--ink);border-radius:4px;width:14px;}
+  .tall-b{height:48px;} .low-b{height:18px;}
+  .wide-b{width:50px;height:30px;background:#9b59b6;border:2.5px solid var(--ink);border-radius:4px;}
+  .narrow-b{width:16px;height:30px;background:#9b59b6;border:2.5px solid var(--ink);border-radius:4px;}
+  .swatch{width:44px;height:44px;border-radius:8px;border:2.5px solid var(--ink);}
+  .glass{width:30px;height:46px;border:2.5px solid var(--ink);border-radius:4px 4px 9px 9px;position:relative;overflow:hidden;background:#fff;}
+  .glass .lvl{position:absolute;bottom:0;left:0;width:100%;background:#5b8def;}
+  .near-far{position:relative;width:70px;height:44px;}
+  .near-far .me{position:absolute;left:0;bottom:8px;font-size:1.1rem;}
+  .near-far .obj{position:absolute;bottom:8px;font-size:1.1rem;}
+  </style>
+  <section class="vsec" id="aggettivi">
+    <div class="vsec-head">
+      <span class="vsec-icon">↔️</span>
+      <h2>Gli opposti &mdash; Gegensatz-Adjektive</h2>
+      <span class="lvl">A1 – B1</span>
+    </div>
+    <p class="vsec-intro">Adjektive merkt man sich am besten als Paar. Das Bild zeigt jeweils, was gemeint ist.</p>
+    <div class="pairs">
+
+      <div class="pair">
+        <div class="side"><div class="viz"><span class="sh-circle big-c"></span></div><span class="word voc" data-it="grande"><span class="it">grande</span><span class="de">groß</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz"><span class="sh-circle small-c"></span></div><span class="word voc" data-it="piccolo"><span class="it">piccolo</span><span class="de">klein</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz"><span class="barH long-b"></span></div><span class="word voc" data-it="lungo"><span class="it">lungo</span><span class="de">lang</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz"><span class="barH short-b"></span></div><span class="word voc" data-it="corto"><span class="it">corto</span><span class="de">kurz</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz" style="align-items:flex-end;"><span class="barV tall-b"></span></div><span class="word voc" data-it="alto"><span class="it">alto</span><span class="de">hoch / groß</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz" style="align-items:flex-end;"><span class="barV low-b"></span></div><span class="word voc" data-it="basso"><span class="it">basso</span><span class="de">niedrig / klein</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz"><span class="wide-b"></span></div><span class="word voc" data-it="largo"><span class="it">largo</span><span class="de">breit / weit</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz"><span class="narrow-b"></span></div><span class="word voc" data-it="stretto"><span class="it">stretto</span><span class="de">eng / schmal</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🪨</div><span class="word voc" data-it="pesante"><span class="it">pesante</span><span class="de">schwer</span></span></div>
+        <span class="vs">⚖️</span>
+        <div class="side"><div class="viz">🪶</div><span class="word voc" data-it="leggero"><span class="it">leggero</span><span class="de">leicht</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🔥</div><span class="word voc" data-it="caldo"><span class="it">caldo</span><span class="de">warm / heiß</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">❄️</div><span class="word voc" data-it="freddo"><span class="it">freddo</span><span class="de">kalt</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🔊</div><span class="word voc" data-it="rumoroso"><span class="it">rumoroso</span><span class="de">laut</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🔇</div><span class="word voc" data-it="silenzioso"><span class="it">silenzioso</span><span class="de">leise / still</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz"><span class="swatch" style="background:#fff6cc;"></span></div><span class="word voc" data-it="chiaro"><span class="it">chiaro</span><span class="de">hell</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz"><span class="swatch" style="background:#2a2320;"></span></div><span class="word voc" data-it="scuro"><span class="it">scuro</span><span class="de">dunkel</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🍬</div><span class="word voc" data-it="dolce"><span class="it">dolce</span><span class="de">süß</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🍋</div><span class="word voc" data-it="amaro"><span class="it">amaro</span><span class="de">bitter</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🐇</div><span class="word voc" data-it="veloce"><span class="it">veloce</span><span class="de">schnell</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🐢</div><span class="word voc" data-it="lento"><span class="it">lento</span><span class="de">langsam</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">💪</div><span class="word voc" data-it="forte"><span class="it">forte</span><span class="de">stark</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🍃</div><span class="word voc" data-it="debole"><span class="it">debole</span><span class="de">schwach</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">💰</div><span class="word voc" data-it="ricco"><span class="it">ricco</span><span class="de">reich</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🪙</div><span class="word voc" data-it="povero"><span class="it">povero</span><span class="de">arm</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">😍</div><span class="word voc" data-it="bello"><span class="it">bello</span><span class="de">schön</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">😝</div><span class="word voc" data-it="brutto"><span class="it">brutto</span><span class="de">hässlich</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">👍</div><span class="word voc" data-it="buono"><span class="it">buono</span><span class="de">gut</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">👎</div><span class="word voc" data-it="cattivo"><span class="it">cattivo</span><span class="de">schlecht / böse</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">✨</div><span class="word voc" data-it="nuovo"><span class="it">nuovo</span><span class="de">neu</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🕰️</div><span class="word voc" data-it="vecchio"><span class="it">vecchio</span><span class="de">alt</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">😌</div><span class="word voc" data-it="facile"><span class="it">facile</span><span class="de">einfach</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🧩</div><span class="word voc" data-it="difficile"><span class="it">difficile</span><span class="de">schwierig</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">😄</div><span class="word voc" data-it="allegro"><span class="it">allegro</span><span class="de">fröhlich</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">😢</div><span class="word voc" data-it="triste"><span class="it">triste</span><span class="de">traurig</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">😊</div><span class="word voc" data-it="simpatico"><span class="it">simpatico</span><span class="de">sympathisch</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">😒</div><span class="word voc" data-it="antipatico"><span class="it">antipatico</span><span class="de">unsympathisch</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🤝</div><span class="word voc" data-it="gentile"><span class="it">gentile</span><span class="de">freundlich / nett</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">😤</div><span class="word voc" data-it="scortese"><span class="it">scortese</span><span class="de">unhöflich</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz"><div class="near-far"><span class="me">🧍</span><span class="obj" style="left:18px;">🌳</span></div></div><span class="word voc" data-it="vicino"><span class="it">vicino</span><span class="de">nah</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz"><div class="near-far"><span class="me">🧍</span><span class="obj" style="right:0;">🌳</span></div></div><span class="word voc" data-it="lontano"><span class="it">lontano</span><span class="de">weit weg</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz"><div class="glass"><div class="lvl" style="height:85%;"></div></div></div><span class="word voc" data-it="pieno"><span class="it">pieno</span><span class="de">voll</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz"><div class="glass"><div class="lvl" style="height:8%;"></div></div></div><span class="word voc" data-it="vuoto"><span class="it">vuoto</span><span class="de">leer</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🧼</div><span class="word voc" data-it="pulito"><span class="it">pulito</span><span class="de">sauber</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🟤</div><span class="word voc" data-it="sporco"><span class="it">sporco</span><span class="de">schmutzig</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">🔓</div><span class="word voc" data-it="aperto"><span class="it">aperto</span><span class="de">offen / geöffnet</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">🔒</div><span class="word voc" data-it="chiuso"><span class="it">chiuso</span><span class="de">geschlossen / zu</span></span></div>
+      </div>
+
+      <div class="pair">
+        <div class="side"><div class="viz">✅</div><span class="word voc" data-it="giusto"><span class="it">giusto</span><span class="de">richtig</span></span></div>
+        <span class="vs">↔</span>
+        <div class="side"><div class="viz">❌</div><span class="word voc" data-it="sbagliato"><span class="it">sbagliato</span><span class="de">falsch</span></span></div>
+      </div>
+
+    </div>
+    <div class="note">Denk an die Anpassung: <b>-o → -a / -i / -e</b> (un libro nuov<b>o</b>, una casa nuov<b>a</b>). Auf <em>-e</em> endende Adjektive (grande, veloce) ändern sich im Singular nicht.</div>
+  </section>
+
+  <!-- ============ 6. COLORI ============ -->
+  <style>
+  #colori{--acc:#d23f8c;--acc-soft:#fce4f1;--acc-deep:#a32a6b;}
+  .wheel-wrap{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;justify-content:center;}
+  .wheel{position:relative;width:280px;height:280px;flex:0 0 auto;}
+  .wheel .center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:96px;height:96px;border-radius:50%;background:var(--paper-2);border:2.5px dashed var(--ink-faint);
+    display:grid;place-items:center;text-align:center;font-family:var(--f-display);font-weight:900;font-size:.9rem;color:var(--ink-soft);}
+  .cdot{position:absolute;width:58px;height:58px;border-radius:50%;border:3px solid var(--ink);
+    cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow);transition:transform .12s;}
+  .cdot:hover{transform:scale(1.12);z-index:2;}
+  .cdot span{font-size:.62rem;font-weight:700;text-align:center;line-height:1;padding:2px;}
+  .neutrals{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;}
+  .nchip{display:flex;align-items:center;gap:.45rem;font-size:.84rem;cursor:pointer;
+    border:2px solid var(--ink);border-radius:99px;padding:.2rem .6rem .2rem .25rem;background:var(--paper-2);}
+  .nchip .sw{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);flex:0 0 auto;}
+  .nchip b{color:var(--acc-deep);}
+  </style>
+  <section class="vsec" id="colori">
+    <div class="vsec-head">
+      <span class="vsec-icon">🎨</span>
+      <h2>I colori &mdash; Farben</h2>
+      <span class="lvl">A1</span>
+    </div>
+    <p class="vsec-intro">Das Farbrad: jede Farbe trägt ihren Namen. Tippe sie an.</p>
+    <div class="card">
+      <div class="wheel-wrap">
+        <div class="wheel">
+          <div class="center">i colori<br>die Farben</div>
+          <div class="cdot voc" data-it="rosso"    style="left:111px;top:1px;background:#e63946;color:#fff;"><span>rosso<br>rot</span></div>
+          <div class="cdot voc" data-it="arancione" style="left:189px;top:33px;background:#f3722c;color:#fff;"><span>arancione<br>orange</span></div>
+          <div class="cdot voc" data-it="giallo"   style="left:221px;top:111px;background:#f9c74f;color:#2a2320;"><span>giallo<br>gelb</span></div>
+          <div class="cdot voc" data-it="verde"    style="left:189px;top:189px;background:#43aa8b;color:#fff;"><span>verde<br>grün</span></div>
+          <div class="cdot voc" data-it="azzurro"  style="left:111px;top:221px;background:#5bc0eb;color:#2a2320;"><span>azzurro<br>hellblau</span></div>
+          <div class="cdot voc" data-it="blu"      style="left:33px;top:189px;background:#3a56d4;color:#fff;"><span>blu<br>blau</span></div>
+          <div class="cdot voc" data-it="viola"    style="left:1px;top:111px;background:#9b5de5;color:#fff;"><span>viola<br>lila</span></div>
+          <div class="cdot voc" data-it="rosa"     style="left:33px;top:33px;background:#ff8fab;color:#2a2320;"><span>rosa<br>rosa</span></div>
+        </div>
+        <div class="neutrals">
+          <span class="nchip voc" data-it="bianco"><span class="sw" style="background:#fff;"></span><span><b>bianco</b> weiß</span></span>
+          <span class="nchip voc" data-it="nero"><span class="sw" style="background:#2a2320;"></span><span><b>nero</b> schwarz</span></span>
+          <span class="nchip voc" data-it="grigio"><span class="sw" style="background:#9aa0a6;"></span><span><b>grigio</b> grau</span></span>
+          <span class="nchip voc" data-it="marrone"><span class="sw" style="background:#8b5e3c;"></span><span><b>marrone</b> braun</span></span>
+          <span class="nchip voc" data-it="beige"><span class="sw" style="background:#e3d5b8;"></span><span><b>beige</b> beige</span></span>
+          <span class="nchip voc" data-it="dorato"><span class="sw" style="background:#d4af37;"></span><span><b>dorato</b> golden</span></span>
+          <span class="nchip voc" data-it="argentato"><span class="sw" style="background:#c0c0c8;"></span><span><b>argentato</b> silbern</span></span>
+        </div>
+      </div>
+      <div class="note">Viele Farben passen sich an: vestito ross<b>o</b>, maglia ross<b>a</b>. Aber <b>rosa, viola, blu, beige</b> bleiben unverändert.</div>
+    </div>
+  </section>
+
+  <!-- ============ 7. EMOZIONI ============ -->
+  <style>
+  #emozioni{--acc:#f1a208;--acc-soft:#fdf0d3;--acc-deep:#b27500;}
+  .mood-legend{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink-soft);margin-bottom:.7rem;font-weight:600;}
+  .mood-legend .bar{flex:1;height:8px;border-radius:99px;background:linear-gradient(90deg,#43aa8b,#f9c74f,#e63946);border:1.5px solid var(--ink);}
+  .moods{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6rem;}
+  .mood{border:2px solid var(--ink);border-radius:14px;padding:.6rem .4rem;text-align:center;cursor:pointer;
+    box-shadow:var(--shadow);transition:transform .12s;}
+  .mood:hover{transform:translateY(-2px);}
+  .mood .em{font-size:1.7rem;line-height:1;}
+  .mood .it{display:block;font-weight:700;font-size:.85rem;margin-top:.25rem;}
+  .mood .de{font-size:.72rem;}
+  </style>
+  <section class="vsec" id="emozioni">
+    <div class="vsec-head">
+      <span class="vsec-icon">😊</span>
+      <h2>Le emozioni &mdash; Gefühle</h2>
+      <span class="lvl">A2 – B1</span>
+    </div>
+    <p class="vsec-intro">Von angenehm (grün) bis unangenehm (rot) &mdash; die Farbe zeigt die Stimmung.</p>
+    <div class="card">
+      <div class="mood-legend"><span>😄 piacevole</span><span class="bar"></span><span>😣 spiacevole</span></div>
+      <div class="moods">
+        <span class="mood voc" data-it="felice" style="background:#e6f6ee;"><span class="em">😄</span><span class="it">felice</span><span class="de">glücklich</span></span>
+        <span class="mood voc" data-it="innamorato" style="background:#e9f6ef;"><span class="em">😍</span><span class="it">innamorato</span><span class="de">verliebt</span></span>
+        <span class="mood voc" data-it="soddisfatto" style="background:#edf6e8;"><span class="em">😌</span><span class="it">soddisfatto</span><span class="de">zufrieden</span></span>
+        <span class="mood voc" data-it="tranquillo" style="background:#eef6e4;"><span class="em">😎</span><span class="it">tranquillo</span><span class="de">ruhig</span></span>
+        <span class="mood voc" data-it="orgoglioso" style="background:#f1f4e0;"><span class="em">🥲</span><span class="it">orgoglioso</span><span class="de">stolz</span></span>
+        <span class="mood voc" data-it="eccitato" style="background:#f6f3da;"><span class="em">🤩</span><span class="it">eccitato</span><span class="de">aufgeregt</span></span>
+        <span class="mood voc" data-it="speranzoso" style="background:#f8f1d6;"><span class="em">🙂</span><span class="it">speranzoso</span><span class="de">hoffnungsvoll</span></span>
+        <span class="mood voc" data-it="curioso" style="background:#faefd2;"><span class="em">🧐</span><span class="it">curioso</span><span class="de">neugierig</span></span>
+        <span class="mood voc" data-it="sorpreso" style="background:#fbecce;"><span class="em">😲</span><span class="it">sorpreso</span><span class="de">überrascht</span></span>
+        <span class="mood voc" data-it="confuso" style="background:#fce8c8;"><span class="em">😕</span><span class="it">confuso</span><span class="de">verwirrt</span></span>
+        <span class="mood voc" data-it="annoiato" style="background:#fde4c2;"><span class="em">🥱</span><span class="it">annoiato</span><span class="de">gelangweilt</span></span>
+        <span class="mood voc" data-it="stanco" style="background:#fde0bb;"><span class="em">😴</span><span class="it">stanco</span><span class="de">müde</span></span>
+        <span class="mood voc" data-it="imbarazzato" style="background:#fddbb3;"><span class="em">😳</span><span class="it">imbarazzato</span><span class="de">verlegen</span></span>
+        <span class="mood voc" data-it="nervoso" style="background:#fcd2ad;"><span class="em">😬</span><span class="it">nervoso</span><span class="de">nervös</span></span>
+        <span class="mood voc" data-it="preoccupato" style="background:#fbc9a6;"><span class="em">😟</span><span class="it">preoccupato</span><span class="de">besorgt</span></span>
+        <span class="mood voc" data-it="geloso" style="background:#fac0a0;"><span class="em">😒</span><span class="it">geloso</span><span class="de">eifersüchtig</span></span>
+        <span class="mood voc" data-it="deluso" style="background:#f8b29a;"><span class="em">😞</span><span class="it">deluso</span><span class="de">enttäuscht</span></span>
+        <span class="mood voc" data-it="spaventato" style="background:#f6a394;"><span class="em">😨</span><span class="it">spaventato</span><span class="de">erschrocken</span></span>
+        <span class="mood voc" data-it="triste" style="background:#f4948f;"><span class="em">😢</span><span class="it">triste</span><span class="de">traurig</span></span>
+        <span class="mood voc" data-it="arrabbiato" style="background:#f2857f;"><span class="em">😡</span><span class="it">arrabbiato</span><span class="de">wütend</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. MOVIMENTO ============ -->
+  <style>
+  #movimento{--acc:#2a9d8f;--acc-soft:#e1f4f1;--acc-deep:#1c6f64;}
+  .street{position:relative;height:70px;border-radius:14px;overflow:hidden;border:2px solid var(--ink);
+    background:linear-gradient(#bfe3dd 0 60%,#7fbdb4 60% 100%);box-shadow:var(--shadow);margin-bottom:1rem;}
+  .street .road{position:absolute;bottom:0;left:0;width:100%;height:40%;background:#555c5a;}
+  .street .road::after{content:"";position:absolute;top:50%;left:0;width:100%;height:4px;
+    background:repeating-linear-gradient(90deg,#f9c74f 0 22px,transparent 22px 44px);transform:translateY(-50%);}
+  .street .walker{position:absolute;bottom:6px;font-size:1.8rem;animation:walkAcross 9s linear infinite;}
+  .street .bird{position:absolute;top:8px;font-size:1.4rem;animation:flyAcross 7s linear infinite;}
+  @keyframes walkAcross{0%{left:-8%;transform:scaleX(1);}49%{left:96%;transform:scaleX(1);}50%{left:96%;transform:scaleX(-1);}99%{left:-8%;transform:scaleX(-1);}100%{left:-8%;transform:scaleX(1);}}
+  @keyframes flyAcross{from{left:-8%;}to{left:104%;}}
+  .verbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:.55rem;}
+  .verb{border:2px solid var(--ink);border-radius:13px;padding:.55rem .35rem;text-align:center;cursor:pointer;
+    background:var(--paper-2);box-shadow:var(--shadow);transition:transform .12s;}
+  .verb:hover{transform:translateY(-2px);}
+  .verb .em{font-size:1.55rem;line-height:1;display:inline-block;}
+  .verb .it{display:block;font-weight:700;font-size:.85rem;margin-top:.2rem;color:var(--acc-deep);}
+  .verb .de{font-size:.72rem;}
+  .verb:hover .run{animation:vRun .5s ease-in-out infinite;}
+  .verb:hover .jump{animation:vJump .6s ease-in-out infinite;}
+  .verb:hover .fall{animation:vFall .8s ease-in infinite;}
+  .verb:hover .spin{animation:vSpin 1s linear infinite;}
+  .verb:hover .fly{animation:vFly 1s ease-in-out infinite;}
+  @keyframes vRun{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+  @keyframes vJump{0%,100%{transform:translateY(0);}40%{transform:translateY(-10px);}}
+  @keyframes vFall{0%{transform:translateY(-8px) rotate(0);}100%{transform:translateY(6px) rotate(20deg);}}
+  @keyframes vSpin{to{transform:rotate(360deg);}}
+  @keyframes vFly{0%,100%{transform:translate(0,0);}50%{transform:translate(4px,-6px);}}
+  </style>
+  <section class="vsec" id="movimento">
+    <div class="vsec-head">
+      <span class="vsec-icon">🏃</span>
+      <h2>Il movimento &mdash; Bewegungsverben</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Verben kommen in Bewegung. Fahr mit der Maus über eine Karte &mdash; manche bewegen sich!</p>
+    <div class="card">
+      <div class="street">
+        <div class="road"></div>
+        <span class="walker">🚶</span>
+        <span class="bird">🐦</span>
+      </div>
+      <div class="verbs">
+        <span class="verb voc" data-it="andare"><span class="em">🚶</span><span class="it">andare</span><span class="de">gehen / fahren</span></span>
+        <span class="verb voc" data-it="venire"><span class="em">🙋</span><span class="it">venire</span><span class="de">kommen</span></span>
+        <span class="verb voc" data-it="correre"><span class="em run">🏃</span><span class="it">correre</span><span class="de">rennen</span></span>
+        <span class="verb voc" data-it="camminare"><span class="em run">🚶‍♀️</span><span class="it">camminare</span><span class="de">laufen / zu Fuß</span></span>
+        <span class="verb voc" data-it="volare"><span class="em fly">🕊️</span><span class="it">volare</span><span class="de">fliegen</span></span>
+        <span class="verb voc" data-it="nuotare"><span class="em">🏊</span><span class="it">nuotare</span><span class="de">schwimmen</span></span>
+        <span class="verb voc" data-it="saltare"><span class="em jump">🤸</span><span class="it">saltare</span><span class="de">springen</span></span>
+        <span class="verb voc" data-it="cadere"><span class="em fall">🤾</span><span class="it">cadere</span><span class="de">fallen</span></span>
+        <span class="verb voc" data-it="girare"><span class="em spin">🔄</span><span class="it">girare</span><span class="de">drehen / abbiegen</span></span>
+        <span class="verb voc" data-it="tornare"><span class="em">↩️</span><span class="it">tornare</span><span class="de">zurückkehren</span></span>
+        <span class="verb voc" data-it="arrivare"><span class="em">🛬</span><span class="it">arrivare</span><span class="de">ankommen</span></span>
+        <span class="verb voc" data-it="partire"><span class="em">🛫</span><span class="it">partire</span><span class="de">abreisen</span></span>
+        <span class="verb voc" data-it="salire"><span class="em">⬆️</span><span class="it">salire</span><span class="de">hinaufgehen / einsteigen</span></span>
+        <span class="verb voc" data-it="scendere"><span class="em">⬇️</span><span class="it">scendere</span><span class="de">hinuntergehen / aussteigen</span></span>
+        <span class="verb voc" data-it="entrare"><span class="em">📥</span><span class="it">entrare</span><span class="de">hineingehen</span></span>
+        <span class="verb voc" data-it="uscire"><span class="em">📤</span><span class="it">uscire</span><span class="de">hinausgehen</span></span>
+        <span class="verb voc" data-it="fermarsi"><span class="em">🛑</span><span class="it">fermarsi</span><span class="de">anhalten</span></span>
+        <span class="verb voc" data-it="avvicinarsi"><span class="em">➡️</span><span class="it">avvicinarsi</span><span class="de">sich nähern</span></span>
+        <span class="verb voc" data-it="allontanarsi"><span class="em">⬅️</span><span class="it">allontanarsi</span><span class="de">sich entfernen</span></span>
+        <span class="verb voc" data-it="strisciare"><span class="em">🐍</span><span class="it">strisciare</span><span class="de">kriechen</span></span>
+        <span class="verb voc" data-it="gattonare"><span class="em">🍼</span><span class="it">gattonare</span><span class="de">krabbeln</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9. SENSI ============ -->
+  <style>
+  #sensi{--acc:#6a4c93;--acc-soft:#efeaf6;--acc-deep:#4c3470;}
+  .sense-wrap{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:flex-start;}
+  .face{flex:0 0 auto;margin:0 auto;}
+  .sense-list{flex:1 1 280px;display:flex;flex-direction:column;gap:.55rem;}
+  .organ{border:2px solid var(--ink);border-radius:13px;padding:.45rem .65rem;background:var(--paper-2);box-shadow:var(--shadow);}
+  .organ .head{font-weight:800;font-size:.85rem;display:flex;align-items:center;gap:.4rem;margin-bottom:.25rem;}
+  .organ .vlist{display:flex;flex-wrap:wrap;gap:.35rem;}
+  .organ .vlist .voc{font-size:.8rem;background:var(--acc-soft);border:1.5px solid var(--acc);border-radius:99px;padding:.14rem .55rem;}
+  .organ .vlist .voc .it{color:var(--acc-deep);}
+  </style>
+  <section class="vsec" id="sensi">
+    <div class="vsec-head">
+      <span class="vsec-icon">👁️</span>
+      <h2>I sensi &mdash; Wahrnehmen &amp; Denken</h2>
+      <span class="lvl">A2 – B1</span>
+    </div>
+    <p class="vsec-intro">Jeder Sinn sitzt an seinem Organ &mdash; und der Kopf denkt mit.</p>
+    <div class="card">
+      <div class="sense-wrap">
+        <svg class="face" width="200" height="220" viewBox="0 0 200 220">
+          <ellipse cx="100" cy="120" rx="74" ry="86" fill="#ffe0c2" stroke="#2a2320" stroke-width="3"/>
+          <path d="M40 70 Q100 20 160 70 Q150 40 100 34 Q50 40 40 70Z" fill="#6a4c93" stroke="#2a2320" stroke-width="3"/>
+          <circle cx="72" cy="112" r="13" fill="#fff" stroke="#2a2320" stroke-width="2.5"/>
+          <circle cx="72" cy="112" r="5" fill="#2a2320"/>
+          <circle cx="128" cy="112" r="13" fill="#fff" stroke="#2a2320" stroke-width="2.5"/>
+          <circle cx="128" cy="112" r="5" fill="#2a2320"/>
+          <path d="M96 124 Q100 150 92 154 Q100 158 106 152" fill="none" stroke="#2a2320" stroke-width="2.5"/>
+          <path d="M78 176 Q100 190 122 176" fill="none" stroke="#2a2320" stroke-width="3" stroke-linecap="round"/>
+          <path d="M26 118 Q14 128 26 140" fill="#ffe0c2" stroke="#2a2320" stroke-width="3"/>
+          <path d="M174 118 Q186 128 174 140" fill="#ffe0c2" stroke="#2a2320" stroke-width="3"/>
+        </svg>
+        <div class="sense-list">
+          <div class="organ">
+            <div class="head">👁️ gli occhi &mdash; Augen</div>
+            <div class="vlist">
+              <span class="voc" data-it="vedere"><span class="it">vedere</span> <span class="de">sehen</span></span>
+              <span class="voc" data-it="guardare"><span class="it">guardare</span> <span class="de">anschauen</span></span>
+            </div>
+          </div>
+          <div class="organ">
+            <div class="head">👂 le orecchie &mdash; Ohren</div>
+            <div class="vlist">
+              <span class="voc" data-it="sentire"><span class="it">sentire</span> <span class="de">hören</span></span>
+              <span class="voc" data-it="ascoltare"><span class="it">ascoltare</span> <span class="de">zuhören</span></span>
+            </div>
+          </div>
+          <div class="organ">
+            <div class="head">👃 il naso &mdash; Nase</div>
+            <div class="vlist"><span class="voc" data-it="odorare"><span class="it">odorare</span> <span class="de">riechen</span></span></div>
+          </div>
+          <div class="organ">
+            <div class="head">👅 la bocca &mdash; Mund</div>
+            <div class="vlist"><span class="voc" data-it="assaggiare"><span class="it">assaggiare</span> <span class="de">probieren / schmecken</span></span></div>
+          </div>
+          <div class="organ">
+            <div class="head">✋ la mano &mdash; Hand</div>
+            <div class="vlist"><span class="voc" data-it="toccare"><span class="it">toccare</span> <span class="de">berühren</span></span></div>
+          </div>
+          <div class="organ" style="border-color:var(--acc);background:var(--acc-soft);">
+            <div class="head">🧠 la testa &mdash; Kopf &amp; Geist</div>
+            <div class="vlist">
+              <span class="voc" data-it="capire"><span class="it">capire</span> <span class="de">verstehen</span></span>
+              <span class="voc" data-it="pensare"><span class="it">pensare</span> <span class="de">denken</span></span>
+              <span class="voc" data-it="credere"><span class="it">credere</span> <span class="de">glauben</span></span>
+              <span class="voc" data-it="immaginare"><span class="it">immaginare</span> <span class="de">sich vorstellen</span></span>
+              <span class="voc" data-it="sognare"><span class="it">sognare</span> <span class="de">träumen</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10. COMUNICAZIONE ============ -->
+  <style>
+  #comunicazione{--acc:#ef476f;--acc-soft:#fde3ea;--acc-deep:#bd2b50;}
+  .bubbles{display:flex;flex-wrap:wrap;gap:.9rem;align-items:center;}
+  .bub{position:relative;background:var(--paper-2);border:2.5px solid var(--ink);border-radius:16px;
+    padding:.5rem .8rem;cursor:pointer;box-shadow:var(--shadow);text-align:center;}
+  .bub::after{content:"";position:absolute;bottom:-11px;left:22px;width:0;height:0;
+    border:9px solid transparent;border-top-color:var(--ink);}
+  .bub::before{content:"";position:absolute;bottom:-7px;left:24px;width:0;height:0;z-index:1;
+    border:7px solid transparent;border-top-color:var(--paper-2);}
+  .bub .it{font-weight:700;color:var(--acc-deep);display:block;font-size:.9rem;}
+  .bub .de{font-size:.74rem;}
+  .bub.big{font-size:1.15rem;background:#ffe0e6;border-color:#bd2b50;transform:rotate(-2deg);}
+  .bub.big .it{font-size:1.1rem;}
+  .bub.small{transform:scale(.82);opacity:.85;}
+  .bub.fight{background:#fff2cc;transform:rotate(2deg);}
+  </style>
+  <section class="vsec" id="comunicazione">
+    <div class="vsec-head">
+      <span class="vsec-icon">💬</span>
+      <h2>Comunicare &mdash; Sprechen &amp; Sagen</h2>
+      <span class="lvl">A2 – B1</span>
+    </div>
+    <p class="vsec-intro">Die Blasenform verrät den Ton: <em>gridare</em> ist groß, <em>sussurrare</em> ganz klein.</p>
+    <div class="card">
+      <div class="bubbles">
+        <span class="bub voc" data-it="parlare"><span class="it">parlare</span><span class="de">sprechen / reden</span></span>
+        <span class="bub voc" data-it="dire"><span class="it">dire</span><span class="de">sagen</span></span>
+        <span class="bub voc" data-it="chiedere"><span class="it">chiedere</span><span class="de">fragen / bitten</span></span>
+        <span class="bub voc" data-it="rispondere"><span class="it">rispondere</span><span class="de">antworten</span></span>
+        <span class="bub voc" data-it="spiegare"><span class="it">spiegare</span><span class="de">erklären</span></span>
+        <span class="bub voc" data-it="raccontare"><span class="it">raccontare</span><span class="de">erzählen</span></span>
+        <span class="bub voc" data-it="chiamare"><span class="it">chiamare</span><span class="de">anrufen / nennen</span></span>
+        <span class="bub voc" data-it="scrivere"><span class="it">scrivere</span><span class="de">schreiben</span></span>
+        <span class="bub voc" data-it="leggere"><span class="it">leggere</span><span class="de">lesen</span></span>
+        <span class="bub big voc" data-it="gridare"><span class="it">GRIDARE!</span><span class="de">schreien</span></span>
+        <span class="bub small voc" data-it="sussurrare"><span class="it">sussurrare</span><span class="de">flüstern</span></span>
+        <span class="bub fight voc" data-it="litigare"><span class="it">litigare</span><span class="de">streiten</span></span>
+        <span class="bub voc" data-it="concordare"><span class="it">concordare</span><span class="de">zustimmen</span></span>
+        <span class="bub voc" data-it="promettere"><span class="it">promettere</span><span class="de">versprechen</span></span>
+        <span class="bub voc" data-it="mentire"><span class="it">mentire</span><span class="de">lügen</span></span>
+        <span class="bub voc" data-it="ringraziare"><span class="it">ringraziare</span><span class="de">danken</span></span>
+        <span class="bub voc" data-it="salutare"><span class="it">salutare</span><span class="de">grüßen</span></span>
+        <span class="bub voc" data-it="presentarsi"><span class="it">presentarsi</span><span class="de">sich vorstellen</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 11. QUOTIDIANO ============ -->
+  <style>
+  #quotidiano{--acc:#f4a261;--acc-soft:#fdeede;--acc-deep:#bd6d28;}
+  .daybar{height:34px;border-radius:99px;border:2px solid var(--ink);box-shadow:var(--shadow);margin-bottom:1rem;
+    background:linear-gradient(90deg,#2c3e72 0%,#f08a5d 14%,#ffd9a0 30%,#cdeafd 50%,#ffd9a0 74%,#f08a5d 86%,#2c3e72 100%);
+    display:flex;align-items:center;justify-content:space-between;padding:0 .9rem;color:#2a2320;font-weight:700;font-size:.8rem;}
+  .daybar span{background:rgba(255,255,255,.6);border-radius:99px;padding:.05rem .5rem;}
+  .dayflow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;}
+  .step-v{position:relative;border:2px solid var(--ink);border-radius:13px;background:var(--paper-2);box-shadow:var(--shadow);
+    padding:.5rem .55rem;text-align:center;cursor:pointer;min-width:104px;flex:1 1 104px;transition:transform .12s;}
+  .step-v:hover{transform:translateY(-2px);}
+  .step-v .em{font-size:1.4rem;line-height:1;}
+  .step-v .it{display:block;font-weight:700;font-size:.8rem;color:var(--acc-deep);margin-top:.15rem;}
+  .step-v .de{font-size:.7rem;}
+  </style>
+  <section class="vsec" id="quotidiano">
+    <div class="vsec-head">
+      <span class="vsec-icon">☀️</span>
+      <h2>La giornata &mdash; Tagesablauf</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Die Alltagsverben in der Reihenfolge des Tages &mdash; von Sonnenaufgang bis zur Nacht.</p>
+    <div class="card">
+      <div class="daybar"><span>🌅 mattina</span><span>☀️ pomeriggio</span><span>🌙 sera / notte</span></div>
+      <div class="dayflow">
+        <span class="step-v voc" data-it="svegliarsi"><span class="em">⏰</span><span class="it">svegliarsi</span><span class="de">aufwachen</span></span>
+        <span class="step-v voc" data-it="alzarsi"><span class="em">🛏️</span><span class="it">alzarsi</span><span class="de">aufstehen</span></span>
+        <span class="step-v voc" data-it="fare la doccia"><span class="em">🚿</span><span class="it">fare la doccia</span><span class="de">duschen</span></span>
+        <span class="step-v voc" data-it="lavarsi"><span class="em">🧼</span><span class="it">lavarsi</span><span class="de">sich waschen</span></span>
+        <span class="step-v voc" data-it="vestirsi"><span class="em">👕</span><span class="it">vestirsi</span><span class="de">sich anziehen</span></span>
+        <span class="step-v voc" data-it="fare colazione"><span class="em">🥐</span><span class="it">fare colazione</span><span class="de">frühstücken</span></span>
+        <span class="step-v voc" data-it="andare a scuola"><span class="em">🎒</span><span class="it">andare a scuola</span><span class="de">zur Schule gehen</span></span>
+        <span class="step-v voc" data-it="studiare"><span class="em">📚</span><span class="it">studiare</span><span class="de">lernen</span></span>
+        <span class="step-v voc" data-it="lavorare"><span class="em">💼</span><span class="it">lavorare</span><span class="de">arbeiten</span></span>
+        <span class="step-v voc" data-it="mangiare"><span class="em">🍽️</span><span class="it">mangiare</span><span class="de">essen</span></span>
+        <span class="step-v voc" data-it="fare la spesa"><span class="em">🛒</span><span class="it">fare la spesa</span><span class="de">einkaufen</span></span>
+        <span class="step-v voc" data-it="pagare"><span class="em">💳</span><span class="it">pagare</span><span class="de">bezahlen</span></span>
+        <span class="step-v voc" data-it="cucinare"><span class="em">🍳</span><span class="it">cucinare</span><span class="de">kochen</span></span>
+        <span class="step-v voc" data-it="aiutare"><span class="em">🤝</span><span class="it">aiutare</span><span class="de">helfen</span></span>
+        <span class="step-v voc" data-it="aspettare"><span class="em">⏳</span><span class="it">aspettare</span><span class="de">warten</span></span>
+        <span class="step-v voc" data-it="fare sport"><span class="em">🏋️</span><span class="it">fare sport</span><span class="de">Sport machen</span></span>
+        <span class="step-v voc" data-it="giocare"><span class="em">🎮</span><span class="it">giocare</span><span class="de">spielen</span></span>
+        <span class="step-v voc" data-it="guardare la tv"><span class="em">📺</span><span class="it">guardare la tv</span><span class="de">fernsehen</span></span>
+        <span class="step-v voc" data-it="andare a letto"><span class="em">🌙</span><span class="it">andare a letto</span><span class="de">ins Bett gehen</span></span>
+        <span class="step-v voc" data-it="dormire"><span class="em">😴</span><span class="it">dormire</span><span class="de">schlafen</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 12. STRADA (Wegbeschreibung) ============ -->
+  <style>
+  #strada{--acc:#457b9d;--acc-soft:#e4eef4;--acc-deep:#305a76;}
+  .map-wrap{display:flex;gap:1.3rem;flex-wrap:wrap;}
+  .citymap{flex:0 0 auto;border:2px solid var(--ink);border-radius:14px;box-shadow:var(--shadow);background:#dfe7d8;}
+  .dir-cols{flex:1 1 280px;display:flex;flex-direction:column;gap:.7rem;}
+  .dir-box h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin:0 0 .4rem;}
+  .dir-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
+  .dir-chips .voc{font-size:.82rem;background:var(--acc-soft);border:1.5px solid var(--acc);border-radius:99px;padding:.16rem .6rem;}
+  .dir-chips .voc .it{color:var(--acc-deep);}
+  .phrases{display:flex;flex-direction:column;gap:.3rem;margin-top:.3rem;}
+  .phrases .voc{font-size:.84rem;}
+  .phrases .voc .it{color:var(--acc-deep);}
+  </style>
+  <section class="vsec" id="strada">
+    <div class="vsec-head">
+      <span class="vsec-icon">🗺️</span>
+      <h2>Per strada &mdash; Den Weg finden</h2>
+      <span class="lvl">A2 – B1</span>
+    </div>
+    <p class="vsec-intro">Folge der Route vom 🧍 zum 🎯: geradeaus, dann links, an der Kreuzung rechts.</p>
+    <div class="card">
+      <div class="map-wrap">
+        <svg class="citymap" width="320" height="220" viewBox="0 0 320 220">
+          <rect width="320" height="220" fill="#dfe7d8"/>
+          <g fill="#c7d3be">
+            <rect x="20" y="20" width="80" height="55" rx="4"/><rect x="130" y="20" width="70" height="55" rx="4"/>
+            <rect x="230" y="20" width="70" height="55" rx="4"/><rect x="20" y="110" width="80" height="40" rx="4"/>
+            <rect x="130" y="110" width="70" height="40" rx="4"/><rect x="230" y="110" width="70" height="90" rx="4"/>
+            <rect x="20" y="170" width="80" height="30" rx="4"/><rect x="130" y="170" width="70" height="30" rx="4"/>
+          </g>
+          <g stroke="#9aa6b0" stroke-width="14">
+            <line x1="115" y1="0" x2="115" y2="220"/><line x1="215" y1="0" x2="215" y2="220"/>
+            <line x1="0" y1="92" x2="320" y2="92"/><line x1="0" y1="160" x2="320" y2="160"/>
+          </g>
+          <polyline points="55,205 55,92 215,92 215,48" fill="none" stroke="#e76f51" stroke-width="5"
+            stroke-linecap="round" stroke-dasharray="9 7"/>
+          <circle cx="215" cy="92" r="6" fill="#457b9d" stroke="#fff" stroke-width="2"/>
+          <text x="55" y="212" font-size="20" text-anchor="middle">🧍</text>
+          <text x="215" y="44" font-size="20" text-anchor="middle">🎯</text>
+          <text x="120" y="86" font-size="15">🚦</text>
+        </svg>
+        <div class="dir-cols">
+          <div class="dir-box">
+            <h4>Richtungen</h4>
+            <div class="dir-chips">
+              <span class="voc" data-it="vada dritto"><span class="it">andare dritto</span> <span class="de">geradeaus</span></span>
+              <span class="voc" data-it="giri a destra"><span class="it">girare a destra</span> <span class="de">rechts abbiegen</span></span>
+              <span class="voc" data-it="giri a sinistra"><span class="it">girare a sinistra</span> <span class="de">links abbiegen</span></span>
+              <span class="voc" data-it="torni indietro"><span class="it">tornare indietro</span> <span class="de">umkehren</span></span>
+              <span class="voc" data-it="attraversare"><span class="it">attraversare</span> <span class="de">überqueren</span></span>
+              <span class="voc" data-it="continuare"><span class="it">continuare</span> <span class="de">weitergehen</span></span>
+            </div>
+          </div>
+          <div class="dir-box">
+            <h4>Entfernung</h4>
+            <div class="dir-chips">
+              <span class="voc" data-it="a cento metri"><span class="it">a 100 metri</span> <span class="de">in 100 m</span></span>
+              <span class="voc" data-it="a due chilometri"><span class="it">a 2 chilometri</span> <span class="de">in 2 km</span></span>
+              <span class="voc" data-it="vicino"><span class="it">vicino</span> <span class="de">nah</span></span>
+              <span class="voc" data-it="lontano"><span class="it">lontano</span> <span class="de">weit</span></span>
+            </div>
+          </div>
+          <div class="dir-box">
+            <h4>Orientierungspunkte</h4>
+            <div class="dir-chips">
+              <span class="voc" data-it="all'angolo"><span class="it">all'angolo</span> <span class="de">an der Ecke</span></span>
+              <span class="voc" data-it="all'incrocio"><span class="it">all'incrocio</span> <span class="de">an der Kreuzung</span></span>
+              <span class="voc" data-it="al semaforo"><span class="it">al semaforo</span> <span class="de">an der Ampel</span></span>
+              <span class="voc" data-it="sul ponte"><span class="it">sul ponte</span> <span class="de">auf der Brücke</span></span>
+              <span class="voc" data-it="in piazza"><span class="it">in piazza</span> <span class="de">auf dem Platz</span></span>
+              <span class="voc" data-it="il marciapiede"><span class="it">il marciapiede</span> <span class="de">Gehweg</span></span>
+              <span class="voc" data-it="la strada"><span class="it">la strada</span> <span class="de">Straße</span></span>
+              <span class="voc" data-it="il quartiere"><span class="it">il quartiere</span> <span class="de">Stadtviertel</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="phrases">
+          <span class="voc" data-it="Mi scusi, dov'è la stazione?"><span class="it">Mi scusi, dov'è …?</span> &mdash; Entschuldigung, wo ist …?</span>
+          <span class="voc" data-it="Come arrivo al centro?"><span class="it">Come arrivo a …?</span> &mdash; Wie komme ich zu …?</span>
+          <span class="voc" data-it="Prenda la prima strada a destra"><span class="it">Prenda la prima strada a destra.</span> &mdash; Nehmen Sie die erste Straße rechts.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 13. NEGOZI ============ -->
+  <style>
+  #negozi{--acc:#e76f51;--acc-soft:#fce8e2;--acc-deep:#b34a30;}
+  .shops{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:.6rem;}
+  .shop{border:2px solid var(--ink);border-radius:0 0 10px 10px;background:var(--paper-2);box-shadow:var(--shadow);
+    cursor:pointer;overflow:hidden;transition:transform .12s;}
+  .shop:hover{transform:translateY(-3px);}
+  .shop .awn{height:16px;background:repeating-linear-gradient(90deg,var(--c) 0 14px,#fff 14px 28px);border-bottom:2px solid var(--ink);}
+  .shop .body{padding:.5rem .4rem;text-align:center;}
+  .shop .em{font-size:1.5rem;line-height:1;}
+  .shop .it{display:block;font-weight:700;font-size:.8rem;color:var(--acc-deep);margin-top:.2rem;}
+  .shop .de{font-size:.7rem;}
+  </style>
+  <section class="vsec" id="negozi">
+    <div class="vsec-head">
+      <span class="vsec-icon">🏪</span>
+      <h2>In città &mdash; Läden &amp; Orte</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Ein Bummel durch die Straße: jedes Geschäft mit seiner Markise.</p>
+    <div class="card">
+      <div class="shops">
+        <span class="shop voc" data-it="il supermercato" style="--c:#e76f51;"><span class="awn"></span><span class="body"><span class="em">🛒</span><span class="it">il supermercato</span><span class="de">Supermarkt</span></span></span>
+        <span class="shop voc" data-it="la farmacia" style="--c:#2a9d8f;"><span class="awn"></span><span class="body"><span class="em">➕💊</span><span class="it">la farmacia</span><span class="de">Apotheke</span></span></span>
+        <span class="shop voc" data-it="il forno" style="--c:#f4a261;"><span class="awn"></span><span class="body"><span class="em">🥖</span><span class="it">il forno / la panetteria</span><span class="de">Bäckerei</span></span></span>
+        <span class="shop voc" data-it="la banca" style="--c:#457b9d;"><span class="awn"></span><span class="body"><span class="em">🏦</span><span class="it">la banca</span><span class="de">Bank</span></span></span>
+        <span class="shop voc" data-it="la posta" style="--c:#e9c46a;"><span class="awn"></span><span class="body"><span class="em">✉️</span><span class="it">la posta</span><span class="de">Post</span></span></span>
+        <span class="shop voc" data-it="la libreria" style="--c:#9b5de5;"><span class="awn"></span><span class="body"><span class="em">📚</span><span class="it">la libreria</span><span class="de">Buchladen</span></span></span>
+        <span class="shop voc" data-it="il bar" style="--c:#c1121f;"><span class="awn"></span><span class="body"><span class="em">☕</span><span class="it">il bar</span><span class="de">Café / Bar</span></span></span>
+        <span class="shop voc" data-it="il ristorante" style="--c:#e76f51;"><span class="awn"></span><span class="body"><span class="em">🍽️</span><span class="it">il ristorante</span><span class="de">Restaurant</span></span></span>
+        <span class="shop voc" data-it="la pizzeria" style="--c:#e63946;"><span class="awn"></span><span class="body"><span class="em">🍕</span><span class="it">la pizzeria</span><span class="de">Pizzeria</span></span></span>
+        <span class="shop voc" data-it="il mercato" style="--c:#43aa8b;"><span class="awn"></span><span class="body"><span class="em">🧺</span><span class="it">il mercato</span><span class="de">Markt</span></span></span>
+        <span class="shop voc" data-it="la macelleria" style="--c:#bd2b50;"><span class="awn"></span><span class="body"><span class="em">🥩</span><span class="it">la macelleria</span><span class="de">Metzgerei</span></span></span>
+        <span class="shop voc" data-it="il tabaccaio" style="--c:#6a4c93;"><span class="awn"></span><span class="body"><span class="em">🚬</span><span class="it">il tabaccaio</span><span class="de">Tabakladen / Kiosk</span></span></span>
+        <span class="shop voc" data-it="la gelateria" style="--c:#ff8fab;"><span class="awn"></span><span class="body"><span class="em">🍦</span><span class="it">la gelateria</span><span class="de">Eisdiele</span></span></span>
+        <span class="shop voc" data-it="il negozio di vestiti" style="--c:#d4a373;"><span class="awn"></span><span class="body"><span class="em">👗</span><span class="it">il negozio di vestiti</span><span class="de">Kleiderladen</span></span></span>
+        <span class="shop voc" data-it="la stazione" style="--c:#457b9d;"><span class="awn"></span><span class="body"><span class="em">🚉</span><span class="it">la stazione</span><span class="de">Bahnhof</span></span></span>
+        <span class="shop voc" data-it="l'ospedale" style="--c:#e63946;"><span class="awn"></span><span class="body"><span class="em">🏥</span><span class="it">l'ospedale</span><span class="de">Krankenhaus</span></span></span>
+        <span class="shop voc" data-it="la scuola" style="--c:#f4a261;"><span class="awn"></span><span class="body"><span class="em">🏫</span><span class="it">la scuola</span><span class="de">Schule</span></span></span>
+        <span class="shop voc" data-it="il municipio" style="--c:#9aa0a6;"><span class="awn"></span><span class="body"><span class="em">🏛️</span><span class="it">il municipio</span><span class="de">Rathaus</span></span></span>
+        <span class="shop voc" data-it="il cinema" style="--c:#2a2320;"><span class="awn"></span><span class="body"><span class="em">🎬</span><span class="it">il cinema</span><span class="de">Kino</span></span></span>
+        <span class="shop voc" data-it="il teatro" style="--c:#bd2b50;"><span class="awn"></span><span class="body"><span class="em">🎭</span><span class="it">il teatro</span><span class="de">Theater</span></span></span>
+        <span class="shop voc" data-it="la chiesa" style="--c:#e9c46a;"><span class="awn"></span><span class="body"><span class="em">⛪</span><span class="it">la chiesa</span><span class="de">Kirche</span></span></span>
+        <span class="shop voc" data-it="il museo" style="--c:#6a4c93;"><span class="awn"></span><span class="body"><span class="em">🖼️</span><span class="it">il museo</span><span class="de">Museum</span></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 14. TRASPORTI ============ -->
+  <style>
+  #trasporti{--acc:#118ab2;--acc-soft:#e1f1f6;--acc-deep:#0b6483;}
+  .lanes{display:flex;flex-direction:column;gap:.5rem;}
+  .lane{border:2px solid var(--ink);border-radius:12px;padding:.4rem .6rem;box-shadow:var(--shadow);}
+  .lane .lhd{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:.3rem;}
+  .lane .row{display:flex;flex-wrap:wrap;gap:.45rem;}
+  .lane .voc{font-size:.85rem;background:rgba(255,255,255,.6);border:1.5px solid var(--ink);border-radius:99px;padding:.16rem .55rem;}
+  .lane .voc .it{font-weight:700;color:var(--acc-deep);}
+  .lane.sky{background:#dff0fb;} .lane.rail{background:#ede7f6;} .lane.road{background:#eceff1;} .lane.water{background:#dcf3f7;}
+  </style>
+  <section class="vsec" id="trasporti">
+    <div class="vsec-head">
+      <span class="vsec-icon">🚌</span>
+      <h2>I trasporti &mdash; Verkehrsmittel</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Geordnet nach Luft, Schiene, Straße und Wasser. Merke: <b>in</b> + Mittel, aber <b>a piedi</b>.</p>
+    <div class="card">
+      <div class="lanes">
+        <div class="lane sky">
+          <div class="lhd">☁️ in cielo &mdash; in der Luft</div>
+          <div class="row"><span class="voc" data-it="in aereo">✈️ <span class="it">in aereo</span> <span class="de">Flugzeug</span></span></div>
+        </div>
+        <div class="lane rail">
+          <div class="lhd">🛤️ su rotaie &mdash; auf Schienen</div>
+          <div class="row">
+            <span class="voc" data-it="in treno">🚆 <span class="it">in treno</span> <span class="de">Zug</span></span>
+            <span class="voc" data-it="in tram">🚊 <span class="it">in tram</span> <span class="de">Straßenbahn</span></span>
+            <span class="voc" data-it="in metro">🚇 <span class="it">in metro</span> <span class="de">U-Bahn</span></span>
+          </div>
+        </div>
+        <div class="lane road">
+          <div class="lhd">🛣️ su strada &mdash; auf der Straße</div>
+          <div class="row">
+            <span class="voc" data-it="in macchina">🚗 <span class="it">in macchina</span> <span class="de">Auto</span></span>
+            <span class="voc" data-it="in autobus">🚌 <span class="it">in autobus</span> <span class="de">Bus</span></span>
+            <span class="voc" data-it="in taxi">🚕 <span class="it">in taxi</span> <span class="de">Taxi</span></span>
+            <span class="voc" data-it="in moto">🏍️ <span class="it">in moto</span> <span class="de">Motorrad</span></span>
+            <span class="voc" data-it="in motorino">🛵 <span class="it">in motorino</span> <span class="de">Roller</span></span>
+            <span class="voc" data-it="in bicicletta">🚲 <span class="it">in bicicletta</span> <span class="de">Fahrrad</span></span>
+            <span class="voc" data-it="a piedi">🚶 <span class="it">a piedi</span> <span class="de">zu Fuß</span></span>
+          </div>
+        </div>
+        <div class="lane water">
+          <div class="lhd">🌊 sull'acqua &mdash; auf dem Wasser</div>
+          <div class="row"><span class="voc" data-it="in nave">🚢 <span class="it">in nave</span> <span class="de">Schiff</span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Gemeinsames Raum-Layout ===== -->
+  <style>
+  .room{position:relative;height:360px;border:2px solid var(--ink);border-radius:14px;overflow:hidden;}
+  .room .floor{position:absolute;bottom:0;left:0;width:100%;height:26%;}
+  .item{position:absolute;width:17.5%;text-align:center;cursor:pointer;}
+  .item .em{font-size:1.55rem;line-height:1;display:block;transition:transform .12s;}
+  .item:hover .em{transform:scale(1.25);}
+  .item .lab{font-size:.68rem;line-height:1.12;display:block;}
+  .item .lab .it{font-weight:700;display:block;color:var(--acc-deep);}
+  .item .lab .de{color:var(--ink-soft);}
+  @media(max-width:600px){
+    .room{height:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;padding:.6rem;}
+    .room .floor{display:none;}
+    .item{position:static!important;width:auto;left:auto!important;top:auto!important;}
+  }
+  </style>
+
+  <!-- ROOM cucina -->
+  <section class="vsec" id="cucina">
+    <div class="vsec-head">
+      <span class="vsec-icon">🍳</span>
+      <h2>La cucina &mdash; Küche</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Jedes Geschäft an seinem Platz: tippe Geräte und Geschirr an.</p>
+    <div class="card" style="--acc:#ee6c4d;--acc-soft:#fbe7df;--acc-deep:#b34a30;">
+      <div class="room" style="background:linear-gradient(180deg,#fbe9e3 0 74%, #00000010 74% 100%);">
+        <div class="floor"></div>
+        <span class="item voc" data-it="il piatto" style="left:4%;top:5%;"><span class="em">🍽️</span><span class="lab"><span class="it">il piatto</span><span class="de">Teller</span></span></span>
+        <span class="item voc" data-it="il bicchiere" style="left:23%;top:5%;"><span class="em">🥛</span><span class="lab"><span class="it">il bicchiere</span><span class="de">Glas</span></span></span>
+        <span class="item voc" data-it="la tazza" style="left:42%;top:5%;"><span class="em">☕</span><span class="lab"><span class="it">la tazza</span><span class="de">Tasse</span></span></span>
+        <span class="item voc" data-it="la forchetta" style="left:61%;top:5%;"><span class="em">🍴</span><span class="lab"><span class="it">la forchetta</span><span class="de">Gabel</span></span></span>
+        <span class="item voc" data-it="il coltello" style="left:80%;top:5%;"><span class="em">🔪</span><span class="lab"><span class="it">il coltello</span><span class="de">Messer</span></span></span>
+        <span class="item voc" data-it="il cucchiaio" style="left:4%;top:24%;"><span class="em">🥄</span><span class="lab"><span class="it">il cucchiaio</span><span class="de">Löffel</span></span></span>
+        <span class="item voc" data-it="la padella" style="left:23%;top:24%;"><span class="em">🍳</span><span class="lab"><span class="it">la padella</span><span class="de">Pfanne</span></span></span>
+        <span class="item voc" data-it="la pentola" style="left:42%;top:24%;"><span class="em">🍲</span><span class="lab"><span class="it">la pentola</span><span class="de">Topf</span></span></span>
+        <span class="item voc" data-it="il forno" style="left:61%;top:24%;"><span class="em">🔥</span><span class="lab"><span class="it">il forno</span><span class="de">Backofen</span></span></span>
+        <span class="item voc" data-it="il frigorifero" style="left:80%;top:24%;"><span class="em">🧊</span><span class="lab"><span class="it">il frigorifero</span><span class="de">Kühlschrank</span></span></span>
+        <span class="item voc" data-it="il lavello" style="left:4%;top:43%;"><span class="em">🚰</span><span class="lab"><span class="it">il lavello</span><span class="de">Spüle</span></span></span>
+        <span class="item voc" data-it="il tagliere" style="left:23%;top:43%;"><span class="em">🪵</span><span class="lab"><span class="it">il tagliere</span><span class="de">Brett</span></span></span>
+        <span class="item voc" data-it="la bottiglia" style="left:42%;top:43%;"><span class="em">🍾</span><span class="lab"><span class="it">la bottiglia</span><span class="de">Flasche</span></span></span>
+        <span class="item voc" data-it="la tovaglia" style="left:61%;top:43%;"><span class="em">🧶</span><span class="lab"><span class="it">la tovaglia</span><span class="de">Tischdecke</span></span></span>
+        <span class="item voc" data-it="il tovagliolo" style="left:80%;top:43%;"><span class="em">🧻</span><span class="lab"><span class="it">il tovagliolo</span><span class="de">Serviette</span></span></span>
+        <span class="item voc" data-it="il colino" style="left:4%;top:62%;"><span class="em">🕳️</span><span class="lab"><span class="it">il colino</span><span class="de">Sieb</span></span></span>
+        <span class="item voc" data-it="la caffettiera" style="left:23%;top:62%;"><span class="em">☕</span><span class="lab"><span class="it">la caffettiera</span><span class="de">Espressokanne</span></span></span>
+        <span class="item voc" data-it="il microonde" style="left:42%;top:62%;"><span class="em">📻</span><span class="lab"><span class="it">il microonde</span><span class="de">Mikrowelle</span></span></span>
+        <span class="item voc" data-it="il bollitore" style="left:61%;top:62%;"><span class="em">🫖</span><span class="lab"><span class="it">il bollitore</span><span class="de">Wasserkocher</span></span></span>
+        <span class="item voc" data-it="la credenza" style="left:80%;top:62%;"><span class="em">🗄️</span><span class="lab"><span class="it">la credenza</span><span class="de">Anrichte</span></span></span>
+        <span class="item voc" data-it="il tiretto" style="left:4%;top:80%;"><span class="em">🗃️</span><span class="lab"><span class="it">il tiretto</span><span class="de">Schublade</span></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROOM soggiorno -->
+  <section class="vsec" id="soggiorno">
+    <div class="vsec-head">
+      <span class="vsec-icon">🛋️</span>
+      <h2>Il soggiorno &mdash; Wohnzimmer</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Setz dich aufs Sofa und sieh dich um.</p>
+    <div class="card" style="--acc:#b5838d;--acc-soft:#f4e9ec;--acc-deep:#7d5560;">
+      <div class="room" style="background:linear-gradient(180deg,#f3e9ec 0 74%, #00000010 74% 100%);">
+        <div class="floor"></div>
+        <span class="item voc" data-it="il divano" style="left:4%;top:5%;"><span class="em">🛋️</span><span class="lab"><span class="it">il divano</span><span class="de">Sofa</span></span></span>
+        <span class="item voc" data-it="la poltrona" style="left:23%;top:5%;"><span class="em">🪑</span><span class="lab"><span class="it">la poltrona</span><span class="de">Sessel</span></span></span>
+        <span class="item voc" data-it="il tavolino" style="left:42%;top:5%;"><span class="em">🟫</span><span class="lab"><span class="it">il tavolino</span><span class="de">Couchtisch</span></span></span>
+        <span class="item voc" data-it="il tappeto" style="left:61%;top:5%;"><span class="em">🧶</span><span class="lab"><span class="it">il tappeto</span><span class="de">Teppich</span></span></span>
+        <span class="item voc" data-it="la lampada" style="left:80%;top:5%;"><span class="em">💡</span><span class="lab"><span class="it">la lampada</span><span class="de">Lampe</span></span></span>
+        <span class="item voc" data-it="la televisione" style="left:4%;top:24%;"><span class="em">📺</span><span class="lab"><span class="it">la televisione</span><span class="de">Fernseher</span></span></span>
+        <span class="item voc" data-it="lo scaffale" style="left:23%;top:24%;"><span class="em">🗄️</span><span class="lab"><span class="it">lo scaffale</span><span class="de">Regal</span></span></span>
+        <span class="item voc" data-it="la libreria" style="left:42%;top:24%;"><span class="em">📚</span><span class="lab"><span class="it">la libreria</span><span class="de">Bücherregal</span></span></span>
+        <span class="item voc" data-it="la tenda" style="left:61%;top:24%;"><span class="em">🪟</span><span class="lab"><span class="it">la tenda</span><span class="de">Vorhang</span></span></span>
+        <span class="item voc" data-it="il cuscino" style="left:80%;top:24%;"><span class="em">🛏️</span><span class="lab"><span class="it">il cuscino</span><span class="de">Kissen</span></span></span>
+        <span class="item voc" data-it="il quadro" style="left:4%;top:43%;"><span class="em">🖼️</span><span class="lab"><span class="it">il quadro</span><span class="de">Bild</span></span></span>
+        <span class="item voc" data-it="lo specchio" style="left:23%;top:43%;"><span class="em">🪞</span><span class="lab"><span class="it">lo specchio</span><span class="de">Spiegel</span></span></span>
+        <span class="item voc" data-it="la finestra" style="left:42%;top:43%;"><span class="em">🪟</span><span class="lab"><span class="it">la finestra</span><span class="de">Fenster</span></span></span>
+        <span class="item voc" data-it="la porta" style="left:61%;top:43%;"><span class="em">🚪</span><span class="lab"><span class="it">la porta</span><span class="de">Tür</span></span></span>
+        <span class="item voc" data-it="l'armadio" style="left:80%;top:43%;"><span class="em">🚪</span><span class="lab"><span class="it">l'armadio</span><span class="de">Schrank</span></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROOM bagno -->
+  <section class="vsec" id="bagno">
+    <div class="vsec-head">
+      <span class="vsec-icon">🛁</span>
+      <h2>Il bagno &mdash; Badezimmer</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Alles fürs Bad, an seinem Platz.</p>
+    <div class="card" style="--acc:#4cc9f0;--acc-soft:#e1f5fb;--acc-deep:#2090b3;">
+      <div class="room" style="background:linear-gradient(180deg,#e3f6fb 0 74%, #00000010 74% 100%);">
+        <div class="floor"></div>
+        <span class="item voc" data-it="la vasca" style="left:4%;top:5%;"><span class="em">🛁</span><span class="lab"><span class="it">la vasca</span><span class="de">Badewanne</span></span></span>
+        <span class="item voc" data-it="la doccia" style="left:23%;top:5%;"><span class="em">🚿</span><span class="lab"><span class="it">la doccia</span><span class="de">Dusche</span></span></span>
+        <span class="item voc" data-it="il lavandino" style="left:42%;top:5%;"><span class="em">🚰</span><span class="lab"><span class="it">il lavandino</span><span class="de">Waschbecken</span></span></span>
+        <span class="item voc" data-it="il water" style="left:61%;top:5%;"><span class="em">🚽</span><span class="lab"><span class="it">il water</span><span class="de">Toilette</span></span></span>
+        <span class="item voc" data-it="lo specchio" style="left:80%;top:5%;"><span class="em">🪞</span><span class="lab"><span class="it">lo specchio</span><span class="de">Spiegel</span></span></span>
+        <span class="item voc" data-it="l'asciugamano" style="left:4%;top:24%;"><span class="em">🧖</span><span class="lab"><span class="it">l'asciugamano</span><span class="de">Handtuch</span></span></span>
+        <span class="item voc" data-it="il sapone" style="left:23%;top:24%;"><span class="em">🧼</span><span class="lab"><span class="it">il sapone</span><span class="de">Seife</span></span></span>
+        <span class="item voc" data-it="lo spazzolino" style="left:42%;top:24%;"><span class="em">🪥</span><span class="lab"><span class="it">lo spazzolino</span><span class="de">Zahnbürste</span></span></span>
+        <span class="item voc" data-it="il dentifricio" style="left:61%;top:24%;"><span class="em">🦷</span><span class="lab"><span class="it">il dentifricio</span><span class="de">Zahnpasta</span></span></span>
+        <span class="item voc" data-it="lo shampoo" style="left:80%;top:24%;"><span class="em">🧴</span><span class="lab"><span class="it">lo shampoo</span><span class="de">Shampoo</span></span></span>
+        <span class="item voc" data-it="la crema" style="left:4%;top:43%;"><span class="em">🧴</span><span class="lab"><span class="it">la crema</span><span class="de">Creme</span></span></span>
+        <span class="item voc" data-it="il rasoio" style="left:23%;top:43%;"><span class="em">🪒</span><span class="lab"><span class="it">il rasoio</span><span class="de">Rasierer</span></span></span>
+        <span class="item voc" data-it="l'asciugacapelli" style="left:42%;top:43%;"><span class="em">💨</span><span class="lab"><span class="it">l'asciugacapelli</span><span class="de">Föhn</span></span></span>
+        <span class="item voc" data-it="la carta igienica" style="left:61%;top:43%;"><span class="em">🧻</span><span class="lab"><span class="it">la carta igienica</span><span class="de">Klopapier</span></span></span>
+        <span class="item voc" data-it="il telo" style="left:80%;top:43%;"><span class="em">🧺</span><span class="lab"><span class="it">il telo</span><span class="de">Badetuch</span></span></span>
+        <span class="item voc" data-it="il pettine" style="left:4%;top:62%;"><span class="em">🪮</span><span class="lab"><span class="it">il pettine</span><span class="de">Kamm</span></span></span>
+        <span class="item voc" data-it="il profumo" style="left:23%;top:62%;"><span class="em">🌸</span><span class="lab"><span class="it">il profumo</span><span class="de">Parfüm</span></span></span>
+        <span class="item voc" data-it="il box doccia" style="left:42%;top:62%;"><span class="em">🚿</span><span class="lab"><span class="it">il box doccia</span><span class="de">Duschkabine</span></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROOM ufficio -->
+  <section class="vsec" id="ufficio">
+    <div class="vsec-head">
+      <span class="vsec-icon">💻</span>
+      <h2>La scrivania &mdash; Schreibtisch &amp; Büro</h2>
+      <span class="lvl">A1 – B1</span>
+    </div>
+    <p class="vsec-intro">Der Arbeitsplatz von oben betrachtet.</p>
+    <div class="card" style="--acc:#5e548e;--acc-soft:#eceaf4;--acc-deep:#473e6e;">
+      <div class="room" style="background:linear-gradient(180deg,#eceaf3 0 74%, #00000010 74% 100%);">
+        <div class="floor"></div>
+        <span class="item voc" data-it="il computer" style="left:4%;top:5%;"><span class="em">💻</span><span class="lab"><span class="it">il computer</span><span class="de">Computer</span></span></span>
+        <span class="item voc" data-it="lo schermo" style="left:23%;top:5%;"><span class="em">🖥️</span><span class="lab"><span class="it">lo schermo</span><span class="de">Bildschirm</span></span></span>
+        <span class="item voc" data-it="la tastiera" style="left:42%;top:5%;"><span class="em">⌨️</span><span class="lab"><span class="it">la tastiera</span><span class="de">Tastatur</span></span></span>
+        <span class="item voc" data-it="il mouse" style="left:61%;top:5%;"><span class="em">🖱️</span><span class="lab"><span class="it">il mouse</span><span class="de">Maus</span></span></span>
+        <span class="item voc" data-it="la stampante" style="left:80%;top:5%;"><span class="em">🖨️</span><span class="lab"><span class="it">la stampante</span><span class="de">Drucker</span></span></span>
+        <span class="item voc" data-it="la penna" style="left:4%;top:24%;"><span class="em">🖊️</span><span class="lab"><span class="it">la penna</span><span class="de">Kuli</span></span></span>
+        <span class="item voc" data-it="la matita" style="left:23%;top:24%;"><span class="em">✏️</span><span class="lab"><span class="it">la matita</span><span class="de">Bleistift</span></span></span>
+        <span class="item voc" data-it="il foglio" style="left:42%;top:24%;"><span class="em">📄</span><span class="lab"><span class="it">il foglio</span><span class="de">Blatt</span></span></span>
+        <span class="item voc" data-it="la cartella" style="left:61%;top:24%;"><span class="em">📁</span><span class="lab"><span class="it">la cartella</span><span class="de">Mappe</span></span></span>
+        <span class="item voc" data-it="lo zaino" style="left:80%;top:24%;"><span class="em">🎒</span><span class="lab"><span class="it">lo zaino</span><span class="de">Rucksack</span></span></span>
+        <span class="item voc" data-it="la calcolatrice" style="left:4%;top:43%;"><span class="em">🧮</span><span class="lab"><span class="it">la calcolatrice</span><span class="de">Rechner</span></span></span>
+        <span class="item voc" data-it="l'agenda" style="left:23%;top:43%;"><span class="em">📓</span><span class="lab"><span class="it">l'agenda</span><span class="de">Kalender</span></span></span>
+        <span class="item voc" data-it="il telefono" style="left:42%;top:43%;"><span class="em">📱</span><span class="lab"><span class="it">il telefono</span><span class="de">Telefon</span></span></span>
+        <span class="item voc" data-it="le cuffie" style="left:61%;top:43%;"><span class="em">🎧</span><span class="lab"><span class="it">le cuffie</span><span class="de">Kopfhörer</span></span></span>
+        <span class="item voc" data-it="il cavo" style="left:80%;top:43%;"><span class="em">🔌</span><span class="lab"><span class="it">il cavo</span><span class="de">Kabel</span></span></span>
+        <span class="item voc" data-it="la gomma" style="left:4%;top:62%;"><span class="em">🧽</span><span class="lab"><span class="it">la gomma</span><span class="de">Radiergummi</span></span></span>
+        <span class="item voc" data-it="il righello" style="left:23%;top:62%;"><span class="em">📏</span><span class="lab"><span class="it">il righello</span><span class="de">Lineal</span></span></span>
+        <span class="item voc" data-it="le forbici" style="left:42%;top:62%;"><span class="em">✂️</span><span class="lab"><span class="it">le forbici</span><span class="de">Schere</span></span></span>
+        <span class="item voc" data-it="la graffetta" style="left:61%;top:62%;"><span class="em">📎</span><span class="lab"><span class="it">la graffetta</span><span class="de">Büroklammer</span></span></span>
+        <span class="item voc" data-it="il nastro adesivo" style="left:80%;top:62%;"><span class="em">🩹</span><span class="lab"><span class="it">il nastro adesivo</span><span class="de">Klebeband</span></span></span>
+      </div>
+    </div>
+  </section>
+  <!-- ============ 19. CIBO (Speisekarte) ============ -->
+  <style>
+  #cibo{--acc:#c1121f;--acc-soft:#fbe2e4;--acc-deep:#8d0d16;}
+  .menu{border:2px solid var(--ink);border-radius:16px;box-shadow:var(--shadow);background:#fffdf6;overflow:hidden;}
+  .menu-top{text-align:center;padding:.8rem;border-bottom:2px dashed var(--line-strong);font-family:var(--f-display);}
+  .menu-top .t{font-weight:900;font-size:1.2rem;color:var(--acc-deep);}
+  .menu-top .s{font-size:.78rem;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase;}
+  .menu-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  @media(max-width:600px){.menu-cols{grid-template-columns:1fr;}}
+  .menu-cat{padding:.7rem .9rem;border-bottom:1px solid var(--line);}
+  .menu-cat:nth-child(odd){border-right:1px solid var(--line);}
+  .menu-cat h4{font-size:.92rem;font-weight:800;color:var(--acc-deep);margin-bottom:.4rem;display:flex;gap:.35rem;align-items:center;}
+  .menu-cat .mi{display:flex;justify-content:space-between;gap:.5rem;cursor:pointer;font-size:.85rem;padding:.12rem 0;align-items:baseline;}
+  .menu-cat .mi:hover{color:var(--acc-deep);}
+  .menu-cat .mi .it{font-weight:600;}
+  .menu-cat .mi .de{color:var(--ink-soft);font-size:.78rem;}
+  </style>
+  <section class="vsec" id="cibo">
+    <div class="vsec-head">
+      <span class="vsec-icon">🍝</span>
+      <h2>Cibi e bevande &mdash; Essen &amp; Trinken</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Wie auf der Speisekarte einer echten Trattoria, Gang für Gang.</p>
+    <div class="menu">
+      <div class="menu-top"><div class="t">🇮🇹 Trattoria Don Due</div><div class="s">il menù</div></div>
+      <div class="menu-cols">
+        <div class="menu-cat">
+          <h4>🥖 Antipasti &amp; Basis</h4>
+          <span class="mi voc" data-it="il pane"><span class="it">il pane</span><span class="de">Brot</span></span>
+          <span class="mi voc" data-it="il burro"><span class="it">il burro</span><span class="de">Butter</span></span>
+          <span class="mi voc" data-it="il formaggio"><span class="it">il formaggio</span><span class="de">Käse</span></span>
+          <span class="mi voc" data-it="il prosciutto"><span class="it">il prosciutto</span><span class="de">Schinken</span></span>
+          <span class="mi voc" data-it="le olive"><span class="it">le olive</span><span class="de">Oliven</span></span>
+          <span class="mi voc" data-it="l'uovo"><span class="it">l'uovo</span><span class="de">Ei</span></span>
+        </div>
+        <div class="menu-cat">
+          <h4>🍝 Primi</h4>
+          <span class="mi voc" data-it="la pasta"><span class="it">la pasta</span><span class="de">Nudeln</span></span>
+          <span class="mi voc" data-it="gli spaghetti"><span class="it">gli spaghetti</span><span class="de">Spaghetti</span></span>
+          <span class="mi voc" data-it="il riso"><span class="it">il riso</span><span class="de">Reis</span></span>
+          <span class="mi voc" data-it="la pizza"><span class="it">la pizza</span><span class="de">Pizza</span></span>
+          <span class="mi voc" data-it="la zuppa"><span class="it">la zuppa</span><span class="de">Suppe</span></span>
+        </div>
+        <div class="menu-cat">
+          <h4>🍖 Secondi</h4>
+          <span class="mi voc" data-it="la carne"><span class="it">la carne</span><span class="de">Fleisch</span></span>
+          <span class="mi voc" data-it="il pesce"><span class="it">il pesce</span><span class="de">Fisch</span></span>
+          <span class="mi voc" data-it="il pollo"><span class="it">il pollo</span><span class="de">Hähnchen</span></span>
+          <span class="mi voc" data-it="la bistecca"><span class="it">la bistecca</span><span class="de">Steak</span></span>
+        </div>
+        <div class="menu-cat">
+          <h4>🥗 Contorni &amp; Frutta</h4>
+          <span class="mi voc" data-it="l'insalata"><span class="it">l'insalata</span><span class="de">Salat</span></span>
+          <span class="mi voc" data-it="le patate"><span class="it">le patate</span><span class="de">Kartoffeln</span></span>
+          <span class="mi voc" data-it="la verdura"><span class="it">la verdura</span><span class="de">Gemüse</span></span>
+          <span class="mi voc" data-it="il pomodoro"><span class="it">il pomodoro</span><span class="de">Tomate</span></span>
+          <span class="mi voc" data-it="la frutta"><span class="it">la frutta</span><span class="de">Obst</span></span>
+        </div>
+        <div class="menu-cat">
+          <h4>🍰 Dolci</h4>
+          <span class="mi voc" data-it="il gelato"><span class="it">il gelato</span><span class="de">Eis</span></span>
+          <span class="mi voc" data-it="la torta"><span class="it">la torta</span><span class="de">Kuchen / Torte</span></span>
+          <span class="mi voc" data-it="i biscotti"><span class="it">i biscotti</span><span class="de">Kekse</span></span>
+          <span class="mi voc" data-it="il tiramisù"><span class="it">il tiramisù</span><span class="de">Tiramisu</span></span>
+        </div>
+        <div class="menu-cat">
+          <h4>🥤 Bevande</h4>
+          <span class="mi voc" data-it="l'acqua"><span class="it">l'acqua</span><span class="de">Wasser</span></span>
+          <span class="mi voc" data-it="il vino"><span class="it">il vino</span><span class="de">Wein</span></span>
+          <span class="mi voc" data-it="la birra"><span class="it">la birra</span><span class="de">Bier</span></span>
+          <span class="mi voc" data-it="il caffè"><span class="it">il caffè</span><span class="de">Kaffee</span></span>
+          <span class="mi voc" data-it="il latte"><span class="it">il latte</span><span class="de">Milch</span></span>
+          <span class="mi voc" data-it="il tè"><span class="it">il tè</span><span class="de">Tee</span></span>
+          <span class="mi voc" data-it="il succo"><span class="it">il succo</span><span class="de">Saft</span></span>
+          <span class="mi voc" data-it="la spremuta"><span class="it">la spremuta</span><span class="de">frisch gepresster Saft</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 20. ANIMALI ============ -->
+  <style>
+  #animali{--acc:#80b918;--acc-soft:#eef7dd;--acc-deep:#5a8410;}
+  .habitats{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.7rem;}
+  .habitat{border:2px solid var(--ink);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  .habitat h4{font-size:.88rem;font-weight:800;padding:.5rem .7rem;display:flex;gap:.4rem;align-items:center;color:#fff;}
+  .habitat .grid-a{display:flex;flex-wrap:wrap;gap:.4rem;padding:.6rem;}
+  .habitat .a{text-align:center;cursor:pointer;width:62px;}
+  .habitat .a .em{font-size:1.6rem;line-height:1;}
+  .habitat .a .it{display:block;font-weight:700;font-size:.72rem;color:var(--acc-deep);}
+  .habitat .a .de{font-size:.66rem;}
+  .h-farm h4{background:#a07d52;} .h-wood h4{background:#3a7d34;}
+  .h-wild h4{background:#d98c00;} .h-water h4{background:#2090b3;}
+  </style>
+  <section class="vsec" id="animali">
+    <div class="vsec-head">
+      <span class="vsec-icon">🐘</span>
+      <h2>Gli animali &mdash; Tiere</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Geordnet nach ihrem Zuhause: Bauernhof, Wald, Wildnis, Wasser &amp; Luft.</p>
+    <div class="habitats">
+      <div class="habitat h-farm">
+        <h4>🚜 La fattoria &mdash; Bauernhof</h4>
+        <div class="grid-a">
+          <span class="a voc" data-it="il cane"><span class="em">🐕</span><span class="it">il cane</span><span class="de">Hund</span></span>
+          <span class="a voc" data-it="il gatto"><span class="em">🐈</span><span class="it">il gatto</span><span class="de">Katze</span></span>
+          <span class="a voc" data-it="il cavallo"><span class="em">🐎</span><span class="it">il cavallo</span><span class="de">Pferd</span></span>
+          <span class="a voc" data-it="la mucca"><span class="em">🐄</span><span class="it">la mucca</span><span class="de">Kuh</span></span>
+          <span class="a voc" data-it="il maiale"><span class="em">🐖</span><span class="it">il maiale</span><span class="de">Schwein</span></span>
+          <span class="a voc" data-it="la pecora"><span class="em">🐑</span><span class="it">la pecora</span><span class="de">Schaf</span></span>
+          <span class="a voc" data-it="la gallina"><span class="em">🐔</span><span class="it">la gallina</span><span class="de">Huhn</span></span>
+          <span class="a voc" data-it="il coniglio"><span class="em">🐇</span><span class="it">il coniglio</span><span class="de">Kaninchen</span></span>
+        </div>
+      </div>
+      <div class="habitat h-wood">
+        <h4>🌲 Il bosco &mdash; Wald</h4>
+        <div class="grid-a">
+          <span class="a voc" data-it="la volpe"><span class="em">🦊</span><span class="it">la volpe</span><span class="de">Fuchs</span></span>
+          <span class="a voc" data-it="il cervo"><span class="em">🦌</span><span class="it">il cervo</span><span class="de">Hirsch</span></span>
+          <span class="a voc" data-it="lo scoiattolo"><span class="em">🐿️</span><span class="it">lo scoiattolo</span><span class="de">Eichhörnchen</span></span>
+          <span class="a voc" data-it="il riccio"><span class="em">🦔</span><span class="it">il riccio</span><span class="de">Igel</span></span>
+          <span class="a voc" data-it="il lupo"><span class="em">🐺</span><span class="it">il lupo</span><span class="de">Wolf</span></span>
+          <span class="a voc" data-it="l'orso"><span class="em">🐻</span><span class="it">l'orso</span><span class="de">Bär</span></span>
+        </div>
+      </div>
+      <div class="habitat h-wild">
+        <h4>🌍 Selvaggi &mdash; Wildnis</h4>
+        <div class="grid-a">
+          <span class="a voc" data-it="il leone"><span class="em">🦁</span><span class="it">il leone</span><span class="de">Löwe</span></span>
+          <span class="a voc" data-it="l'elefante"><span class="em">🐘</span><span class="it">l'elefante</span><span class="de">Elefant</span></span>
+          <span class="a voc" data-it="la giraffa"><span class="em">🦒</span><span class="it">la giraffa</span><span class="de">Giraffe</span></span>
+          <span class="a voc" data-it="la scimmia"><span class="em">🐒</span><span class="it">la scimmia</span><span class="de">Affe</span></span>
+          <span class="a voc" data-it="la tigre"><span class="em">🐅</span><span class="it">la tigre</span><span class="de">Tiger</span></span>
+          <span class="a voc" data-it="la zebra"><span class="em">🦓</span><span class="it">la zebra</span><span class="de">Zebra</span></span>
+        </div>
+      </div>
+      <div class="habitat h-water">
+        <h4>🌊 Acqua e cielo &mdash; Wasser &amp; Luft</h4>
+        <div class="grid-a">
+          <span class="a voc" data-it="il pesce"><span class="em">🐟</span><span class="it">il pesce</span><span class="de">Fisch</span></span>
+          <span class="a voc" data-it="il delfino"><span class="em">🐬</span><span class="it">il delfino</span><span class="de">Delfin</span></span>
+          <span class="a voc" data-it="l'uccello"><span class="em">🐦</span><span class="it">l'uccello</span><span class="de">Vogel</span></span>
+          <span class="a voc" data-it="l'ape"><span class="em">🐝</span><span class="it">l'ape</span><span class="de">Biene</span></span>
+          <span class="a voc" data-it="la farfalla"><span class="em">🦋</span><span class="it">la farfalla</span><span class="de">Schmetterling</span></span>
+          <span class="a voc" data-it="la rana"><span class="em">🐸</span><span class="it">la rana</span><span class="de">Frosch</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 21. NATURA ============ -->
+  <section class="vsec" id="natura" style="--acc:#2d6a4f;--acc-soft:#e2f0e9;--acc-deep:#1d4d38;">
+    <div class="vsec-head">
+      <span class="vsec-icon">🌳</span>
+      <h2>La natura &mdash; Natur &amp; Landschaft</h2>
+      <span class="lvl">A2 – B1</span>
+    </div>
+    <p class="vsec-intro">Ein Panorama von oben bis unten: Himmel, Berge, Wasser, Wiese.</p>
+    <div class="card" style="--acc:#2d6a4f;--acc-soft:#e2f0e9;--acc-deep:#1d4d38;">
+      <div class="room" style="background:linear-gradient(180deg,#bfe3f5 0 22%, #dcefe0 22% 60%, #cfe3b8 60% 100%);">
+        <span class="item voc" data-it="il sole" style="left:4%;top:4%;"><span class="em">☀️</span><span class="lab"><span class="it">il sole</span><span class="de">Sonne</span></span></span>
+        <span class="item voc" data-it="la luna" style="left:23%;top:4%;"><span class="em">🌙</span><span class="lab"><span class="it">la luna</span><span class="de">Mond</span></span></span>
+        <span class="item voc" data-it="la stella" style="left:42%;top:4%;"><span class="em">⭐</span><span class="lab"><span class="it">la stella</span><span class="de">Stern</span></span></span>
+        <span class="item voc" data-it="la nuvola" style="left:61%;top:4%;"><span class="em">☁️</span><span class="lab"><span class="it">la nuvola</span><span class="de">Wolke</span></span></span>
+        <span class="item voc" data-it="il cielo" style="left:80%;top:4%;"><span class="em">🟦</span><span class="lab"><span class="it">il cielo</span><span class="de">Himmel</span></span></span>
+        <span class="item voc" data-it="l'arcobaleno" style="left:4%;top:23%;"><span class="em">🌈</span><span class="lab"><span class="it">l'arcobaleno</span><span class="de">Regenbogen</span></span></span>
+        <span class="item voc" data-it="la montagna" style="left:23%;top:23%;"><span class="em">🏔️</span><span class="lab"><span class="it">la montagna</span><span class="de">Berg</span></span></span>
+        <span class="item voc" data-it="la collina" style="left:42%;top:23%;"><span class="em">⛰️</span><span class="lab"><span class="it">la collina</span><span class="de">Hügel</span></span></span>
+        <span class="item voc" data-it="il vulcano" style="left:61%;top:23%;"><span class="em">🌋</span><span class="lab"><span class="it">il vulcano</span><span class="de">Vulkan</span></span></span>
+        <span class="item voc" data-it="il deserto" style="left:80%;top:23%;"><span class="em">🏜️</span><span class="lab"><span class="it">il deserto</span><span class="de">Wüste</span></span></span>
+        <span class="item voc" data-it="il bosco" style="left:4%;top:42%;"><span class="em">🌲</span><span class="lab"><span class="it">il bosco</span><span class="de">Wald</span></span></span>
+        <span class="item voc" data-it="l'albero" style="left:23%;top:42%;"><span class="em">🌳</span><span class="lab"><span class="it">l'albero</span><span class="de">Baum</span></span></span>
+        <span class="item voc" data-it="il fiume" style="left:42%;top:42%;"><span class="em">🏞️</span><span class="lab"><span class="it">il fiume</span><span class="de">Fluss</span></span></span>
+        <span class="item voc" data-it="il lago" style="left:61%;top:42%;"><span class="em">💧</span><span class="lab"><span class="it">il lago</span><span class="de">See</span></span></span>
+        <span class="item voc" data-it="la cascata" style="left:80%;top:42%;"><span class="em">💦</span><span class="lab"><span class="it">la cascata</span><span class="de">Wasserfall</span></span></span>
+        <span class="item voc" data-it="il mare" style="left:4%;top:61%;"><span class="em">🌊</span><span class="lab"><span class="it">il mare</span><span class="de">Meer</span></span></span>
+        <span class="item voc" data-it="la spiaggia" style="left:23%;top:61%;"><span class="em">🏖️</span><span class="lab"><span class="it">la spiaggia</span><span class="de">Strand</span></span></span>
+        <span class="item voc" data-it="la sabbia" style="left:42%;top:61%;"><span class="em">🟡</span><span class="lab"><span class="it">la sabbia</span><span class="de">Sand</span></span></span>
+        <span class="item voc" data-it="la roccia" style="left:61%;top:61%;"><span class="em">🪨</span><span class="lab"><span class="it">la roccia</span><span class="de">Fels</span></span></span>
+        <span class="item voc" data-it="l'isola" style="left:80%;top:61%;"><span class="em">🏝️</span><span class="lab"><span class="it">l'isola</span><span class="de">Insel</span></span></span>
+        <span class="item voc" data-it="il prato" style="left:4%;top:80%;"><span class="em">🟩</span><span class="lab"><span class="it">il prato</span><span class="de">Wiese</span></span></span>
+        <span class="item voc" data-it="l'erba" style="left:23%;top:80%;"><span class="em">🌿</span><span class="lab"><span class="it">l'erba</span><span class="de">Gras</span></span></span>
+        <span class="item voc" data-it="il campo" style="left:42%;top:80%;"><span class="em">🌾</span><span class="lab"><span class="it">il campo</span><span class="de">Feld</span></span></span>
+        <span class="item voc" data-it="il fiore" style="left:61%;top:80%;"><span class="em">🌸</span><span class="lab"><span class="it">il fiore</span><span class="de">Blume</span></span></span>
+        <span class="item voc" data-it="il sentiero" style="left:80%;top:80%;"><span class="em">🥾</span><span class="lab"><span class="it">il sentiero</span><span class="de">Weg / Pfad</span></span></span>
+      </div>
+    </div>
+  </section>
+  <!-- ============ 22. METEO ============ -->
+  <style>
+  #meteo{--acc:#48cae4;--acc-soft:#e2f6fb;--acc-deep:#2596b4;}
+  .weather{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:.6rem;}
+  .wcard{border:2px solid var(--ink);border-radius:14px;box-shadow:var(--shadow);background:linear-gradient(180deg,#eaf7fc,#fff);
+    padding:.7rem .4rem;text-align:center;cursor:pointer;transition:transform .12s;}
+  .wcard:hover{transform:translateY(-3px);}
+  .wcard .em{font-size:1.9rem;line-height:1;}
+  .wcard .it{display:block;font-weight:700;font-size:.83rem;color:var(--acc-deep);margin-top:.25rem;}
+  .wcard .de{font-size:.72rem;}
+  </style>
+  <section class="vsec" id="meteo">
+    <div class="vsec-head">
+      <span class="vsec-icon">⛅</span>
+      <h2>Che tempo fa? &mdash; Wetter</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Die Wettervorhersage zum Antippen. Tipp: oft mit <b>fa</b> (fa caldo) oder <b>c'è</b> (c'è vento).</p>
+    <div class="card">
+      <div class="weather">
+        <span class="wcard voc" data-it="c'è il sole"><span class="em">☀️</span><span class="it">c'è il sole</span><span class="de">es ist sonnig</span></span>
+        <span class="wcard voc" data-it="è sereno"><span class="em">🌤️</span><span class="it">è sereno</span><span class="de">heiter</span></span>
+        <span class="wcard voc" data-it="è nuvoloso"><span class="em">☁️</span><span class="it">è nuvoloso</span><span class="de">bewölkt</span></span>
+        <span class="wcard voc" data-it="il cielo è coperto"><span class="em">🌥️</span><span class="it">è coperto</span><span class="de">bedeckt</span></span>
+        <span class="wcard voc" data-it="piove"><span class="em">🌧️</span><span class="it">piove (la pioggia)</span><span class="de">es regnet</span></span>
+        <span class="wcard voc" data-it="c'è un temporale"><span class="em">⛈️</span><span class="it">il temporale</span><span class="de">Gewitter</span></span>
+        <span class="wcard voc" data-it="il fulmine"><span class="em">⚡</span><span class="it">il fulmine</span><span class="de">Blitz</span></span>
+        <span class="wcard voc" data-it="nevica"><span class="em">🌨️</span><span class="it">nevica (la neve)</span><span class="de">es schneit</span></span>
+        <span class="wcard voc" data-it="grandina"><span class="em">🧊</span><span class="it">grandina</span><span class="de">es hagelt</span></span>
+        <span class="wcard voc" data-it="c'è vento"><span class="em">💨</span><span class="it">c'è vento</span><span class="de">windig</span></span>
+        <span class="wcard voc" data-it="c'è nebbia"><span class="em">🌫️</span><span class="it">c'è nebbia</span><span class="de">neblig</span></span>
+        <span class="wcard voc" data-it="fa caldo"><span class="em">🌡️</span><span class="it">fa caldo</span><span class="de">es ist heiß</span></span>
+        <span class="wcard voc" data-it="fa freddo"><span class="em">❄️</span><span class="it">fa freddo</span><span class="de">es ist kalt</span></span>
+        <span class="wcard voc" data-it="è umido"><span class="em">💧</span><span class="it">è umido</span><span class="de">feucht</span></span>
+        <span class="wcard voc" data-it="c'è il ghiaccio"><span class="em">🧊</span><span class="it">il ghiaccio</span><span class="de">Eis / glatt</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 23. CORPO ============ -->
+  <style>
+  #corpo{--acc:#e07a5f;--acc-soft:#fae6df;--acc-deep:#b1543b;}
+  .body-diagram{display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center;}
+  .bcol{display:flex;flex-direction:column;gap:.32rem;}
+  .bcol.l{align-items:flex-end;text-align:right;}
+  .bcol.r{align-items:flex-start;text-align:left;}
+  .bpart{cursor:pointer;font-size:.8rem;border:1.5px solid var(--acc);background:var(--acc-soft);
+    border-radius:99px;padding:.13rem .6rem;white-space:nowrap;transition:transform .12s;}
+  .bpart:hover{transform:scale(1.05);}
+  .bpart .it{font-weight:700;color:var(--acc-deep);}
+  .bpart .de{font-size:.72rem;color:var(--ink-soft);}
+  .bsvg{flex:0 0 auto;}
+  @media(max-width:620px){
+    .body-diagram{grid-template-columns:1fr 1fr;}
+    .bsvg{grid-column:1 / -1;order:-1;margin:0 auto;}
+    .bcol.l,.bcol.r{align-items:stretch;text-align:left;}
+  }
+  </style>
+  <section class="vsec" id="corpo">
+    <div class="vsec-head">
+      <span class="vsec-icon">🙋</span>
+      <h2>Il corpo &mdash; Der Körper</h2>
+      <span class="lvl">A1 – B1</span>
+    </div>
+    <p class="vsec-intro">Jedes Körperteil sitzt da, wo es hingehört &mdash; von Kopf bis Fuß.</p>
+    <div class="card">
+      <div class="body-diagram">
+        <div class="bcol l">
+          <span class="bpart voc" data-it="la testa"><span class="it">la testa</span> <span class="de">Kopf</span></span>
+          <span class="bpart voc" data-it="i capelli"><span class="it">i capelli</span> <span class="de">Haare</span></span>
+          <span class="bpart voc" data-it="la fronte"><span class="it">la fronte</span> <span class="de">Stirn</span></span>
+          <span class="bpart voc" data-it="il sopracciglio"><span class="it">il sopracciglio</span> <span class="de">Augenbraue</span></span>
+          <span class="bpart voc" data-it="l'occhio"><span class="it">l'occhio</span> <span class="de">Auge</span></span>
+          <span class="bpart voc" data-it="l'orecchio"><span class="it">l'orecchio</span> <span class="de">Ohr</span></span>
+          <span class="bpart voc" data-it="il naso"><span class="it">il naso</span> <span class="de">Nase</span></span>
+          <span class="bpart voc" data-it="la guancia"><span class="it">la guancia</span> <span class="de">Wange</span></span>
+          <span class="bpart voc" data-it="la bocca"><span class="it">la bocca</span> <span class="de">Mund</span></span>
+          <span class="bpart voc" data-it="il labbro"><span class="it">il labbro</span> <span class="de">Lippe</span></span>
+          <span class="bpart voc" data-it="il dente"><span class="it">il dente</span> <span class="de">Zahn</span></span>
+          <span class="bpart voc" data-it="la lingua"><span class="it">la lingua</span> <span class="de">Zunge</span></span>
+          <span class="bpart voc" data-it="il mento"><span class="it">il mento</span> <span class="de">Kinn</span></span>
+          <span class="bpart voc" data-it="il collo"><span class="it">il collo</span> <span class="de">Hals</span></span>
+          <span class="bpart voc" data-it="la spalla"><span class="it">la spalla</span> <span class="de">Schulter</span></span>
+          <span class="bpart voc" data-it="il viso"><span class="it">il viso</span> <span class="de">Gesicht</span></span>
+        </div>
+        <svg class="bsvg" width="170" height="450" viewBox="0 0 170 450">
+          <g fill="#fae6df" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round">
+            <circle cx="85" cy="42" r="30"/>
+            <rect x="76" y="70" width="18" height="16" rx="4"/>
+            <rect x="52" y="84" width="66" height="98" rx="20"/>
+            <rect x="60" y="172" width="50" height="74" rx="16"/>
+            <rect x="28" y="88" width="18" height="104" rx="9"/>
+            <rect x="124" y="88" width="18" height="104" rx="9"/>
+            <circle cx="37" cy="202" r="11"/>
+            <circle cx="133" cy="202" r="11"/>
+            <rect x="62" y="240" width="20" height="124" rx="10"/>
+            <rect x="88" y="240" width="20" height="124" rx="10"/>
+            <ellipse cx="70" cy="374" rx="17" ry="10"/>
+            <ellipse cx="100" cy="374" rx="17" ry="10"/>
+          </g>
+        </svg>
+        <div class="bcol r">
+          <span class="bpart voc" data-it="il petto"><span class="de">Brust</span> <span class="it">il petto</span></span>
+          <span class="bpart voc" data-it="la schiena"><span class="de">Rücken</span> <span class="it">la schiena</span></span>
+          <span class="bpart voc" data-it="il braccio"><span class="de">Arm</span> <span class="it">il braccio</span></span>
+          <span class="bpart voc" data-it="il gomito"><span class="de">Ellbogen</span> <span class="it">il gomito</span></span>
+          <span class="bpart voc" data-it="il polso"><span class="de">Handgelenk</span> <span class="it">il polso</span></span>
+          <span class="bpart voc" data-it="la mano"><span class="de">Hand</span> <span class="it">la mano</span></span>
+          <span class="bpart voc" data-it="il dito"><span class="de">Finger</span> <span class="it">il dito</span></span>
+          <span class="bpart voc" data-it="l'unghia"><span class="de">Nagel</span> <span class="it">l'unghia</span></span>
+          <span class="bpart voc" data-it="la pancia"><span class="de">Bauch</span> <span class="it">la pancia</span></span>
+          <span class="bpart voc" data-it="il fianco"><span class="de">Hüfte</span> <span class="it">il fianco</span></span>
+          <span class="bpart voc" data-it="la gamba"><span class="de">Bein</span> <span class="it">la gamba</span></span>
+          <span class="bpart voc" data-it="il ginocchio"><span class="de">Knie</span> <span class="it">il ginocchio</span></span>
+          <span class="bpart voc" data-it="la caviglia"><span class="de">Knöchel</span> <span class="it">la caviglia</span></span>
+          <span class="bpart voc" data-it="il tallone"><span class="de">Ferse</span> <span class="it">il tallone</span></span>
+          <span class="bpart voc" data-it="il piede"><span class="de">Fuß</span> <span class="it">il piede</span></span>
+        </div>
+      </div>
+      <div class="note">Tückische Plurale: <b>il braccio → le braccia</b>, <b>il dito → le dita</b>, <b>l'orecchio → le orecchie</b>, <b>il ginocchio → le ginocchia</b>.</div>
+    </div>
+  </section>
+
+  <!-- ============ 24. ABBIGLIAMENTO ============ -->
+  <style>
+  #abbigliamento{--acc:#d4a373;--acc-soft:#f6ecde;--acc-deep:#9c7340;}
+  .rack{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1rem;}
+  .rack .voc{font-size:.82rem;background:var(--acc-soft);border:1.5px solid var(--acc);border-radius:99px;padding:.16rem .6rem;cursor:pointer;}
+  .rack .voc .it{font-weight:700;color:var(--acc-deep);}
+  .rack-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-top:1rem;}
+  </style>
+  <section class="vsec" id="abbigliamento">
+    <div class="vsec-head">
+      <span class="vsec-icon">👕</span>
+      <h2>I vestiti &mdash; Kleidung</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Was man am Körper trägt &mdash; und im Schrank hängt.</p>
+    <div class="card">
+      <div class="body-diagram">
+        <div class="bcol l">
+          <span class="bpart voc" data-it="il cappello"><span class="it">il cappello</span> <span class="de">Hut / Mütze</span></span>
+          <span class="bpart voc" data-it="la giacca"><span class="it">la giacca</span> <span class="de">Jacke</span></span>
+          <span class="bpart voc" data-it="la maglietta"><span class="it">la maglietta</span> <span class="de">T-Shirt</span></span>
+          <span class="bpart voc" data-it="la camicia"><span class="it">la camicia</span> <span class="de">Hemd</span></span>
+          <span class="bpart voc" data-it="il maglione"><span class="it">il maglione</span> <span class="de">Pullover</span></span>
+        </div>
+        <svg class="bsvg" width="160" height="420" viewBox="0 0 160 420">
+          <circle cx="80" cy="40" r="26" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+          <path d="M48 92 Q80 74 112 92 L120 180 L96 180 L96 250 L64 250 L64 180 L40 180 Z" fill="#d4a373" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="30" y="94" width="16" height="92" rx="8" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+          <rect x="114" y="94" width="16" height="92" rx="8" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+          <rect x="62" y="248" width="22" height="120" rx="8" fill="#457b9d" stroke="#2a2320" stroke-width="2.5"/>
+          <rect x="86" y="248" width="22" height="120" rx="8" fill="#457b9d" stroke="#2a2320" stroke-width="2.5"/>
+          <ellipse cx="72" cy="378" rx="18" ry="11" fill="#3a3a3a" stroke="#2a2320" stroke-width="2.5"/>
+          <ellipse cx="100" cy="378" rx="18" ry="11" fill="#3a3a3a" stroke="#2a2320" stroke-width="2.5"/>
+        </svg>
+        <div class="bcol r">
+          <span class="bpart voc" data-it="la cintura"><span class="de">Gürtel</span> <span class="it">la cintura</span></span>
+          <span class="bpart voc" data-it="i pantaloni"><span class="de">Hose</span> <span class="it">i pantaloni</span></span>
+          <span class="bpart voc" data-it="i jeans"><span class="de">Jeans</span> <span class="it">i jeans</span></span>
+          <span class="bpart voc" data-it="i calzini"><span class="de">Socken</span> <span class="it">i calzini</span></span>
+          <span class="bpart voc" data-it="le scarpe"><span class="de">Schuhe</span> <span class="it">le scarpe</span></span>
+        </div>
+      </div>
+      <div class="rack-title">👗 Nel guardaroba &mdash; im Kleiderschrank</div>
+      <div class="rack">
+        <span class="voc" data-it="il vestito"><span class="it">il vestito</span> <span class="de">Kleid / Anzug</span></span>
+        <span class="voc" data-it="la gonna"><span class="it">la gonna</span> <span class="de">Rock</span></span>
+        <span class="voc" data-it="la felpa"><span class="it">la felpa</span> <span class="de">Sweatshirt</span></span>
+        <span class="voc" data-it="il cappotto"><span class="it">il cappotto</span> <span class="de">Mantel</span></span>
+        <span class="voc" data-it="gli stivali"><span class="it">gli stivali</span> <span class="de">Stiefel</span></span>
+        <span class="voc" data-it="la sciarpa"><span class="it">la sciarpa</span> <span class="de">Schal</span></span>
+        <span class="voc" data-it="i guanti"><span class="it">i guanti</span> <span class="de">Handschuhe</span></span>
+        <span class="voc" data-it="gli occhiali"><span class="it">gli occhiali</span> <span class="de">Brille</span></span>
+        <span class="voc" data-it="la cravatta"><span class="it">la cravatta</span> <span class="de">Krawatte</span></span>
+        <span class="voc" data-it="il costume da bagno"><span class="it">il costume da bagno</span> <span class="de">Badeanzug</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 25. FAMIGLIA ============ -->
+  <style>
+  #famiglia{--acc:#ff8fab;--acc-soft:#ffe4ec;--acc-deep:#cc5e7d;}
+  .tree{display:flex;flex-direction:column;align-items:center;}
+  .tier{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+  .conn{width:3px;height:20px;background:var(--acc);}
+  .fnode{border:2px solid var(--ink);border-radius:12px;background:var(--paper-2);box-shadow:var(--shadow);
+    padding:.4rem .65rem;text-align:center;cursor:pointer;min-width:88px;transition:transform .12s;}
+  .fnode:hover{transform:translateY(-2px);}
+  .fnode .em{font-size:1.3rem;line-height:1;}
+  .fnode .it{display:block;font-weight:700;font-size:.82rem;color:var(--acc-deep);}
+  .fnode .de{font-size:.7rem;}
+  .couple{display:flex;gap:.5rem;align-items:center;background:var(--acc-soft);border-radius:14px;padding:.35rem;}
+  .fextra{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1rem;justify-content:center;}
+  .fextra .voc{font-size:.82rem;background:var(--acc-soft);border:1.5px solid var(--acc);border-radius:99px;padding:.16rem .6rem;cursor:pointer;}
+  .fextra .voc .it{font-weight:700;color:var(--acc-deep);}
+  </style>
+  <section class="vsec" id="famiglia">
+    <div class="vsec-head">
+      <span class="vsec-icon">👨‍👩‍👧</span>
+      <h2>La famiglia &mdash; Familie</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Der Stammbaum: drei Generationen auf einen Blick.</p>
+    <div class="card">
+      <div class="tree">
+        <div class="tier">
+          <div class="couple">
+            <span class="fnode voc" data-it="il nonno"><span class="em">👴</span><span class="it">il nonno</span><span class="de">Opa</span></span>
+            <span class="fnode voc" data-it="la nonna"><span class="em">👵</span><span class="it">la nonna</span><span class="de">Oma</span></span>
+          </div>
+        </div>
+        <div class="conn"></div>
+        <div class="tier">
+          <span class="fnode voc" data-it="lo zio"><span class="em">🧔</span><span class="it">lo zio</span><span class="de">Onkel</span></span>
+          <div class="couple">
+            <span class="fnode voc" data-it="il padre"><span class="em">👨</span><span class="it">il padre</span><span class="de">Vater</span></span>
+            <span class="fnode voc" data-it="la madre"><span class="em">👩</span><span class="it">la madre</span><span class="de">Mutter</span></span>
+          </div>
+          <span class="fnode voc" data-it="la zia"><span class="em">👩‍🦰</span><span class="it">la zia</span><span class="de">Tante</span></span>
+        </div>
+        <div class="conn"></div>
+        <div class="tier">
+          <span class="fnode voc" data-it="il fratello"><span class="em">👦</span><span class="it">il fratello</span><span class="de">Bruder</span></span>
+          <span class="fnode voc" data-it="io"><span class="em">🙂</span><span class="it">io</span><span class="de">ich</span></span>
+          <span class="fnode voc" data-it="la sorella"><span class="em">👧</span><span class="it">la sorella</span><span class="de">Schwester</span></span>
+          <span class="fnode voc" data-it="il cugino"><span class="em">🧒</span><span class="it">il cugino / la cugina</span><span class="de">Cousin/e</span></span>
+        </div>
+      </div>
+      <div class="fextra">
+        <span class="voc" data-it="i genitori"><span class="it">i genitori</span> <span class="de">Eltern</span></span>
+        <span class="voc" data-it="il figlio"><span class="it">il figlio</span> <span class="de">Sohn</span></span>
+        <span class="voc" data-it="la figlia"><span class="it">la figlia</span> <span class="de">Tochter</span></span>
+        <span class="voc" data-it="il marito"><span class="it">il marito</span> <span class="de">Ehemann</span></span>
+        <span class="voc" data-it="la moglie"><span class="it">la moglie</span> <span class="de">Ehefrau</span></span>
+        <span class="voc" data-it="il nipote"><span class="it">il/la nipote</span> <span class="de">Enkel/in &middot; Neffe/Nichte</span></span>
+        <span class="voc" data-it="i parenti"><span class="it">i parenti</span> <span class="de">Verwandte</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 26. PROFESSIONI ============ -->
+  <style>
+  #professioni{--acc:#3a86ff;--acc-soft:#e4eeff;--acc-deep:#205fd0;}
+  .jobs{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.55rem;}
+  .job{border:2px solid var(--ink);border-radius:14px;background:var(--paper-2);box-shadow:var(--shadow);
+    padding:.55rem .35rem;text-align:center;cursor:pointer;transition:transform .12s;}
+  .job:hover{transform:translateY(-2px);}
+  .job .em{font-size:1.7rem;line-height:1;}
+  .job .it{display:block;font-weight:700;font-size:.78rem;color:var(--acc-deep);margin-top:.2rem;}
+  .job .de{font-size:.7rem;}
+  </style>
+  <section class="vsec" id="professioni">
+    <div class="vsec-head">
+      <span class="vsec-icon">👨‍⚕️</span>
+      <h2>I mestieri &mdash; Berufe</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Jeder Beruf mit seinem Werkzeug. Viele Formen gibt es männlich und weiblich.</p>
+    <div class="card">
+      <div class="jobs">
+        <span class="job voc" data-it="il medico"><span class="em">👨‍⚕️</span><span class="it">il medico</span><span class="de">Arzt/Ärztin</span></span>
+        <span class="job voc" data-it="l'infermiere"><span class="em">👩‍⚕️</span><span class="it">l'infermiere/a</span><span class="de">Pfleger/in</span></span>
+        <span class="job voc" data-it="l'insegnante"><span class="em">👨‍🏫</span><span class="it">l'insegnante</span><span class="de">Lehrer/in</span></span>
+        <span class="job voc" data-it="lo studente"><span class="em">🧑‍🎓</span><span class="it">lo studente</span><span class="de">Schüler/Student</span></span>
+        <span class="job voc" data-it="il cuoco"><span class="em">👨‍🍳</span><span class="it">il cuoco</span><span class="de">Koch/Köchin</span></span>
+        <span class="job voc" data-it="il cameriere"><span class="em">🧑‍🍳</span><span class="it">il cameriere</span><span class="de">Kellner/in</span></span>
+        <span class="job voc" data-it="il commesso"><span class="em">🛍️</span><span class="it">il commesso</span><span class="de">Verkäufer/in</span></span>
+        <span class="job voc" data-it="il poliziotto"><span class="em">👮</span><span class="it">il poliziotto</span><span class="de">Polizist/in</span></span>
+        <span class="job voc" data-it="il pompiere"><span class="em">👨‍🚒</span><span class="it">il pompiere</span><span class="de">Feuerwehrmann</span></span>
+        <span class="job voc" data-it="il contadino"><span class="em">👨‍🌾</span><span class="it">il contadino</span><span class="de">Bauer/Bäuerin</span></span>
+        <span class="job voc" data-it="il meccanico"><span class="em">👨‍🔧</span><span class="it">il meccanico</span><span class="de">Mechaniker/in</span></span>
+        <span class="job voc" data-it="l'idraulico"><span class="em">🔧</span><span class="it">l'idraulico</span><span class="de">Klempner/in</span></span>
+        <span class="job voc" data-it="l'elettricista"><span class="em">💡</span><span class="it">l'elettricista</span><span class="de">Elektriker/in</span></span>
+        <span class="job voc" data-it="il parrucchiere"><span class="em">💇</span><span class="it">il parrucchiere</span><span class="de">Friseur/in</span></span>
+        <span class="job voc" data-it="l'avvocato"><span class="em">⚖️</span><span class="it">l'avvocato</span><span class="de">Anwalt/Anwältin</span></span>
+        <span class="job voc" data-it="l'ingegnere"><span class="em">👷</span><span class="it">l'ingegnere</span><span class="de">Ingenieur/in</span></span>
+        <span class="job voc" data-it="il giornalista"><span class="em">🎤</span><span class="it">il giornalista</span><span class="de">Journalist/in</span></span>
+        <span class="job voc" data-it="il musicista"><span class="em">🎸</span><span class="it">il musicista</span><span class="de">Musiker/in</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 27. SALUTE ============ -->
+  <style>
+  #salute{--acc:#06d6a0;--acc-soft:#dffaf1;--acc-deep:#04936e;}
+  .health{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+  @media(max-width:600px){.health{grid-template-columns:1fr;}}
+  .hbox{border:2px solid var(--ink);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  .hbox h4{font-size:.88rem;font-weight:800;padding:.5rem .7rem;color:#fff;display:flex;gap:.4rem;align-items:center;}
+  .hbox.sint h4{background:#e76f51;} .hbox.cure h4{background:#06d6a0;}
+  .hbox .list{display:flex;flex-wrap:wrap;gap:.4rem;padding:.6rem;}
+  .hbox .voc{font-size:.82rem;background:var(--paper-3);border:1.5px solid var(--line-strong);border-radius:99px;padding:.16rem .55rem;cursor:pointer;}
+  .hbox .voc .it{font-weight:700;color:var(--acc-deep);}
+  .hbox.sint .voc .it{color:#b34a30;}
+  .hphr{display:flex;flex-direction:column;gap:.3rem;}
+  .hphr .voc .it{color:var(--acc-deep);font-weight:700;}
+  </style>
+  <section class="vsec" id="salute">
+    <div class="vsec-head">
+      <span class="vsec-icon">🤒</span>
+      <h2>La salute &mdash; Gesundheit &amp; Krankheit</h2>
+      <span class="lvl">A2 – B1</span>
+    </div>
+    <p class="vsec-intro">Beim Arzt: links die Beschwerden, rechts die Hilfe.</p>
+    <div class="card">
+      <div class="health">
+        <div class="hbox sint">
+          <h4>🤕 I sintomi &mdash; Beschwerden</h4>
+          <div class="list">
+            <span class="voc" data-it="il mal di testa"><span class="it">il mal di testa</span> <span class="de">Kopfschmerzen</span></span>
+            <span class="voc" data-it="il mal di gola"><span class="it">il mal di gola</span> <span class="de">Halsschmerzen</span></span>
+            <span class="voc" data-it="il mal di pancia"><span class="it">il mal di pancia</span> <span class="de">Bauchweh</span></span>
+            <span class="voc" data-it="il mal di denti"><span class="it">il mal di denti</span> <span class="de">Zahnschmerzen</span></span>
+            <span class="voc" data-it="la febbre"><span class="it">la febbre</span> <span class="de">Fieber</span></span>
+            <span class="voc" data-it="il raffreddore"><span class="it">il raffreddore</span> <span class="de">Erkältung</span></span>
+            <span class="voc" data-it="la tosse"><span class="it">la tosse</span> <span class="de">Husten</span></span>
+            <span class="voc" data-it="l'influenza"><span class="it">l'influenza</span> <span class="de">Grippe</span></span>
+            <span class="voc" data-it="la nausea"><span class="it">la nausea</span> <span class="de">Übelkeit</span></span>
+            <span class="voc" data-it="la ferita"><span class="it">la ferita</span> <span class="de">Wunde</span></span>
+            <span class="voc" data-it="l'allergia"><span class="it">l'allergia</span> <span class="de">Allergie</span></span>
+            <span class="voc" data-it="malato"><span class="it">malato</span> <span class="de">krank</span></span>
+          </div>
+        </div>
+        <div class="hbox cure">
+          <h4>💊 Le cure &mdash; Hilfe</h4>
+          <div class="list">
+            <span class="voc" data-it="il dottore"><span class="it">il dottore</span> <span class="de">Arzt</span></span>
+            <span class="voc" data-it="la medicina"><span class="it">la medicina</span> <span class="de">Medizin</span></span>
+            <span class="voc" data-it="le pastiglie"><span class="it">le pastiglie</span> <span class="de">Tabletten</span></span>
+            <span class="voc" data-it="l'antibiotico"><span class="it">l'antibiotico</span> <span class="de">Antibiotikum</span></span>
+            <span class="voc" data-it="il cerotto"><span class="it">il cerotto</span> <span class="de">Pflaster</span></span>
+            <span class="voc" data-it="la ricetta"><span class="it">la ricetta</span> <span class="de">Rezept</span></span>
+            <span class="voc" data-it="la farmacia"><span class="it">la farmacia</span> <span class="de">Apotheke</span></span>
+            <span class="voc" data-it="l'ospedale"><span class="it">l'ospedale</span> <span class="de">Krankenhaus</span></span>
+            <span class="voc" data-it="il pronto soccorso"><span class="it">il pronto soccorso</span> <span class="de">Notaufnahme</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="hphr">
+          <span class="voc" data-it="Non mi sento bene"><span class="it">Non mi sento bene.</span> &mdash; Mir geht es nicht gut.</span>
+          <span class="voc" data-it="Mi fa male qui"><span class="it">Mi fa male qui.</span> &mdash; Hier tut es weh.</span>
+          <span class="voc" data-it="Ho bisogno di un medico"><span class="it">Ho bisogno di un medico.</span> &mdash; Ich brauche einen Arzt.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 28. VIAGGIO ============ -->
+  <style>
+  #viaggio{--acc:#8338ec;--acc-soft:#eee2fc;--acc-deep:#6020b8;}
+  .board{background:#13131a;border:3px solid #000;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  .board-hd{background:#000;color:#ffcf33;font-family:var(--f-display);font-weight:900;letter-spacing:.1em;
+    padding:.5rem .9rem;display:flex;justify-content:space-between;align-items:center;font-size:.9rem;}
+  .board-hd .blink{width:9px;height:9px;border-radius:50%;background:#ffcf33;animation:blk 1.2s steps(1) infinite;}
+  @keyframes blk{50%{opacity:.2;}}
+  .brow{display:flex;align-items:center;gap:.7rem;padding:.4rem .9rem;border-bottom:1px solid #2a2a36;cursor:pointer;}
+  .brow:hover{background:#1e1e2a;}
+  .brow .ic{font-size:1.05rem;width:1.5rem;text-align:center;}
+  .brow .it{font-family:'DM Sans',monospace;font-weight:700;color:#ffcf33;letter-spacing:.04em;font-size:.9rem;flex:1;}
+  .brow .de{color:#9fb4c7;font-size:.78rem;}
+  </style>
+  <section class="vsec" id="viaggio">
+    <div class="vsec-head">
+      <span class="vsec-icon">✈️</span>
+      <h2>In viaggio &mdash; Reisen</h2>
+      <span class="lvl">A2 – B1</span>
+    </div>
+    <p class="vsec-intro">Alles fürs Reisen, wie auf der Anzeigetafel am Flughafen.</p>
+    <div class="board">
+      <div class="board-hd"><span>🛫 PARTENZE / ARRIVI</span><span class="blink"></span></div>
+      <span class="brow voc" data-it="il viaggio"><span class="ic">🧳</span><span class="it">il viaggio</span><span class="de">die Reise</span></span>
+      <span class="brow voc" data-it="la valigia"><span class="ic">🧳</span><span class="it">la valigia</span><span class="de">Koffer</span></span>
+      <span class="brow voc" data-it="il bagaglio"><span class="ic">🎒</span><span class="it">il bagaglio</span><span class="de">Gepäck</span></span>
+      <span class="brow voc" data-it="il passaporto"><span class="ic">📕</span><span class="it">il passaporto</span><span class="de">Reisepass</span></span>
+      <span class="brow voc" data-it="la carta d'identità"><span class="ic">🪪</span><span class="it">la carta d'identità</span><span class="de">Personalausweis</span></span>
+      <span class="brow voc" data-it="il biglietto"><span class="ic">🎫</span><span class="it">il biglietto</span><span class="de">Ticket</span></span>
+      <span class="brow voc" data-it="la prenotazione"><span class="ic">📝</span><span class="it">la prenotazione</span><span class="de">Buchung</span></span>
+      <span class="brow voc" data-it="l'albergo"><span class="ic">🏨</span><span class="it">l'albergo / l'hotel</span><span class="de">Hotel</span></span>
+      <span class="brow voc" data-it="la camera"><span class="ic">🛏️</span><span class="it">la camera</span><span class="de">Zimmer</span></span>
+      <span class="brow voc" data-it="l'aeroporto"><span class="ic">🛫</span><span class="it">l'aeroporto</span><span class="de">Flughafen</span></span>
+      <span class="brow voc" data-it="il volo"><span class="ic">✈️</span><span class="it">il volo</span><span class="de">Flug</span></span>
+      <span class="brow voc" data-it="il binario"><span class="ic">🚉</span><span class="it">il binario</span><span class="de">Gleis</span></span>
+      <span class="brow voc" data-it="la dogana"><span class="ic">🛃</span><span class="it">la dogana</span><span class="de">Zoll</span></span>
+      <span class="brow voc" data-it="la mappa"><span class="ic">🗺️</span><span class="it">la mappa</span><span class="de">Karte</span></span>
+      <span class="brow voc" data-it="il turista"><span class="ic">📸</span><span class="it">il turista</span><span class="de">Tourist</span></span>
+      <span class="brow voc" data-it="la vacanza"><span class="ic">🏖️</span><span class="it">la vacanza</span><span class="de">Urlaub</span></span>
+      <span class="brow voc" data-it="in ritardo"><span class="ic">⏰</span><span class="it">in ritardo</span><span class="de">verspätet</span></span>
+      <span class="brow voc" data-it="in orario"><span class="ic">✅</span><span class="it">in orario</span><span class="de">pünktlich</span></span>
+    </div>
+  </section>
+
+  <!-- ============ 29. SALUTI ============ -->
+  <style>
+  #saluti{--acc:#fb5607;--acc-soft:#ffe7da;--acc-deep:#c2410c;}
+  .phone{max-width:380px;margin:0 auto;background:#0b141a;border:4px solid #000;border-radius:26px;padding:.8rem .6rem;box-shadow:var(--shadow-lg);}
+  .phone-hd{text-align:center;color:#aebac4;font-size:.78rem;font-weight:600;padding-bottom:.6rem;border-bottom:1px solid #1f2c33;margin-bottom:.7rem;}
+  .chat{display:flex;flex-direction:column;gap:.45rem;}
+  .msg{max-width:80%;padding:.4rem .65rem;border-radius:14px;font-size:.85rem;cursor:pointer;line-height:1.3;}
+  .msg .it{font-weight:700;display:block;}
+  .msg .de{font-size:.72rem;opacity:.8;}
+  .msg.in{align-self:flex-start;background:#243640;color:#eef3f6;border-bottom-left-radius:4px;}
+  .msg.out{align-self:flex-end;background:#005c4b;color:#eafff7;border-bottom-right-radius:4px;}
+  </style>
+  <section class="vsec" id="saluti">
+    <div class="vsec-head">
+      <span class="vsec-icon">👋</span>
+      <h2>Saluti e frasi utili &mdash; Begrüßung &amp; Floskeln</h2>
+      <span class="lvl">A1</span>
+    </div>
+    <p class="vsec-intro">Die wichtigsten Wendungen als kleines Gespräch.</p>
+    <div class="phone">
+      <div class="phone-hd">💬 Chat &middot; in italiano</div>
+      <div class="chat">
+        <span class="msg in voc" data-it="Ciao!"><span class="it">Ciao!</span><span class="de">Hallo! / Tschüss!</span></span>
+        <span class="msg out voc" data-it="Buongiorno!"><span class="it">Buongiorno!</span><span class="de">Guten Morgen/Tag!</span></span>
+        <span class="msg in voc" data-it="Come stai?"><span class="it">Come stai?</span><span class="de">Wie geht es dir?</span></span>
+        <span class="msg out voc" data-it="Bene, grazie! E tu?"><span class="it">Bene, grazie! E tu?</span><span class="de">Gut, danke! Und dir?</span></span>
+        <span class="msg in voc" data-it="Come ti chiami?"><span class="it">Come ti chiami?</span><span class="de">Wie heißt du?</span></span>
+        <span class="msg out voc" data-it="Piacere!"><span class="it">Piacere!</span><span class="de">Freut mich!</span></span>
+        <span class="msg in voc" data-it="Per favore"><span class="it">Per favore…</span><span class="de">Bitte (Bitte um etwas)</span></span>
+        <span class="msg out voc" data-it="Grazie mille!"><span class="it">Grazie mille!</span><span class="de">Vielen Dank!</span></span>
+        <span class="msg in voc" data-it="Prego!"><span class="it">Prego!</span><span class="de">Gern geschehen! / Bitte</span></span>
+        <span class="msg out voc" data-it="Mi scusi"><span class="it">Mi scusi.</span><span class="de">Entschuldigung (höflich)</span></span>
+        <span class="msg in voc" data-it="Mi dispiace"><span class="it">Mi dispiace.</span><span class="de">Es tut mir leid.</span></span>
+        <span class="msg out voc" data-it="Va bene!"><span class="it">Va bene!</span><span class="de">In Ordnung!</span></span>
+        <span class="msg in voc" data-it="Non lo so"><span class="it">Non lo so.</span><span class="de">Ich weiß es nicht.</span></span>
+        <span class="msg out voc" data-it="Forse"><span class="it">Sì &middot; No &middot; Forse</span><span class="de">Ja &middot; Nein &middot; Vielleicht</span></span>
+        <span class="msg in voc" data-it="A presto!"><span class="it">A presto! &middot; A domani!</span><span class="de">Bis bald! &middot; Bis morgen!</span></span>
+        <span class="msg out voc" data-it="Arrivederci!"><span class="it">Arrivederci!</span><span class="de">Auf Wiedersehen!</span></span>
+        <span class="msg in voc" data-it="Buonanotte!"><span class="it">Buonasera! &middot; Buonanotte!</span><span class="de">Guten Abend! &middot; Gute Nacht!</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 30. PREPOSIZIONI (interaktiv) ============ -->
+  <style>
+  #preposizioni{--acc:#ff006e;--acc-soft:#ffe0ee;--acc-deep:#c20057;}
+  .prep-scene{position:relative;height:250px;border:2px solid var(--ink);border-radius:14px;overflow:hidden;
+    background:linear-gradient(180deg,#fff0f7 0 70%, #f3d9e6 70% 100%);box-shadow:var(--shadow);}
+  .pbox{position:absolute;left:50%;top:148px;transform:translate(-50%,-50%);width:96px;height:66px;z-index:3;}
+  .pbox .bx-top{position:absolute;top:-13px;left:6px;width:84px;height:16px;background:#c98a4b;border:2px solid #2a2320;
+    transform:skewX(-30deg);border-radius:2px;}
+  .pbox .bx-front{position:absolute;top:0;left:0;width:96px;height:66px;background:#e0a866;border:2px solid #2a2320;border-radius:3px;}
+  .pbox .bx-front::after{content:"";position:absolute;top:50%;left:8%;width:84%;height:3px;background:#2a23204d;}
+  .pcat{position:absolute;left:50%;top:88px;transform:translate(-50%,-50%);font-size:2.1rem;z-index:5;
+    transition:left .45s ease,top .45s ease,transform .45s ease;}
+  .prep-btns{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;}
+  .prep-btn{cursor:pointer;font-size:.84rem;border:2px solid var(--ink);background:var(--paper-2);border-radius:99px;
+    padding:.2rem .65rem;transition:all .15s;}
+  .prep-btn:hover{transform:translateY(-1px);}
+  .prep-btn.active{background:var(--acc);color:#fff;border-color:var(--acc-deep);}
+  .prep-btn .it{font-weight:700;}
+  .prep-extra{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem;}
+  .prep-extra .voc{font-size:.82rem;background:var(--acc-soft);border:1.5px solid var(--acc);border-radius:99px;padding:.16rem .55rem;cursor:pointer;}
+  .prep-extra .voc .it{font-weight:700;color:var(--acc-deep);}
+  </style>
+  <section class="vsec" id="preposizioni">
+    <div class="vsec-head">
+      <span class="vsec-icon">📍</span>
+      <h2>Le preposizioni di luogo &mdash; Wo ist die Katze?</h2>
+      <span class="lvl">A1 – A2</span>
+    </div>
+    <p class="vsec-intro">Tippe eine Präposition an &mdash; <em>il gatto</em> springt an die passende Stelle und sagt sie dir.</p>
+    <div class="card">
+      <div class="prep-scene">
+        <div class="pcat" id="pcat">🐈</div>
+        <div class="pbox"><div class="bx-top"></div><div class="bx-front"></div></div>
+      </div>
+      <div class="prep-btns" id="prepBtns">
+        <span class="prep-btn voc active" data-it="sopra la scatola"  data-l="50%" data-t="88px"  data-s="1"    data-z="5"><span class="it">su / sopra</span> <span class="de">auf / über</span></span>
+        <span class="prep-btn voc" data-it="dentro la scatola"       data-l="50%" data-t="150px" data-s="0.8"  data-z="2"><span class="it">in / dentro</span> <span class="de">in / drinnen</span></span>
+        <span class="prep-btn voc" data-it="sotto la scatola"        data-l="50%" data-t="212px" data-s="1"    data-z="6"><span class="it">sotto</span> <span class="de">unter</span></span>
+        <span class="prep-btn voc" data-it="davanti alla scatola"    data-l="50%" data-t="188px" data-s="1"    data-z="6"><span class="it">davanti a</span> <span class="de">vor</span></span>
+        <span class="prep-btn voc" data-it="dietro la scatola"       data-l="50%" data-t="108px" data-s="0.72" data-z="1"><span class="it">dietro</span> <span class="de">hinter</span></span>
+        <span class="prep-btn voc" data-it="accanto alla scatola"    data-l="74%" data-t="170px" data-s="1"    data-z="6"><span class="it">accanto a</span> <span class="de">neben</span></span>
+        <span class="prep-btn voc" data-it="a destra della scatola"  data-l="80%" data-t="170px" data-s="0.95" data-z="6"><span class="it">a destra di</span> <span class="de">rechts von</span></span>
+        <span class="prep-btn voc" data-it="a sinistra della scatola" data-l="20%" data-t="170px" data-s="0.95" data-z="6"><span class="it">a sinistra di</span> <span class="de">links von</span></span>
+        <span class="prep-btn voc" data-it="lontano dalla scatola"   data-l="90%" data-t="80px"  data-s="0.6"  data-z="6"><span class="it">lontano da</span> <span class="de">weit weg von</span></span>
+        <span class="prep-btn voc" data-it="vicino alla scatola"     data-l="66%" data-t="160px" data-s="1"    data-z="6"><span class="it">vicino a</span> <span class="de">nah bei</span></span>
+      </div>
+      <div class="prep-extra">
+        <span class="voc" data-it="tra"><span class="it">tra / fra</span> <span class="de">zwischen</span></span>
+        <span class="voc" data-it="fuori"><span class="it">fuori</span> <span class="de">draußen</span></span>
+        <span class="voc" data-it="contro"><span class="it">contro</span> <span class="de">gegen</span></span>
+        <span class="voc" data-it="verso"><span class="it">verso</span> <span class="de">in Richtung</span></span>
+      </div>
+      <div class="note">Achtung Verschmelzung: <b>a + il = al</b>, <b>su + la = sulla</b>, <b>in + il = nel</b>, <b>di + la = della</b>.</div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="vsec" style="--acc:#2a9d8f;--acc-soft:#e3f5f2;--acc-deep:#1d7468;">
+    <div class="backlinks">
+      <a class="btn" href="index.html">← Zurück zur Übersicht</a>
+      <a class="btn" href="grammatik.html">📖 Zur Grammatik</a>
+      <a class="btn" href="#toc">↑ Nach oben</a>
+    </div>
+    <p class="muted center" style="margin-top:1.2rem;font-size:.8rem;">🇮🇹 Don Due &middot; Vokabeln im Alltag &middot; über 600 Wörter zum Antippen &amp; Anhören</p>
+  </footer>
+
+</div><!-- /.container -->
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 1. AUSSPRACHE (Web Speech API, it-IT) ---------- */
+  var synth = window.speechSynthesis || null;
+  function speak(text){
+    if(!synth || !text) return;
+    try{
+      synth.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = "it-IT"; u.rate = 0.92; u.pitch = 1;
+      synth.speak(u);
+    }catch(e){}
+  }
+
+  /* ---------- 2. KLICK AUF VOKABEL ---------- */
+  document.addEventListener("click", function(ev){
+    var el = ev.target.closest(".voc");
+    if(!el) return;
+    var txt = el.getAttribute("data-it");
+    if(txt) speak(txt);
+    if(document.body.classList.contains("lernmodus")){
+      el.classList.toggle("revealed");
+    }
+    el.classList.add("speaking");
+    setTimeout(function(){ el.classList.remove("speaking"); }, 480);
+  });
+
+  /* ---------- 3. LERNMODUS ---------- */
+  var lernBtn = document.getElementById("lernToggle");
+  if(lernBtn){
+    lernBtn.addEventListener("click", function(){
+      var on = document.body.classList.toggle("lernmodus");
+      if(!on){
+        document.querySelectorAll(".voc.revealed").forEach(function(v){ v.classList.remove("revealed"); });
+      }
+    });
+  }
+
+  /* ---------- 4. SUCHE ---------- */
+  var search = document.getElementById("searchInput");
+  var lastHits = [];
+  if(search){
+    search.addEventListener("input", function(){
+      var term = search.value.trim().toLowerCase();
+      lastHits.forEach(function(h){ h.classList.remove("search-hit"); });
+      lastHits = [];
+      if(term.length < 2) return;
+      var first = null;
+      document.querySelectorAll(".voc").forEach(function(v){
+        var hay = (v.getAttribute("data-it") + " " + v.textContent).toLowerCase();
+        if(hay.indexOf(term) !== -1){
+          v.classList.add("search-hit");
+          lastHits.push(v);
+          if(!first) first = v;
+        }
+      });
+      if(first) first.scrollIntoView({behavior:"smooth", block:"center"});
+    });
+  }
+
+  /* ---------- 5. SCROLL-SPY ---------- */
+  var links = {};
+  document.querySelectorAll(".toc-links a").forEach(function(a){
+    links[a.getAttribute("href").slice(1)] = a;
+  });
+  if("IntersectionObserver" in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        var a = links[e.target.id];
+        if(!a) return;
+        if(e.isIntersecting){
+          Object.keys(links).forEach(function(k){ links[k].classList.remove("active"); });
+          a.classList.add("active");
+        }
+      });
+    }, { rootMargin: "-15% 0px -75% 0px", threshold: 0 });
+    document.querySelectorAll(".vsec[id]").forEach(function(s){ obs.observe(s); });
+  }
+
+  /* ---------- 6. PRÄPOSITIONEN: KATZE BEWEGEN ---------- */
+  var cat = document.getElementById("pcat");
+  var prepBtns = document.getElementById("prepBtns");
+  if(cat && prepBtns){
+    prepBtns.addEventListener("click", function(ev){
+      var b = ev.target.closest(".prep-btn");
+      if(!b) return;
+      prepBtns.querySelectorAll(".prep-btn").forEach(function(x){ x.classList.remove("active"); });
+      b.classList.add("active");
+      cat.style.left = b.getAttribute("data-l");
+      cat.style.top = b.getAttribute("data-t");
+      cat.style.zIndex = b.getAttribute("data-z");
+      cat.style.transform = "translate(-50%,-50%) scale(" + b.getAttribute("data-s") + ")";
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
