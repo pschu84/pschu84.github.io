@@ -2330,6 +2330,41 @@ body.lernmodus .voc.revealed .de{
     </div>
   </section>
 
+  <!-- ============ Interaktive Diagramme: gemeinsames CSS ============ -->
+  <style>
+  .diagram-hint{font-size:.84rem;color:var(--ink-soft);background:var(--acc-soft);border:1.5px solid var(--acc);
+    border-radius:var(--r-md);padding:.5rem .8rem;margin-bottom:1.1rem;text-align:center;}
+  .diagram-grid{display:flex;flex-direction:column;gap:1.8rem;align-items:center;}
+  .diagram{width:100%;text-align:center;}
+  .diagram-cap{font-family:var(--f-display);font-weight:700;font-size:.98rem;color:var(--acc-deep);margin-bottom:.4rem;}
+  .bodysvg{width:100%;max-width:520px;height:auto;display:block;margin:0 auto;font-family:var(--f-body);overflow:visible;}
+  .bodysvg.tall{max-width:360px;}
+  .ipart{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .ipart .lead{stroke:var(--acc);stroke-width:1.4;opacity:.4;transition:opacity .15s,stroke-width .15s;}
+  .ipart .dot{fill:#fff;stroke:var(--acc);stroke-width:2.5;transition:r .18s,fill .18s,stroke .18s;}
+  .ipart .it{fill:var(--acc-deep);font-weight:700;font-size:15px;}
+  .ipart .de{fill:var(--ink-soft);font-size:11px;}
+  .ipart .hidebar{fill:var(--line);opacity:0;transition:opacity .15s;}
+  .ipart:hover .dot,.ipart:focus .dot{fill:var(--acc-soft);}
+  .ipart:hover .lead,.ipart:focus .lead{opacity:.85;}
+  .ipart:hover .it,.ipart:focus .it{fill:#1f1a17;}
+  .ipart:focus{outline:none;}
+  .ipart.speaking .dot{fill:var(--acc);stroke:var(--acc-deep);r:11;}
+  .ipart.speaking .lead{opacity:1;stroke-width:2.6;}
+  .ipart.speaking .it{fill:var(--acc-deep);}
+  .ipart.speaking .de{font-weight:700;}
+  .ipart.search-hit{outline:none;}
+  .ipart.search-hit .dot{fill:var(--acc);stroke:var(--acc-deep);r:10;}
+  body.lernmodus .ipart .de{fill:transparent;}
+  body.lernmodus .ipart .hidebar{opacity:.9;}
+  body.lernmodus .ipart.revealed .de{fill:var(--ink-soft);}
+  body.lernmodus .ipart.revealed .hidebar{opacity:0;}
+  @media(max-width:560px){
+    .ipart .it{font-size:17px;}
+    .ipart .de{font-size:12.5px;}
+  }
+  </style>
+
   <!-- ============ 23. CORPO ============ -->
   <style>
   #corpo{--acc:#e07a5f;--acc-soft:#fae6df;--acc-deep:#b1543b;}
@@ -2357,57 +2392,267 @@ body.lernmodus .voc.revealed .de{
     </div>
     <p class="vsec-intro">Jedes Körperteil sitzt da, wo es hingehört &mdash; von Kopf bis Fuß.</p>
     <div class="card">
-      <div class="body-diagram">
-        <div class="bcol l">
-          <span class="bpart voc" data-it="la testa"><span class="it">la testa</span> <span class="de">Kopf</span></span>
-          <span class="bpart voc" data-it="i capelli"><span class="it">i capelli</span> <span class="de">Haare</span></span>
-          <span class="bpart voc" data-it="la fronte"><span class="it">la fronte</span> <span class="de">Stirn</span></span>
-          <span class="bpart voc" data-it="il sopracciglio"><span class="it">il sopracciglio</span> <span class="de">Augenbraue</span></span>
-          <span class="bpart voc" data-it="l'occhio"><span class="it">l'occhio</span> <span class="de">Auge</span></span>
-          <span class="bpart voc" data-it="l'orecchio"><span class="it">l'orecchio</span> <span class="de">Ohr</span></span>
-          <span class="bpart voc" data-it="il naso"><span class="it">il naso</span> <span class="de">Nase</span></span>
-          <span class="bpart voc" data-it="la guancia"><span class="it">la guancia</span> <span class="de">Wange</span></span>
-          <span class="bpart voc" data-it="la bocca"><span class="it">la bocca</span> <span class="de">Mund</span></span>
-          <span class="bpart voc" data-it="il labbro"><span class="it">il labbro</span> <span class="de">Lippe</span></span>
-          <span class="bpart voc" data-it="il dente"><span class="it">il dente</span> <span class="de">Zahn</span></span>
-          <span class="bpart voc" data-it="la lingua"><span class="it">la lingua</span> <span class="de">Zunge</span></span>
-          <span class="bpart voc" data-it="il mento"><span class="it">il mento</span> <span class="de">Kinn</span></span>
-          <span class="bpart voc" data-it="il collo"><span class="it">il collo</span> <span class="de">Hals</span></span>
-          <span class="bpart voc" data-it="la spalla"><span class="it">la spalla</span> <span class="de">Schulter</span></span>
-          <span class="bpart voc" data-it="il viso"><span class="it">il viso</span> <span class="de">Gesicht</span></span>
+      <div class="diagram-hint">&#x1F446; Tippe ein <b>Wort</b> oder einen <b>Punkt</b>: Der passende Teil leuchtet auf und das Wort wird auf Italienisch gesprochen.</div>
+      <div class="diagram-grid">
+        <div class="diagram"><div class="diagram-cap">Il viso &mdash; Das Gesicht</div>
+<svg class="bodysvg" viewBox="0 0 560 360" preserveAspectRatio="xMidYMid meet" aria-label="Gesicht">
+  <g class="figline">
+    <path d="M182 178 Q176 66 280 50 Q384 66 378 178 Q358 116 280 108 Q202 116 182 178 Z" fill="#6b4a2b" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <ellipse cx="280" cy="184" rx="92" ry="106" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <ellipse cx="190" cy="190" rx="13" ry="22" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <ellipse cx="370" cy="190" rx="13" ry="22" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <path d="M228 152 Q248 144 268 152" fill="none" stroke="#5a3d22" stroke-width="4" stroke-linecap="round"/>
+    <path d="M292 152 Q312 144 332 152" fill="none" stroke="#5a3d22" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="248" cy="172" rx="15" ry="9" fill="#fff" stroke="#2a2320" stroke-width="2"/>
+    <circle cx="248" cy="172" r="5" fill="#3a2a1a"/>
+    <ellipse cx="312" cy="172" rx="15" ry="9" fill="#fff" stroke="#2a2320" stroke-width="2"/>
+    <circle cx="312" cy="172" r="5" fill="#3a2a1a"/>
+    <path d="M280 176 L273 206 Q280 212 287 206" fill="none" stroke="#c98f63" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="236" cy="208" r="11" fill="#ffb3a0" opacity=".45"/>
+    <circle cx="324" cy="208" r="11" fill="#ffb3a0" opacity=".45"/>
+    <path d="M252 235 Q280 227 308 235 Q280 263 252 235 Z" fill="#7d2a2a" stroke="#2a2320" stroke-width="2"/>
+    <path d="M257 234 Q280 230 303 234 L299 241 Q280 237 261 241 Z" fill="#fff"/>
+    <ellipse cx="280" cy="251" rx="13" ry="7" fill="#e06a6a"/>
+    <rect x="262" y="286" width="36" height="42" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+  </g>
+    <g class="ipart voc" data-it="i capelli" tabindex="0" role="button" aria-label="i capelli, Haare">
+      <line class="lead" x1="140" y1="68" x2="250" y2="72"/>
+      <circle class="dot" cx="250" cy="72" r="6"/>
+      <rect class="hidebar" x="104" y="74" width="28" height="11" rx="3"/>
+      <text class="it" x="132" y="72" text-anchor="end">i capelli</text>
+      <text class="de" x="132" y="83" text-anchor="end">Haare</text>
+    </g>
+    <g class="ipart voc" data-it="la fronte" tabindex="0" role="button" aria-label="la fronte, Stirn">
+      <line class="lead" x1="140" y1="116" x2="270" y2="120"/>
+      <circle class="dot" cx="270" cy="120" r="6"/>
+      <rect class="hidebar" x="104" y="122" width="28" height="11" rx="3"/>
+      <text class="it" x="132" y="120" text-anchor="end">la fronte</text>
+      <text class="de" x="132" y="131" text-anchor="end">Stirn</text>
+    </g>
+    <g class="ipart voc" data-it="il sopracciglio" tabindex="0" role="button" aria-label="il sopracciglio, Augenbraue">
+      <line class="lead" x1="140" y1="149" x2="244" y2="150"/>
+      <circle class="dot" cx="244" cy="150" r="6"/>
+      <rect class="hidebar" x="76" y="155" width="56" height="11" rx="3"/>
+      <text class="it" x="132" y="153" text-anchor="end">il sopracciglio</text>
+      <text class="de" x="132" y="164" text-anchor="end">Augenbraue</text>
+    </g>
+    <g class="ipart voc" data-it="l'occhio" tabindex="0" role="button" aria-label="l'occhio, Auge">
+      <line class="lead" x1="140" y1="182" x2="244" y2="172"/>
+      <circle class="dot" cx="244" cy="172" r="6"/>
+      <rect class="hidebar" x="104" y="188" width="28" height="11" rx="3"/>
+      <text class="it" x="132" y="186" text-anchor="end">l'occhio</text>
+      <text class="de" x="132" y="197" text-anchor="end">Auge</text>
+    </g>
+    <g class="ipart voc" data-it="la guancia" tabindex="0" role="button" aria-label="la guancia, Wange">
+      <line class="lead" x1="140" y1="215" x2="234" y2="208"/>
+      <circle class="dot" cx="234" cy="208" r="6"/>
+      <rect class="hidebar" x="104" y="221" width="28" height="11" rx="3"/>
+      <text class="it" x="132" y="219" text-anchor="end">la guancia</text>
+      <text class="de" x="132" y="230" text-anchor="end">Wange</text>
+    </g>
+    <g class="ipart voc" data-it="la bocca" tabindex="0" role="button" aria-label="la bocca, Mund">
+      <line class="lead" x1="140" y1="248" x2="258" y2="238"/>
+      <circle class="dot" cx="258" cy="238" r="6"/>
+      <rect class="hidebar" x="104" y="254" width="28" height="11" rx="3"/>
+      <text class="it" x="132" y="252" text-anchor="end">la bocca</text>
+      <text class="de" x="132" y="263" text-anchor="end">Mund</text>
+    </g>
+    <g class="ipart voc" data-it="il mento" tabindex="0" role="button" aria-label="il mento, Kinn">
+      <line class="lead" x1="140" y1="282" x2="280" y2="286"/>
+      <circle class="dot" cx="280" cy="286" r="6"/>
+      <rect class="hidebar" x="104" y="288" width="28" height="11" rx="3"/>
+      <text class="it" x="132" y="286" text-anchor="end">il mento</text>
+      <text class="de" x="132" y="297" text-anchor="end">Kinn</text>
+    </g>
+    <g class="ipart voc" data-it="la testa" tabindex="0" role="button" aria-label="la testa, Kopf">
+      <line class="lead" x1="420" y1="56" x2="312" y2="66"/>
+      <circle class="dot" cx="312" cy="66" r="6"/>
+      <rect class="hidebar" x="428" y="62" width="28" height="11" rx="3"/>
+      <text class="it" x="428" y="60" text-anchor="start">la testa</text>
+      <text class="de" x="428" y="71" text-anchor="start">Kopf</text>
+    </g>
+    <g class="ipart voc" data-it="l'orecchio" tabindex="0" role="button" aria-label="l'orecchio, Ohr">
+      <line class="lead" x1="420" y1="178" x2="372" y2="188"/>
+      <circle class="dot" cx="372" cy="188" r="6"/>
+      <rect class="hidebar" x="428" y="184" width="28" height="11" rx="3"/>
+      <text class="it" x="428" y="182" text-anchor="start">l'orecchio</text>
+      <text class="de" x="428" y="193" text-anchor="start">Ohr</text>
+    </g>
+    <g class="ipart voc" data-it="il naso" tabindex="0" role="button" aria-label="il naso, Nase">
+      <line class="lead" x1="420" y1="211" x2="288" y2="198"/>
+      <circle class="dot" cx="288" cy="198" r="6"/>
+      <rect class="hidebar" x="428" y="217" width="28" height="11" rx="3"/>
+      <text class="it" x="428" y="215" text-anchor="start">il naso</text>
+      <text class="de" x="428" y="226" text-anchor="start">Nase</text>
+    </g>
+    <g class="ipart voc" data-it="il viso" tabindex="0" role="button" aria-label="il viso, Gesicht">
+      <line class="lead" x1="420" y1="244" x2="346" y2="228"/>
+      <circle class="dot" cx="346" cy="228" r="6"/>
+      <rect class="hidebar" x="428" y="250" width="39.2" height="11" rx="3"/>
+      <text class="it" x="428" y="248" text-anchor="start">il viso</text>
+      <text class="de" x="428" y="259" text-anchor="start">Gesicht</text>
+    </g>
+    <g class="ipart voc" data-it="il dente" tabindex="0" role="button" aria-label="il dente, Zahn">
+      <line class="lead" x1="420" y1="277" x2="288" y2="233"/>
+      <circle class="dot" cx="288" cy="233" r="6"/>
+      <rect class="hidebar" x="428" y="283" width="28" height="11" rx="3"/>
+      <text class="it" x="428" y="281" text-anchor="start">il dente</text>
+      <text class="de" x="428" y="292" text-anchor="start">Zahn</text>
+    </g>
+    <g class="ipart voc" data-it="il labbro" tabindex="0" role="button" aria-label="il labbro, Lippe">
+      <line class="lead" x1="420" y1="310" x2="302" y2="247"/>
+      <circle class="dot" cx="302" cy="247" r="6"/>
+      <rect class="hidebar" x="428" y="316" width="28" height="11" rx="3"/>
+      <text class="it" x="428" y="314" text-anchor="start">il labbro</text>
+      <text class="de" x="428" y="325" text-anchor="start">Lippe</text>
+    </g>
+    <g class="ipart voc" data-it="la lingua" tabindex="0" role="button" aria-label="la lingua, Zunge">
+      <line class="lead" x1="420" y1="343" x2="282" y2="251"/>
+      <circle class="dot" cx="282" cy="251" r="6"/>
+      <rect class="hidebar" x="428" y="349" width="28" height="11" rx="3"/>
+      <text class="it" x="428" y="347" text-anchor="start">la lingua</text>
+      <text class="de" x="428" y="358" text-anchor="start">Zunge</text>
+    </g>
+</svg>
         </div>
-        <svg class="bsvg" width="170" height="450" viewBox="0 0 170 450">
-          <g fill="#fae6df" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round">
-            <circle cx="85" cy="42" r="30"/>
-            <rect x="76" y="70" width="18" height="16" rx="4"/>
-            <rect x="52" y="84" width="66" height="98" rx="20"/>
-            <rect x="60" y="172" width="50" height="74" rx="16"/>
-            <rect x="28" y="88" width="18" height="104" rx="9"/>
-            <rect x="124" y="88" width="18" height="104" rx="9"/>
-            <circle cx="37" cy="202" r="11"/>
-            <circle cx="133" cy="202" r="11"/>
-            <rect x="62" y="240" width="20" height="124" rx="10"/>
-            <rect x="88" y="240" width="20" height="124" rx="10"/>
-            <ellipse cx="70" cy="374" rx="17" ry="10"/>
-            <ellipse cx="100" cy="374" rx="17" ry="10"/>
-          </g>
-        </svg>
-        <div class="bcol r">
-          <span class="bpart voc" data-it="il petto"><span class="de">Brust</span> <span class="it">il petto</span></span>
-          <span class="bpart voc" data-it="la schiena"><span class="de">Rücken</span> <span class="it">la schiena</span></span>
-          <span class="bpart voc" data-it="il braccio"><span class="de">Arm</span> <span class="it">il braccio</span></span>
-          <span class="bpart voc" data-it="il gomito"><span class="de">Ellbogen</span> <span class="it">il gomito</span></span>
-          <span class="bpart voc" data-it="il polso"><span class="de">Handgelenk</span> <span class="it">il polso</span></span>
-          <span class="bpart voc" data-it="la mano"><span class="de">Hand</span> <span class="it">la mano</span></span>
-          <span class="bpart voc" data-it="il dito"><span class="de">Finger</span> <span class="it">il dito</span></span>
-          <span class="bpart voc" data-it="l'unghia"><span class="de">Nagel</span> <span class="it">l'unghia</span></span>
-          <span class="bpart voc" data-it="la pancia"><span class="de">Bauch</span> <span class="it">la pancia</span></span>
-          <span class="bpart voc" data-it="il fianco"><span class="de">Hüfte</span> <span class="it">il fianco</span></span>
-          <span class="bpart voc" data-it="la gamba"><span class="de">Bein</span> <span class="it">la gamba</span></span>
-          <span class="bpart voc" data-it="il ginocchio"><span class="de">Knie</span> <span class="it">il ginocchio</span></span>
-          <span class="bpart voc" data-it="la caviglia"><span class="de">Knöchel</span> <span class="it">la caviglia</span></span>
-          <span class="bpart voc" data-it="il tallone"><span class="de">Ferse</span> <span class="it">il tallone</span></span>
-          <span class="bpart voc" data-it="il piede"><span class="de">Fuß</span> <span class="it">il piede</span></span>
+        <div class="diagram"><div class="diagram-cap">Il corpo &mdash; Der ganze K&ouml;rper</div>
+<svg class="bodysvg tall" viewBox="0 0 560 620" preserveAspectRatio="xMidYMid meet" aria-label="Körper">
+  <g class="figline">
+    <circle cx="280" cy="50" r="30" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <rect x="266" y="76" width="28" height="28" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <path d="M224 118 Q280 102 336 118 L324 282 Q280 296 236 282 Z" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M232 124 Q210 150 212 198 Q214 250 198 302 Q194 320 206 324 Q218 324 220 308 Q236 252 236 200 Q238 152 252 134 Z" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M328 124 Q350 150 348 198 Q346 250 362 302 Q366 320 354 324 Q342 324 340 308 Q324 252 324 200 Q322 152 308 134 Z" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="201" cy="332" r="13" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <circle cx="359" cy="332" r="13" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <path d="M240 276 Q232 360 240 440 Q244 510 246 552 L270 552 Q272 510 272 440 Q278 372 278 286 Z" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M320 276 Q328 360 320 440 Q316 510 314 552 L290 552 Q288 510 288 440 Q282 372 282 286 Z" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <ellipse cx="250" cy="566" rx="22" ry="11" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <ellipse cx="310" cy="566" rx="22" ry="11" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <line x1="240" y1="452" x2="272" y2="452" stroke="#caa57f" stroke-width="2"/>
+    <line x1="288" y1="452" x2="320" y2="452" stroke="#caa57f" stroke-width="2"/>
+    <circle cx="280" cy="240" r="3" fill="#caa57f"/>
+  </g>
+    <g class="ipart voc" data-it="il braccio" tabindex="0" role="button" aria-label="il braccio, Arm">
+      <line class="lead" x1="136" y1="176" x2="218" y2="180"/>
+      <circle class="dot" cx="218" cy="180" r="6"/>
+      <rect class="hidebar" x="100" y="182" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="180" text-anchor="end">il braccio</text>
+      <text class="de" x="128" y="191" text-anchor="end">Arm</text>
+    </g>
+    <g class="ipart voc" data-it="il gomito" tabindex="0" role="button" aria-label="il gomito, Ellbogen">
+      <line class="lead" x1="136" y1="242" x2="207" y2="246"/>
+      <circle class="dot" cx="207" cy="246" r="6"/>
+      <rect class="hidebar" x="83.2" y="248" width="44.8" height="11" rx="3"/>
+      <text class="it" x="128" y="246" text-anchor="end">il gomito</text>
+      <text class="de" x="128" y="257" text-anchor="end">Ellbogen</text>
+    </g>
+    <g class="ipart voc" data-it="il polso" tabindex="0" role="button" aria-label="il polso, Handgelenk">
+      <line class="lead" x1="136" y1="304" x2="200" y2="308"/>
+      <circle class="dot" cx="200" cy="308" r="6"/>
+      <rect class="hidebar" x="72" y="310" width="56" height="11" rx="3"/>
+      <text class="it" x="128" y="308" text-anchor="end">il polso</text>
+      <text class="de" x="128" y="319" text-anchor="end">Handgelenk</text>
+    </g>
+    <g class="ipart voc" data-it="la mano" tabindex="0" role="button" aria-label="la mano, Hand">
+      <line class="lead" x1="136" y1="340" x2="201" y2="332"/>
+      <circle class="dot" cx="201" cy="332" r="6"/>
+      <rect class="hidebar" x="100" y="346" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="344" text-anchor="end">la mano</text>
+      <text class="de" x="128" y="355" text-anchor="end">Hand</text>
+    </g>
+    <g class="ipart voc" data-it="il dito" tabindex="0" role="button" aria-label="il dito, Finger">
+      <line class="lead" x1="136" y1="376" x2="193" y2="356"/>
+      <circle class="dot" cx="193" cy="356" r="6"/>
+      <rect class="hidebar" x="94.4" y="382" width="33.6" height="11" rx="3"/>
+      <text class="it" x="128" y="380" text-anchor="end">il dito</text>
+      <text class="de" x="128" y="391" text-anchor="end">Finger</text>
+    </g>
+    <g class="ipart voc" data-it="l'unghia" tabindex="0" role="button" aria-label="l'unghia, Nagel">
+      <line class="lead" x1="136" y1="412" x2="184" y2="372"/>
+      <circle class="dot" cx="184" cy="372" r="6"/>
+      <rect class="hidebar" x="100" y="418" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="416" text-anchor="end">l'unghia</text>
+      <text class="de" x="128" y="427" text-anchor="end">Nagel</text>
+    </g>
+    <g class="ipart voc" data-it="la gamba" tabindex="0" role="button" aria-label="la gamba, Bein">
+      <line class="lead" x1="136" y1="448" x2="250" y2="400"/>
+      <circle class="dot" cx="250" cy="400" r="6"/>
+      <rect class="hidebar" x="100" y="454" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="452" text-anchor="end">la gamba</text>
+      <text class="de" x="128" y="463" text-anchor="end">Bein</text>
+    </g>
+    <g class="ipart voc" data-it="la caviglia" tabindex="0" role="button" aria-label="la caviglia, Knöchel">
+      <line class="lead" x1="136" y1="548" x2="248" y2="552"/>
+      <circle class="dot" cx="248" cy="552" r="6"/>
+      <rect class="hidebar" x="88.8" y="554" width="39.2" height="11" rx="3"/>
+      <text class="it" x="128" y="552" text-anchor="end">la caviglia</text>
+      <text class="de" x="128" y="563" text-anchor="end">Knöchel</text>
+    </g>
+    <g class="ipart voc" data-it="il piede" tabindex="0" role="button" aria-label="il piede, Fuß">
+      <line class="lead" x1="136" y1="584" x2="240" y2="572"/>
+      <circle class="dot" cx="240" cy="572" r="6"/>
+      <rect class="hidebar" x="100" y="590" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="588" text-anchor="end">il piede</text>
+      <text class="de" x="128" y="599" text-anchor="end">Fuß</text>
+    </g>
+    <g class="ipart voc" data-it="il collo" tabindex="0" role="button" aria-label="il collo, Hals">
+      <line class="lead" x1="424" y1="88" x2="292" y2="92"/>
+      <circle class="dot" cx="292" cy="92" r="6"/>
+      <rect class="hidebar" x="432" y="94" width="28" height="11" rx="3"/>
+      <text class="it" x="432" y="92" text-anchor="start">il collo</text>
+      <text class="de" x="432" y="103" text-anchor="start">Hals</text>
+    </g>
+    <g class="ipart voc" data-it="la spalla" tabindex="0" role="button" aria-label="la spalla, Schulter">
+      <line class="lead" x1="424" y1="124" x2="330" y2="124"/>
+      <circle class="dot" cx="330" cy="124" r="6"/>
+      <rect class="hidebar" x="432" y="130" width="44.8" height="11" rx="3"/>
+      <text class="it" x="432" y="128" text-anchor="start">la spalla</text>
+      <text class="de" x="432" y="139" text-anchor="start">Schulter</text>
+    </g>
+    <g class="ipart voc" data-it="il petto" tabindex="0" role="button" aria-label="il petto, Brust">
+      <line class="lead" x1="424" y1="160" x2="300" y2="158"/>
+      <circle class="dot" cx="300" cy="158" r="6"/>
+      <rect class="hidebar" x="432" y="166" width="28" height="11" rx="3"/>
+      <text class="it" x="432" y="164" text-anchor="start">il petto</text>
+      <text class="de" x="432" y="175" text-anchor="start">Brust</text>
+    </g>
+    <g class="ipart voc" data-it="la schiena" tabindex="0" role="button" aria-label="la schiena, Rücken">
+      <line class="lead" x1="424" y1="196" x2="330" y2="182"/>
+      <circle class="dot" cx="330" cy="182" r="6"/>
+      <rect class="hidebar" x="432" y="202" width="33.6" height="11" rx="3"/>
+      <text class="it" x="432" y="200" text-anchor="start">la schiena</text>
+      <text class="de" x="432" y="211" text-anchor="start">Rücken</text>
+    </g>
+    <g class="ipart voc" data-it="la pancia" tabindex="0" role="button" aria-label="la pancia, Bauch">
+      <line class="lead" x1="424" y1="240" x2="300" y2="244"/>
+      <circle class="dot" cx="300" cy="244" r="6"/>
+      <rect class="hidebar" x="432" y="246" width="28" height="11" rx="3"/>
+      <text class="it" x="432" y="244" text-anchor="start">la pancia</text>
+      <text class="de" x="432" y="255" text-anchor="start">Bauch</text>
+    </g>
+    <g class="ipart voc" data-it="il fianco" tabindex="0" role="button" aria-label="il fianco, Hüfte">
+      <line class="lead" x1="424" y1="276" x2="324" y2="278"/>
+      <circle class="dot" cx="324" cy="278" r="6"/>
+      <rect class="hidebar" x="432" y="282" width="28" height="11" rx="3"/>
+      <text class="it" x="432" y="280" text-anchor="start">il fianco</text>
+      <text class="de" x="432" y="291" text-anchor="start">Hüfte</text>
+    </g>
+    <g class="ipart voc" data-it="il ginocchio" tabindex="0" role="button" aria-label="il ginocchio, Knie">
+      <line class="lead" x1="424" y1="448" x2="310" y2="452"/>
+      <circle class="dot" cx="310" cy="452" r="6"/>
+      <rect class="hidebar" x="432" y="454" width="28" height="11" rx="3"/>
+      <text class="it" x="432" y="452" text-anchor="start">il ginocchio</text>
+      <text class="de" x="432" y="463" text-anchor="start">Knie</text>
+    </g>
+    <g class="ipart voc" data-it="il tallone" tabindex="0" role="button" aria-label="il tallone, Ferse">
+      <line class="lead" x1="424" y1="562" x2="322" y2="566"/>
+      <circle class="dot" cx="322" cy="566" r="6"/>
+      <rect class="hidebar" x="432" y="568" width="28" height="11" rx="3"/>
+      <text class="it" x="432" y="566" text-anchor="start">il tallone</text>
+      <text class="de" x="432" y="577" text-anchor="start">Ferse</text>
+    </g>
+</svg>
         </div>
       </div>
       <div class="note">Tückische Plurale: <b>il braccio → le braccia</b>, <b>il dito → le dita</b>, <b>l'orecchio → le orecchie</b>, <b>il ginocchio → le ginocchia</b>.</div>
@@ -2430,30 +2675,103 @@ body.lernmodus .voc.revealed .de{
     </div>
     <p class="vsec-intro">Was man am Körper trägt &mdash; und im Schrank hängt.</p>
     <div class="card">
-      <div class="body-diagram">
-        <div class="bcol l">
-          <span class="bpart voc" data-it="il cappello"><span class="it">il cappello</span> <span class="de">Hut / Mütze</span></span>
-          <span class="bpart voc" data-it="la giacca"><span class="it">la giacca</span> <span class="de">Jacke</span></span>
-          <span class="bpart voc" data-it="la maglietta"><span class="it">la maglietta</span> <span class="de">T-Shirt</span></span>
-          <span class="bpart voc" data-it="la camicia"><span class="it">la camicia</span> <span class="de">Hemd</span></span>
-          <span class="bpart voc" data-it="il maglione"><span class="it">il maglione</span> <span class="de">Pullover</span></span>
-        </div>
-        <svg class="bsvg" width="160" height="420" viewBox="0 0 160 420">
-          <circle cx="80" cy="40" r="26" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
-          <path d="M48 92 Q80 74 112 92 L120 180 L96 180 L96 250 L64 250 L64 180 L40 180 Z" fill="#d4a373" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
-          <rect x="30" y="94" width="16" height="92" rx="8" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
-          <rect x="114" y="94" width="16" height="92" rx="8" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
-          <rect x="62" y="248" width="22" height="120" rx="8" fill="#457b9d" stroke="#2a2320" stroke-width="2.5"/>
-          <rect x="86" y="248" width="22" height="120" rx="8" fill="#457b9d" stroke="#2a2320" stroke-width="2.5"/>
-          <ellipse cx="72" cy="378" rx="18" ry="11" fill="#3a3a3a" stroke="#2a2320" stroke-width="2.5"/>
-          <ellipse cx="100" cy="378" rx="18" ry="11" fill="#3a3a3a" stroke="#2a2320" stroke-width="2.5"/>
-        </svg>
-        <div class="bcol r">
-          <span class="bpart voc" data-it="la cintura"><span class="de">Gürtel</span> <span class="it">la cintura</span></span>
-          <span class="bpart voc" data-it="i pantaloni"><span class="de">Hose</span> <span class="it">i pantaloni</span></span>
-          <span class="bpart voc" data-it="i jeans"><span class="de">Jeans</span> <span class="it">i jeans</span></span>
-          <span class="bpart voc" data-it="i calzini"><span class="de">Socken</span> <span class="it">i calzini</span></span>
-          <span class="bpart voc" data-it="le scarpe"><span class="de">Schuhe</span> <span class="it">le scarpe</span></span>
+      <div class="diagram-hint">&#x1F446; Tippe ein <b>Wort</b> oder einen <b>Punkt</b>: Der passende Teil leuchtet auf und das Wort wird auf Italienisch gesprochen.</div>
+      <div class="diagram-grid">
+        <div class="diagram"><div class="diagram-cap">Cosa indosso &mdash; Was man tr&auml;gt</div>
+<svg class="bodysvg tall" viewBox="0 0 560 580" preserveAspectRatio="xMidYMid meet" aria-label="Kleidung">
+  <g class="figline">
+    <circle cx="280" cy="58" r="28" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <path d="M238 46 Q280 14 322 46 L332 56 L228 56 Z" fill="#c0392b" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <ellipse cx="280" cy="56" rx="58" ry="8" fill="#9c2c20" stroke="#2a2320" stroke-width="2.5"/>
+    <rect x="268" y="82" width="24" height="22" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <path d="M224 116 Q280 100 336 116 L326 270 L234 270 Z" fill="#2a9d8f" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M268 104 L280 122 L292 104 L300 112 L288 134 L272 134 L260 112 Z" fill="#f4f1de" stroke="#2a2320" stroke-width="2"/>
+    <path d="M232 120 Q212 150 214 200 Q216 250 202 300 L222 306 Q236 252 238 202 Q240 152 252 132 Z" fill="#21867a" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M328 120 Q348 150 346 200 Q344 250 358 300 L338 306 Q324 252 322 202 Q320 152 308 132 Z" fill="#21867a" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M236 116 Q256 150 250 270 L234 270 Z" fill="#1d6f64" stroke="#2a2320" stroke-width="2" stroke-linejoin="round" opacity=".9"/>
+    <path d="M324 116 Q304 150 310 270 L326 270 Z" fill="#1d6f64" stroke="#2a2320" stroke-width="2" stroke-linejoin="round" opacity=".9"/>
+    <circle cx="208" cy="312" r="13" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <circle cx="352" cy="312" r="13" fill="#ffe0c2" stroke="#2a2320" stroke-width="2.5"/>
+    <rect x="232" y="266" width="96" height="16" rx="3" fill="#5b3a1e" stroke="#2a2320" stroke-width="2.5"/>
+    <rect x="272" y="269" width="16" height="10" rx="2" fill="#d4af37" stroke="#2a2320" stroke-width="1.5"/>
+    <path d="M236 282 Q230 380 240 470 L270 470 Q274 380 278 286 Z" fill="#3a5a8c" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M324 282 Q330 380 320 470 L290 470 Q286 380 282 286 Z" fill="#3a5a8c" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="240" y="470" width="32" height="44" rx="4" fill="#ffffff" stroke="#2a2320" stroke-width="2.5"/>
+    <rect x="288" y="470" width="32" height="44" rx="4" fill="#ffffff" stroke="#2a2320" stroke-width="2.5"/>
+    <path d="M236 514 Q236 538 262 538 L276 538 Q278 522 270 514 Z" fill="#222" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M324 514 Q324 538 298 538 L284 538 Q282 522 290 514 Z" fill="#222" stroke="#2a2320" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+    <g class="ipart voc" data-it="la camicia" tabindex="0" role="button" aria-label="la camicia, Hemd">
+      <line class="lead" x1="136" y1="104" x2="272" y2="108"/>
+      <circle class="dot" cx="272" cy="108" r="6"/>
+      <rect class="hidebar" x="100" y="110" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="108" text-anchor="end">la camicia</text>
+      <text class="de" x="128" y="119" text-anchor="end">Hemd</text>
+    </g>
+    <g class="ipart voc" data-it="la giacca" tabindex="0" role="button" aria-label="la giacca, Jacke">
+      <line class="lead" x1="136" y1="146" x2="240" y2="150"/>
+      <circle class="dot" cx="240" cy="150" r="6"/>
+      <rect class="hidebar" x="100" y="152" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="150" text-anchor="end">la giacca</text>
+      <text class="de" x="128" y="161" text-anchor="end">Jacke</text>
+    </g>
+    <g class="ipart voc" data-it="i pantaloni" tabindex="0" role="button" aria-label="i pantaloni, Hose">
+      <line class="lead" x1="136" y1="356" x2="250" y2="360"/>
+      <circle class="dot" cx="250" cy="360" r="6"/>
+      <rect class="hidebar" x="100" y="362" width="28" height="11" rx="3"/>
+      <text class="it" x="128" y="360" text-anchor="end">i pantaloni</text>
+      <text class="de" x="128" y="371" text-anchor="end">Hose</text>
+    </g>
+    <g class="ipart voc" data-it="i calzini" tabindex="0" role="button" aria-label="i calzini, Socken">
+      <line class="lead" x1="136" y1="496" x2="256" y2="500"/>
+      <circle class="dot" cx="256" cy="500" r="6"/>
+      <rect class="hidebar" x="94.4" y="502" width="33.6" height="11" rx="3"/>
+      <text class="it" x="128" y="500" text-anchor="end">i calzini</text>
+      <text class="de" x="128" y="511" text-anchor="end">Socken</text>
+    </g>
+    <g class="ipart voc" data-it="le scarpe" tabindex="0" role="button" aria-label="le scarpe, Schuhe">
+      <line class="lead" x1="136" y1="532" x2="256" y2="532"/>
+      <circle class="dot" cx="256" cy="532" r="6"/>
+      <rect class="hidebar" x="94.4" y="538" width="33.6" height="11" rx="3"/>
+      <text class="it" x="128" y="536" text-anchor="end">le scarpe</text>
+      <text class="de" x="128" y="547" text-anchor="end">Schuhe</text>
+    </g>
+    <g class="ipart voc" data-it="il cappello" tabindex="0" role="button" aria-label="il cappello, Hut / Mütze">
+      <line class="lead" x1="424" y1="66" x2="280" y2="40"/>
+      <circle class="dot" cx="280" cy="40" r="6"/>
+      <rect class="hidebar" x="432" y="72" width="61.6" height="11" rx="3"/>
+      <text class="it" x="432" y="70" text-anchor="start">il cappello</text>
+      <text class="de" x="432" y="81" text-anchor="start">Hut / Mütze</text>
+    </g>
+    <g class="ipart voc" data-it="il maglione" tabindex="0" role="button" aria-label="il maglione, Pullover">
+      <line class="lead" x1="424" y1="156" x2="312" y2="160"/>
+      <circle class="dot" cx="312" cy="160" r="6"/>
+      <rect class="hidebar" x="432" y="162" width="44.8" height="11" rx="3"/>
+      <text class="it" x="432" y="160" text-anchor="start">il maglione</text>
+      <text class="de" x="432" y="171" text-anchor="start">Pullover</text>
+    </g>
+    <g class="ipart voc" data-it="la maglietta" tabindex="0" role="button" aria-label="la maglietta, T-Shirt">
+      <line class="lead" x1="424" y1="206" x2="344" y2="210"/>
+      <circle class="dot" cx="344" cy="210" r="6"/>
+      <rect class="hidebar" x="432" y="212" width="39.2" height="11" rx="3"/>
+      <text class="it" x="432" y="210" text-anchor="start">la maglietta</text>
+      <text class="de" x="432" y="221" text-anchor="start">T-Shirt</text>
+    </g>
+    <g class="ipart voc" data-it="la cintura" tabindex="0" role="button" aria-label="la cintura, Gürtel">
+      <line class="lead" x1="424" y1="270" x2="300" y2="274"/>
+      <circle class="dot" cx="300" cy="274" r="6"/>
+      <rect class="hidebar" x="432" y="276" width="33.6" height="11" rx="3"/>
+      <text class="it" x="432" y="274" text-anchor="start">la cintura</text>
+      <text class="de" x="432" y="285" text-anchor="start">Gürtel</text>
+    </g>
+    <g class="ipart voc" data-it="i jeans" tabindex="0" role="button" aria-label="i jeans, Jeans">
+      <line class="lead" x1="424" y1="356" x2="310" y2="360"/>
+      <circle class="dot" cx="310" cy="360" r="6"/>
+      <rect class="hidebar" x="432" y="362" width="28" height="11" rx="3"/>
+      <text class="it" x="432" y="360" text-anchor="start">i jeans</text>
+      <text class="de" x="432" y="371" text-anchor="start">Jeans</text>
+    </g>
+</svg>
         </div>
       </div>
       <div class="rack-title">👗 Nel guardaroba &mdash; im Kleiderschrank</div>
@@ -2571,6 +2889,16 @@ body.lernmodus .voc.revealed .de{
         <span class="job voc" data-it="l'ingegnere"><span class="em">👷</span><span class="it">l'ingegnere</span><span class="de">Ingenieur/in</span></span>
         <span class="job voc" data-it="il giornalista"><span class="em">🎤</span><span class="it">il giornalista</span><span class="de">Journalist/in</span></span>
         <span class="job voc" data-it="il musicista"><span class="em">🎸</span><span class="it">il musicista</span><span class="de">Musiker/in</span></span>
+        <span class="job voc" data-it="il dentista"><span class="em">🦷</span><span class="it">il dentista</span><span class="de">Zahnarzt/-ärztin</span></span>
+        <span class="job voc" data-it="il veterinario"><span class="em">🐾</span><span class="it">il veterinario</span><span class="de">Tierarzt/-ärztin</span></span>
+        <span class="job voc" data-it="il farmacista"><span class="em">💊</span><span class="it">il farmacista</span><span class="de">Apotheker/in</span></span>
+        <span class="job voc" data-it="l'architetto"><span class="em">📐</span><span class="it">l'architetto</span><span class="de">Architekt/in</span></span>
+        <span class="job voc" data-it="il programmatore"><span class="em">💻</span><span class="it">il programmatore</span><span class="de">Programmierer/in</span></span>
+        <span class="job voc" data-it="il pilota"><span class="em">✈️</span><span class="it">il pilota</span><span class="de">Pilot/in</span></span>
+        <span class="job voc" data-it="il fornaio"><span class="em">🥖</span><span class="it">il fornaio</span><span class="de">Bäcker/in</span></span>
+        <span class="job voc" data-it="il fotografo"><span class="em">📷</span><span class="it">il fotografo</span><span class="de">Fotograf/in</span></span>
+        <span class="job voc" data-it="il pittore"><span class="em">🎨</span><span class="it">il pittore</span><span class="de">Maler/in</span></span>
+        <span class="job voc" data-it="il giardiniere"><span class="em">🌳</span><span class="it">il giardiniere</span><span class="de">Gärtner/in</span></span>
       </div>
     </div>
   </section>
@@ -2840,10 +3168,10 @@ body.lernmodus .voc.revealed .de{
   .phone-hd{text-align:center;color:#aebac4;font-size:.78rem;font-weight:600;padding-bottom:.6rem;border-bottom:1px solid #1f2c33;margin-bottom:.7rem;}
   .chat{display:flex;flex-direction:column;gap:.45rem;}
   .msg{max-width:80%;padding:.4rem .65rem;border-radius:14px;font-size:.85rem;cursor:pointer;line-height:1.3;}
-  .msg .it{font-weight:700;display:block;}
-  .msg .de{font-size:.72rem;opacity:.8;}
-  .msg.in{align-self:flex-start;background:#243640;color:#eef3f6;border-bottom-left-radius:4px;}
-  .msg.out{align-self:flex-end;background:#005c4b;color:#eafff7;border-bottom-right-radius:4px;}
+  .msg .it{font-weight:700;display:block;color:#ffffff;}
+  .msg .de{font-size:.72rem;color:#d8e2e9;opacity:1;}
+  .msg.in{align-self:flex-start;background:#2f4853;color:#ffffff;border-bottom-left-radius:4px;}
+  .msg.out{align-self:flex-end;background:#0b6e59;color:#ffffff;border-bottom-right-radius:4px;}
   </style>
   <section class="vsec" id="saluti">
     <div class="vsec-head">
