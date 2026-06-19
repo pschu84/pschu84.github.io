@@ -529,7 +529,16 @@ function buildInitialData(){
     plans,customExercises:{},history,skippedSessions:[],lastDeloadCheck:null
   };
 }
-// ===== STORAGE & HELPERS =====
+function buildEmptyData(){
+  const today=new Date();
+  return{
+    version:3,
+    settings:{theme:'dark',plateauThreshold:3,defaultIncrement:2.5,bodyweightKg:75,periodizationPreset:'block',plankBaseSec:120},
+    macro:{preset:'block',blocks:JSON.parse(JSON.stringify(PERIODIZATION_PRESETS.block.blocks)),currentBlockIndex:0,startDate:today.toISOString().slice(0,10)},
+    cycle:{type:'fullbody',frequency:3,days:[1,3,5],rotation:'AB',activePlans:['A','B'],currentMeso:{phase:'hypertrophie',startDate:today.toISOString().slice(0,10),lengthWeeks:6,currentWeek:1},mesoHistory:[],level:'fortgeschritten'},
+    plans:{},customExercises:{},history:[],workoutSessions:[],skippedSessions:[],lastDeloadCheck:null
+  };
+}
 function loadData(){try{let raw=localStorage.getItem(STORAGE_KEY);if(!raw){const initial=buildInitialData();saveData(initial);return initial;}const d=JSON.parse(raw);return migrateData(d);}catch(e){console.error('Load fehlgeschlagen',e);return buildInitialData();}}
 function migrateData(d){
   // Migration: Beine + Bauch/Core ans Ende sortieren (einmalig)
@@ -795,6 +804,33 @@ function getBestE1RM(exerciseId){
   records.forEach(r=>(r.sets||[]).forEach(s=>{const e=calcE1RM(s.weight,s.reps);if(e&&e>best)best=e;}));
   return best;
 }
+// Niveau-basierte Startgewichte für neue Nutzer (kein Trainingsverlauf).
+// Werte sind konservative Einstiegsgewichte, aus denen der Nutzer direkt progressieren kann.
+const LEVEL_START_WEIGHTS={
+  anfaenger:{
+    brust:30,rücken_lat:25,rücken_oben:20,rücken_unten:0,schultern:15,schultern_hinten:10,
+    bizeps:15,trizeps:20,quads:40,beinbeuger:30,po:20,waden:40,bauch:0,core:0,
+    default_compound:30,default_isolation:15
+  },
+  fortgeschritten:{
+    brust:60,rücken_lat:50,rücken_oben:40,rücken_unten:0,schultern:25,schultern_hinten:15,
+    bizeps:30,trizeps:40,quads:70,beinbeuger:50,po:40,waden:60,bauch:0,core:0,
+    default_compound:50,default_isolation:25
+  },
+  sehr_fortgeschritten:{
+    brust:90,rücken_lat:75,rücken_oben:60,rücken_unten:0,schultern:40,schultern_hinten:25,
+    bizeps:45,trizeps:55,quads:100,beinbeuger:70,po:60,waden:80,bauch:0,core:0,
+    default_compound:75,default_isolation:35
+  }
+};
+function getLevelStartWeight(def){
+  const lvl=getTrainingLevel()||'fortgeschritten';
+  const table=LEVEL_START_WEIGHTS[lvl]||LEVEL_START_WEIGHTS.fortgeschritten;
+  if(!def||def.bodyweight)return 0;
+  const primaryMuscle=(def.muscles||[])[0];
+  if(primaryMuscle&&table[primaryMuscle]!==undefined)return table[primaryMuscle];
+  return def.isIsolation?table.default_isolation:table.default_compound;
+}
 function progressionSuggestion(exerciseId,exercise){
   const def=getExerciseInfo(exerciseId);
   if(!def)return{weight:exercise.currentWeight,text:''};
@@ -860,7 +896,11 @@ function progressionSuggestion(exerciseId,exercise){
     }
     // sonst: normale Gewichts-Logik unten greift
   }
-  if(!last||last.legacy)return{weight:isBW?0:(exercise.currentWeight||0),text:`Start: ${repsMin}-${repsMax} Wdh`};
+  if(!last||last.legacy){
+    if(isTime||isBW)return{weight:0,text:`Start: ${repsMin}-${repsMax} Wdh`};
+    const startW=exercise.currentWeight&&exercise.currentWeight>0?exercise.currentWeight:getLevelStartWeight(def);
+    return{weight:startW,text:`Einstieg (${(LEVEL_DEFAULTS[getTrainingLevel()]||LEVEL_DEFAULTS.fortgeschritten).label}): ${startW} kg · ${repsMin}-${repsMax} Wdh`};
+  }
   const validSets=last.sets.filter(s=>(isBW||isOptionalBW||(s.weight!==null&&s.weight!==undefined))&&s.reps);
   if(validSets.length===0)return{weight:exercise.currentWeight||0,text:`${repsMin}-${repsMax} Wdh`};
   if(isBW){
@@ -2375,13 +2415,13 @@ function swapForToday(exIdx,newId){
     if(last)startWeight=Math.max(0,...last.sets.map(s=>s.weight||0));
     else startWeight=20;
   }
-  const tempEx={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:startWeight,maxWeight:null};
+  const tempEx={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?getPlankBaseForNewExercise(newId):null,plankBaseSec:isTime?getPlankBaseForNewExercise(newId):null,currentWeight:startWeight,maxWeight:null};
   const sug=progressionSuggestion(newId,tempEx);
   const sets=[];
   const planEx=DATA.plans[currentWorkoutDraft.planId]?DATA.plans[currentWorkoutDraft.planId].exercises:null;
   const n=getWeeklyTargetSets(tempEx,planEx);
   for(let i=0;i<n;i++)sets.push({weight:null,reps:null});
-  currentWorkoutDraft.exercises[exIdx]={exerciseId:newId,originalExerciseId:oldDraftEx.originalExerciseId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:startWeight,maxWeight:null,sets};
+  currentWorkoutDraft.exercises[exIdx]={exerciseId:newId,originalExerciseId:oldDraftEx.originalExerciseId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?getPlankBaseForNewExercise(newId):null,plankBaseSec:isTime?getPlankBaseForNewExercise(newId):null,currentWeight:startWeight,maxWeight:null,sets};
   saveWorkoutDraft();
   closeModal();
   renderToday();
@@ -2397,9 +2437,11 @@ function swapPermanent(exIdx,newId){
     const last=getLastWorkout(newId);
     let startWeight=0;
     if(!isBW&&!isTime){if(last)startWeight=Math.max(0,...last.sets.map(s=>s.weight||0));else startWeight=20;}
-    plan.exercises[planExIdx]={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):undefined,currentWeight:isBW?0:startWeight,maxWeight:null};
+    const plankBase=isTime?getPlankBaseForNewExercise(newId):undefined;
+    plan.exercises[planExIdx]={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?plankBase:undefined,plankBaseSec:isTime?plankBase:undefined,currentWeight:isBW?0:startWeight,maxWeight:null};
   }
-  const tempEx={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:isTime?(oldDraftEx.targetSeconds||60):null,currentWeight:(isBW||isTime)?0:plan.exercises[planExIdx].currentWeight,maxWeight:null};
+  const plankBaseTemp=isTime?getPlankBaseForNewExercise(newId):null;
+  const tempEx={exerciseId:newId,targetSets:oldDraftEx.targetSets,targetRepsMin:oldDraftEx.targetRepsMin,targetRepsMax:oldDraftEx.targetRepsMax,targetSeconds:plankBaseTemp,plankBaseSec:plankBaseTemp,currentWeight:(isBW||isTime)?0:plan.exercises[planExIdx].currentWeight,maxWeight:null};
   const sug=progressionSuggestion(newId,tempEx);
   const sets=[];
   const n=getWeeklyTargetSets(tempEx,plan.exercises);
@@ -2517,6 +2559,18 @@ function cancelPlankTimer(){if(plankTimer)clearInterval(plankTimer);plankTimer=n
 // Plank-Vorgabe pro Satz berechnen
 function getPlankBase(draftEx){
   return draftEx.plankBaseSec||draftEx.targetSeconds||DATA.settings.plankBaseSec||120;
+}
+// Ermittelt die Plank-Basis für eine neu eingetauschte Zeit-Übung.
+// Reihenfolge: 1) letzter Bestwert aus der History dieser Übung,
+//              2) plankBaseSec in Settings (falls manuell angepasst),
+//              3) 120s Fallback.
+function getPlankBaseForNewExercise(newExerciseId){
+  const last=getLastWorkout(newExerciseId);
+  if(last&&last.sets&&last.sets.length){
+    const times=last.sets.map(s=>s.reps||0).filter(t=>t>0);
+    if(times.length)return Math.max(...times);
+  }
+  return DATA.settings.plankBaseSec||120;
 }
 function getPlankTargetForSet(draftEx,setIdx){
   const base=getPlankBase(draftEx);
@@ -3323,7 +3377,13 @@ function confirmReset(){
     showConfirm('Sicher? Auch deine Historie geht verloren.',function(){
       localStorage.removeItem(STORAGE_KEY);
       Object.keys(localStorage).filter(k=>k.startsWith('kr_draft_')).forEach(k=>localStorage.removeItem(k));
-      DATA=loadData();switchTab('today');showToast('Zurückgesetzt');
+      currentWorkoutDraft=null;
+      DATA=buildEmptyData();
+      saveData(DATA);
+      invalidateHistoryIndex();
+      switchTab('today');
+      showWizardModal();
+      showToast('Zurückgesetzt – bitte Plan einrichten');
     },'Endgültig löschen');
   },'Weiter');
 }
@@ -3727,18 +3787,31 @@ function showWizardStep(){
         <div><label style="font-weight:600;display:block;">${o[1]}</label>
         <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}`;
   }else if(currentId==='summary'){
-    // Preview-Pläne mit gewähltem Niveau generieren
-    _levelOverride=wizardData.level;
-    const previewPlans=buildPlansFromWizard(wizardData);
-    _levelOverride=null;
+    // Preview-Pläne mit gewähltem Niveau generieren, falls noch nicht geschehen oder veraltet
+    if(!wizardData._previewPlans){
+      _levelOverride=wizardData.level;
+      wizardData._previewPlans=buildPlansFromWizard(wizardData);
+      _levelOverride=null;
+    }
+    const previewPlans=wizardData._previewPlans;
     let preview='';
     Object.keys(previewPlans).forEach(pk=>{
       const p=previewPlans[pk];
       preview+=`<div style="background:var(--bg-elev2);padding:10px;border-radius:8px;margin-bottom:8px;">
         <div style="font-weight:600;font-size:14px;margin-bottom:6px;">${pk}: ${p.name}</div>
-        <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text-dim);">
-          ${p.exercises.map(ex=>`<li>${getExerciseDisplayName(ex.exerciseId)} · ${ex.targetSets||3}×${ex.targetRepsMin||8}-${ex.targetRepsMax||12}</li>`).join('')}
-        </ol></div>`;
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${p.exercises.map((ex,i)=>{
+            const def=getExerciseInfo(ex.exerciseId);
+            const label=def?def.name:ex.exerciseId;
+            const sets=ex.targetSets||3;
+            const repsLabel=ex.targetSeconds?`${ex.targetSeconds}s`:`${ex.targetRepsMin||8}-${ex.targetRepsMax||12} Wdh`;
+            return `<div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+              <span style="flex:1;color:var(--text);">${i+1}. ${label}</span>
+              <span style="color:var(--text-dim);font-size:12px;">${sets}×${repsLabel}</span>
+              <button class="icon-btn" style="font-size:14px;padding:3px 7px;" onclick="wizSwapExercise('${pk}',${i})" title="Übung wechseln">⇄</button>
+            </div>`;
+          }).join('')}
+        </div></div>`;
     });
     const typeLabel=wizardData.type==='fullbody'?'Ganzkörper':(wizardData.type==='split2'?'2er-Split':'3er-Split');
     const splitLabel=wizardData.splitVariant?(' · '+SPLIT_LABELS[wizardData.splitVariant]):'';
@@ -3748,6 +3821,7 @@ function showWizardStep(){
         ${lvlLabel} · ${typeLabel}${splitLabel} · ${wizardData.frequency}× pro Woche · ${wizardData.exercisesPerDay} Übungen/Training
         ${wizardData.type==='fullbody'&&wizardData.variation==='AB'?' · A↔B-Wechsel':''}
       </div>
+      <div style="font-size:12px;color:var(--text-faint);margin-bottom:8px;">Tippe ⇄ um eine Übung zu tauschen.</div>
       ${preview}
       <div style="background:rgba(239,68,68,0.08);border:1px solid var(--warning);padding:10px;border-radius:8px;font-size:12px;color:var(--text-dim);margin-top:8px;">
         ⚠️ Wenn du fertigstellst, werden deine aktuellen Pläne überschrieben.
@@ -3761,7 +3835,55 @@ function showWizardStep(){
     </div>`;
   showModal(html);
 }
-function wizSelect(key,val){wizardData[key]=val;showWizardStep();}
+function wizSelect(key,val){wizardData[key]=val;wizardData._previewPlans=null;showWizardStep();}
+function wizSwapExercise(planKey,exIdx){
+  const plan=wizardData._previewPlans&&wizardData._previewPlans[planKey];
+  if(!plan)return;
+  const currentEx=plan.exercises[exIdx];
+  const def=getExerciseInfo(currentEx.exerciseId);
+  if(!def)return;
+  // Kandidaten: alternatives + andere Übungen derselben Muskelgruppe
+  const altIds=def.alternatives||[];
+  const recommended=altIds.map(id=>getExerciseInfo(id)).filter(Boolean);
+  const swapMuscles=new Set();
+  (def.muscles||[]).forEach(m=>(RECOVERY_SYNONYMS[m]||[m]).forEach(x=>swapMuscles.add(x)));
+  const others=EXERCISE_LIBRARY.filter(e=>
+    e.id!==def.id&&!altIds.includes(e.id)&&
+    e.muscles.some(m=>swapMuscles.has(m))
+  ).slice(0,10);
+  function makeBtn(e){
+    return `<button class="btn btn-ghost" style="text-align:left;margin-bottom:6px;font-size:13px;padding:8px 10px;"
+      onclick="wizDoSwap('${planKey}',${exIdx},'${e.id}')">${e.name} <span style="color:var(--text-faint);font-size:11px;">${e.equipment}</span></button>`;
+  }
+  let html=`<h2>Übung wechseln</h2>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:10px;">Aktuell: <strong>${def.name}</strong></p>`;
+  if(recommended.length){
+    html+=`<div style="font-size:12px;font-weight:600;color:var(--text-faint);margin-bottom:6px;">Empfohlen</div>`;
+    html+=`<div style="display:flex;flex-direction:column;">${recommended.map(makeBtn).join('')}</div>`;
+  }
+  if(others.length){
+    html+=`<div style="font-size:12px;font-weight:600;color:var(--text-faint);margin:10px 0 6px;">Weitere</div>`;
+    html+=`<div style="display:flex;flex-direction:column;">${others.map(makeBtn).join('')}</div>`;
+  }
+  showModal(html);
+}
+function wizDoSwap(planKey,exIdx,newId){
+  if(!wizardData._previewPlans||!wizardData._previewPlans[planKey])return;
+  const plan=wizardData._previewPlans[planKey];
+  const oldEx=plan.exercises[exIdx];
+  const newDef=getExerciseInfo(newId);
+  if(!newDef)return;
+  const isTime=newDef.type==='time';
+  plan.exercises[exIdx]={
+    ...oldEx,
+    exerciseId:newId,
+    targetRepsMin:isTime?undefined:oldEx.targetRepsMin,
+    targetRepsMax:isTime?undefined:oldEx.targetRepsMax,
+    targetSeconds:isTime?(DATA.settings&&DATA.settings.plankBaseSec||120):undefined
+  };
+  closeModal();
+  showWizardStep();
+}
 function wizSelectType(val){
   wizardData.type=val;
   // Reset splitVariant wenn Trainingsart wechselt
@@ -3785,7 +3907,7 @@ function wizToggleDay(d){
   wizardData.days.sort((a,b)=>a-b);
   showWizardStep();
 }
-function wizPrev(){wizardStep--;showWizardStep();}
+function wizPrev(){wizardData._previewPlans=null;wizardStep--;showWizardStep();}
 function wizNext(){
   const stepIds=getWizardStepIds();
   if(wizardStep<stepIds.length-1){wizardStep++;showWizardStep();}
@@ -3795,7 +3917,10 @@ function finishWizard(){
   // Level zuerst speichern, damit buildPlansFromWizard mit korrektem Niveau arbeitet
   DATA.cycle.level=wizardData.level;
   // Pläne generieren
-  const newPlans=buildPlansFromWizard(wizardData);
+  // Nutze editierte Vorschau-Pläne falls vorhanden, sonst neu generieren
+  _levelOverride=wizardData.level;
+  const newPlans=wizardData._previewPlans||buildPlansFromWizard(wizardData);
+  _levelOverride=null;
   // Cycle aktualisieren
   DATA.cycle.type=wizardData.type;
   DATA.cycle.splitVariant=wizardData.splitVariant;
