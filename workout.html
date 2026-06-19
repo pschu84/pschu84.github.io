@@ -3836,34 +3836,51 @@ function showWizardStep(){
   showModal(html);
 }
 function wizSelect(key,val){wizardData[key]=val;wizardData._previewPlans=null;showWizardStep();}
-function wizSwapExercise(planKey,exIdx){
+function wizSwapExercise(planKey,exIdx,filterMuscle){
   const plan=wizardData._previewPlans&&wizardData._previewPlans[planKey];
   if(!plan)return;
   const currentEx=plan.exercises[exIdx];
   const def=getExerciseInfo(currentEx.exerciseId);
   if(!def)return;
-  // Kandidaten: alternatives + andere Übungen derselben Muskelgruppe
-  const altIds=def.alternatives||[];
-  const recommended=altIds.map(id=>getExerciseInfo(id)).filter(Boolean);
-  const swapMuscles=new Set();
-  (def.muscles||[]).forEach(m=>(RECOVERY_SYNONYMS[m]||[m]).forEach(x=>swapMuscles.add(x)));
-  const others=EXERCISE_LIBRARY.filter(e=>
-    e.id!==def.id&&!altIds.includes(e.id)&&
-    e.muscles.some(m=>swapMuscles.has(m))
-  ).slice(0,10);
+
   function makeBtn(e){
     return `<button class="btn btn-ghost" style="text-align:left;margin-bottom:6px;font-size:13px;padding:8px 10px;"
       onclick="wizDoSwap('${planKey}',${exIdx},'${e.id}')">${e.name} <span style="color:var(--text-faint);font-size:11px;">${e.equipment}</span></button>`;
   }
+
+  const allMuscles=[...new Set(EXERCISE_LIBRARY.flatMap(e=>e.muscles||[]))].sort();
+  function chipStyle(active){return `style="display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px;cursor:pointer;margin:3px 3px 3px 0;border:1px solid var(--border);background:${active?'var(--accent)':'var(--bg-elev2)'};color:${active?'#000':'var(--text)'}"`;}
+  const chips=`<div style="margin-bottom:12px;">
+    <span ${chipStyle(!filterMuscle)} onclick="wizSwapExercise('${planKey}',${exIdx},null)">Alle</span>
+    ${allMuscles.map(m=>`<span ${chipStyle(filterMuscle===m)} onclick="wizSwapExercise('${planKey}',${exIdx},'${m}')">${MUSCLE_LABELS[m]||m}</span>`).join('')}
+  </div>`;
+
   let html=`<h2>Übung wechseln</h2>
-    <p style="color:var(--text-dim);font-size:13px;margin-bottom:10px;">Aktuell: <strong>${def.name}</strong></p>`;
-  if(recommended.length){
-    html+=`<div style="font-size:12px;font-weight:600;color:var(--text-faint);margin-bottom:6px;">Empfohlen</div>`;
-    html+=`<div style="display:flex;flex-direction:column;">${recommended.map(makeBtn).join('')}</div>`;
-  }
-  if(others.length){
-    html+=`<div style="font-size:12px;font-weight:600;color:var(--text-faint);margin:10px 0 6px;">Weitere</div>`;
-    html+=`<div style="display:flex;flex-direction:column;">${others.map(makeBtn).join('')}</div>`;
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:10px;">Aktuell: <strong>${def.name}</strong></p>
+    ${chips}`;
+
+  if(!filterMuscle){
+    const altIds=def.alternatives||[];
+    const recommended=altIds.map(id=>getExerciseInfo(id)).filter(Boolean);
+    const swapMuscles=new Set();
+    (def.muscles||[]).forEach(m=>(RECOVERY_SYNONYMS[m]||[m]).forEach(x=>swapMuscles.add(x)));
+    const sameMuscle=EXERCISE_LIBRARY.filter(e=>e.id!==def.id&&!altIds.includes(e.id)&&e.muscles.some(m=>swapMuscles.has(m)));
+    if(recommended.length){
+      html+=`<div style="font-size:12px;font-weight:600;color:var(--text-faint);margin-bottom:6px;">Empfohlen</div>`;
+      html+=`<div style="display:flex;flex-direction:column;">${recommended.map(makeBtn).join('')}</div>`;
+    }
+    if(sameMuscle.length){
+      html+=`<div style="font-size:12px;font-weight:600;color:var(--text-faint);margin:10px 0 6px;">Gleiche Muskelgruppe</div>`;
+      html+=`<div style="display:flex;flex-direction:column;">${sameMuscle.map(makeBtn).join('')}</div>`;
+    }
+  } else {
+    const filtered=EXERCISE_LIBRARY.filter(e=>e.id!==def.id&&(e.muscles||[]).includes(filterMuscle));
+    if(filtered.length){
+      html+=`<div style="font-size:12px;font-weight:600;color:var(--text-faint);margin-bottom:6px;">${MUSCLE_LABELS[filterMuscle]||filterMuscle}</div>`;
+      html+=`<div style="display:flex;flex-direction:column;">${filtered.map(makeBtn).join('')}</div>`;
+    } else {
+      html+=`<p style="color:var(--text-dim);font-size:13px;">Keine Übungen gefunden.</p>`;
+    }
   }
   showModal(html);
 }
