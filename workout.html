@@ -934,6 +934,41 @@ function getLevelStartWeight(def){
   if(primaryMuscle&&table[primaryMuscle]!==undefined)return table[primaryMuscle];
   return def.isIsolation?table.default_isolation:table.default_compound;
 }
+// Sucht nach einem brauchbaren E1RM aus verwandten Übungen (alternatives + gleiche Muskelgruppe),
+// wenn für die neue Übung noch kein Trainingsverlauf existiert.
+// Gibt {e1rm, sourceName} zurück oder null.
+function getRelatedE1RM(def){
+  if(!def||def.bodyweight)return null;
+  const primaryMuscles=new Set(def.muscles||[]);
+  // 1. alternatives aus der Library-Definition prüfen
+  const altIds=def.alternatives||[];
+  // 2. Alle Übungen derselben primären Muskelgruppe als weitere Kandidaten
+  const sameMuscleCandidates=EXERCISE_LIBRARY.filter(e=>
+    e.id!==def.id&&!e.bodyweight&&
+    (e.muscles||[]).some(m=>primaryMuscles.has(m))
+  ).map(e=>e.id);
+  // Reihenfolge: alternatives zuerst (direkter Ersatz), dann gleiche Muskelgruppe
+  const candidateIds=[...new Set([...altIds,...sameMuscleCandidates])];
+  let bestE1RM=0;
+  let sourceName='';
+  for(const cid of candidateIds){
+    const e1rm=getBestE1RM(cid);
+    if(e1rm>bestE1RM){bestE1RM=e1rm;const cdef=getExerciseInfo(cid);sourceName=cdef?cdef.name:cid;}
+  }
+  if(bestE1RM<=0)return null;
+  // Skalierungsfaktor: Maschine→Maschine oder Kabel→Kabel = 1.0,
+  // Freihantel→Maschine = 1.05 (Maschine nimmt Stabilisierung weg, daher etwas mehr möglich),
+  // Maschine→Freihantel = 0.90 (mehr Stabilisierung nötig)
+  let scaleFactor=1.0;
+  const srcDef=EXERCISE_LIBRARY.find(e=>e.id===candidateIds.find(c=>getBestE1RM(c)===bestE1RM));
+  if(srcDef){
+    const srcFree=srcDef.equipment==='Langhantel'||srcDef.equipment==='Kurzhanteln';
+    const dstFree=def.equipment==='Langhantel'||def.equipment==='Kurzhanteln';
+    if(srcFree&&!dstFree)scaleFactor=1.05;
+    else if(!srcFree&&dstFree)scaleFactor=0.90;
+  }
+  return{e1rm:bestE1RM*scaleFactor,sourceName};
+}
 function progressionSuggestion(exerciseId,exercise){
   const def=getExerciseInfo(exerciseId);
   if(!def)return{weight:exercise.currentWeight,text:''};
@@ -1015,6 +1050,14 @@ function progressionSuggestion(exerciseId,exercise){
   }
   if(!last||last.legacy){
     if(isTime||isBW)return{weight:0,text:`Start: ${repsMin}-${repsMax} Wdh`};
+    // Verwandte Übung mit vorhandenem E1RM suchen
+    const related=getRelatedE1RM(def);
+    if(related){
+      const phaseDef=PHASE_DEFS[phase]||PHASE_DEFS.hypertrophie;
+      const targetPct=(phaseDef.intensityPct[0]+phaseDef.intensityPct[1])/2;
+      const w=Math.round(related.e1rm*targetPct/0.5)*0.5;
+      return{weight:w,text:`Kein Verlauf für diese Übung. Schätzung aus „${related.sourceName}" (${Math.round(related.e1rm)} kg E1RM): ${w} kg`};
+    }
     const startW=exercise.currentWeight&&exercise.currentWeight>0?exercise.currentWeight:getLevelStartWeight(def);
     return{weight:startW,text:`Einstieg (${(LEVEL_DEFAULTS[getTrainingLevel()]||LEVEL_DEFAULTS.fortgeschritten).label}): ${startW} kg · ${repsMin}-${repsMax} Wdh`};
   }
