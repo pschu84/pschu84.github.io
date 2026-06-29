@@ -876,9 +876,23 @@ function progressionSuggestion(exerciseId,exercise){
       const e1rm=getBestE1RM(exerciseId);
       if(e1rm>0){
         const phaseDef=PHASE_DEFS[phase];
-        const targetPct=(phaseDef.intensityPct[0]+phaseDef.intensityPct[1])/2;
+        let targetPct;
+        if(phase==='maxkraft'){
+          // Wie oft war Maximalkraft schon in der Meso-History?
+          const prevMaxkraftCount=(DATA.cycle.mesoHistory||[]).filter(m=>m.phase==='maxkraft').length;
+          // Erster Maxkraft-Block: 80% (neuromuskuläre Adaptation), danach 83%
+          targetPct=prevMaxkraftCount===0?0.80:0.83;
+        } else {
+          // Hypertrophie und Kraftausdauer: Mitte des Intensitätsbandes
+          targetPct=(phaseDef.intensityPct[0]+phaseDef.intensityPct[1])/2;
+        }
         const w=Math.round(e1rm*targetPct/0.5)*0.5;
-        return{weight:w,text:`Neuer ${phaseDef.shortLabel||phaseDef.label}-Block: ${w} kg`};
+        const note=phase==='maxkraft'&&(DATA.cycle.mesoHistory||[]).filter(m=>m.phase==='maxkraft').length===0?' (konservativer Einstieg)':'';
+        // Maschinenlimit-Check: empfohlenes Gewicht übersteigt das Maschinen-Maximum
+        if(exercise.maxWeight&&w>exercise.maxWeight){
+          return{weight:exercise.maxWeight,text:`⚠️ Maschinenlimit (${exercise.maxWeight} kg) liegt unter dem empfohlenen Gewicht für ${phaseDef.shortLabel} (${w} kg). Diese Maschine ist für diesen Block ungeeignet. Übung tauschen empfohlen.`,isWarn:true,showSwap:true};
+        }
+        return{weight:w,text:`Neuer ${phaseDef.shortLabel||phaseDef.label}-Block: ${w} kg${note}`};
       }
     }
   }
@@ -1442,7 +1456,8 @@ function renderToday(){
     }
     // Heute-Empfehlung
     const recCls=sug.isWarn?' warn':'';
-    html+=`<div class="today-rec${recCls}"><div><span class="lbl">Heute:</span>${sug.text?`<span style="font-size:12px;color:var(--text-dim);">${sug.text}</span>`:''}</div><div class="target-row">${recItems.join('')}</div></div>`;
+    const swapBtn=sug.showSwap?` <button class="btn btn-small" style="margin-top:6px;font-size:12px;" onclick="showSwapExercise(${exIdx})">⇄ Übung tauschen</button>`:'';
+    html+=`<div class="today-rec${recCls}"><div><span class="lbl">Heute:</span>${sug.text?`<span style="font-size:12px;color:var(--text-dim);">${sug.text}</span>`:''}${swapBtn}</div><div class="target-row">${recItems.join('')}</div></div>`;
     // Warn-Hinweise (Plateau etc.)
     if(advice.length>0){
       advice.forEach(a=>{html+=`<div class="suggest warn">⚠ ${a.msg} · <a href="#" onclick="showPlateauHelp('${draftEx.exerciseId}');return false;" style="color:inherit;text-decoration:underline;">Hilfe</a></div>`;});
@@ -3029,18 +3044,36 @@ function renderCycle(){
     const isDeload=weekNum>=totalWeeks;
     const def=PHASE_DEFS[isDeload?'deload':phaseId];
     let label;
-    if(isDeload)label='Deload';
-    else if(weekNum===1)label='Einstieg (MEV)';
-    else if(weekNum===totalWeeks-1)label='Peak (MRV)';
-    else if(phaseId==='hypertrophie')label='Akkumulation';
-    else if(phaseId==='maxkraft')label='Spezifische Kraft';
-    else label='Variation';
-    // Realistische Sätze-Anzeige bei typischer Basis von 3 Sätzen pro Übung
+    if(isDeload){
+      label='Deload';
+    } else if(phaseId==='hypertrophie'){
+      if(weekNum===1)label='Einstieg (MEV)';
+      else if(weekNum===totalWeeks-1)label='Peak (MRV)';
+      else label='Akkumulation';
+    } else if(phaseId==='maxkraft'){
+      if(weekNum===1)label='Aufbau';
+      else if(weekNum===totalWeeks-1)label='Peak-Intensität';
+      else label='Spezifische Kraft';
+    } else if(phaseId==='kraftausdauer'){
+      if(weekNum===1)label='Einstieg';
+      else if(weekNum===totalWeeks-1)label='Erhaltung';
+      else label='Variation';
+    } else {
+      label=weekNum===1?'Einstieg':weekNum===totalWeeks-1?'Peak':'Aufbau';
+    }
     const sets=computeTargetSets(3,phaseId,weekNum,totalWeeks,isDeload);
     const repsRange=def.repsRange;
     const rirWk=isDeload?PHASE_DEFS.deload.weeklyRIR[1]:(def.weeklyRIR[Math.min(weekNum,Object.keys(def.weeklyRIR).length)]||'2-3');
     return{label,sub:`${sets} Sätze/Übung · ${repsRange[0]}-${repsRange[1]} Wdh`,rir:`RIR ${rirWk}`};
   }
+
+  // Phasenabhängiger Beschreibungstext
+  const phaseSubText={
+    hypertrophie:'Volumen steigt MEV → MRV, RIR sinkt über die Wochen.',
+    maxkraft:'Intensität steigt, Volumen sinkt -- Kraft wird aus dem Aufbau-Block spezifisch.',
+    kraftausdauer:'Kurze, konstante Phase: Ermüdung abbauen, Stoffwechsel und Bindegewebe stärken.',
+    deload:'Volumen und Intensität stark reduziert -- aktive Erholung.'
+  };
 
   let weekTimeline='<div class="week-timeline">';
   for(let i=1;i<=mesoLen;i++){
@@ -3068,7 +3101,7 @@ function renderCycle(){
 
   <div class="card">
     <div class="card-title">Wochen-Übersicht</div>
-    <div class="card-sub">Volumen progressiv steigern (MEV → MRV), RIR reduzieren über die Wochen.</div>
+    <div class="card-sub">${phaseSubText[phase]||phaseSubText.hypertrophie}</div>
     ${weekTimeline}
     <div class="btn-row" style="margin-top:10px;">
       <button class="btn btn-secondary btn-small" onclick="advanceWeek()">Eine Woche vor</button>
