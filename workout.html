@@ -302,54 +302,57 @@ const MUSCLE_LABELS={brust:'Brust',rücken_lat:'Rücken (Lat)',rücken_oben:'Rü
 // Volumen-Landmarks für Hypertrophie (MEV–MRV, Sätze/Muskel/Woche)
 const MAV_RANGES_BY_LEVEL={
   anfaenger:{
-    brust:[6,12],rücken_lat:[6,12],rücken_oben:[6,12],rücken_unten:[3,8],
-    schultern:[4,10],schultern_hinten:[3,8],bizeps:[4,10],trizeps:[4,10],
-    quads:[6,12],beinbeuger:[4,10],po:[4,10],waden:[4,10],bauch:[4,10],core:[4,10]
+    brust:[8,14],rücken_lat:[8,14],rücken_oben:[8,14],rücken_unten:[4,10],
+    schultern:[6,12],schultern_hinten:[4,10],bizeps:[6,12],trizeps:[6,12],
+    quads:[8,14],beinbeuger:[6,12],po:[6,12],waden:[6,12],bauch:[4,10],core:[4,10]
   },
   fortgeschritten:{
-    brust:[10,18],rücken_lat:[10,16],rücken_oben:[10,16],rücken_unten:[5,10],
-    schultern:[8,16],schultern_hinten:[6,12],bizeps:[8,14],trizeps:[8,14],
-    quads:[10,18],beinbeuger:[8,14],po:[8,14],waden:[8,14],bauch:[6,12],core:[6,12]
+    brust:[12,20],rücken_lat:[12,18],rücken_oben:[12,18],rücken_unten:[6,12],
+    schultern:[10,18],schultern_hinten:[8,14],bizeps:[10,16],trizeps:[10,16],
+    quads:[12,20],beinbeuger:[10,16],po:[10,16],waden:[10,16],bauch:[8,14],core:[8,14]
   },
   sehr_fortgeschritten:{
-    brust:[12,22],rücken_lat:[12,20],rücken_oben:[12,20],rücken_unten:[6,12],
-    schultern:[10,20],schultern_hinten:[8,16],bizeps:[10,18],trizeps:[10,18],
-    quads:[12,22],beinbeuger:[10,18],po:[10,18],waden:[10,18],bauch:[8,14],core:[8,14]
+    brust:[15,25],rücken_lat:[14,22],rücken_oben:[14,22],rücken_unten:[8,14],
+    schultern:[12,22],schultern_hinten:[10,18],bizeps:[12,20],trizeps:[12,20],
+    quads:[15,25],beinbeuger:[12,20],po:[12,20],waden:[12,20],bauch:[10,16],core:[10,16]
   }
 };
-// Volumen-Landmarks für Maximalkraft (deutlich niedriger -- hohe Intensität kostet viel Erholung)
-// Quelle: Israetel/RP Strength Principles, Schoenfeld et al. 2019, Frontiers in Sports (powerlifter surveys)
+// Volumen-Landmarks für Maximalkraft
+// Quelle: klassische Blockperiodisierung, Israetel/RP, Schoenfeld et al. 2019
+// Hohe Intensität (85-95% 1RM) = hohes ZNS-Risiko, daher Volumen deutlich reduziert.
+// Bei Ganzkörper 3x/Woche mit 1 Übung/Muskel und 4 Sätzen = 12 Sätze/Woche (obere Grenze).
 const MAV_RANGES_MAXKRAFT_BY_LEVEL={
   anfaenger:{
-    brust:[3,8],rücken_lat:[3,8],rücken_oben:[3,8],rücken_unten:[2,5],
-    schultern:[2,6],schultern_hinten:[2,5],bizeps:[2,6],trizeps:[2,6],
-    quads:[3,8],beinbeuger:[2,6],po:[2,6],waden:[2,6],bauch:[2,6],core:[2,6]
+    brust:[4,8],rücken_lat:[4,8],rücken_oben:[4,8],rücken_unten:[3,6],
+    schultern:[3,6],schultern_hinten:[2,5],bizeps:[3,6],trizeps:[3,6],
+    quads:[4,8],beinbeuger:[3,6],po:[3,6],waden:[3,6],bauch:[3,6],core:[3,6]
   },
   fortgeschritten:{
-    brust:[4,10],rücken_lat:[4,10],rücken_oben:[4,10],rücken_unten:[3,7],
-    schultern:[3,8],schultern_hinten:[2,6],bizeps:[3,7],trizeps:[3,7],
-    quads:[4,10],beinbeuger:[3,8],po:[3,8],waden:[3,8],bauch:[3,7],core:[3,7]
+    brust:[6,12],rücken_lat:[6,12],rücken_oben:[6,12],rücken_unten:[4,9],
+    schultern:[5,10],schultern_hinten:[4,8],bizeps:[5,9],trizeps:[5,9],
+    quads:[6,12],beinbeuger:[5,10],po:[5,10],waden:[5,10],bauch:[4,8],core:[4,8]
   },
   sehr_fortgeschritten:{
-    brust:[5,12],rücken_lat:[5,12],rücken_oben:[5,12],rücken_unten:[3,8],
-    schultern:[4,10],schultern_hinten:[3,8],bizeps:[4,8],trizeps:[4,8],
-    quads:[5,12],beinbeuger:[4,10],po:[4,10],waden:[4,10],bauch:[3,8],core:[3,8]
+    brust:[8,14],rücken_lat:[8,14],rücken_oben:[8,14],rücken_unten:[5,10],
+    schultern:[6,12],schultern_hinten:[5,10],bizeps:[6,10],trizeps:[6,10],
+    quads:[8,14],beinbeuger:[6,12],po:[6,12],waden:[6,12],bauch:[5,10],core:[5,10]
   }
 };
-// Volumen-Landmarks für Kraftausdauer (Erhaltungs-/Variationsphase -- ähnlich Hypertrophie, aber unteres Ende)
+// Volumen-Landmarks für Kraftausdauer (Fundament/GPP)
+// Hohe Wdh-Zahlen (15-25) erzeugen metabolischen Stress -- weniger Sätze reichen.
 const MAV_RANGES_KRAFTAUSDAUER_BY_LEVEL={
   anfaenger:{
-    brust:[5,10],rücken_lat:[5,10],rücken_oben:[5,10],rücken_unten:[3,7],
-    schultern:[3,8],schultern_hinten:[3,7],bizeps:[3,8],trizeps:[3,8],
-    quads:[5,10],beinbeuger:[3,8],po:[3,8],waden:[3,8],bauch:[3,8],core:[3,8]
+    brust:[6,10],rücken_lat:[6,10],rücken_oben:[6,10],rücken_unten:[4,8],
+    schultern:[4,8],schultern_hinten:[3,7],bizeps:[4,8],trizeps:[4,8],
+    quads:[6,10],beinbeuger:[4,8],po:[4,8],waden:[4,8],bauch:[4,8],core:[4,8]
   },
   fortgeschritten:{
-    brust:[8,14],rücken_lat:[8,14],rücken_oben:[8,14],rücken_unten:[4,9],
+    brust:[8,14],rücken_lat:[8,14],rücken_oben:[8,14],rücken_unten:[5,10],
     schultern:[6,12],schultern_hinten:[5,10],bizeps:[6,12],trizeps:[6,12],
     quads:[8,14],beinbeuger:[6,12],po:[6,12],waden:[6,12],bauch:[5,10],core:[5,10]
   },
   sehr_fortgeschritten:{
-    brust:[10,16],rücken_lat:[10,16],rücken_oben:[10,16],rücken_unten:[5,10],
+    brust:[10,16],rücken_lat:[10,16],rücken_oben:[10,16],rücken_unten:[6,12],
     schultern:[8,14],schultern_hinten:[6,12],bizeps:[8,14],trizeps:[8,14],
     quads:[10,16],beinbeuger:[8,14],po:[8,14],waden:[8,14],bauch:[6,12],core:[6,12]
   }
