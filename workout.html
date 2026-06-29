@@ -299,6 +299,7 @@ const MUSCLE_LABELS={brust:'Brust',rücken_lat:'Rücken (Lat)',rücken_oben:'Rü
 // Volumen-Empfehlungen (Sätze/Woche) je nach Trainingsniveau.
 // Werte aus Meta-Analysen (Schoenfeld 2017/2021, Krieger 2010) und Israetels RP-Tabellen.
 // MEV = Minimum Effective Volume, MRV = Maximum Recoverable Volume.
+// Volumen-Landmarks für Hypertrophie (MEV–MRV, Sätze/Muskel/Woche)
 const MAV_RANGES_BY_LEVEL={
   anfaenger:{
     brust:[6,12],rücken_lat:[6,12],rücken_oben:[6,12],rücken_unten:[3,8],
@@ -316,11 +317,59 @@ const MAV_RANGES_BY_LEVEL={
     quads:[12,22],beinbeuger:[10,18],po:[10,18],waden:[10,18],bauch:[8,14],core:[8,14]
   }
 };
+// Volumen-Landmarks für Maximalkraft (deutlich niedriger -- hohe Intensität kostet viel Erholung)
+// Quelle: Israetel/RP Strength Principles, Schoenfeld et al. 2019, Frontiers in Sports (powerlifter surveys)
+const MAV_RANGES_MAXKRAFT_BY_LEVEL={
+  anfaenger:{
+    brust:[3,8],rücken_lat:[3,8],rücken_oben:[3,8],rücken_unten:[2,5],
+    schultern:[2,6],schultern_hinten:[2,5],bizeps:[2,6],trizeps:[2,6],
+    quads:[3,8],beinbeuger:[2,6],po:[2,6],waden:[2,6],bauch:[2,6],core:[2,6]
+  },
+  fortgeschritten:{
+    brust:[4,10],rücken_lat:[4,10],rücken_oben:[4,10],rücken_unten:[3,7],
+    schultern:[3,8],schultern_hinten:[2,6],bizeps:[3,7],trizeps:[3,7],
+    quads:[4,10],beinbeuger:[3,8],po:[3,8],waden:[3,8],bauch:[3,7],core:[3,7]
+  },
+  sehr_fortgeschritten:{
+    brust:[5,12],rücken_lat:[5,12],rücken_oben:[5,12],rücken_unten:[3,8],
+    schultern:[4,10],schultern_hinten:[3,8],bizeps:[4,8],trizeps:[4,8],
+    quads:[5,12],beinbeuger:[4,10],po:[4,10],waden:[4,10],bauch:[3,8],core:[3,8]
+  }
+};
+// Volumen-Landmarks für Kraftausdauer (Erhaltungs-/Variationsphase -- ähnlich Hypertrophie, aber unteres Ende)
+const MAV_RANGES_KRAFTAUSDAUER_BY_LEVEL={
+  anfaenger:{
+    brust:[5,10],rücken_lat:[5,10],rücken_oben:[5,10],rücken_unten:[3,7],
+    schultern:[3,8],schultern_hinten:[3,7],bizeps:[3,8],trizeps:[3,8],
+    quads:[5,10],beinbeuger:[3,8],po:[3,8],waden:[3,8],bauch:[3,8],core:[3,8]
+  },
+  fortgeschritten:{
+    brust:[8,14],rücken_lat:[8,14],rücken_oben:[8,14],rücken_unten:[4,9],
+    schultern:[6,12],schultern_hinten:[5,10],bizeps:[6,12],trizeps:[6,12],
+    quads:[8,14],beinbeuger:[6,12],po:[6,12],waden:[6,12],bauch:[5,10],core:[5,10]
+  },
+  sehr_fortgeschritten:{
+    brust:[10,16],rücken_lat:[10,16],rücken_oben:[10,16],rücken_unten:[5,10],
+    schultern:[8,14],schultern_hinten:[6,12],bizeps:[8,14],trizeps:[8,14],
+    quads:[10,16],beinbeuger:[8,14],po:[8,14],waden:[8,14],bauch:[6,12],core:[6,12]
+  }
+};
 let _levelOverride=null;
 function getTrainingLevel(){return _levelOverride||(DATA.cycle&&DATA.cycle.level)||'fortgeschritten';}
-function getMAVRange(muscle){
-  const ranges=MAV_RANGES_BY_LEVEL[getTrainingLevel()]||MAV_RANGES_BY_LEVEL.fortgeschritten;
-  return ranges[muscle]||[6,12];
+function getMAVRange(muscle,phaseOverride){
+  const phase=phaseOverride||getEffectivePhase();
+  const lvl=getTrainingLevel();
+  if(phase==='maxkraft'){
+    const t=MAV_RANGES_MAXKRAFT_BY_LEVEL[lvl]||MAV_RANGES_MAXKRAFT_BY_LEVEL.fortgeschritten;
+    return t[muscle]||[3,8];
+  }
+  if(phase==='kraftausdauer'){
+    const t=MAV_RANGES_KRAFTAUSDAUER_BY_LEVEL[lvl]||MAV_RANGES_KRAFTAUSDAUER_BY_LEVEL.fortgeschritten;
+    return t[muscle]||[5,12];
+  }
+  // Hypertrophie und Deload: Hypertrophie-Tabelle
+  const t=MAV_RANGES_BY_LEVEL[lvl]||MAV_RANGES_BY_LEVEL.fortgeschritten;
+  return t[muscle]||[6,12];
 }
 // Niveau-spezifische Defaults für Wiederholungen, Default-Satzzahl und Profil-Texte
 const LEVEL_DEFAULTS={
@@ -2688,10 +2737,18 @@ function adaptPlankBase(draftEx,sets){
 // ===== PLAN-TAB =====
 function renderPlan(){
   const planVol=planVolumeAnalysis();
+  const effPhase=getEffectivePhase();
+  const phaseVolInfo={
+    hypertrophie:{label:'Hypertrophie',sub:'Zielbereich für Muskelaufbau (MEV–MRV steigen wöchentlich)',help:'✓ im Soll · ⚠ unter MEV oder über MRV · Markierungen im Balken: MEV (links) und MRV (rechts).'},
+    maxkraft:{label:'Maximalkraft',sub:'Reduzierter Zielbereich -- hohe Intensität (85–95% 1RM) erfordert weniger Sätze für ausreichend Erholbarkeit',help:'✓ im Soll · ⚠ unter MEV oder über MRV · Im Maxkraft-Block gilt: weniger Sätze, aber höhere Intensität pro Satz. Balken: MEV (links) und MRV (rechts).'},
+    kraftausdauer:{label:'Kraftausdauer',sub:'Erhaltungs-Zielbereich -- kurze Phase zum Ermüdungsabbau, kein Volumenaufbau nötig',help:'✓ im Soll · ⚠ zu wenig oder zu viel · Im Kraftausdauer-Block sind moderate Sätze bei niedriger Intensität das Ziel. Balken: MEV (links) und MRV (rechts).'},
+    deload:{label:'Deload',sub:'Deload -- Volumen ~50% reduziert, kein Zielbereich-Check relevant',help:'Deload-Woche: reduziertes Volumen ist gewollt. Die Balken zeigen die Hypertrophie-Referenzwerte.'}
+  };
+  const phaseInfo=phaseVolInfo[effPhase]||phaseVolInfo.hypertrophie;
   // Volumen-Übersicht: alle Muskelgruppen mit Balken
   let volumeOverviewHtml=`<div class="card">
     <div class="card-title">Plan-Volumen (Sätze/Woche)</div>
-    <div class="card-sub">Bei ${DATA.cycle.frequency}× Training pro Woche · Zielbereich für Hypertrophie</div>
+    <div class="card-sub">Bei ${DATA.cycle.frequency}× Training pro Woche · ${phaseInfo.sub}</div>
     <div style="margin-top:12px;">`;
   // Sortiere nach Volumen absteigend für sinnvolle Reihenfolge
   const sorted=MUSCLE_GROUPS.slice().sort((a,b)=>(planVol[b]||0)-(planVol[a]||0));
@@ -2725,7 +2782,7 @@ function renderPlan(){
   }else if(pullVol>0&&planVol.brust>0&&pullVol>planVol.brust*1.6){
     volumeOverviewHtml+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(245,158,11,0.08);border-left:3px solid var(--warning);border-radius:6px;font-size:12px;color:var(--text-dim);">⚠ Push/Pull-Verhältnis: Lat+Mitte ${pullVol.toFixed(1)} vs. Brust ${planVol.brust.toFixed(1)}. Mehr Brust-Übungen einbauen.</div>`;
   }
-  volumeOverviewHtml+=`<div class="help-text" style="margin-top:8px;">✓ im Soll · ⚠ unter MEV oder über MRV · Markierungen im Balken: MEV (links) und MRV (rechts). Niveau: ${getLevelDefaults().label}.</div>`;
+  volumeOverviewHtml+=`<div class="help-text" style="margin-top:8px;">${phaseInfo.help} Niveau: ${getLevelDefaults().label}.</div>`;
   volumeOverviewHtml+=`</div>`;
   // Plan-Analyse-Karte: konkrete Empfehlungen
   const recs=analyzePlanForRecommendations();
