@@ -372,88 +372,142 @@ const EXERCISE_LIBRARY=[
 // BRUST (push/upper)
 {id:'bankdruecken_lh',name:'Bankdrücken (LH)',equipment:'Langhantel',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['brustpresse','bankdruecken_kh','schraegbank_lh']},
 {id:'bankdruecken_kh',name:'Bankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['bankdruecken_lh','brustpresse']},
+{id:'bankdruecken_multipresse',name:'Bankdrücken (Multipresse)',equipment:'Multipresse',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['bankdruecken_lh','brustpresse']},
 {id:'brustpresse',name:'Brustpresse',equipment:'Maschine',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['bankdruecken_lh','bankdruecken_kh','butterfly_machine']},
+{id:'brustpresse_dual',name:'Brustpresse Dual',equipment:'Maschine',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['brustpresse','bankdruecken_kh']},
 {id:'schraegbank_lh',name:'Schrägbankdrücken (LH)',equipment:'Langhantel',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['bankdruecken_lh','schraegbank_kh']},
 {id:'schraegbank_kh',name:'Schrägbankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['schraegbank_lh']},
+{id:'schraegbank_multipresse',name:'Schrägbankdrücken (Multipresse)',equipment:'Multipresse',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['schraegbank_lh','schraegbank_kh']},
+{id:'schraegbank_maschine',name:'Schrägbank-Brustpresse (Maschine)',equipment:'Maschine',muscles:['brust'],secondary:['schultern','trizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['schraegbank_kh']},
 {id:'negativ_bankdruecken',name:'Negativ-Bankdrücken (KH)',equipment:'Kurzhanteln',muscles:['brust'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['bankdruecken_kh']},
 {id:'dips',name:'Dips',equipment:'Eigengewicht',muscles:['brust','trizeps'],secondary:['schultern'],type:'reps',isCompound:true,bodyweight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['brustpresse']},
 {id:'butterfly_machine',name:'Butterfly (Maschine)',equipment:'Maschine',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable','brustpresse']},
 {id:'butterfly_cable',name:'Butterfly (Kabelzug)',equipment:'Kabelzug',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_machine','bankdruecken_kh']},
+{id:'kabelzug_brust_unten',name:'Kabelzug Brust (von unten)',equipment:'Kabelzug',muscles:['brust'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable']},
+{id:'fliegende_kh',name:'Fliegende (KH)',equipment:'Kurzhanteln',muscles:['brust'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_machine','butterfly_cable']},
 {id:'pullover',name:'Pullover (KH)',equipment:'Kurzhanteln',muscles:['brust','rücken_lat'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['butterfly_cable']},
 {id:'liegestuetze',name:'Liegestütze',equipment:'Eigengewicht',muscles:['brust'],secondary:['trizeps','schultern'],type:'reps',isCompound:true,bodyweight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['bankdruecken_kh']},
+{id:'liegestuetze_eng',name:'Enge Liegestütze',equipment:'Eigengewicht',muscles:['brust','trizeps'],secondary:['schultern'],type:'reps',isCompound:true,bodyweight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['enges_bankdruecken']},
 // RÜCKEN (pull/upper)
 {id:'kreuzheben',name:'Kreuzheben',equipment:'Langhantel',muscles:['rücken_unten','beinbeuger'],secondary:['po','core','rücken_oben'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rdl']},
+{id:'kreuzheben_sumo',name:'Sumo-Kreuzheben',equipment:'Langhantel',muscles:['rücken_unten','po','beinbeuger'],secondary:['quads','core'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['kreuzheben','rdl']},
 {id:'pullups',name:'Klimmzüge',equipment:'Eigengewicht',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,bodyweight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['latzug','rueckenmaschine']},
+{id:'pullups_eng',name:'Klimmzüge (enger Untergriff)',equipment:'Eigengewicht',muscles:['rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,bodyweight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['latzug','pullups']},
 {id:'latzug',name:'Latzug',equipment:'Kabelzug',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['pullups','rueckenmaschine']},
+{id:'latzug_eng',name:'Latzug (enger Griff)',equipment:'Kabelzug',muscles:['rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['latzug','rueckenmaschine']},
+{id:'latzug_dual',name:'Latzug Dual (Maschine)',equipment:'Maschine',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['latzug','rueckenmaschine']},
+{id:'high_row_dual',name:'High Row Dual (Maschine)',equipment:'Maschine',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps','schultern_hinten'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_machine','latzug_dual']},
 {id:'rudern_lh',name:'Rudern (LH)',equipment:'Langhantel',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable','rudern_kh']},
 {id:'rudern_kh',name:'Rudern (KH)',equipment:'Kurzhanteln',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['rudern_cable']},
 {id:'t_bar_rudern',name:'T-Bar-Rudern',equipment:'Langhantel',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_lh']},
 {id:'rudern_machine',name:'Rudern (Maschine)',equipment:'Maschine',muscles:['rücken_oben'],secondary:['bizeps','rücken_lat'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_cable','rudern_lh']},
+{id:'rudern_machine_dual',name:'Rudermaschine Dual',equipment:'Maschine',muscles:['rücken_oben'],secondary:['bizeps','rücken_lat'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_machine','rudern_cable']},
 {id:'rudern_cable',name:'Rudern (Kabelzug)',equipment:'Kabelzug',muscles:['rücken_oben'],secondary:['bizeps','rücken_lat'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rudern_machine','rudern_lh']},
 {id:'rueckenmaschine',name:'Rückenzug-Maschine',equipment:'Maschine',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['latzug','rudern_machine','pullups']},
+{id:'rueckenmaschine_dual',name:'Rückenzugmaschine Dual',equipment:'Maschine',muscles:['rücken_lat'],secondary:['bizeps','rücken_oben'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rueckenmaschine','latzug_dual']},
+{id:'rudergerät',name:'Rudergerät (Ergometer)',equipment:'Cardio',muscles:['rücken_oben','rücken_lat'],secondary:['bizeps','beinbeuger','core'],type:'reps',isCompound:true,bodyweight:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['rudern_machine','latzug']},
 {id:'hyperextensions',name:'Hyperextensions',equipment:'Hyperextension-Bank',muscles:['rücken_unten'],secondary:['po','beinbeuger'],type:'reps',bodyweight:true,allowAddedWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['rdl','kreuzheben']},
+{id:'ruecken_strecker_maschine',name:'Rückenstrecker (Maschine)',equipment:'Maschine',muscles:['rücken_unten'],secondary:['po'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['hyperextensions','rdl']},
+{id:'good_morning',name:'Good Mornings (LH)',equipment:'Langhantel',muscles:['rücken_unten','beinbeuger'],secondary:['po','core'],type:'reps',isCompound:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['rdl','hyperextensions']},
 {id:'shrugs_kh',name:'Shrugs (KH)',equipment:'Kurzhanteln',muscles:['rücken_oben'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_lh']},
 {id:'shrugs_lh',name:'Shrugs (LH)',equipment:'Langhantel',muscles:['rücken_oben'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['shrugs_kh']},
+{id:'face_pulls_rope',name:'Face Pulls (Seil)',equipment:'Kabelzug',muscles:['schultern_hinten','rücken_oben'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['reverse_butterfly','facepulls']},
 // SCHULTERN VORDERE/SEITLICHE (push/upper)
 {id:'schulterdruecken_lh',name:'Schulterdrücken (LH)',equipment:'Langhantel',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['schulterdruecken_kh','schulterdruecken_machine']},
 {id:'schulterdruecken_kh',name:'Schulterdrücken (KH)',equipment:'Kurzhanteln',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:1,alternatives:['schulterdruecken_lh','schulterdruecken_machine']},
 {id:'schulterdruecken_machine',name:'Schulterdrücken (Maschine)',equipment:'Maschine',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['schulterdruecken_kh']},
+{id:'schulterdruecken_multipresse',name:'Schulterdrücken (Multipresse)',equipment:'Multipresse',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['schulterdruecken_lh']},
 {id:'arnold_press',name:'Arnold Press',equipment:'Kurzhanteln',muscles:['schultern'],secondary:['trizeps'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['schulterdruecken_kh']},
 {id:'seitheben_kh',name:'Seitheben (KH)',equipment:'Kurzhanteln',muscles:['schultern'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_cable','seitheben_machine']},
 {id:'seitheben_cable',name:'Seitheben (Kabel)',equipment:'Kabelzug',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_kh']},
 {id:'seitheben_machine',name:'Seitheben (Maschine)',equipment:'Maschine',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_kh']},
+{id:'seitheben_machine_dual',name:'Seitheben Dual (Maschine)',equipment:'Maschine',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['seitheben_machine','seitheben_kh']},
 {id:'frontheben_kh',name:'Frontheben (KH)',equipment:'Kurzhanteln',muscles:['schultern'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_kh']},
+{id:'frontheben_cable',name:'Frontheben (Kabelzug)',equipment:'Kabelzug',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['frontheben_kh']},
 {id:'aufrechtes_rudern',name:'Aufrechtes Rudern',equipment:'Langhantel',muscles:['schultern','rücken_oben'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_kh']},
+{id:'schulteradduktion_machine',name:'Schulteradduktion (Maschine)',equipment:'Maschine',muscles:['schultern'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['seitheben_machine']},
 // HINTERE SCHULTER (pull/upper)
 {id:'reverse_butterfly',name:'Reverse Butterfly',equipment:'Maschine',muscles:['schultern_hinten'],secondary:['rücken_oben'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['facepulls']},
+{id:'reverse_butterfly_dual',name:'Reverse Butterfly Dual',equipment:'Maschine',muscles:['schultern_hinten'],secondary:['rücken_oben'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['reverse_butterfly','facepulls']},
 {id:'facepulls',name:'Face Pulls',equipment:'Kabelzug',muscles:['schultern_hinten','rücken_oben'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['reverse_butterfly']},
+{id:'bent_over_seitheben',name:'Vorgebeugtes Seitheben (KH)',equipment:'Kurzhanteln',muscles:['schultern_hinten'],secondary:['rücken_oben'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['reverse_butterfly','facepulls']},
+{id:'schraegbank_seitheben',name:'Seitheben auf Schrägbank (KH)',equipment:'Kurzhanteln',muscles:['schultern_hinten'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['bent_over_seitheben']},
 // BIZEPS (pull/upper)
 {id:'bizeps_curl_lh',name:'Bizepscurl (LH/SZ)',equipment:'Langhantel',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['bizeps_curl_kh','bizeps_cable']},
 {id:'bizeps_curl_kh',name:'Bizepscurl (KH)',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:1,alternatives:['bizepsmaschine','bizeps_cable','hammer_curl']},
 {id:'bizepsmaschine',name:'Bizepsmaschine',equipment:'Maschine',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['bizeps_curl_kh','bizeps_cable']},
 {id:'bizeps_cable',name:'Bizepscurl (Kabel)',equipment:'Kabelzug',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['bizepsmaschine','bizeps_curl_kh']},
 {id:'hammer_curl',name:'Hammer-Curls',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:2,alternatives:['bizeps_curl_kh']},
+{id:'hammer_curl_cable',name:'Hammer-Curls (Kabelzug)',equipment:'Kabelzug',muscles:['bizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['hammer_curl']},
 {id:'scott_curls',name:'Scott-Curls (SZ)',equipment:'Langhantel',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['bizeps_curl_lh']},
 {id:'konzentrationscurl',name:'Konzentrationscurl',equipment:'Kurzhanteln',muscles:['bizeps'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['bizeps_curl_kh']},
 {id:'reverse_curl',name:'Reverse Curls (SZ)',equipment:'Langhantel',muscles:['bizeps','unterarme'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['hammer_curl']},
+{id:'zottman_curl',name:'Zottman Curls',equipment:'Kurzhanteln',muscles:['bizeps','unterarme'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['hammer_curl','reverse_curl']},
 // TRIZEPS (push/upper)
 {id:'enges_bankdruecken',name:'Enges Bankdrücken',equipment:'Langhantel',muscles:['trizeps','brust'],secondary:['schultern'],type:'reps',isCompound:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['dips','bankdruecken_lh']},
 {id:'trizeps_cable',name:'Rope Pushdowns',equipment:'Kabelzug',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizepsmaschine','trizeps_kh']},
+{id:'trizeps_stange_pushdown',name:'Stangen-Pushdowns (Kabel)',equipment:'Kabelzug',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizeps_cable']},
 {id:'trizepsmaschine',name:'Dipmaschine (sitzend)',equipment:'Maschine',muscles:['trizeps'],secondary:['brust'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizeps_cable','trizeps_kh']},
+{id:'trizeps_machine_dual',name:'Trizepsmaschine Dual',equipment:'Maschine',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizepsmaschine','trizeps_cable']},
 {id:'french_press',name:'French Press',equipment:'Langhantel',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizepsmaschine','trizeps_overhead']},
 {id:'trizeps_kh',name:'Trizepsdrücken (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:2,alternatives:['trizepsmaschine','trizeps_cable']},
 {id:'trizeps_overhead',name:'Overhead-Trizepsstrecken (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['french_press']},
+{id:'trizeps_overhead_cable',name:'Overhead-Trizepsstrecken (Kabel)',equipment:'Kabelzug',muscles:['trizeps'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['trizeps_overhead','french_press']},
 {id:'kickbacks',name:'Kickbacks (KH)',equipment:'Kurzhanteln',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['trizeps_cable']},
+{id:'skull_crushers',name:'Skull Crushers (SZ)',equipment:'Langhantel',muscles:['trizeps'],type:'reps',isIsolation:true,movement:'push',bodyPart:'upper',priority:3,alternatives:['french_press','trizeps_cable']},
+// UNTERARME (pull/upper)
+{id:'wrist_curl',name:'Handgelenk-Curls (LH)',equipment:'Langhantel',muscles:['unterarme'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['reverse_curl']},
+{id:'reverse_wrist_curl',name:'Reverse Handgelenk-Curls',equipment:'Langhantel',muscles:['unterarme'],type:'reps',isIsolation:true,movement:'pull',bodyPart:'upper',priority:3,alternatives:['wrist_curl']},
 // QUADS (legs/lower)
 {id:'kniebeuge_lh',name:'Kniebeuge',equipment:'Langhantel',muscles:['quads'],secondary:['po','core','beinbeuger'],type:'reps',isCompound:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['beinpresse','hackschmidt']},
+{id:'kniebeuge_goblet',name:'Goblet Squat (KB/KH)',equipment:'Kurzhanteln',muscles:['quads'],secondary:['po','core'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['kniebeuge_lh','beinpresse']},
+{id:'kniebeuge_multipresse',name:'Kniebeuge (Multipresse)',equipment:'Multipresse',muscles:['quads'],secondary:['po','core'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['kniebeuge_lh','beinpresse']},
 {id:'beinpresse',name:'Beinpresse',equipment:'Maschine',muscles:['quads'],secondary:['po'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['kniebeuge_lh','hackschmidt']},
 {id:'hackschmidt',name:'Hackenschmidt',equipment:'Maschine',muscles:['quads'],secondary:['po'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['beinpresse','kniebeuge_lh']},
-{id:'bulgarian_split_squat',name:'Bulgarian Split Squat',equipment:'Kurzhanteln',muscles:['quads','po'],secondary:['beinbeuger'],type:'reps',isCompound:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['walking_lunges']},
+{id:'bulgarian_split_squat',name:'Bulgarian Split Squat',equipment:'Kurzhanteln',muscles:['quads','po'],secondary:['beinbeuger'],type:'reps',isCompound:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['walking_lunges','ausfallschritt']},
+{id:'ausfallschritt',name:'Ausfallschritte (LH)',equipment:'Langhantel',muscles:['quads','po'],secondary:['beinbeuger'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['bulgarian_split_squat','walking_lunges']},
 {id:'walking_lunges',name:'Walking Lunges',equipment:'Eigengewicht',muscles:['quads'],secondary:['po','beinbeuger'],type:'reps',isCompound:true,bodyweight:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['kniebeuge_lh','beinpresse']},
-{id:'goblet_squat',name:'Goblet Squat (KH)',equipment:'Kurzhanteln',muscles:['quads'],secondary:['po','core'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['kniebeuge_lh']},
 {id:'beinstrecker',name:'Beinstrecker',equipment:'Maschine',muscles:['quads'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['beinpresse']},
 {id:'sissy_squat',name:'Sissy Squats',equipment:'Eigengewicht',muscles:['quads'],type:'reps',bodyweight:true,allowAddedWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['beinstrecker']},
+{id:'sumo_squat',name:'Sumo Squat (KH)',equipment:'Kurzhanteln',muscles:['quads','po'],secondary:['beinbeuger'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['kniebeuge_goblet']},
 // BEINBEUGER (legs/lower)
 {id:'rdl',name:'Rumänisches Kreuzheben',equipment:'Langhantel',muscles:['beinbeuger','po'],secondary:['rücken_unten'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['beinbeuger','hipthrust']},
-{id:'beinbeuger',name:'Beinbeuger',equipment:'Maschine',muscles:['beinbeuger'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['rdl']},
+{id:'rdl_kh',name:'Rumänisches Kreuzheben (KH)',equipment:'Kurzhanteln',muscles:['beinbeuger','po'],secondary:['rücken_unten'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['rdl','beinbeuger']},
+{id:'beinbeuger',name:'Beinbeuger (liegend)',equipment:'Maschine',muscles:['beinbeuger'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['rdl']},
+{id:'beinbeuger_sitzend',name:'Beinbeuger (sitzend)',equipment:'Maschine',muscles:['beinbeuger'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['beinbeuger','rdl']},
+{id:'nordic_curl',name:'Nordic Curls',equipment:'Eigengewicht',muscles:['beinbeuger'],type:'reps',bodyweight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['beinbeuger']},
+{id:'kreuzheben_einseitig',name:'Einbeiniges Kreuzheben (KH)',equipment:'Kurzhanteln',muscles:['beinbeuger','po'],secondary:['rücken_unten','core'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['rdl_kh']},
 // PO (legs/lower)
-{id:'hipthrust',name:'Hip Thrust',equipment:'Langhantel',muscles:['po'],secondary:['beinbeuger'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['glute_bridge']},
+{id:'hipthrust',name:'Hip Thrust (LH)',equipment:'Langhantel',muscles:['po'],secondary:['beinbeuger'],type:'reps',isCompound:true,movement:'legs',bodyPart:'lower',priority:1,alternatives:['glute_bridge','hipthrust_maschine']},
+{id:'hipthrust_maschine',name:'Hip Thrust (Maschine)',equipment:'Maschine',muscles:['po'],secondary:['beinbeuger'],type:'reps',isCompound:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['hipthrust','glute_bridge']},
 {id:'glute_bridge',name:'Glute Bridge',equipment:'Eigengewicht',muscles:['po'],type:'reps',bodyweight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['hipthrust']},
 {id:'kickback_cable',name:'Kickbacks (Kabel)',equipment:'Kabelzug',muscles:['po'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['glute_bridge']},
+{id:'kickback_maschine',name:'Glutedrücken (Maschine)',equipment:'Maschine',muscles:['po'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['kickback_cable']},
+{id:'donkey_kicks',name:'Donkey Kicks',equipment:'Eigengewicht',muscles:['po'],type:'reps',bodyweight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['kickback_cable']},
 // ADDUKTOREN / ABDUKTOREN (legs/lower)
 {id:'adduktoren_machine',name:'Adduktoren (Maschine)',equipment:'Maschine',muscles:['adduktoren'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3},
+{id:'adduktoren_cable',name:'Adduktoren (Kabelzug)',equipment:'Kabelzug',muscles:['adduktoren'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['adduktoren_machine']},
 {id:'abduktoren_machine',name:'Abduktoren (Maschine)',equipment:'Maschine',muscles:['abduktoren','po'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3},
+{id:'abduktoren_cable',name:'Abduktoren (Kabelzug)',equipment:'Kabelzug',muscles:['abduktoren','po'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['abduktoren_machine']},
 // WADEN (legs/lower)
-{id:'wadenheben',name:'Wadenheben (stehend)',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['wadenheben_sitzend']},
+{id:'wadenheben',name:'Wadenheben (stehend)',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:2,alternatives:['wadenheben_sitzend','wadenheben_kh']},
 {id:'wadenheben_sitzend',name:'Wadenheben (sitzend)',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['wadenheben']},
+{id:'wadenheben_kh',name:'Wadenheben (KH)',equipment:'Kurzhanteln',muscles:['waden'],type:'reps',isIsolation:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['wadenheben']},
+{id:'wadenheben_beinpresse',name:'Wadenheben an Beinpresse',equipment:'Maschine',muscles:['waden'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'legs',bodyPart:'lower',priority:3,alternatives:['wadenheben']},
 // BAUCH/CORE (core)
 {id:'bauchmaschine',name:'Bauchmaschine',equipment:'Maschine',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['plank','crunches','beinheben']},
 {id:'crunches',name:'Crunches',equipment:'Eigengewicht',muscles:['bauch'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['bauchmaschine','beinheben']},
+{id:'crunches_machine',name:'Crunches (Maschine)',equipment:'Maschine',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['bauchmaschine','crunches']},
 {id:'beinheben',name:'Beinheben (hängend)',equipment:'Eigengewicht',muscles:['bauch'],secondary:['core'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['crunches','bauchmaschine']},
+{id:'beinheben_bank',name:'Beinheben (auf Bank)',equipment:'Eigengewicht',muscles:['bauch'],secondary:['core'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['beinheben','crunches']},
+{id:'knieheben_machine',name:'Knieheben (Maschine)',equipment:'Maschine',muscles:['bauch'],secondary:['core'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['beinheben']},
 {id:'cable_crunch',name:'Cable Crunch',equipment:'Kabelzug',muscles:['bauch'],type:'reps',isIsolation:true,hasMaxWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['crunches']},
+{id:'ab_rollout',name:'Ab-Rollout (Rad)',equipment:'Eigengewicht',muscles:['core','bauch'],type:'reps',bodyweight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['plank','cable_crunch']},
 {id:'plank',name:'Plank',equipment:'Eigengewicht',muscles:['core'],secondary:['bauch'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:2,alternatives:['bauchmaschine','side_plank']},
 {id:'side_plank',name:'Seitlicher Plank',equipment:'Eigengewicht',muscles:['core'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['plank']},
-{id:'russian_twist',name:'Russian Twists',equipment:'Kurzhanteln',muscles:['bauch','core'],type:'reps',isIsolation:true,allowAddedWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['side_plank']}
+{id:'hollow_body',name:'Hollow Body Hold',equipment:'Eigengewicht',muscles:['core','bauch'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['plank']},
+{id:'russian_twist',name:'Russian Twists',equipment:'Kurzhanteln',muscles:['bauch','core'],type:'reps',isIsolation:true,allowAddedWeight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['side_plank']},
+{id:'mountainclimber',name:'Mountain Climbers',equipment:'Eigengewicht',muscles:['core'],secondary:['bauch'],type:'time',bodyweight:true,movement:'core',bodyPart:'core',priority:3,alternatives:['plank','ab_rollout']},
 ];
 function getExerciseDef(id){return EXERCISE_LIBRARY.find(e=>e.id===id)}
 function getExerciseInfo(id){return getExerciseDef(id)||(DATA.customExercises&&DATA.customExercises[id])||null}
@@ -1269,7 +1323,33 @@ function loadDraftFromStorage(todayStr){
   for(const pk of DATA.cycle.activePlans){
     const k=`kr_draft_${todayStr}_${pk}`;
     const raw=localStorage.getItem(k);
-    if(raw){try{return JSON.parse(raw);}catch(e){localStorage.removeItem(k);}}
+    if(raw){try{
+      const draft=JSON.parse(raw);
+      // Sätze-Validierung: Anzahl gespeicherter Sätze gegen aktuelle Phase/Woche prüfen.
+      // Wenn sich die Soll-Satzzahl geändert hat (z.B. nach Phasenwechsel oder Wochenfortschritt),
+      // wird das Draft angepasst ohne bereits eingetragene Werte zu verlieren.
+      const plan=DATA.plans[pk];
+      if(plan&&draft.exercises){
+        let changed=false;
+        draft.exercises.forEach((draftEx,i)=>{
+          const planEx=plan.exercises[i];
+          if(!planEx)return;
+          const target=getWeeklyTargetSets({...planEx,exerciseId:draftEx.exerciseId},plan.exercises);
+          const current=draftEx.sets?draftEx.sets.length:0;
+          if(current===target)return;
+          changed=true;
+          if(current<target){
+            // Sätze fehlen: leere Sätze anhängen
+            for(let s=current;s<target;s++)draftEx.sets.push({weight:null,reps:null});
+          } else {
+            // Zu viele Sätze: überzählige entfernen (von hinten, um eingetragene Werte zu erhalten)
+            draftEx.sets=draftEx.sets.slice(0,target);
+          }
+        });
+        if(changed)localStorage.setItem(k,JSON.stringify(draft));
+      }
+      return draft;
+    }catch(e){localStorage.removeItem(k);}}
   }
   return null;
 }
