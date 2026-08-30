@@ -805,7 +805,7 @@ function migrateData(d){
   }
   return d;
 }
-function saveData(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function saveData(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));if(typeof invalidateVolumeCache==='function')invalidateVolumeCache();}
 let DATA=loadData();
 function fmtDate(iso){return new Date(iso).toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'});}
 function fmtDateLong(iso){return new Date(iso).toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
@@ -923,6 +923,12 @@ function isIsolationAlreadyCovered(primaryMuscles,planExercises,currentExerciseI
   return false;
 }
 function getWeeklyTargetSets(exercise,planExercises){
+  const raw=rawWeeklyTargetSets(exercise,planExercises);
+  if(isComebackActive())return raw;
+  return Math.max(1,raw+getVolumeAdjust(exercise,planExercises));
+}
+// Rohwert aus Periodisierung und Übungstyp, noch ohne Wochen-Ausgleich
+function rawWeeklyTargetSets(exercise,planExercises){
   const base=exercise.targetSets||3;
   // Wiedereinstieg: eigenes Volumen. Muskelkater entsteht vor allem über die
   // Anzahl der Sätze, deshalb in den ersten beiden Einheiten einer weniger.
@@ -1090,8 +1096,7 @@ function progressionSuggestion(exerciseId,exercise){
     const ref=getPreGapReference(exerciseId,cbState.refDate);
     if(ref){
       const f=cbState.plan[cbState.sessionIdx];
-      let w=Math.round(ref*f/0.5)*0.5;
-      if(exercise.maxWeight&&w>exercise.maxWeight)w=exercise.maxWeight;
+      let w=snapWeight(ref*f,exerciseId,exercise,'near');
       const step=cbState.sessionIdx+1,pct=Math.round(f*100);
       if(step===1)return{weight:w,text:`Wiedereinstieg nach ${cbState.gapDays} Tagen Pause. Einheit 1 von ${cbState.total}: ${fmtWeight(w)} kg, also ${pct}% von deinen alten ${fmtWeight(ref)} kg. Ziel heute ist Bewegung, nicht Leistung: etwa 4 Wiederholungen in Reserve lassen.`};
       if(step===cbState.total)return{weight:w,text:`Letzte Stufe des Wiedereinstiegs: ${fmtWeight(w)} kg (${pct}% von ${fmtWeight(ref)} kg). Wenn sich das gut anfühlt, bist du ab der nächsten Einheit wieder in der normalen Progression.`};
@@ -1100,7 +1105,7 @@ function progressionSuggestion(exerciseId,exercise){
   }
   if(phase==='deload'){
     const ref=last&&!last.legacy?Math.max(...last.sets.map(s=>s.weight||0)):(exercise.currentWeight||0);
-    const w=Math.round(ref*0.6/0.5)*0.5;
+    const w=snapWeight(ref*0.6,exerciseId,exercise,'near');
     return{weight:w,text:`Deload-Woche: bewusst leicht mit ${fmtWeight(w)} kg (rund 60%). Locker durchziehen, das lädt dich für den nächsten Block auf.`};
   }
   if(getCurrentWeek()===1&&DATA.cycle.mesoHistory.length>0){
@@ -1119,7 +1124,7 @@ function progressionSuggestion(exerciseId,exercise){
           // Hypertrophie und Kraftausdauer: Mitte des Intensitätsbandes
           targetPct=(phaseDef.intensityPct[0]+phaseDef.intensityPct[1])/2;
         }
-        const w=Math.round(e1rm*targetPct/0.5)*0.5;
+        const w=snapWeight(e1rm*targetPct,exerciseId,exercise,'near');
         const note=phase==='maxkraft'&&(DATA.cycle.mesoHistory||[]).filter(m=>m.phase==='maxkraft').length===0?' (konservativer Einstieg)':'';
         // Maschinenlimit-Check: empfohlenes Gewicht übersteigt das Maschinen-Maximum
         if(exercise.maxWeight&&w>exercise.maxWeight){
@@ -1150,10 +1155,10 @@ function progressionSuggestion(exerciseId,exercise){
     if(related){
       const phaseDef=PHASE_DEFS[phase]||PHASE_DEFS.hypertrophie;
       const targetPct=(phaseDef.intensityPct[0]+phaseDef.intensityPct[1])/2;
-      const w=Math.round(related.e1rm*targetPct/0.5)*0.5;
+      const w=snapWeight(related.e1rm*targetPct,exerciseId,exercise,'near');
       return{weight:w,text:`Kein Verlauf für diese Übung. Schätzung aus „${related.sourceName}" (${Math.round(related.e1rm)} kg E1RM): ${w} kg`};
     }
-    const startW=exercise.currentWeight&&exercise.currentWeight>0?exercise.currentWeight:getLevelStartWeight(def);
+    const startW=snapWeight(exercise.currentWeight&&exercise.currentWeight>0?exercise.currentWeight:getLevelStartWeight(def),exerciseId,exercise,'near');
     return{weight:startW,text:`Einstieg (${(LEVEL_DEFAULTS[getTrainingLevel()]||LEVEL_DEFAULTS.fortgeschritten).label}): ${startW} kg · ${repsMin}-${repsMax} Wdh`};
   }
   const validSets=last.sets.filter(s=>(isBW||isOptionalBW||(s.weight!==null&&s.weight!==undefined))&&s.reps);
@@ -1168,7 +1173,7 @@ function progressionSuggestion(exerciseId,exercise){
   // Rückschritt-Erkennung: zwei Trainings in Folge mit e1RM-Drop >= 2%
   const regression=detectRegression(exerciseId);
   if(regression&&phase!=='deload'){
-    const reducedW=Math.round(lastWeight*0.95/0.5)*0.5;
+    const reducedW=snapWeight(lastWeight*0.95,exerciseId,exercise,'down');
     return{weight:reducedW,text:`Die letzten beiden Einheiten liefen etwas schwerer. Heute bewusst ${fmtWeight(reducedW)} kg, damit du wieder sauber drüberkommst. Schlaf und Essen im Blick behalten, dann dreht der Trend schnell.`};
   }
   // === LANGE PAUSE: Detraining berücksichtigen ===
@@ -1177,11 +1182,11 @@ function progressionSuggestion(exerciseId,exercise){
   // Bankdrücken), zählt dieser kürzere Abstand – kein falsches "Detraining".
   if(muscleGap!==null){
     if(muscleGap>21){
-      const reducedW=Math.round(lastWeight*0.88/0.5)*0.5;
+      const reducedW=snapWeight(lastWeight*0.88,exerciseId,exercise,'down');
       return{weight:reducedW,text:`Diese Muskeln hatten ${muscleGap} Tage frei. Heute etwas leichter mit ${fmtWeight(reducedW)} kg, dafür saubere Ausführung. Nächstes Mal geht es wieder hoch.`};
     }
     if(muscleGap>10){
-      const reducedW=Math.round(lastWeight*0.95/0.5)*0.5;
+      const reducedW=snapWeight(lastWeight*0.95,exerciseId,exercise,'down');
       return{weight:reducedW,text:`${muscleGap} Tage Pause für diese Muskeln. Heute ${fmtWeight(reducedW)} kg zum Wiederfinden, das ist nur eine Stufe unter deinem letzten Gewicht.`};
     }
     if(muscleGap>=7){
@@ -1211,21 +1216,21 @@ function progressionSuggestion(exerciseId,exercise){
   // Sehr starke Über-Performance: alle Sätze >= repsMax+4 Wdh (z.B. 16+ bei 12er-Ziel) → +3×inc (Cap)
   if(repsAtMax.every(r=>r>=repsMax+4)){
     if(atMax)return{weight:lastWeight,text:`Max-Gewicht trotzdem locker. Pausen verkürzen oder Tempo 3-1-1.`};
-    const nextW=lastWeight+inc*3;
-    return{weight:maxW?Math.min(nextW,maxW):nextW,text:`Sehr stark! Letztes Mal alle Sätze ${minReps}+ Wdh (deutlich über Ziel). Heute: +${inc*3} kg = ${nextW} kg.`};
+    const nextW=nextWeightUp(lastWeight,exerciseId,exercise,3);
+    return{weight:nextW,text:`Sehr stark! Letztes Mal alle Sätze mit ${minReps}+ Wiederholungen, das war deutlich über dem Ziel. Heute ${fmtWeight(nextW)} kg, also drei Stufen mehr.`};
   }
   if(repsAtMax.every(r=>r>=repsMax+2)){
     if(atMax)return{weight:lastWeight,text:`Max-Gewicht trotzdem locker. Pausen verkürzen oder Tempo 3-1-1.`};
-    const nextW=lastWeight+inc*2;
-    return{weight:maxW?Math.min(nextW,maxW):nextW,text:`Stark! Letztes Mal alle Sätze >${repsMax} Wdh. Heute: +${inc*2} kg = ${nextW} kg.`};
+    const nextW=nextWeightUp(lastWeight,exerciseId,exercise,2);
+    return{weight:nextW,text:`Stark! Letztes Mal lagen alle Sätze über ${repsMax} Wiederholungen. Heute ${fmtWeight(nextW)} kg, zwei Stufen mehr.`};
   }
   if(allAtUpper){
     if(atMax)return{weight:lastWeight,text:`Max-Gewicht (${maxW} kg) erreicht. Pausen verkürzen, Tempo 3-1-1, oder Übung wechseln.`,isWarn:true};
-    const nextW=lastWeight+inc;
-    return{weight:maxW?Math.min(nextW,maxW):nextW,text:`Top! Heute +${inc} kg auf ${nextW} kg.`};
+    const nextW=nextWeightUp(lastWeight,exerciseId,exercise,1);
+    return{weight:nextW,text:`Top, das Ziel war erreicht. Heute die nächste Stufe: ${fmtWeight(nextW)} kg.`};
   }
   if(allBelowLower){
-    const nextW=Math.max(0,lastWeight-inc);
+    const nextW=snapWeight(lastWeight-getWeightStep(exerciseId,exercise,lastWeight),exerciseId,exercise,'down');
     return{weight:nextW,text:`Letztes Mal war das Gewicht eine Spur zu schwer. Heute ${fmtWeight(nextW)} kg, damit du wieder im Zielbereich von ${repsMin} bis ${repsMax} Wiederholungen landest.`};
   }
   if(spread>=4)return{weight:lastWeight,text:`Letztes Mal schwankten die Sätze stark (${minReps} bis ${maxReps} Wiederholungen). Heute gleiches Gewicht, aber 90 bis 120 Sekunden Pause zwischen den Sätzen, dann wird es gleichmäßiger.`};
@@ -1372,9 +1377,25 @@ function planVolumeAnalysis(){
 // ===== PLAN-ANALYSE =====
 // Liefert pro Muskelgruppe eine Bewertung gegen das aktuelle Trainingsniveau
 // und konkrete Vorschläge, welche Übungen hinzugefügt/reduziert werden sollten.
+// Nur noch das melden, was die automatische Verteilung NICHT lösen konnte.
 function analyzePlanForRecommendations(){
-  const planVol=planVolumeAnalysis();
+  const bal=computeVolumeBalance();
+  const planVol=bal.volume;
   const recommendations=[];
+  // Einheiten, die zu viel auf einmal für eine Muskelgruppe enthalten
+  (bal.issues||[]).filter(i=>i.type==='session_overload').forEach(i=>{
+    recommendations.push({
+      type:'session_overload',muscle:i.muscle,sets:i.sets,
+      message:`${MUSCLE_LABELS[i.muscle]}: ${i.sets} Sätze in einer einzigen Einheit (${(DATA.plans[i.planKey]&&DATA.plans[i.planKey].name)||i.planKey}). Über 10 Sätze am Stück ermüdet die Gruppe so stark, dass die letzten Sätze kaum noch etwas bringen. Besser auf zwei Einheiten verteilen.`,
+      contributors:exercisesContributingToMuscle(i.muscle)
+    });
+  });
+  (bal.issues||[]).filter(i=>i.type==='needs_frequency').forEach(i=>{
+    recommendations.push({
+      type:'needs_frequency',muscle:i.muscle,sets:i.sets,
+      message:`${MUSCLE_LABELS[i.muscle]}: Das Wochenziel von ${i.want} Sätzen passt nicht in ${i.sessions} Einheiten, ohne eine davon zu überladen. Diese Gruppe bräuchte einen Trainingstag mehr pro Woche.`
+    });
+  });
   // Welche Muskeln werden im Plan überhaupt adressiert?
   const adressedMuscles=new Set();
   (DATA.cycle.activePlans||[]).forEach(pk=>{
@@ -1385,8 +1406,10 @@ function analyzePlanForRecommendations(){
     });
   });
   for(const m of MUSCLE_GROUPS){
+    if(INDIRECT_MUSCLES.includes(m))continue;
     const sets=Math.round((planVol[m]||0)*10)/10;
-    const[mev,mrv]=getMAVRange(m);
+    const t=bal.targets[m]||{mev:getMAVRange(m)[0],mrv:getMAVRange(m)[1],want:0,lo:0,hi:getMAVRange(m)[1]};
+    const mev=t.mev,mrv=t.mrv;
     if(sets===0&&m==='core')continue; // core wird oft über bauch indirekt abgedeckt
     if(sets===0&&!adressedMuscles.has(m)){
       // Nicht im Plan: nur Vorschlag, wenn Muskel als "wichtig" gilt
@@ -1408,31 +1431,61 @@ function analyzePlanForRecommendations(){
       const suggestions=suggestExercisesForMuscle(m,3);
       recommendations.push({
         type:'under_mev',muscle:m,sets,mev,mrv,deficit,
-        message:`${MUSCLE_LABELS[m]}: ${sets} Sätze, unter MEV (${mev}). Fehlen ungefähr ${deficit} Sätze.`,
+        message:`${MUSCLE_LABELS[m]}: ${sets} Sätze pro Woche. Das liegt unter dem sinnvollen Minimum von ${mev}, und die vorhandenen Übungen sind ausgereizt. Es fehlen etwa ${deficit} Sätze, also eine zusätzliche Übung.`,
         suggestions
       });
-    }else if(sets>mrv){
-      const excess=Math.round((sets-mrv)*10)/10;
+    }else if(sets>0&&sets<t.lo-2.9&&sets>=mev){
+      const deficit=round1(t.lo-sets);
+      const suggestions=suggestExercisesForMuscle(m,3,bal);
+      const blockers=(bal.issues||[]).filter(i=>i.type==='over_mrv').map(i=>MUSCLE_LABELS[i.muscle]);
+      recommendations.push({
+        type:'under_target',muscle:m,sets,mev,mrv,deficit,
+        message:`${MUSCLE_LABELS[m]}: ${sets} Sätze, das Wochenziel liegt bei ${t.want}. Mehr geht mit den vorhandenen Übungen nicht, weil jede davon zugleich eine schon ausgelastete Gruppe mitbelastet. Eine Übung, die gezielt nur ${MUSCLE_LABELS[m]} trifft, würde die Lücke schließen.`,
+        suggestions
+      });
+    }else if(sets>t.mrv){
+      const excess=Math.round((sets-t.mrv)*10)/10;
       const contributors=exercisesContributingToMuscle(m);
       recommendations.push({
         type:'over_mrv',muscle:m,sets,mev,mrv,excess,
-        message:`${MUSCLE_LABELS[m]}: ${sets} Sätze, über MRV (${mrv}). Überschuss ${excess} Sätze.`,
+        message:`${MUSCLE_LABELS[m]}: ${sets} Sätze pro Woche und damit ${excess} über der Obergrenze von ${t.mrv}. Selbst nach dem Kürzen bleibt zu viel übrig, hier ist eine Übung zu viel im Plan.`,
         contributors
       });
     }
   }
-  return recommendations;
+  // Zielverfehlungen sind Feinschliff: nur die drei größten zeigen, damit die
+  // echten Lücken (unter dem Minimum) nicht untergehen.
+  const soft=recommendations.filter(r=>r.type==='under_target').sort((a,b)=>b.deficit-a.deficit).slice(0,3);
+  return recommendations.filter(r=>r.type!=='under_target').concat(soft);
 }
-function suggestExercisesForMuscle(muscle,maxSuggestions){
+// Schlägt Übungen vor, die den fehlenden Muskel treffen und dabei möglichst
+// wenig auf Gruppen gehen, die ohnehin schon an ihrer Grenze liegen. Genau das
+// war das Problem beim Lat: jede vorhandene Zugübung lud den mittleren Rücken mit.
+function suggestExercisesForMuscle(muscle,maxSuggestions,balance){
   maxSuggestions=maxSuggestions||3;
-  // Übungen, die nicht bereits im Plan sind und den Muskel primär trainieren
   const inPlan=new Set();
   Object.values(DATA.plans||{}).forEach(plan=>{
     (plan.exercises||[]).forEach(ex=>inPlan.add(ex.exerciseId));
   });
+  const bal=balance||(typeof computeVolumeBalance==='function'?computeVolumeBalance():null);
+  const prefs=getPlanPrefs();
+  const saturation=m=>{
+    if(!bal||!bal.targets||!bal.targets[m])return 0;
+    const t=bal.targets[m],v=bal.volume[m]||0;
+    if(t.hi<=0)return 0;
+    return Math.max(0,Math.min(1.2,v/t.hi));
+  };
+  const cost=e=>{
+    let x=0;
+    (e.muscles||[]).forEach(m=>{if(m!==muscle)x+=saturation(m);});
+    (e.secondary||[]).forEach(m=>{if(m!==muscle)x+=0.5*saturation(m);});
+    if(!equipAllowed(e,prefs))x+=1.5;
+    x+=((e.priority||3)-1)*0.25;
+    return x;
+  };
   return EXERCISE_LIBRARY
-    .filter(e=>!inPlan.has(e.id)&&Array.isArray(e.muscles)&&e.muscles.includes(muscle))
-    .sort((a,b)=>(a.priority||3)-(b.priority||3))
+    .filter(e=>!inPlan.has(e.id)&&Array.isArray(e.muscles)&&e.muscles.includes(muscle)&&e.type!=='time')
+    .sort((a,b)=>cost(a)-cost(b))
     .slice(0,maxSuggestions)
     .map(e=>({id:e.id,name:e.name,priority:e.priority||3}));
 }
@@ -1641,6 +1694,32 @@ function renderToday(){
   if(cbToday&&cbToday.gapDays>=COMEBACK_MIN_GAP&&!DATA.cycle.currentMeso.isBridge){
     html+=`<div class="suggest" style="margin-bottom:10px;">🧭 <strong>Dein Zyklus passt nicht mehr zur Lage.</strong> Nach ${cbToday.gapDays} Tagen Pause bringt die laufende Woche im ${PHASE_DEFS[getCurrentPhase()].shortLabel||getCurrentPhase()}-Block nichts. Sinnvoller: zwei Wochen Wiedereinstieg, danach startet dieser Block neu bei Woche 1.<br><button class="btn btn-small" style="margin-top:8px;" onclick="showComebackBlockInfo()">Ansehen</button></div>`;
   }
+  // Automatischer Volumen-Ausgleich für heute sichtbar machen
+  if(!isComebackActive()){
+    const balT=computeVolumeBalance();
+    const mine=balT.changes.filter(ch=>ch.pk===planKey);
+    if(mine.length){
+      const lines=mine.map(ch=>`<div class="intro-goal">▸ <strong>${ch.name}</strong>: ${ch.delta>0?'+':''}${ch.delta} ${Math.abs(ch.delta)===1?'Satz':'Sätze'}, heute ${ch.sets}</div>`).join('');
+      html+=`<div class="reach-card"><div class="reach-title">⚖ Sätze für diese Woche angepasst</div>${lines}
+        <div style="font-size:12px;color:var(--text-faint);margin-top:8px;line-height:1.5;">Woche ${week} von ${mesoLen}: so kommt jede Muskelgruppe auf ihr Wochenziel, ohne die Obergrenze zu reißen.</div></div>`;
+    }
+    const gaps=balT.issues.filter(i=>i.type==='under_mev');
+    if(gaps.length){
+      const names=gaps.map(g=>MUSCLE_LABELS[g.muscle]||g.muscle).join(', ');
+      html+=`<div class="suggest" style="margin-bottom:10px;">🧩 <strong>${names}</strong> bleibt auch nach dem Ausgleich unter dem sinnvollen Minimum. Die vorhandenen Übungen sind ausgereizt, hier fehlt eine zusätzliche Übung.<br><button class="btn btn-small" style="margin-top:8px;" onclick="switchTab('plan')">Vorschläge ansehen</button></div>`;
+    }
+    const misses=balT.issues.filter(i=>i.type==='under_target');
+    if(misses.length){
+      const first=misses[0];
+      const sug=suggestExercisesForMuscle(first.muscle,1,balT)[0];
+      html+=`<div class="suggest" style="margin-bottom:10px;">◐ <strong>${MUSCLE_LABELS[first.muscle]}</strong> erreicht diese Woche ${first.sets} statt ${first.want} Sätze. Jede passende Übung im Plan belastet zugleich eine schon ausgelastete Gruppe mit.${sug?` Eine gezielte Ergänzung wäre ${sug.name}.`:''}<br><button class="btn btn-small" style="margin-top:8px;" onclick="switchTab('plan')">Im Plan ansehen</button></div>`;
+    }
+    const overload=balT.issues.filter(i=>i.type==='session_overload'&&i.planKey===planKey);
+    if(overload.length){
+      const names=overload.map(o=>`${MUSCLE_LABELS[o.muscle]} (${o.sets})`).join(', ');
+      html+=`<div class="suggest" style="margin-bottom:10px;">⏱ Diese Einheit enthält viel auf einmal für ${names}. Mehr als 10 Sätze für eine Muskelgruppe an einem Tag bringen kaum noch Zuwachs. Wenn es eng wird, lass die letzten Sätze weg statt sie schlecht zu machen.</div>`;
+    }
+  }
   // Muskelgruppen-Stagnation als Hinweis-Card (im Wiedereinstieg unterdrückt)
   const muscleStagnation=isComebackActive()?[]:detectMuscleGroupStagnation();
   if(muscleStagnation.length>0){
@@ -1780,7 +1859,7 @@ function renderToday(){
           const prevW=(prev&&prev.weight!==null&&prev.weight!==undefined)?prev.weight:sugW;
           displayBase=(s.weight!==null&&s.weight!==undefined)?s.weight:prevW;
         }
-        const incs=getIncrements(displayBase);
+        const incs=getIncrements(displayBase,draftEx.exerciseId,draftEx);
         let stepperHtml='';
         if(si===0){
           // Erster Satz: 4 Delta-Buttons + Vorschlags-Button in der Mitte
@@ -1998,8 +2077,12 @@ document.addEventListener('visibilitychange',()=>{
   if(!document.hidden)Object.keys(pauseTimers).forEach(k=>tickPauseTimer(parseInt(k)));
 });
 // Adaptive Schrittgrößen: <30 kg → ±1 und ±2,5 · ≥30 kg → ±2,5 und ±5
-function getIncrements(weight){
+function getIncrements(weight,exerciseId,exercise){
   const w=weight||0;
+  if(exerciseId){
+    const step=getWeightStep(exerciseId,exercise,w||30);
+    return[step,step/2];
+  }
   if(w<30)return[2.5,1];
   return[5,2.5];
 }
@@ -2958,7 +3041,8 @@ function adaptPlankBase(draftEx,sets){
 }
 // ===== PLAN-TAB =====
 function renderPlan(){
-  const planVol=planVolumeAnalysis();
+  const bal=computeVolumeBalance();
+  const planVol=bal.volume;
   const effPhase=getEffectivePhase();
   const phaseVolInfo={
     hypertrophie:{label:'Hypertrophie',sub:'Zielbereich für Muskelaufbau (MEV–MRV steigen wöchentlich)',help:'✓ im Soll · ⚠ unter MEV oder über MRV · Markierungen im Balken: MEV (links) und MRV (rechts).'},
@@ -2970,24 +3054,25 @@ function renderPlan(){
   // Volumen-Übersicht: alle Muskelgruppen mit Balken
   let volumeOverviewHtml=`<div class="card">
     <div class="card-title">Plan-Volumen (Sätze/Woche)</div>
-    <div class="card-sub">Bei ${DATA.cycle.frequency}× Training pro Woche · ${phaseInfo.sub}</div>
+    <div class="card-sub">Bei ${DATA.cycle.frequency}× Training pro Woche · Woche ${getCurrentWeek()} von ${getMesoLength()} · ${phaseInfo.sub}</div>
     <div style="margin-top:12px;">`;
   // Sortiere nach Volumen absteigend für sinnvolle Reihenfolge
   const sorted=MUSCLE_GROUPS.slice().sort((a,b)=>(planVol[b]||0)-(planVol[a]||0));
   sorted.forEach(m=>{
     const sets=Math.round((planVol[m]||0)*10)/10;
-    const[min,max]=getMAVRange(m);
+    const tg=bal.targets[m]||{mev:getMAVRange(m)[0],mrv:getMAVRange(m)[1],want:0,lo:0,hi:getMAVRange(m)[1]};
+    const min=tg.mev,max=tg.mrv;
     let color='var(--text-faint)';
     let statusIcon='';
     if(sets===0){color='var(--text-faint)';statusIcon='';}
     else if(sets<min){color='var(--warning)';statusIcon='⚠ ';}
-    else if(sets>max){color='var(--warning)';statusIcon='↑ ';}
+    else if(sets>tg.mrv){color='var(--warning)';statusIcon='↑ ';}
     else{color='var(--success)';statusIcon='✓ ';}
     const pct=Math.min(100,(sets/(max+2))*100);
     volumeOverviewHtml+=`<div style="margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;font-size:12px;align-items:center;">
         <span style="font-weight:500;">${statusIcon}${MUSCLE_LABELS[m]}</span>
-        <span style="color:${color};font-weight:600;">${sets} <span style="color:var(--text-faint);font-weight:normal;">/ ${min}-${max}</span></span>
+        <span style="color:${color};font-weight:600;">${sets} <span style="color:var(--text-faint);font-weight:normal;">/ Ziel ${tg.want||'-'} (${min}-${max})</span></span>
       </div>
       <div class="volume-bar">
         <div class="volume-fill" style="width:${pct}%;background:${color};"></div>
@@ -3006,6 +3091,20 @@ function renderPlan(){
   }
   volumeOverviewHtml+=`<div class="help-text" style="margin-top:8px;">${phaseInfo.help} Niveau: ${getLevelDefaults().label}.</div>`;
   volumeOverviewHtml+=`</div>`;
+  // Automatischer Ausgleich: was die App gegenüber dem Basis-Plan geändert hat
+  if(bal.changes.length){
+    volumeOverviewHtml+=`<div class="card"><div class="card-title">Automatischer Ausgleich</div>
+      <div class="card-sub">Für Woche ${getCurrentWeek()} von ${getMesoLength()} verteilt die App die Sätze auf deine vorhandenen Übungen. Der Basis-Plan bleibt unverändert.</div>
+      <div style="margin-top:10px;">`;
+    bal.changes.forEach(ch=>{
+      const col=ch.delta>0?'var(--success)':'var(--info)';
+      volumeOverviewHtml+=`<div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>${DATA.plans[ch.pk]?DATA.plans[ch.pk].name.split('(')[0].trim():ch.pk} · ${ch.name}</span>
+        <span style="color:${col};font-weight:600;white-space:nowrap;">${ch.delta>0?'+':''}${ch.delta} → ${ch.sets} Sätze</span>
+      </div>`;
+    });
+    volumeOverviewHtml+=`</div><div class="help-text" style="margin-top:8px;">Maximal ${SETS_MAX_PER_EXERCISE} Sätze pro Übung und Einheit, weil darüber laut Studienlage kaum noch Wirkung entsteht. Nach unten sind es mindestens 2 Sätze, bei Isolationsübungen im Notfall 1. Die Obergrenze je Muskelgruppe wird nie überschritten.</div></div>`;
+  }
   // Plan-Analyse-Karte: konkrete Empfehlungen
   const recs=analyzePlanForRecommendations();
   let analysisHtml='';
@@ -3017,6 +3116,9 @@ function renderPlan(){
     recs.forEach(r=>{
       let bgColor,borderColor,icon;
       if(r.type==='missing'){bgColor='rgba(245,158,11,0.08)';borderColor='var(--warning)';icon='⚠';}
+      else if(r.type==='under_target'){bgColor='rgba(59,130,246,0.08)';borderColor='var(--info)';icon='◐';}
+      else if(r.type==='session_overload'){bgColor='rgba(245,158,11,0.08)';borderColor='var(--warning)';icon='⏱';}
+      else if(r.type==='needs_frequency'){bgColor='rgba(59,130,246,0.08)';borderColor='var(--info)';icon='📅';}
       else if(r.type==='under_mev'){bgColor='rgba(245,158,11,0.08)';borderColor='var(--warning)';icon='↓';}
       else{bgColor='rgba(239,68,68,0.08)';borderColor='var(--warning)';icon='↑';}
       analysisHtml+=`<div style="background:${bgColor};border-left:3px solid ${borderColor};border-radius:6px;padding:10px;margin-bottom:8px;">
@@ -3110,6 +3212,10 @@ function editPlanExercise(pk,idx){
       </div>`;
     if(!isBW){
       html+=`<label>Aktuelles Arbeitsgewicht (kg)</label><input type="number" id="ed-weight" step="0.5" value="${ex.currentWeight||0}">`;
+      const autoStep=getWeightStep(ex.exerciseId,{},ex.currentWeight||30);
+      html+=`<label>Kleinstmögliche Gewichtsstufe (kg)</label>
+        <input type="number" id="ed-inc" step="0.5" value="${ex.increment||''}" placeholder="automatisch: ${fmtWeight(autoStep)}">
+        <div class="help-text">Leer lassen genügt meistens: die App erkennt die Stufe am Gerätetyp und an deinen bisherigen Gewichten. Nur eintragen, wenn ein Gerät ein anderes Raster hat.</div>`;
       if(def.hasMaxWeight){
         html+=`<label>Maschinen-Limit (kg, leer = kein Limit)</label><input type="number" id="ed-max" step="0.5" value="${ex.maxWeight||''}" placeholder="z.B. 120">
         <div class="help-text">Bei Erreichen schlägt die App keine Steigerung mehr vor.</div>`;
@@ -3131,6 +3237,8 @@ function savePlanExercise(pk,idx,isTime,isBW,hasMax){
     ex.targetRepsMax=parseInt(document.getElementById('ed-rmax').value)||12;
     if(!isBW){
       ex.currentWeight=parseFloat(document.getElementById('ed-weight').value)||0;
+      const incEl=document.getElementById('ed-inc');
+      if(incEl){const iv=parseFloat(incEl.value);ex.increment=(isNaN(iv)||iv<=0)?null:iv;}
       if(hasMax){const m=document.getElementById('ed-max').value;ex.maxWeight=(m===''||isNaN(parseFloat(m)))?null:parseFloat(m);}
     }
   }
@@ -3722,10 +3830,16 @@ function changeFrequency(n){
     DATA.cycle.days=defaults[n]||currentDays.slice(0,n);
   }
   invalidateHistoryIndex();
+  invalidateVolumeCache();
   saveData(DATA);
   renderSetup();
   renderPlan();
-  showToast(`Frequenz auf ${n}× pro Woche geändert`);
+  const bal=computeVolumeBalance();
+  const gaps=bal.issues.filter(i=>i.type==='under_mev').length;
+  let msg=`Frequenz auf ${n}× pro Woche geändert.`;
+  if(bal.changes.length)msg+=` ${bal.changes.length} Übungen wurden im Satz-Umfang angepasst.`;
+  if(gaps)msg+=` ${gaps} Muskelgruppen brauchen eine zusätzliche Übung.`;
+  showToast(msg,4500);
 }
 function toggleTrainingDay(dayNum){
   const days=DATA.cycle.days||[];
@@ -3866,7 +3980,7 @@ const SPLIT_TEMPLATES={
   },
   split2_pushpull:{
     A:{name:'Push',muscles:['brust','schultern','trizeps','quads','waden']},
-    B:{name:'Pull',muscles:['rücken_lat','rücken_oben','rücken_unten','schultern_hinten','bizeps','beinbeuger','po']}
+    B:{name:'Pull',muscles:['rücken_lat','rücken_oben','rücken_unten','schultern_hinten','bizeps','beinbeuger','po','bauch']}
   },
   split2_torso:{
     A:{name:'Torso',muscles:['brust','rücken_lat','rücken_oben','schultern','schultern_hinten','bauch']},
@@ -3909,6 +4023,7 @@ function generateExercisesForDay(targetMuscles,count,ctx){
   ctx=ctx||{};
   const plansPerWeek=ctx.plansPerWeek||1;
   const accVol=ctx.accumulatedWeeklyVol||{};
+  const prefs=ctx.prefs||getPlanPrefs();
   const lvl=getLevelDefaults();
   const setsDefault=lvl.setsDefault;
   const setsMin=lvl.setsRange[0];
@@ -3918,13 +4033,26 @@ function generateExercisesForDay(targetMuscles,count,ctx){
   MUSCLE_GROUPS.forEach(m=>dayVol[m]=0);
   // Welcher Wochenanteil resultiert aus dem aktuellen Tag + bereits geplanten Tagen?
   function weeklyVol(m){return(accVol[m]||0)+(dayVol[m]||0)*plansPerWeek;}
+  // Zielwert je Muskel, inklusive Schwerpunkt und Bein-Einstellung
+  function genTarget(m){
+    const r=getMAVRange(m);
+    const f=prefTargetFactor(m,prefs);
+    if(f.mev===0)return 0;
+    const mid=(r[0]+r[1])/2;
+    if(f.mev===0.5)return r[0]*0.5;
+    if(f.focus)return r[1];
+    if(f.maintain)return r[0];
+    return mid;
+  }
   function deficitToMEV(m){
     if(!MUSCLE_GROUPS.includes(m))return 0;
-    const r=getMAVRange(m);return Math.max(0,r[0]-weeklyVol(m));
+    const f=prefTargetFactor(m,prefs);
+    if(f.mev===0)return 0;
+    const r=getMAVRange(m);return Math.max(0,r[0]*(f.mev===0.5?0.5:1)-weeklyVol(m));
   }
   function deficitToMidMAV(m){
     if(!MUSCLE_GROUPS.includes(m))return 0;
-    const r=getMAVRange(m),mid=(r[0]+r[1])/2;return Math.max(0,mid-weeklyVol(m));
+    return Math.max(0,genTarget(m)-weeklyVol(m));
   }
   function wouldOverMRV(ex,sets){
     for(const m of(ex.muscles||[])){
@@ -3932,6 +4060,8 @@ function generateExercisesForDay(targetMuscles,count,ctx){
       const r=getMAVRange(m);
       const projected=(accVol[m]||0)+((dayVol[m]||0)+sets)*plansPerWeek;
       if(projected>r[1]+2)return true; // Toleranz +2 Sätze
+      // Auch eine einzelne Einheit darf nicht über 10 Sätze je Muskel gehen
+      if((dayVol[m]||0)+sets>SESSION_MAX_PER_MUSCLE)return true;
     }
     return false;
   }
@@ -3941,8 +4071,15 @@ function generateExercisesForDay(targetMuscles,count,ctx){
   }
   // Kandidaten-Pool: Übungen, die mind. einen Zielmuskel als Primärmuskel haben
   const candidates=EXERCISE_LIBRARY.filter(e=>(e.muscles||[]).some(m=>targetMuscles.includes(m)));
+  const favs=prefs.favorites||[];
+  const rank=e=>{
+    let r=(e.priority||3);
+    if(favs.includes(e.id))r-=3;            // Lieblingsübungen schlagen auch Grundübungen
+    if(!equipAllowed(e,prefs))r+=10;         // abgewählte Geräte nur als Notnagel
+    return r;
+  };
   const sorted=[...candidates].sort((a,b)=>{
-    if((a.priority||3)!==(b.priority||3))return(a.priority||3)-(b.priority||3);
+    if(rank(a)!==rank(b))return rank(a)-rank(b);
     if(a.isCompound&&!b.isCompound)return -1;
     if(!a.isCompound&&b.isCompound)return 1;
     return 0;
@@ -3966,6 +4103,7 @@ function generateExercisesForDay(targetMuscles,count,ctx){
     pass1Pool.sort((a,b)=>deficitToMidMAV(b)-deficitToMidMAV(a));
     const m=pass1Pool.shift();
     if(!MUSCLE_GROUPS.includes(m))continue;
+    if(genTarget(m)<=0)continue;
     // Skip, wenn dieser Muskel schon mind. 2 Sätze (primär) abbekommen hat durch andere Wahl
     if(dayVol[m]>=2)continue;
     const ex=bestExerciseFor(m);
@@ -4052,6 +4190,13 @@ function variantBExercise(exId){
 }
 function buildPlansFromWizard(wd){
   const plans={};
+  const prefs={
+    equipment:(wd.equipment&&wd.equipment.length)?wd.equipment:null,
+    legMode:wd.legMode||'normal',
+    focusMuscles:wd.focusMuscles||[],
+    favorites:wd.favorites||[]
+  };
+  const filterMuscles=list=>prefs.legMode==='none'?list.filter(m=>!LEG_MUSCLES.includes(m)):list;
   // Wochen-Volumen-Tracker: akkumuliert das Volumen über alle Plan-Tage hinweg,
   // damit der Generator weiß, wie viel schon "verbraucht" ist.
   const accumulatedWeeklyVol={};
@@ -4072,7 +4217,7 @@ function buildPlansFromWizard(wd){
     const numPlans=wd.variation==='AB'?2:1;
     // Beide Plan-Varianten erzeugen gleiches Wochenvolumen, weil sie sich abwechseln
     const plansPerWeek=wd.frequency/numPlans;
-    const specsA=generateExercisesForDay(template.muscles,wd.exercisesPerDay,{plansPerWeek,accumulatedWeeklyVol});
+    const specsA=generateExercisesForDay(filterMuscles(template.muscles),wd.exercisesPerDay,{plansPerWeek,accumulatedWeeklyVol,prefs});
     plans.A={name:'Plan A',exercises:specsA.map(exerciseSpecToplanEntry)};
     if(wd.variation==='AB'){
       addPlanToAccumulator(specsA,plansPerWeek);
@@ -4091,7 +4236,9 @@ function buildPlansFromWizard(wd){
     const plansPerWeek=wd.frequency/planKeys.length;
     planKeys.forEach(pk=>{
       const dayTemplate=template[pk];
-      const specs=generateExercisesForDay(dayTemplate.muscles,wd.exercisesPerDay,{plansPerWeek,accumulatedWeeklyVol});
+      const dayMuscles=filterMuscles(dayTemplate.muscles);
+      if(!dayMuscles.length)return;
+      const specs=generateExercisesForDay(dayMuscles,wd.exercisesPerDay,{plansPerWeek,accumulatedWeeklyVol,prefs});
       addPlanToAccumulator(specs,plansPerWeek);
       if(dayTemplate.variantB){
         plans[pk]={name:dayTemplate.name,exercises:specs.map(spec=>{
@@ -4110,12 +4257,64 @@ function defaultDaysForFrequency(freq){
   const map={2:[1,4],3:[1,3,5],4:[1,2,4,5]};
   return map[freq]||[1,3,5];
 }
+// ============================================================
+// ===== PLAN-PRÄFERENZEN =====================================
+// ============================================================
+// Schwerpunkt, Geräte, Beinumfang und Lieblingsübungen steuern sowohl den
+// Generator als auch die spätere Volumen-Bewertung. Beides muss dieselben
+// Vorgaben benutzen, sonst erzeugt die App einen Plan und kritisiert ihn danach.
+const EQUIP_OPTIONS=[
+  ['Maschine','Maschinen','Geführte Bewegung, leicht zu dosieren, gut für hohe Sätze nah ans Limit.'],
+  ['Kabelzug','Kabelzug','Konstanter Zug über den ganzen Weg, schonend für die Gelenke.'],
+  ['Langhantel','Langhantel','Schwerste Grundübungen, beste Basis für Maximalkraft.'],
+  ['Kurzhanteln','Kurzhanteln','Große Bewegungsfreiheit, gleicht Seitenunterschiede aus.'],
+  ['Eigengewicht','Eigengewicht','Ohne Geräte machbar, stark für Rumpf und Zugmuskulatur.']
+];
+const LEG_MUSCLES=['quads','beinbeuger','po','waden'];
+// Der Rumpf wird von Kniebeuge, Kreuzheben und Co. mitbedient und hat in den
+// Vorlagen keine eigene Übung. Er wird deshalb nicht eigenständig eingefordert.
+const INDIRECT_MUSCLES=['core'];
+const FOCUS_CHOICES=['brust','rücken_lat','rücken_oben','schultern','bizeps','trizeps','quads','beinbeuger','po','bauch'];
+function equipGroup(def){
+  const e=(def&&def.equipment)||'';
+  if(e==='Multipresse')return'Langhantel';
+  if(e==='Hyperextension-Bank')return'Eigengewicht';
+  return e;
+}
+function getPlanPrefs(){
+  const c=DATA.cycle||{};
+  return{
+    equipment:(c.equipment&&c.equipment.length)?c.equipment:null,
+    legMode:c.legMode||'normal',
+    focusMuscles:c.focusMuscles||[],
+    favorites:c.favoriteExercises||[]
+  };
+}
+function equipAllowed(def,prefs){
+  if(!prefs||!prefs.equipment||!prefs.equipment.length)return true;
+  if(def&&def.type==='time')return true;
+  return prefs.equipment.includes(equipGroup(def));
+}
+// Zielkorrektur je Muskelgruppe aus den Präferenzen.
+// Rückgabe: {factorWant, mevFactor} -- 1 bedeutet unverändert.
+function prefTargetFactor(muscle,prefs){
+  if(LEG_MUSCLES.includes(muscle)){
+    if(prefs.legMode==='none')return{want:0,mev:0};
+    if(prefs.legMode==='reduced')return{want:0.5,mev:0.5};
+  }
+  if(prefs.focusMuscles&&prefs.focusMuscles.length){
+    if(prefs.focusMuscles.includes(muscle))return{want:1,mev:1,focus:true};
+    // Spezialisierung heißt: der Rest läuft auf Erhalt, nicht ebenfalls am Limit
+    return{want:1,mev:1,maintain:true};
+  }
+  return{want:1,mev:1};
+}
 // ===== SETUP-WIZARD =====
 let wizardStep=0;let wizardData={};
 function getWizardStepIds(){
   const steps=['level','type'];
   if(wizardData.type==='split2'||wizardData.type==='split3')steps.push('split_variant');
-  steps.push('frequency','days','exercises_per_day');
+  steps.push('frequency','days','exercises_per_day','equipment','legs','focus','favorites');
   if(wizardData.type==='fullbody')steps.push('variation');
   steps.push('summary');
   return steps;
@@ -4128,7 +4327,12 @@ function openWizard(){
     splitVariant:null,
     frequency:DATA.cycle.frequency||3,
     days:[...(DATA.cycle.days||[1,3,5])],
-    exercisesPerDay:6,
+    exercisesPerDay:DATA.cycle.exercisesPerDay||6,
+    equipment:[...(DATA.cycle.equipment||EQUIP_OPTIONS.map(o=>o[0]))],
+    legMode:DATA.cycle.legMode||'normal',
+    focusMuscles:[...(DATA.cycle.focusMuscles||[])],
+    favorites:[...(DATA.cycle.favoriteExercises||[])],
+    _favMuscle:'brust',
     variation:DATA.cycle.rotation==='AB'?'AB':'same'
   };
   showWizardStep();
@@ -4216,7 +4420,62 @@ function showWizardStep(){
         <input type="radio" ${wizardData.exercisesPerDay===n?'checked':''}>
         <label>${n} Übungen <span style="color:var(--text-faint);font-size:12px;">(${labels[n]})</span></label></div>`).join('')}
       <div style="font-size:12px;color:var(--text-dim);margin-top:10px;line-height:1.4;">
-        Bei wenigen Übungen wählt der Generator Grundübungen mit hoher Priorität (Bankdrücken, Kniebeuge, Klimmzüge). Bei mehr Übungen kommen Isolationsübungen dazu.</div>`;
+        Bei wenigen Übungen wählt der Generator Grundübungen mit hoher Priorität (Bankdrücken, Kniebeuge, Klimmzüge). Bei mehr Übungen kommen Isolationsübungen dazu.</div>
+      ${wizardCoverageHint()}`;
+  }else if(currentId==='equipment'){
+    const sel=wizardData.equipment||[];
+    content=`<h2>Womit trainierst du?</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Mehrfachauswahl. Der Generator nimmt bevorzugt Übungen mit diesen Geräten. Fehlt für eine Muskelgruppe jede passende Übung, weicht er aus, damit keine Lücke entsteht.</p>
+      ${EQUIP_OPTIONS.map(o=>`<div class="checkbox-row" onclick="wizToggleEquip('${o[0]}')" style="align-items:flex-start;padding:10px 0;">
+        <input type="checkbox" ${sel.includes(o[0])?'checked':''} style="margin-top:3px;">
+        <div><label style="font-weight:600;display:block;">${o[1]}</label>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}
+      ${sel.length===0?'<div style="color:var(--warning);font-size:12px;margin-top:8px;">Bitte mindestens ein Gerät auswählen.</div>':''}`;
+    canProceed=sel.length>0;
+  }else if(currentId==='legs'){
+    const opts=[
+      ['normal','Beine normal mittrainieren','Volles Beinvolumen nach deinem Niveau.'],
+      ['reduced','Beine nur in geringem Umfang','Beine laufen auf Erhalt, etwa die Hälfte des normalen Volumens. Der frei werdende Umfang geht in den Oberkörper.'],
+      ['none','Keine Beinübungen','Beine werden aus dem Plan genommen und nicht mehr bewertet. Beachte, dass Kreuzheben und ähnliche Übungen die Beine trotzdem mitbelasten.']
+    ];
+    content=`<h2>Beintraining</h2>
+      <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Wie viel Beintraining willst du?</p>
+      ${opts.map(o=>`<div class="checkbox-row" onclick="wizSelect('legMode','${o[0]}')" style="align-items:flex-start;padding:10px 0;">
+        <input type="radio" ${wizardData.legMode===o[0]?'checked':''} style="margin-top:3px;">
+        <div><label style="font-weight:600;display:block;">${o[1]}</label>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${o[2]}</div></div></div>`).join('')}
+      ${wizardData.legMode==='none'?'<div style="background:rgba(245,158,11,0.08);border-left:3px solid var(--warning);border-radius:6px;padding:10px;margin-top:10px;font-size:12px;color:var(--text-dim);line-height:1.5;">Beine ganz wegzulassen kostet auf Dauer Stabilität und Belastbarkeit im Alltag. Wenn es um Zeit geht, ist die reduzierte Variante die bessere Wahl.</div>':''}`;
+  }else if(currentId==='focus'){
+    const sel=wizardData.focusMuscles||[];
+    const avail=FOCUS_CHOICES.filter(m=>!(wizardData.legMode==='none'&&LEG_MUSCLES.includes(m)));
+    content=`<h2>Schwerpunkt</h2>
+      <p style="color:var(--text-dim);margin-bottom:10px;font-size:13px;">Willst du ein oder zwei Muskelgruppen bevorzugt entwickeln? Sie bekommen dann Volumen bis an die Obergrenze, während der Rest auf einem soliden Erhaltungsniveau läuft. Ohne Auswahl werden alle Gruppen gleich behandelt.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      ${avail.map(m=>{
+        const on=sel.includes(m);
+        return `<span onclick="wizToggleFocus('${m}')" style="display:inline-block;padding:7px 12px;border-radius:20px;font-size:13px;cursor:pointer;border:1px solid ${on?'var(--accent)':'var(--border)'};background:${on?'var(--accent)':'var(--bg-elev2)'};color:${on?'#000':'var(--text)'};">${MUSCLE_LABELS[m]||m}</span>`;
+      }).join('')}
+      </div>
+      <div style="font-size:12px;color:var(--text-faint);margin-top:12px;line-height:1.5;">Maximal zwei Gruppen, sonst ist es kein Schwerpunkt mehr. ${sel.length?'Gewählt: '+sel.map(m=>MUSCLE_LABELS[m]||m).join(', '):'Kein Schwerpunkt gewählt.'}</div>`;
+  }else if(currentId==='favorites'){
+    const sel=wizardData.favorites||[];
+    const cur=wizardData._favMuscle||'brust';
+    const groups=FOCUS_CHOICES.concat(['rücken_unten','schultern_hinten','waden']);
+    const list=EXERCISE_LIBRARY.filter(e=>(e.muscles||[]).includes(cur)&&equipAllowed(e,{equipment:wizardData.equipment}));
+    content=`<h2>Lieblingsübungen</h2>
+      <p style="color:var(--text-dim);margin-bottom:10px;font-size:13px;">Optional. Übungen, die du gern machst oder bei denen du gut vorankommst, werden im Plan bevorzugt. Das ist kein Nachteil: bei gleicher Belastung wachsen selbst gewählte Übungen genauso gut, und du bleibst eher dabei.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;">
+      ${groups.map(m=>`<span onclick="wizFavMuscle('${m}')" style="display:inline-block;padding:5px 10px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid ${cur===m?'var(--accent)':'var(--border)'};background:${cur===m?'var(--accent)':'var(--bg-elev2)'};color:${cur===m?'#000':'var(--text)'};">${MUSCLE_LABELS[m]||m}</span>`).join('')}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;max-height:260px;overflow-y:auto;">
+      ${list.map(e=>{
+        const on=sel.includes(e.id);
+        return `<div class="checkbox-row" onclick="wizToggleFav('${e.id}')" style="padding:7px 0;">
+          <input type="checkbox" ${on?'checked':''}>
+          <label style="flex:1;">${e.name} <span style="color:var(--text-faint);font-size:11px;">${e.equipment}</span></label></div>`;
+      }).join('')||'<div style="color:var(--text-dim);font-size:13px;">Für diese Gruppe passt mit deiner Geräteauswahl nichts.</div>'}
+      </div>
+      <div style="font-size:12px;color:var(--text-faint);margin-top:10px;">${sel.length?sel.length+' Übungen markiert':'Nichts markiert, dann entscheidet der Generator allein.'}</div>`;
   }else if(currentId==='variation'){
     content=`<h2>Plan-Variation</h2>
       <p style="color:var(--text-dim);margin-bottom:12px;font-size:13px;">Möchtest du immer das gleiche Training oder zwei unterschiedliche Pläne (A und B) im Wechsel?</p>
@@ -4262,6 +4521,13 @@ function showWizardStep(){
         ${lvlLabel} · ${typeLabel}${splitLabel} · ${wizardData.frequency}× pro Woche · ${wizardData.exercisesPerDay} Übungen/Training
         ${wizardData.type==='fullbody'&&wizardData.variation==='AB'?' · A↔B-Wechsel':''}
       </div>
+      <div style="font-size:12px;color:var(--text-faint);margin-bottom:10px;line-height:1.5;">
+        Geräte: ${(wizardData.equipment||[]).length===EQUIP_OPTIONS.length?'alle':(wizardData.equipment||[]).join(', ')||'alle'}
+        · Beine: ${wizardData.legMode==='none'?'keine':(wizardData.legMode==='reduced'?'reduziert':'normal')}
+        · Schwerpunkt: ${(wizardData.focusMuscles||[]).length?wizardData.focusMuscles.map(m=>MUSCLE_LABELS[m]||m).join(' + '):'keiner'}
+        ${(wizardData.favorites||[]).length?' · '+wizardData.favorites.length+' Lieblingsübungen':''}
+      </div>
+      ${wizardCoverageHint()}
       <div style="font-size:12px;color:var(--text-faint);margin-bottom:8px;">Tippe ⇄ um eine Übung zu tauschen.</div>
       ${preview}
       <div style="background:rgba(239,68,68,0.08);border:1px solid var(--warning);padding:10px;border-radius:8px;font-size:12px;color:var(--text-dim);margin-top:8px;">
@@ -4277,6 +4543,79 @@ function showWizardStep(){
   showModal(html);
 }
 function wizSelect(key,val){wizardData[key]=val;wizardData._previewPlans=null;showWizardStep();}
+function wizToggleEquip(id){
+  const a=wizardData.equipment||[];
+  const i=a.indexOf(id);
+  if(i>=0)a.splice(i,1);else a.push(id);
+  wizardData.equipment=a;wizardData._previewPlans=null;showWizardStep();
+}
+function wizToggleFocus(m){
+  const a=wizardData.focusMuscles||[];
+  const i=a.indexOf(m);
+  if(i>=0)a.splice(i,1);
+  else{if(a.length>=2)a.shift();a.push(m);}
+  wizardData.focusMuscles=a;wizardData._previewPlans=null;showWizardStep();
+}
+function wizFavMuscle(m){wizardData._favMuscle=m;showWizardStep();}
+function wizToggleFav(id){
+  const a=wizardData.favorites||[];
+  const i=a.indexOf(id);
+  if(i>=0)a.splice(i,1);else a.push(id);
+  wizardData.favorites=a;wizardData._previewPlans=null;showWizardStep();
+}
+// Prüft VOR dem Generieren, ob die gewählte Übungszahl überhaupt reicht
+function wizardCoverageGaps(n){
+  const wd=Object.assign({},wizardData,{exercisesPerDay:n});
+  _levelOverride=wd.level;
+  let plans;
+  try{plans=buildPlansFromWizard(wd);}catch(e){_levelOverride=null;return null;}
+  const prefs={equipment:(wd.equipment&&wd.equipment.length)?wd.equipment:null,legMode:wd.legMode||'normal',focusMuscles:wd.focusMuscles||[],favorites:wd.favorites||[]};
+  const keys=Object.keys(plans);
+  const perWeek=keys.length?wd.frequency/keys.length:1;
+  const vol={};MUSCLE_GROUPS.forEach(m=>vol[m]=0);
+  keys.forEach(pk=>(plans[pk].exercises||[]).forEach(ex=>{
+    const def=getExerciseInfo(ex.exerciseId);
+    if(!def)return;
+    const sets=(ex.targetSets||3)*perWeek;
+    (def.muscles||[]).forEach(m=>{if(vol[m]!==undefined)vol[m]+=sets;});
+    (def.secondary||[]).forEach(m=>{if(vol[m]!==undefined)vol[m]+=sets*0.5;});
+  }));
+  _levelOverride=null;
+  const gaps=[];
+  MUSCLE_GROUPS.forEach(m=>{
+    if(INDIRECT_MUSCLES.includes(m))return;
+    const f=prefTargetFactor(m,prefs);
+    if(f.mev===0)return;
+    const mev=getMAVRange(m,'hypertrophie')[0]*(f.mev===0.5?0.5:1);
+    if(vol[m]<mev-0.6)gaps.push(m);
+  });
+  return gaps;
+}
+function wizardCoverageHint(){
+  const gaps=wizardCoverageGaps(wizardData.exercisesPerDay);
+  if(gaps===null)return'';
+  if(gaps.length===0){
+    return`<div style="background:rgba(34,197,94,0.10);border-left:3px solid var(--success);border-radius:6px;padding:10px;margin-top:10px;font-size:12px;color:var(--text-dim);line-height:1.5;">✓ Mit ${wizardData.exercisesPerDay} Übungen erreicht jede Muskelgruppe ihr Mindestvolumen.</div>`;
+  }
+  let better=null;
+  for(const n of[5,6,7,8]){
+    if(n<=wizardData.exercisesPerDay)continue;
+    const g=wizardCoverageGaps(n);
+    if(g&&g.length===0){better=n;break;}
+  }
+  const names=gaps.map(m=>MUSCLE_LABELS[m]||m).join(', ');
+  // Kommt eine Gruppe in der gewählten Aufteilung überhaupt vor?
+  let covered=[];
+  if(wizardData.type==='fullbody')covered=SPLIT_TEMPLATES.fullbody.A.muscles;
+  else if(SPLIT_TEMPLATES[wizardData.splitVariant])covered=Object.values(SPLIT_TEMPLATES[wizardData.splitVariant]).flatMap(d=>d.muscles);
+  const outside=gaps.filter(m=>!covered.includes(m));
+  let tip;
+  if(outside.length)tip=`${outside.map(m=>MUSCLE_LABELS[m]||m).join(' und ')} ${outside.length===1?'kommt':'kommen'} in dieser Aufteilung gar nicht vor. Mehr Übungen helfen da nicht, eine andere Aufteilung schon.`;
+  else if(better)tip=`Mit ${better} Übungen pro Einheit geht es auf.`;
+  else tip=`Auch mit 8 Übungen bleibt eine Lücke. Häufiger trainieren oder eine andere Aufteilung wählen würde helfen.`;
+  return`<div style="background:rgba(245,158,11,0.10);border-left:3px solid var(--warning);border-radius:6px;padding:10px;margin-top:10px;font-size:12px;color:var(--text-dim);line-height:1.5;">
+    ⚠ Mit ${wizardData.exercisesPerDay} Übungen bleiben <strong style="color:var(--text);">${names}</strong> unter dem Mindestvolumen. ${tip}</div>`;
+}
 function wizSwapExercise(planKey,exIdx,filterMuscle){
   const plan=wizardData._previewPlans&&wizardData._previewPlans[planKey];
   if(!plan)return;
@@ -4385,6 +4724,11 @@ function finishWizard(){
   DATA.cycle.frequency=wizardData.frequency;
   DATA.cycle.days=wizardData.days;
   DATA.cycle.exercisesPerDay=wizardData.exercisesPerDay;
+  DATA.cycle.equipment=(wizardData.equipment&&wizardData.equipment.length<EQUIP_OPTIONS.length)?wizardData.equipment:null;
+  DATA.cycle.legMode=wizardData.legMode||'normal';
+  DATA.cycle.focusMuscles=wizardData.focusMuscles||[];
+  DATA.cycle.favoriteExercises=wizardData.favorites||[];
+  invalidateVolumeCache();
   // Rotation: bei Splits immer durch die Plan-Anzahl bestimmt
   if(wizardData.type==='fullbody'){
     DATA.cycle.rotation=wizardData.variation;
@@ -4907,6 +5251,299 @@ function showBadgeDetail(id){
   </div><button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal()">Schließen</button>`);
 }
 
+
+// ============================================================
+// ===== VOLUMEN-REGLER =======================================
+// ============================================================
+// Bisher wurde der Plan gegen ein festes Satzband geprüft und nur kritisiert.
+// Jetzt gilt: für JEDE Woche wird ein eigenes Ziel je Muskelgruppe berechnet
+// (Rampe von MEV zu MRV innerhalb des Blocks), die Sätze werden automatisch auf
+// die vorhandenen Übungen verteilt, und MRV ist eine harte Obergrenze.
+const SETS_MAX_PER_EXERCISE=5;   // darüber gilt Volumen je Übung als wirkungslos
+// Pro EINZELNER Einheit sind 6 bis 10 Sätze je Muskelgruppe sinnvoll. Darüber
+// ermüdet der Muskel so stark, dass die zusätzlichen Sätze an Qualität verlieren.
+const SESSION_MAX_PER_MUSCLE=10;
+const SESSION_GOOD_MIN=6;
+function minSetsFor(def){return def&&def.isIsolation?1:2;}
+function round1(x){return Math.round(x*10)/10;}
+// Ziel-Korridor und harte Obergrenze für DIESE Woche
+function weeklyMuscleTarget(muscle){
+  const phase=getEffectivePhase();
+  const r=getMAVRange(muscle,phase==='hypertrophie'?'hypertrophie':phase);
+  const prefs=getPlanPrefs();
+  const f=prefTargetFactor(muscle,prefs);
+  let mev=r[0],mrv=r[1];
+  // Beine abgewählt: keine Vorgabe, kein Auffüllen, keine Warnung
+  if(f.mev===0)return{want:0,lo:0,hi:mrv,mev:0,mrv};
+  if(f.mev===0.5){mev=round1(mev*0.5);}
+  const wk=getCurrentWeek(),total=getMesoLength();
+  if(phase==='hypertrophie'){
+    // Woche 1 startet am Minimum, die vorletzte Woche erreicht das Maximum
+    const accum=Math.max(1,total-1);
+    let ratio=accum<=1?1:Math.min(1,(wk-1)/(accum-1));
+    // Schwerpunkt: volle Rampe bis MRV. Alle anderen Gruppen laufen bei einer
+    // Spezialisierung auf halber Rampe, sonst wird die Erholung knapp.
+    if(f.maintain)ratio=ratio*0.5;
+    const top=f.mev===0.5?round1((mev+mrv)/2):mrv;
+    const want=round1(mev+(top-mev)*ratio);
+    return{want,lo:want,hi:round1(Math.min(mrv,want+1.5)),mev,mrv};
+  }
+  const mid=round1((mev+mrv)/2);
+  if(f.mev===0.5)return{want:mev,lo:mev,hi:mid,mev,mrv};
+  if(f.focus)return{want:round1((mid+mrv)/2),lo:mid,hi:mrv,mev,mrv};
+  return{want:mid,lo:mev,hi:mrv,mev,mrv};
+}
+function planKeyForExercises(planExercises){
+  for(const pk of Object.keys(DATA.plans||{})){
+    const p=DATA.plans[pk];
+    if(p&&p.exercises===planExercises)return pk;
+  }
+  return null;
+}
+var _volCache={key:null,val:null};
+function volumeStateKey(){
+  const plans=(DATA.cycle.activePlans||[]).map(pk=>{
+    const p=DATA.plans[pk];
+    return pk+':'+(((p&&p.exercises)||[]).map(e=>e.exerciseId+'#'+(e.targetSets||3)).join(','));
+  }).join('|');
+  const pr=getPlanPrefs();
+  return[getCurrentPhase(),getEffectivePhase(),getCurrentWeek(),getMesoLength(),DATA.cycle.frequency,getTrainingLevel(),
+    (pr.equipment||[]).join('+'),pr.legMode,(pr.focusMuscles||[]).join('+'),plans].join('~');
+}
+function invalidateVolumeCache(){_volCache={key:null,val:null};}
+const EMPTY_BALANCE={adjust:{},byExercise:{},changes:[],volume:{},targets:{},issues:[],perWeek:1,inactive:true};
+// Kern: verteilt fehlende Sätze auf vorhandene Übungen und kappt Überschuss
+function computeVolumeBalance(){
+  const phase=getEffectivePhase();
+  // In Deload- und Wiedereinstiegswochen ist die Reduktion gewollt. Dort wird
+  // weder aufgefüllt noch gewarnt, sonst kämpfen zwei Regeln gegeneinander.
+  if(phase==='deload'||phase==='wiedereinstieg')return EMPTY_BALANCE;
+  const key=volumeStateKey();
+  if(_volCache&&_volCache.key===key)return _volCache.val;
+  const planKeys=(DATA.cycle.activePlans||[]).filter(pk=>DATA.plans[pk]);
+  const perWeek=planKeys.length?((DATA.cycle.frequency||3)/planKeys.length):1;
+  const slots=[];
+  planKeys.forEach(pk=>{
+    const plan=DATA.plans[pk];
+    (plan.exercises||[]).forEach(ex=>{
+      const def=getExerciseInfo(ex.exerciseId);
+      if(!def||def.type==='time')return;
+      slots.push({pk,ex,def,base:rawWeeklyTargetSets(ex,plan.exercises),delta:0});
+    });
+  });
+  const setsOf=s=>Math.max(1,s.base+s.delta);
+  const volume=()=>{
+    const v={};MUSCLE_GROUPS.forEach(m=>v[m]=0);
+    slots.forEach(s=>{
+      const n=setsOf(s)*perWeek;
+      (s.def.muscles||[]).forEach(m=>v[m]=(v[m]||0)+n);
+      (s.def.secondary||[]).forEach(m=>v[m]=(v[m]||0)+n*0.5);
+    });
+    return v;
+  };
+  // Volumen einer EINZELNEN Einheit je Muskelgruppe
+  const sessionVolume=pk=>{
+    const v={};
+    slots.filter(s=>s.pk===pk).forEach(s=>{
+      const n=setsOf(s);
+      (s.def.muscles||[]).forEach(m=>v[m]=(v[m]||0)+n);
+      (s.def.secondary||[]).forEach(m=>v[m]=(v[m]||0)+n*0.5);
+    });
+    return v;
+  };
+  const sessionOverload=()=>{
+    const out=[];
+    planKeys.forEach(pk=>{
+      const v=sessionVolume(pk);
+      Object.keys(v).forEach(m=>{
+        if(INDIRECT_MUSCLES.includes(m))return;
+        if(v[m]>SESSION_MAX_PER_MUSCLE+0.01)out.push({pk,muscle:m,sets:round1(v[m])});
+      });
+    });
+    return out;
+  };
+  const targets={};MUSCLE_GROUPS.forEach(m=>targets[m]=weeklyMuscleTarget(m));
+  // Schritt 1: Überschuss abbauen, bis der Wochen-Korridor eingehalten ist.
+  // Muskelgruppen, bei denen nichts mehr geht, werden übersprungen statt die
+  // ganze Verteilung abzubrechen.
+  const stuckDown=new Set();
+  for(let guard=0;guard<120;guard++){
+    const v=volume();
+    const over=MUSCLE_GROUPS.filter(m=>!stuckDown.has(m)&&v[m]>targets[m].hi+0.01)
+      .sort((a,b)=>(v[b]-targets[b].hi)-(v[a]-targets[a].hi))[0];
+    if(!over)break;
+    const cands=slots.filter(s=>(s.def.muscles||[]).includes(over)&&setsOf(s)>minSetsFor(s.def))
+      .sort((a,b)=>setsOf(b)-setsOf(a));
+    if(!cands.length){stuckDown.add(over);continue;}
+    cands[0].delta-=1;
+  }
+  // Schritt 1b: einzelne Einheiten entlasten, die über 10 Sätze je Muskel gehen
+  for(let guard=0;guard<60;guard++){
+    const ov=sessionOverload();
+    if(!ov.length)break;
+    const worst=ov.sort((a,b)=>b.sets-a.sets)[0];
+    const cands=slots.filter(s=>s.pk===worst.pk&&(s.def.muscles||[]).includes(worst.muscle)&&setsOf(s)>minSetsFor(s.def))
+      .sort((a,b)=>setsOf(b)-setsOf(a));
+    if(!cands.length)break;
+    cands[0].delta-=1;
+  }
+  // Schritt 2: Defizit auffüllen. Eine Zugabe wird nur verworfen, wenn sie eine
+  // Grenze NEU reißt oder eine bestehende Überschreitung vergrößert.
+  const stuckUp=new Set();
+  for(let guard=0;guard<120;guard++){
+    const v=volume();
+    const under=MUSCLE_GROUPS.filter(m=>!stuckUp.has(m)&&v[m]>0&&v[m]<targets[m].lo-0.01)
+      .sort((a,b)=>(targets[b].lo-v[b])-(targets[a].lo-v[a]))[0];
+    if(!under)break;
+    // Kandidaten bewerten: Wer den fehlenden Muskel trifft, ohne andere Gruppen
+    // an ihre Grenze zu schieben, kommt zuerst dran.
+    const overlapCost=s=>{
+      let cost=0;
+      (s.def.muscles||[]).forEach(m=>{
+        if(m===under)return;
+        const t=targets[m];if(!t)return;
+        cost+=Math.max(0,1-Math.max(0,t.hi-v[m])/2);
+      });
+      (s.def.secondary||[]).forEach(m=>{
+        const t=targets[m];if(!t||m===under)return;
+        cost+=0.5*Math.max(0,1-Math.max(0,t.hi-v[m])/2);
+      });
+      return cost;
+    };
+    const cands=slots.filter(s=>(s.def.muscles||[]).includes(under)&&setsOf(s)<SETS_MAX_PER_EXERCISE)
+      .sort((a,b)=>{
+        const d=overlapCost(a)-overlapCost(b);
+        if(Math.abs(d)>0.01)return d;
+        return setsOf(a)-setsOf(b);
+      });
+    let placed=false;
+    for(const cand of cands){
+      cand.delta+=1;
+      const v2=volume();
+      const breaks=MUSCLE_GROUPS.some(m=>v2[m]>targets[m].hi+0.01&&v2[m]>v[m]+0.001);
+      const sv=sessionVolume(cand.pk);
+      const sessionBreak=Object.keys(sv).some(m=>!INDIRECT_MUSCLES.includes(m)&&sv[m]>SESSION_MAX_PER_MUSCLE+0.01);
+      if(breaks||sessionBreak){cand.delta-=1;continue;}
+      placed=true;break;
+    }
+    if(!placed){stuckUp.add(under);continue;}
+  }
+  const adjust={},byExercise={},changes=[];
+  slots.forEach(s=>{
+    if(s.delta===0)return;
+    adjust[s.pk+'|'+s.ex.exerciseId]=s.delta;
+    if(byExercise[s.ex.exerciseId]===undefined)byExercise[s.ex.exerciseId]=s.delta;
+    changes.push({pk:s.pk,exerciseId:s.ex.exerciseId,name:s.def.name,delta:s.delta,sets:setsOf(s)});
+  });
+  const vFinal=volume();
+  // Was die Automatik NICHT lösen konnte, muss der Plan lösen
+  const issues=[];
+  MUSCLE_GROUPS.forEach(m=>{
+    const t=targets[m];
+    const v=round1(vFinal[m]||0);
+    if(v===0)return;
+    if(INDIRECT_MUSCLES.includes(m))return;
+    if(v<t.mev-0.01)issues.push({type:'under_mev',muscle:m,sets:v,mev:t.mev,mrv:t.mrv,want:t.want,deficit:round1(t.mev-v)});
+    else if(v>t.mrv+0.01)issues.push({type:'over_mrv',muscle:m,sets:v,mev:t.mev,mrv:t.mrv,want:t.want,excess:round1(v-t.mrv)});
+    else if(v<t.lo-2.9)issues.push({type:'under_target',muscle:m,sets:v,mev:t.mev,mrv:t.mrv,want:t.want,deficit:round1(t.lo-v)});
+  });
+  // Einheiten, die trotz Kürzung über 10 Sätze je Muskel liegen
+  sessionOverload().forEach(o=>{
+    issues.push({type:'session_overload',muscle:o.muscle,planKey:o.pk,sets:o.sets});
+  });
+  // Passt das Wochenziel überhaupt in die verfügbaren Einheiten?
+  MUSCLE_GROUPS.forEach(m=>{
+    if(INDIRECT_MUSCLES.includes(m))return;
+    const t=targets[m];
+    if(!t||t.want<=0)return;
+    const daysHittingMuscle=planKeys.filter(pk=>slots.some(s=>s.pk===pk&&((s.def.muscles||[]).includes(m)))).length*perWeek;
+    if(daysHittingMuscle>0&&t.want>daysHittingMuscle*SESSION_MAX_PER_MUSCLE+0.01){
+      issues.push({type:'needs_frequency',muscle:m,sets:round1(vFinal[m]||0),want:t.want,sessions:round1(daysHittingMuscle)});
+    }
+  });
+  _volCache={key,val:{adjust,byExercise,changes,volume:vFinal,targets,issues,perWeek}};
+  return _volCache.val;
+}
+function getVolumeAdjust(exercise,planExercises){
+  const bal=computeVolumeBalance();
+  if(bal.inactive)return 0;
+  const pk=planKeyForExercises(planExercises);
+  if(pk&&bal.adjust[pk+'|'+exercise.exerciseId]!==undefined)return bal.adjust[pk+'|'+exercise.exerciseId];
+  if(!pk&&bal.byExercise[exercise.exerciseId]!==undefined)return bal.byExercise[exercise.exerciseId];
+  return 0;
+}
+// ============================================================
+// ===== GEWICHTS-RASTER DER GERÄTE ===========================
+// ============================================================
+// Steckgewichte und Hantelscheiben kennen keine krummen Zahlen. Die App
+// bestimmt die mögliche Schrittweite in drei Stufen:
+//   1. manuelle Angabe an der Übung (Plan -> Übung bearbeiten)
+//   2. gelernt aus dem eigenen Verlauf (welche Gewichte gab es dort wirklich?)
+//   3. Faustregel nach Gerätetyp
+function inferWeightStep(exerciseId,target){
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const list=(_historyByExerciseId[exerciseId]||[]).filter(h=>!h.legacy).slice(0,25);
+  const vals=[];
+  list.forEach(h=>(h.sets||[]).forEach(s=>{
+    const w=s.weight||0;
+    if(w<=0)return;
+    // Nur Werte aus demselben Bereich des Gewichtsblocks vergleichen:
+    // viele Maschinen springen unten in 2,5er und oben in 5er Schritten.
+    if(target>=30&&w<25)return;
+    if(target<30&&w>=35)return;
+    vals.push(Math.round(w*100)/100);
+  }));
+  const uniq=Array.from(new Set(vals));
+  if(uniq.length<3)return null;
+  const divides=g=>uniq.every(v=>Math.abs(v/g-Math.round(v/g))<0.001);
+  if(divides(5))return 5;
+  if(divides(2.5))return 2.5;
+  if(divides(2))return 2;
+  return null;
+}
+function getWeightStep(exerciseId,exercise,target){
+  if(exercise&&exercise.increment>0)return exercise.increment;
+  const w=target||0;
+  const learned=inferWeightStep(exerciseId,w);
+  if(learned)return learned;
+  const def=getExerciseInfo(exerciseId);
+  const eq=def?def.equipment:'';
+  if(eq==='Langhantel'||eq==='Multipresse')return 2.5;
+  if(eq==='Kurzhanteln')return w<20?2:2.5;
+  if(eq==='Maschine'||eq==='Kabelzug')return w<30?2.5:5;
+  return 2.5;
+}
+function getMinWeight(exerciseId,exercise){
+  if(exercise&&exercise.minWeight>0)return exercise.minWeight;
+  const def=getExerciseInfo(exerciseId);
+  if(!def)return 0;
+  if(def.bodyweight)return 0;
+  const eq=def.equipment;
+  if(eq==='Langhantel')return 20;
+  if(eq==='Multipresse')return 15;
+  if(eq==='Kurzhanteln')return 4;
+  if(eq==='Maschine'||eq==='Kabelzug')return 5;
+  return 0;
+}
+// mode: 'near' (Zielgewicht), 'up' (Steigerung), 'down' (Reduktion)
+function snapWeight(w,exerciseId,exercise,mode){
+  if(!w||w<=0)return 0;
+  const step=getWeightStep(exerciseId,exercise,w);
+  const min=getMinWeight(exerciseId,exercise);
+  let v;
+  if(mode==='up')v=Math.ceil(w/step-0.001)*step;
+  else if(mode==='down')v=Math.floor(w/step+0.001)*step;
+  else v=Math.round(w/step)*step;
+  v=Math.round(v*100)/100;
+  if(v<min)v=min;
+  if(exercise&&exercise.maxWeight&&v>exercise.maxWeight)v=exercise.maxWeight;
+  return v;
+}
+// Nächste erreichbare Stufe nach oben, mindestens n Raster-Schritte
+function nextWeightUp(current,exerciseId,exercise,steps){
+  const step=getWeightStep(exerciseId,exercise,current);
+  return snapWeight(current+step*(steps||1),exerciseId,exercise,'near');
+}
 // Trainings-Einheiten, die durch eine lange Pause getrennt sind, gehören nicht
 // in denselben Vergleich. Alles vor der Lücke wird abgeschnitten.
 function splitAtGap(list){
