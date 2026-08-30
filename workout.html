@@ -264,6 +264,61 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 .log-ex:first-child{border-top:none}
 .log-ex-name{color:var(--text);flex:1;min-width:0}
 .log-ex-sets{color:var(--text-dim);text-align:right}
+
+/* ===== Begrüßung, Ziele, Reichweite ===== */
+.intro-card{background:linear-gradient(150deg,var(--bg-elev2),var(--bg-elev));border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.intro-head{font-size:17px;font-weight:700;letter-spacing:-0.01em;margin-bottom:6px}
+.intro-lead{font-size:13.5px;color:var(--text-dim);line-height:1.55}
+.intro-goals{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+.intro-goals-title{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-faint);margin-bottom:6px}
+.intro-goal{font-size:13.5px;color:var(--text);line-height:1.7}
+.intro-goal strong{font-weight:600}
+.intro-foot{display:flex;justify-content:space-between;gap:8px;margin-top:12px;padding-top:9px;border-top:1px solid var(--border);font-size:12px;color:var(--text-faint)}
+.reach-card{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
+.reach-title{font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-faint);margin-bottom:8px}
+.reach-item{margin-bottom:9px}
+.reach-item:last-child{margin-bottom:0}
+.reach-line{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-dim);line-height:1.45}
+.reach-icon{flex-shrink:0}
+.reach-bar{margin-top:5px;height:5px;border-radius:3px;background:var(--bg-elev2);overflow:hidden}
+.reach-bar span{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .4s ease}
+.badge-comeback{background:rgba(139,92,246,0.16);color:#a78bfa}
+/* ===== Abzeichen-Verleihung ===== */
+.badge-overlay{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(8,10,14,0.93);padding:24px}
+.badge-overlay.show{display:flex;animation:fadeIn .25s ease}
+.badge-card{position:relative;width:min(340px,88vw);background:linear-gradient(160deg,var(--bg-elev2),var(--bg-elev));border:1px solid var(--accent);border-radius:22px;padding:22px 20px;text-align:center;overflow:hidden;animation:badgeIn .75s cubic-bezier(.2,1.15,.35,1) both}
+@keyframes badgeIn{0%{opacity:0;transform:perspective(800px) rotateY(80deg) scale(.65)}60%{opacity:1;transform:perspective(800px) rotateY(-9deg) scale(1.05)}100%{opacity:1;transform:perspective(800px) rotateY(0) scale(1)}}
+.badge-glow{position:absolute;left:-40%;right:-40%;top:-50%;height:150%;background:radial-gradient(circle at 50% 32%,rgba(245,158,11,.32),transparent 62%);animation:glowPulse 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes glowPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+.badge-shine{position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.20),transparent);animation:shineSweep 3.2s ease-in-out .6s infinite;pointer-events:none}
+@keyframes shineSweep{0%{left:-70%}45%{left:130%}100%{left:130%}}
+.badge-kicker{position:relative;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.badge-medal-wrap{position:relative;height:120px;display:flex;align-items:center;justify-content:center;margin:4px 0 2px}
+.badge-medal{font-size:62px;line-height:1;animation:medalPop .85s .12s cubic-bezier(.2,1.6,.4,1) both;filter:drop-shadow(0 4px 14px rgba(245,158,11,.45))}
+@keyframes medalPop{0%{opacity:0;transform:scale(.2) rotate(-25deg)}70%{opacity:1;transform:scale(1.18) rotate(6deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.badge-spark{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--accent);opacity:0;animation:sparkFly 1.6s ease-out both}
+@keyframes sparkFly{0%{opacity:0;transform:rotate(var(--a,0deg)) translateY(0) scale(.3)}25%{opacity:1}100%{opacity:0;transform:rotate(var(--a,0deg)) translateY(-96px) scale(.9)}}
+.badge-name{position:relative;font-size:21px;font-weight:700;letter-spacing:-0.02em}
+.badge-desc{position:relative;font-size:13.5px;color:var(--text-dim);line-height:1.55;margin-top:7px}
+.badge-meta{position:relative;font-size:13px;color:var(--accent);margin-top:8px;font-weight:600}
+/* ===== Erfolge-Tab ===== */
+.award-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.award-stat{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 4px;text-align:center}
+.award-stat .v{font-size:18px;font-weight:700;letter-spacing:-0.02em}
+.award-stat .l{font-size:10px;color:var(--text-faint);margin-top:2px}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.badge-tile{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 6px;text-align:center;opacity:.42;cursor:pointer;transition:transform .15s ease}
+.badge-tile:active{transform:scale(.96)}
+.badge-tile.earned{opacity:1;border-color:var(--accent);background:linear-gradient(160deg,rgba(245,158,11,.10),var(--bg-elev))}
+.bt-icon{font-size:26px;line-height:1.1;filter:grayscale(1)}
+.badge-tile.earned .bt-icon{filter:none}
+.bt-title{font-size:11px;font-weight:600;margin-top:5px;line-height:1.25}
+.bt-sub{font-size:9.5px;color:var(--text-faint);margin-top:3px}
+.rec-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.rec-row:last-child{border-bottom:none}
+.rec-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec-val{font-weight:600;color:var(--accent);flex-shrink:0}
+.rec-date{color:var(--text-faint);font-size:11px;flex-shrink:0;width:62px;text-align:right}
 </style>
 </head>
 <body data-theme="dark">
@@ -274,6 +329,7 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 <main>
   <section class="tab-section active" id="tab-today"><div id="today-content"></div></section>
   <section class="tab-section" id="tab-plan"><h1 style="margin-bottom:12px;">Plan</h1><div id="plan-content"></div></section>
+  <section class="tab-section" id="tab-awards"><h1 style="margin-bottom:12px;">Erfolge</h1><div id="awards-content"></div></section>
   <section class="tab-section" id="tab-stats"><h1 style="margin-bottom:12px;">Statistik</h1><div id="stats-content"></div></section>
   <section class="tab-section" id="tab-cycle"><h1 style="margin-bottom:12px;">Zyklus</h1><div id="cycle-content"></div></section>
   <section class="tab-section" id="tab-setup"><h1 style="margin-bottom:12px;">Einstellungen</h1><div id="setup-content"></div></section>
@@ -281,11 +337,13 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 <nav class="bottom-nav">
   <button class="nav-btn active" data-tab="today"><span class="icon">●</span><span>Heute</span></button>
   <button class="nav-btn" data-tab="plan"><span class="icon">▤</span><span>Plan</span></button>
+  <button class="nav-btn" data-tab="awards"><span class="icon">🏅</span><span>Erfolge</span></button>
   <button class="nav-btn" data-tab="stats"><span class="icon">▰</span><span>Statistik</span></button>
   <button class="nav-btn" data-tab="cycle"><span class="icon">◌</span><span>Zyklus</span></button>
   <button class="nav-btn" data-tab="setup"><span class="icon">⚙</span><span>Setup</span></button>
 </nav>
 <div class="modal-bg" id="modal-bg"><div class="modal" id="modal-content"></div></div>
+<div class="badge-overlay" id="badge-overlay"></div>
 <div class="toast" id="toast"></div>
 <script>
 // ===== KONSTANTEN =====
@@ -409,6 +467,7 @@ const PHASE_DEFS={
   hypertrophie:{label:'Hypertrophie · Akkumulation',shortLabel:'Hypertrophie',badge:'badge-hyp',color:'#f59e0b',repsRange:[8,12],intensityPct:[0.70,0.80],weeklyRIR:{1:'3-4',2:'2-3',3:'1-2',4:'0-1',5:'0-1',6:'0-1',7:'0-1',8:'0-1'},description:'Akkumulationsblock. Aufbau-Phase mit hohem Volumen (Volumen steigt MEV → MRV) und moderater Intensität. 8-12 Wdh bei 70-80% 1RM, 60-90s Pause. RIR fällt von 3-4 in Woche 1 auf 0-1 in der Peak-Woche. Hauptarbeit für Muskelaufbau.',pauseSec:90},
   maxkraft:{label:'Maximalkraft · Transmutation',shortLabel:'Maxkraft',badge:'badge-maxkraft',color:'#ef4444',repsRange:[3,6],intensityPct:[0.85,0.95],weeklyRIR:{1:'2-3',2:'2',3:'1-2',4:'1',5:'0-1',6:'0-1'},description:'Transmutationsblock. Wandelt die Hypertrophie-Basis in spezifische Kraft. 3-6 Wdh bei 85-95% 1RM, 3-5 Min Pause, niedriges Volumen, RPE 7.5-9. Macht dich für den nächsten Aufbau-Block stärker, sodass du dort schwerere Gewichte für 10 Wdh bewegen kannst.',pauseSec:240},
   kraftausdauer:{label:'Kraftausdauer · Variation',shortLabel:'Kraftausdauer',badge:'badge-kraftaus',color:'#22c55e',repsRange:[15,20],intensityPct:[0.55,0.65],weeklyRIR:{1:'4-5',2:'3-4',3:'2-3',4:'1-2',5:'1-2'},description:'Variations- und Erhaltungsphase. 15-20 Wdh bei 55-65% 1RM, kurze Pausen (45-60s). Bindegewebe und Stoffwechselkapazität, gleichzeitig Abbau systemischer Ermüdung. Kurz halten (2-3 Wochen), dann zurück zur Akkumulation.',pauseSec:60},
+  wiedereinstieg:{label:'Wiedereinstieg · Zurück nach der Pause',shortLabel:'Wiedereinstieg',badge:'badge-comeback',color:'#8b5cf6',repsRange:[8,12],intensityPct:[0.60,0.92],weeklyRIR:{1:'4-5',2:'3-4'},description:'Aufbau nach einer längeren Pause. Die Kraft kommt schnell zurück, Sehnen, Bänder und Bindegewebe brauchen länger. Deshalb wird das Gewicht über mehrere Einheiten von etwa 60 auf über 90 Prozent des alten Niveaus hochgefahren, bei einem Satz weniger und viel Reserve. Kein Satz bis zum Muskelversagen.',pauseSec:90},
   deload:{label:'Deload',shortLabel:'Deload',badge:'badge-deload',color:'#3b82f6',repsRange:[8,10],intensityPct:[0.50,0.60],weeklyRIR:{1:'4-6'},description:'Aktive Erholung. Volumen ca. 50% reduziert, Gewicht 50-60% des Arbeitsgewichts. Ermüdung abbauen, Fitness erhalten. Eingebaut als jeweils letzte Woche jedes Mesozyklus.',pauseSec:120}
 };
 const PERIODIZATION_PRESETS={
@@ -781,6 +840,7 @@ function switchTab(name){
   window.scrollTo(0,0);
   if(name==='today')renderToday();
   if(name==='plan')renderPlan();
+  if(name==='awards')renderAwards();
   if(name==='stats')renderStats();
   if(name==='cycle')renderCycle();
   if(name==='setup')renderSetup();
@@ -797,12 +857,21 @@ document.body.setAttribute('data-theme',DATA.settings.theme||'dark');
 function getCurrentPhase(){return DATA.cycle.currentMeso.phase;}
 function getCurrentWeek(){return DATA.cycle.currentMeso.currentWeek;}
 function getMesoLength(){return DATA.cycle.currentMeso.lengthWeeks;}
-function isDeloadWeek(){return getCurrentWeek()>=getMesoLength();}
-function getEffectivePhase(){return isDeloadWeek()?'deload':getCurrentPhase();}
+function isDeloadWeek(){
+  // Ein Wiedereinstiegsblock hat keine Deload-Woche: es gibt keine Ermüdung, von der man sich erholen müsste.
+  if(DATA.cycle.currentMeso.isBridge)return false;
+  return getCurrentWeek()>=getMesoLength();
+}
+function getEffectivePhase(){
+  // Eine längere Trainingspause schlägt jede Wochenlogik: erst wieder aufbauen.
+  if(isComebackActive())return'wiedereinstieg';
+  return isDeloadWeek()?'deload':getCurrentPhase();
+}
 function getEffectivePhaseDef(){return PHASE_DEFS[getEffectivePhase()];}
 function getWeeklyRIR(){
   const phase=getEffectivePhase();const def=PHASE_DEFS[phase];
   if(phase==='deload')return def.weeklyRIR[1];
+  if(phase==='wiedereinstieg'){const cb=getComebackState();return def.weeklyRIR[cb&&cb.sessionIdx>=2?2:1];}
   const wk=getCurrentWeek();
   return def.weeklyRIR[Math.min(wk,Object.keys(def.weeklyRIR).length)]||'2-3';
 }
@@ -855,7 +924,12 @@ function isIsolationAlreadyCovered(primaryMuscles,planExercises,currentExerciseI
 }
 function getWeeklyTargetSets(exercise,planExercises){
   const base=exercise.targetSets||3;
-  let sets=computeTargetSets(base,getCurrentPhase(),getCurrentWeek(),getMesoLength(),isDeloadWeek());
+  // Wiedereinstieg: eigenes Volumen. Muskelkater entsteht vor allem über die
+  // Anzahl der Sätze, deshalb in den ersten beiden Einheiten einer weniger.
+  const _cb=getComebackState();
+  let sets;
+  if(_cb)sets=Math.max(2,base-(_cb.sessionIdx<=1?1:0));
+  else sets=computeTargetSets(base,getCurrentPhase(),getCurrentWeek(),getMesoLength(),isDeloadWeek());
   // Isolation-Cap: wenn dieselbe Muskelgruppe bereits durch Compound vorbelastet ist,
   // maximal 3 Sätze -- gilt für primary-Muskeln (Brust/Isolation) und secondary-Überlapp
   // (Bizeps durch Pull-Compounds, Trizeps durch Push-Compounds).
@@ -872,6 +946,8 @@ function getWeeklyTargetSets(exercise,planExercises){
   return sets;
 }
 function getEffectiveRepsRange(exercise){
+  // Nach einer Pause immer im moderaten Bereich arbeiten, nie im schweren Maxkraft-Bereich.
+  if(isComebackActive())return[8,12];
   if(isDeloadWeek())return[exercise.targetRepsMin||8,Math.min((exercise.targetRepsMax||12),10)];
   const phase=getCurrentPhase();
   if(phase==='kraftausdauer')return[15,20];
@@ -1006,10 +1082,26 @@ function progressionSuggestion(exerciseId,exercise){
     if(last&&maxTime>=set1Target)return{weight:0,text:`Letztes Mal Bestzeit ${maxTime}s. Heute Ziel: ${set1Target}s in Satz 1.${pauseNote}`};
     return{weight:0,text:`Ziel: ${set1Target}s in Satz 1 (adaptiv pro Satz) · RIR ${rir}${pauseNote}`};
   }
+  // === WIEDEREINSTIEG NACH LÄNGERER PAUSE ===
+  // Steht bewusst VOR der Deload-Abfrage: nach Wochen ohne Training gibt es
+  // keine Ermüdung zum Abbauen, sondern nur Gewebe, das wieder Last lernen muss.
+  const cbState=getComebackState();
+  if(cbState&&!isBW){
+    const ref=getPreGapReference(exerciseId,cbState.refDate);
+    if(ref){
+      const f=cbState.plan[cbState.sessionIdx];
+      let w=Math.round(ref*f/0.5)*0.5;
+      if(exercise.maxWeight&&w>exercise.maxWeight)w=exercise.maxWeight;
+      const step=cbState.sessionIdx+1,pct=Math.round(f*100);
+      if(step===1)return{weight:w,text:`Wiedereinstieg nach ${cbState.gapDays} Tagen Pause. Einheit 1 von ${cbState.total}: ${fmtWeight(w)} kg, also ${pct}% von deinen alten ${fmtWeight(ref)} kg. Ziel heute ist Bewegung, nicht Leistung: etwa 4 Wiederholungen in Reserve lassen.`};
+      if(step===cbState.total)return{weight:w,text:`Letzte Stufe des Wiedereinstiegs: ${fmtWeight(w)} kg (${pct}% von ${fmtWeight(ref)} kg). Wenn sich das gut anfühlt, bist du ab der nächsten Einheit wieder in der normalen Progression.`};
+      return{weight:w,text:`Wiedereinstieg, Einheit ${step} von ${cbState.total}: ${fmtWeight(w)} kg (${pct}% von ${fmtWeight(ref)} kg). Sauber und kontrolliert, das Gewicht steigt beim nächsten Mal weiter.`};
+    }
+  }
   if(phase==='deload'){
     const ref=last&&!last.legacy?Math.max(...last.sets.map(s=>s.weight||0)):(exercise.currentWeight||0);
     const w=Math.round(ref*0.6/0.5)*0.5;
-    return{weight:w,text:`Deload: ~60% (${w} kg)`};
+    return{weight:w,text:`Deload-Woche: bewusst leicht mit ${fmtWeight(w)} kg (rund 60%). Locker durchziehen, das lädt dich für den nächsten Block auf.`};
   }
   if(getCurrentWeek()===1&&DATA.cycle.mesoHistory.length>0){
     const lastMeso=DATA.cycle.mesoHistory[DATA.cycle.mesoHistory.length-1];
@@ -1077,7 +1169,7 @@ function progressionSuggestion(exerciseId,exercise){
   const regression=detectRegression(exerciseId);
   if(regression&&phase!=='deload'){
     const reducedW=Math.round(lastWeight*0.95/0.5)*0.5;
-    return{weight:reducedW,text:`Trend nach unten (-${regression.drop.toFixed(1)} kg e1RM über 2 Trainings). Erholung prüfen: Schlaf, Ernährung, Stress. Heute: ${reducedW} kg (-5%).`,isWarn:true};
+    return{weight:reducedW,text:`Die letzten beiden Einheiten liefen etwas schwerer. Heute bewusst ${fmtWeight(reducedW)} kg, damit du wieder sauber drüberkommst. Schlaf und Essen im Blick behalten, dann dreht der Trend schnell.`};
   }
   // === LANGE PAUSE: Detraining berücksichtigen ===
   // Maßgeblich ist die Erholung des MUSKELS, nicht der einzelnen Übung. Wurde der
@@ -1086,14 +1178,14 @@ function progressionSuggestion(exerciseId,exercise){
   if(muscleGap!==null){
     if(muscleGap>21){
       const reducedW=Math.round(lastWeight*0.88/0.5)*0.5;
-      return{weight:reducedW,text:`${muscleGap} Tage ohne Belastung dieser Muskeln – Detraining wahrscheinlich. Heute: ${reducedW} kg (-12%), Form vor Gewicht.`,isWarn:true};
+      return{weight:reducedW,text:`Diese Muskeln hatten ${muscleGap} Tage frei. Heute etwas leichter mit ${fmtWeight(reducedW)} kg, dafür saubere Ausführung. Nächstes Mal geht es wieder hoch.`};
     }
     if(muscleGap>10){
       const reducedW=Math.round(lastWeight*0.95/0.5)*0.5;
-      return{weight:reducedW,text:`${muscleGap} Tage ohne Belastung dieser Muskeln – Wiedereinstieg. Heute: ${reducedW} kg (-5%).`,isWarn:true};
+      return{weight:reducedW,text:`${muscleGap} Tage Pause für diese Muskeln. Heute ${fmtWeight(reducedW)} kg zum Wiederfinden, das ist nur eine Stufe unter deinem letzten Gewicht.`};
     }
     if(muscleGap>=7){
-      return{weight:lastWeight,text:`${muscleGap} Tage ohne Belastung dieser Muskeln – Superkompensation vorbei. Heute halten: ${fmtWeight(lastWeight)} kg, gleiche Wdh wie letztes Mal.`};
+      return{weight:lastWeight,text:`${muscleGap} Tage Pause. Heute ${fmtWeight(lastWeight)} kg halten und die gleichen Wiederholungen wie letztes Mal treffen, dann steigt es beim nächsten Training.`};
     }
   }
   // Spezifische Übung länger her, Muskel aber kürzlich anders trainiert (z.B.
@@ -1134,18 +1226,18 @@ function progressionSuggestion(exerciseId,exercise){
   }
   if(allBelowLower){
     const nextW=Math.max(0,lastWeight-inc);
-    return{weight:nextW,text:`Gewicht war zu hoch (alle <${repsMin} Wdh). Heute: -${inc} kg = ${nextW} kg.`,isWarn:true};
+    return{weight:nextW,text:`Letztes Mal war das Gewicht eine Spur zu schwer. Heute ${fmtWeight(nextW)} kg, damit du wieder im Zielbereich von ${repsMin} bis ${repsMax} Wiederholungen landest.`};
   }
-  if(spread>=4)return{weight:lastWeight,text:`Letztes Mal stark schwankende Wdh (${minReps}-${maxReps}). Pausen verlängern auf 90-120s.`,isWarn:true};
-  if(maxReps>=repsMax&&minReps<repsMax)return{weight:lastWeight,text:`Alle Sätze auf ${repsMax} Wdh bringen.`};
+  if(spread>=4)return{weight:lastWeight,text:`Letztes Mal schwankten die Sätze stark (${minReps} bis ${maxReps} Wiederholungen). Heute gleiches Gewicht, aber 90 bis 120 Sekunden Pause zwischen den Sätzen, dann wird es gleichmäßiger.`};
+  if(maxReps>=repsMax&&minReps<repsMax)return{weight:lastWeight,text:`Fast am Ziel: Ein Satz lag schon bei ${repsMax} Wiederholungen. Bring heute alle Sätze auf ${repsMax}, dann steigt nächstes Mal das Gewicht.`};
   const targetReps=Math.min(minReps+1,repsMax);
-  return{weight:lastWeight,text:`Heute ${targetReps}+ Wdh pro Satz.`};
+  return{weight:lastWeight,text:`Heute ${targetReps} Wiederholungen pro Satz, das ist eine mehr als beim letzten Mal.`};
 }
 function detectPlateau(exerciseId){
   const threshold=DATA.settings.plateauThreshold||3;
   // Deload-Sessions ausschließen (gesenkte Last würde sonst nach dem Deload ein Plateau vortäuschen),
   // dann die jüngsten threshold+1 echten Trainingseinheiten nehmen. Größeres Rohfenster als Puffer.
-  const recent=getRecentWorkouts(exerciseId,threshold+6).filter(w=>!w.legacy&&w.phase!=='deload').slice(0,threshold+1);
+  const recent=splitAtGap(getRecentWorkouts(exerciseId,threshold+6).filter(w=>!w.legacy&&w.phase!=='deload'&&w.phase!=='wiedereinstieg')).slice(0,threshold+1);
   if(recent.length<threshold)return null;
   const e1rms=recent.map(w=>w.sets?Math.max(0,...w.sets.map(s=>calcE1RM(s.weight,s.reps)||0)):0);
   const tons =recent.map(w=>calcTonnage(w.sets));
@@ -1163,7 +1255,7 @@ function peakE1RMInRange(exerciseId,start,end){
   if(!_historyByExerciseId)buildHistoryIndex();
   let best=0;
   (_historyByExerciseId[exerciseId]||[]).forEach(h=>{
-    if(h.legacy||h.phase==='deload')return;
+    if(h.legacy||h.phase==='deload'||h.phase==='wiedereinstieg')return;
     if(h.date<start||h.date>end)return;
     (h.sets||[]).forEach(s=>{const e=calcE1RM(s.weight,s.reps)||0;if(e>best)best=e;});
   });
@@ -1184,7 +1276,7 @@ function detectLongTermPlateau(exerciseId){
 }
 // Rückschritt: zwei Trainings in Folge mit e1RM-Drop >= 2%
 function detectRegression(exerciseId){
-  const recent=getRecentWorkouts(exerciseId,9).filter(w=>!w.legacy&&w.phase!=='deload').slice(0,3);
+  const recent=splitAtGap(getRecentWorkouts(exerciseId,9).filter(w=>!w.legacy&&w.phase!=='deload'&&w.phase!=='wiedereinstieg')).slice(0,3);
   if(recent.length<3)return null;
   const e1rms=recent.map(w=>w.sets?Math.max(0,...w.sets.map(s=>calcE1RM(s.weight,s.reps)||0)):0);
   if(e1rms[0]<=0||e1rms[1]<=0||e1rms[2]<=0)return null;
@@ -1217,13 +1309,15 @@ function intelligentExerciseAdvice(exerciseId,exercise){
   const def=getExerciseInfo(exerciseId);
   if(!def)return[];
   const advice=[];
+  // Im Wiedereinstieg geht es um Gewebe und Technik, nicht um Fortschrittsanalyse.
+  if(isComebackActive())return advice;
   if(exercise.maxWeight&&exercise.currentWeight>=exercise.maxWeight){
     advice.push({type:'max',msg:`Maschinen-Max erreicht (${exercise.maxWeight} kg). Tempo 3-1-1 oder Alternative.`});
   }
   // Langzeit-Plateau (blockübergreifend) zuerst, das ist das stärkere Signal
   const longTerm=def.isCompound?detectLongTermPlateau(exerciseId):null;
   if(longTerm){
-    advice.push({type:'longterm',msg:'Über die letzten zwei Akkumulationsblöcke kein Kraftzuwachs. Variante wechseln oder einen Intensivierungsblock (Maxkraft) einplanen. Schlaf, Protein und Erholung prüfen.'});
+    advice.push({type:'longterm',msg:'Über die letzten zwei Aufbaublöcke ist die Kraft hier gleich geblieben. Das spricht für eine Variante mit anderem Winkel oder Griff. Ein Wechsel bringt hier meist mehr als noch ein Block mit derselben Übung.'});
   }
   const plateau=detectPlateau(exerciseId);
   // Blockanfang: in Woche 1 setzt das Volumen bewusst auf MEV zurück. Der akute Detektor schlägt dann
@@ -1231,13 +1325,13 @@ function intelligentExerciseAdvice(exerciseId,exercise){
   const blockStart=getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()===1;
   if(plateau&&!longTerm&&!blockStart){
     const inHypBoost=getCurrentPhase()==='hypertrophie'&&!isDeloadWeek()&&getCurrentWeek()<=2;
-    if(inHypBoost)advice.push({type:'volume',msg:'Plateau erkannt: heute +1 Satz, um den Reiz zu erhöhen.'});
-    else if(def.isIsolation)advice.push({type:'plateau',msg:'Isolation stagniert. Eher Reps anziehen, ROM voll, Tempo langsamer als Gewicht hoch.'});
-    else if(def.isCompound)advice.push({type:'plateau',msg:'Grundübung stagniert akut bei Intensität und Volumen. Prüfe Schlaf, Protein, Pausen.'});
+    if(inHypBoost)advice.push({type:'volume',msg:'Hier steht es seit ein paar Einheiten. Heute ein zusätzlicher Satz, das reicht meist als neuer Reiz.'});
+    else if(def.isIsolation)advice.push({type:'plateau',msg:'Hier geht seit ein paar Einheiten nichts nach oben. Bei einer Isolationsübung bringt eine Wiederholung mehr, der volle Bewegungsumfang und ein langsames Ablassen über 3 Sekunden mehr als eine Scheibe extra.'});
+    else if(def.isCompound)advice.push({type:'plateau',msg:'Diese Grundübung hängt gerade. Heute nicht mehr Gewicht, sondern eine Wiederholung mehr im ersten Satz. Wenn Schlaf und Essen passen, geht es danach wieder hoch.'});
   }
   // Wiederholter Muskelkater bei eingespielter Übung → Volumen senken
   if(detectRepeatedSoreness(exerciseId)){
-    advice.push({type:'soreness',msg:'Mehrfach Muskelkater hier trotz Routine. Heute: 1 Satz weniger ODER -10% Gewicht ODER Pausen +30s.'});
+    advice.push({type:'soreness',msg:'Diese Übung macht dir öfter Muskelkater. Nimm heute einen Satz weniger oder 10% vom Gewicht runter, das kostet dich langfristig nichts.'});
   }
   return advice;
 }
@@ -1523,7 +1617,7 @@ function renderToday(){
     <div class="phase-indicator" style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div class="phase-name">${phaseDef.label}</div>
-        <div style="font-size:12px;color:var(--text-dim);">Woche ${week} von ${mesoLen}</div>
+        <div style="font-size:12px;color:var(--text-dim);">${isComebackActive()&&getComebackState()?`Einheit ${getComebackState().sessionIdx+1} von ${getComebackState().total}`:`Woche ${week} von ${mesoLen}`}</div>
       </div>
       <div class="rir-hint">Heute: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh · Pause ~${phaseDef.pauseSec}s</div>
     </div>
@@ -1540,11 +1634,18 @@ function renderToday(){
         <span class="booster-check">${currentWorkoutDraft&&currentWorkoutDraft.boostered?'✓':''}</span>
       </div>
     </div>`;
-  // Muskelgruppen-Stagnation als Hinweis-Card (nur bei erkannter Stagnation)
-  const muscleStagnation=detectMuscleGroupStagnation();
+  // Begrüßung, Tagesziele und erreichbare Abzeichen
+  html+=renderSessionIntro(planKey);
+  // Empfehlung nach langer Pause: Block neu aufsetzen statt Deload fortführen
+  const cbToday=getComebackState();
+  if(cbToday&&cbToday.gapDays>=COMEBACK_MIN_GAP&&!DATA.cycle.currentMeso.isBridge){
+    html+=`<div class="suggest" style="margin-bottom:10px;">🧭 <strong>Dein Zyklus passt nicht mehr zur Lage.</strong> Nach ${cbToday.gapDays} Tagen Pause bringt die laufende Woche im ${PHASE_DEFS[getCurrentPhase()].shortLabel||getCurrentPhase()}-Block nichts. Sinnvoller: zwei Wochen Wiedereinstieg, danach startet dieser Block neu bei Woche 1.<br><button class="btn btn-small" style="margin-top:8px;" onclick="showComebackBlockInfo()">Ansehen</button></div>`;
+  }
+  // Muskelgruppen-Stagnation als Hinweis-Card (im Wiedereinstieg unterdrückt)
+  const muscleStagnation=isComebackActive()?[]:detectMuscleGroupStagnation();
   if(muscleStagnation.length>0){
     muscleStagnation.forEach(function(s){
-      html+=`<div class="suggest warn" style="margin-bottom:10px;">⚠ <strong>${s.muscle}</strong> stagniert: ${s.count} Übungen ohne Fortschritt (${s.exercises.join(', ')}). Erwäge Übungswechsel oder vorgezogenen Deload.</div>`;
+      html+=`<div class="suggest" style="margin-bottom:10px;">💡 <strong>${MUSCLE_LABELS[s.muscle]||s.muscle}</strong> steht gerade still: ${s.count} Übungen ohne Zuwachs (${s.exercises.join(', ')}). Das ist normal am Ende eines Blocks. Ein Übungswechsel oder eine leichtere Woche bringt die Gruppe meist wieder in Fahrt.</div>`;
     });
   }
   if(DATA.cycle.activePlans.length>1){
@@ -1957,7 +2058,9 @@ function resetDraft(){
   },'Zurücksetzen');
 }
 // ===== SKIP / VERSCHIEBEN (Punkt 1) =====
-const SKIP_REASONS={postpone:'Verschoben auf später',no_time:'Keine Zeit',sore:'Muskelkater',sick:'Krank',other:'Anderer Grund'};
+const SKIP_REASONS={postpone:'Verschoben auf später',no_time:'Keine Zeit',sore:'Muskelkater',sick:'Krank',injury:'Verletzung',vacation:'Urlaub',other:'Anderer Grund'};
+// Diese Gründe frieren die Wochen-Serie ein, statt sie zu brechen
+const FREEZE_REASONS=['sick','vacation','injury'];
 function isDaySkipped(dateStr,planId){
   return(DATA.skippedSessions||[]).some(s=>s.date===dateStr&&s.planId===planId&&!s.exerciseId);
 }
@@ -1977,7 +2080,9 @@ function showSkipDayModal(){
     <div style="display:flex;flex-direction:column;gap:6px;">`;
   Object.keys(SKIP_REASONS).forEach(r=>{
     const sel=existing&&existing.reason===r?' style="border-color:var(--accent);background:rgba(245,158,11,0.15);"':'';
-    html+=`<button class="btn btn-secondary"${sel} onclick="confirmSkipDay('${r}')">${SKIP_REASONS[r]}</button>`;
+    const fn=r==='vacation'?'showVacationInput()':`confirmSkipDay('${r}')`;
+    const hint=FREEZE_REASONS.includes(r)?' <span style="font-size:11px;color:var(--text-faint);">· Serie pausiert</span>':'';
+    html+=`<button class="btn btn-secondary"${sel} onclick="${fn}">${SKIP_REASONS[r]}${hint}</button>`;
   });
   html+=`</div>`;
   if(existing){
@@ -1986,18 +2091,33 @@ function showSkipDayModal(){
   html+=`<button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Abbrechen</button>`;
   showModal(html);
 }
-function confirmSkipDay(reason){
+function showVacationInput(){
+  showModal(`<h2>Urlaub eintragen</h2>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.55;margin-bottom:14px;">Für wie viele Tage bist du weg? Deine Wochen-Serie pausiert so lange und läuft danach weiter. Ab drei Wochen Pause schlägt die App beim Zurückkommen automatisch einen sanften Wiedereinstieg vor.</p>
+    <input type="number" id="vac-days" inputmode="numeric" min="1" max="120" value="14" style="width:100%;padding:12px;font-size:17px;text-align:center;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-elev2);color:var(--text);font-family:inherit;">
+    <button class="btn btn-full" style="margin-top:12px;" onclick="confirmSkipDay('vacation',parseInt(document.getElementById('vac-days').value)||1)">Urlaub eintragen</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Abbrechen</button>`);
+}
+function confirmSkipDay(reason,days){
   const todayStr=new Date().toISOString().slice(0,10);
   const planId=currentWorkoutDraft?currentWorkoutDraft.planId:getNextPlanInRotation();
   if(!DATA.skippedSessions)DATA.skippedSessions=[];
   // Existierenden Eintrag entfernen
   DATA.skippedSessions=DATA.skippedSessions.filter(s=>!(s.date===todayStr&&s.planId===planId&&!s.exerciseId));
-  DATA.skippedSessions.push({date:todayStr,planId,reason,timestamp:Date.now()});
+  const entry={date:todayStr,planId,reason,timestamp:Date.now()};
+  if(days&&days>1)entry.days=days;
+  DATA.skippedSessions.push(entry);
+  // Erholung bewusst zu nehmen ist eine gute Entscheidung, kein Versagen
+  let restBadge=null;
+  if(['sick','sore','vacation','injury'].includes(reason))restBadge=awardBadge('honest_rest');
   // Draft verwerfen
   if(currentWorkoutDraft&&currentWorkoutDraft.planId===planId){
     stopAllPauseTimers();stopSessionTimer();clearWorkoutDraft();currentWorkoutDraft=null;
   }
-  saveData(DATA);closeModal();showToast('Training ausgesetzt: '+SKIP_REASONS[reason]);renderToday();
+  saveData(DATA);closeModal();
+  const msg=reason==='vacation'&&days>1?`Urlaub eingetragen: ${days} Tage. Deine Serie pausiert.`:'Training ausgesetzt: '+SKIP_REASONS[reason];
+  showToast(msg,3500);renderToday();
+  if(restBadge)setTimeout(()=>showBadgeCeremony([restBadge]),400);
 }
 function unskipDay(){
   const todayStr=new Date().toISOString().slice(0,10);
@@ -2373,6 +2493,7 @@ function calcRecentStreak(){
 }
 function showWorkoutSummary(finished){
   const summaries=finished.map(computeExerciseSummary).filter(Boolean);
+  window._pendingSummaries=summaries;
   const trendCounts={up:0,flat:0,down:0,pr:0};
   summaries.forEach(s=>{if(s.isPR)trendCounts.pr++;if(s.trend==='up')trendCounts.up++;else if(s.trend==='down')trendCounts.down++;else trendCounts.flat++;});
   const totalTonnage=summaries.reduce((a,s)=>a+(s.tonnage||0),0);
@@ -2486,8 +2607,32 @@ function confirmFinishWorkout(){
   const durationSec=getSessionElapsedSec();
   const planId=currentWorkoutDraft.planId;
   const boostered=!!currentWorkoutDraft.boostered;
+  // Zustand VOR dem Speichern festhalten, danach ändert sich die Historie
+  const cbBefore=getComebackState();
+  const phaseBefore=getEffectivePhase();
+  const wasDeload=phaseBefore==='deload';
+  const mesoCountBefore=((DATA.cycle&&DATA.cycle.mesoHistory)||[]).length;
+  const prNames=[];
+  let phoenixName=null;
+  (window._pendingSummaries||[]).forEach(s=>{if(s.isPR)prNames.push(s.def.name);});
+  if(cbBefore){
+    finished.forEach(ex=>{
+      const ref=getPreGapReference(ex.exerciseId,cbBefore.refDate);
+      if(!ref)return;
+      const top=Math.max(0,...ex.sets.map(s=>s.weight||0));
+      if(top>=ref&&!phoenixName){const d=getExerciseInfo(ex.exerciseId);phoenixName=d?d.name:null;}
+    });
+  }
+  let deloadRespected=false;
+  if(wasDeload){
+    deloadRespected=finished.every(ex=>{
+      const ref=getPreGapReference(ex.exerciseId,currentWorkoutDraft.date);
+      const top=Math.max(0,...ex.sets.map(s=>s.weight||0));
+      return !ref||top<=ref*0.8;
+    });
+  }
   finished.forEach(ex=>{
-    const entry={date:currentWorkoutDraft.date,exerciseId:ex.exerciseId,sets:ex.sets,planId,phase:getEffectivePhase()};
+    const entry={date:currentWorkoutDraft.date,exerciseId:ex.exerciseId,sets:ex.sets,planId,phase:phaseBefore};
     if(ex.originalExerciseId&&ex.originalExerciseId!==ex.exerciseId)entry.originalExerciseId=ex.originalExerciseId;
     if(boostered)entry.boostered=true;
     DATA.history.push(entry);
@@ -2518,7 +2663,22 @@ function confirmFinishWorkout(){
   }
   clearWorkoutDraft();
   invalidateHistoryIndex();
+  _cbMemo={key:null,val:null};
+  window._mesoJustFinished=false;
   advanceCycleIfNeeded();
+  // Abzeichen auswerten (erst jetzt, mit vollständiger Historie)
+  applyBadgeBaseline();
+  const wonBadges=evaluateBadges({
+    prCount:prNames.length,prNames,
+    streak:calcWeeklyStreak(),
+    wasDeload,deloadRespected,
+    mesoFinished:!!window._mesoJustFinished||((DATA.cycle&&DATA.cycle.mesoHistory)||[]).length>mesoCountBefore,
+    comebackWasActive:!!cbBefore,
+    comebackSessionIdx:cbBefore?cbBefore.sessionIdx:-1,
+    comebackGap:cbBefore?cbBefore.gapDays:0,
+    comebackFinished:!!(cbBefore&&cbBefore.sessionIdx===cbBefore.total-1),
+    phoenix:!!phoenixName,phoenixName
+  });
   saveData(DATA);
   stopAllPauseTimers();
   stopSessionTimer();
@@ -2526,9 +2686,13 @@ function confirmFinishWorkout(){
   window._pendingWorkout=null;
   closeModal();
   showToast(durationSec>0?`Training gespeichert ✓ · ${fmtTime(durationSec)}`:'Training gespeichert ✓');
-  switchTab('stats');
+  if(wonBadges.length)showBadgeCeremony(wonBadges,()=>switchTab('awards'));
+  else switchTab('stats');
 }
 function advanceCycleIfNeeded(){
+  // Während des Wiedereinstiegs steht der Zyklus still: eine Pause soll den Block
+  // nicht durchlaufen lassen, sonst rutscht man ohne Training in den nächsten.
+  if(isComebackActive()&&!DATA.cycle.currentMeso.isBridge)return;
   const today=new Date();
   const todayStr=today.toISOString().slice(0,10);
   const meso=DATA.cycle.currentMeso;
@@ -2549,7 +2713,19 @@ function advanceCycleIfNeeded(){
   }
 }
 function finishMesoAndAdvance(){
-  DATA.cycle.mesoHistory.push({phase:DATA.cycle.currentMeso.phase,startDate:DATA.cycle.currentMeso.startDate,endDate:new Date().toISOString().slice(0,10),weeks:DATA.cycle.currentMeso.lengthWeeks});
+  const _cur=DATA.cycle.currentMeso;
+  DATA.cycle.mesoHistory.push({phase:_cur.phase,startDate:_cur.startDate,endDate:new Date().toISOString().slice(0,10),weeks:_cur.lengthWeeks});
+  // Wiedereinstiegsblock: der große Zyklus rückt NICHT weiter, der unterbrochene
+  // Block startet stattdessen sauber neu bei Woche 1.
+  if(_cur.isBridge){
+    const _today=new Date().toISOString().slice(0,10);
+    const _phase=_cur.resumePhase||DATA.macro.blocks[DATA.macro.currentBlockIndex].phase;
+    const _weeks=_cur.resumeWeeks||DATA.macro.blocks[DATA.macro.currentBlockIndex].weeks;
+    DATA.cycle.currentMeso={phase:_phase,startDate:_today,lengthWeeks:_weeks,currentWeek:1,lastWeekAdvance:_today};
+    showToast(`Wiedereinstieg geschafft. ${PHASE_DEFS[_phase].shortLabel||PHASE_DEFS[_phase].label} startet neu bei Woche 1.`,4500);
+    return;
+  }
+  window._mesoJustFinished=true;
   DATA.macro.currentBlockIndex=(DATA.macro.currentBlockIndex+1)%DATA.macro.blocks.length;
   const nextBlock=DATA.macro.blocks[DATA.macro.currentBlockIndex];
   const todayStr=new Date().toISOString().slice(0,10);
@@ -3224,7 +3400,7 @@ function renderCycle(){
 
   // Wochen-Beschreibungen je nach Phase
   function getWeekDescription(weekNum,totalWeeks,phaseId){
-    const isDeload=weekNum>=totalWeeks;
+    const isDeload=phaseId!=='wiedereinstieg'&&weekNum>=totalWeeks;
     const def=PHASE_DEFS[isDeload?'deload':phaseId];
     let label;
     if(isDeload){
@@ -3237,6 +3413,8 @@ function renderCycle(){
       if(weekNum===1)label='Aufbau';
       else if(weekNum===totalWeeks-1)label='Peak-Intensität';
       else label='Spezifische Kraft';
+    } else if(phaseId==='wiedereinstieg'){
+      label=weekNum===1?'Last wieder aufbauen':'Zurück auf altem Niveau';
     } else if(phaseId==='kraftausdauer'){
       if(weekNum===1)label='Einstieg';
       else if(weekNum===totalWeeks-1)label='Erhaltung';
@@ -3255,7 +3433,8 @@ function renderCycle(){
     hypertrophie:'Volumen steigt MEV → MRV, RIR sinkt über die Wochen.',
     maxkraft:'Intensität steigt, Volumen sinkt -- Kraft wird aus dem Aufbau-Block spezifisch.',
     kraftausdauer:'Kurze, konstante Phase: Ermüdung abbauen, Stoffwechsel und Bindegewebe stärken.',
-    deload:'Volumen und Intensität stark reduziert -- aktive Erholung.'
+    deload:'Volumen und Intensität stark reduziert -- aktive Erholung.',
+    wiedereinstieg:'Zwei Wochen zurück in die Belastung. Danach startet dein unterbrochener Block neu bei Woche 1.'
   };
 
   let weekTimeline='<div class="week-timeline">';
@@ -4221,7 +4400,530 @@ function finishWizard(){
   DATA.plans=newPlans;
   saveData(DATA);closeModal();showToast('Plan erstellt');switchTab('today');
 }
+// ============================================================
+// ===== WIEDEREINSTIEG NACH PAUSE (COMEBACK) =================
+// ============================================================
+// Nach einer längeren Pause ist nicht die Kraft das Problem, sondern die
+// Toleranz von Sehnen, Bändern und Bindegewebe. Deshalb wird die Last über
+// mehrere Einheiten hochgefahren, das Volumen gesenkt und der Reserve-Puffer
+// (RIR) vergrößert. Referenz ist immer das Niveau VOR der Pause.
+const COMEBACK_MIN_GAP=21;
+function comebackPlanForGap(gap){
+  if(gap>=42)return[0.60,0.72,0.82,0.92];
+  if(gap>=28)return[0.65,0.78,0.90];
+  return[0.72,0.85];
+}
+function allTrainingDates(){
+  const set=new Set();
+  (DATA.history||[]).forEach(h=>{if(!h.legacy&&h.date)set.add(h.date);});
+  return Array.from(set).sort((a,b)=>b.localeCompare(a));
+}
+function daysBetweenIso(aIso,bIso){return Math.round((new Date(aIso)-new Date(bIso))/86400000);}
+let _cbMemo={key:null,val:null};
+function getComebackState(){
+  const todayStr=new Date().toISOString().slice(0,10);
+  const key=((DATA.history&&DATA.history.length)||0)+'_'+todayStr;
+  if(_cbMemo.key===key)return _cbMemo.val;
+  let val=null;
+  const dates=allTrainingDates();
+  if(dates.length>0){
+    const gapNow=daysBetweenIso(todayStr,dates[0]);
+    if(gapNow>=COMEBACK_MIN_GAP){
+      const plan=comebackPlanForGap(gapNow);
+      val={sessionIdx:0,total:plan.length,plan,gapDays:gapNow,refDate:dates[0],startDate:todayStr};
+    }else{
+      for(let i=0;i<Math.min(dates.length-1,8);i++){
+        const gap=daysBetweenIso(dates[i],dates[i+1]);
+        if(gap>=COMEBACK_MIN_GAP){
+          const plan=comebackPlanForGap(gap);
+          const done=i+1;
+          if(done<plan.length)val={sessionIdx:done,total:plan.length,plan,gapDays:gap,refDate:dates[i+1],startDate:dates[i]};
+          break;
+        }
+      }
+    }
+  }
+  _cbMemo={key,val};
+  return val;
+}
+function isComebackActive(){return !!getComebackState();}
+// Letzte echte Arbeitslast VOR der Pause (Deload und Wiedereinstieg zählen nicht)
+function getPreGapReference(exerciseId,refDate){
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const list=(_historyByExerciseId[exerciseId]||[]).filter(h=>!h.legacy&&h.date<=refDate&&h.phase!=='deload'&&h.phase!=='wiedereinstieg');
+  if(!list.length)return null;
+  list.sort((a,b)=>b.date.localeCompare(a.date));
+  let best=0;
+  list.slice(0,3).forEach(h=>{(h.sets||[]).forEach(s=>{if((s.weight||0)>best)best=s.weight||0;});});
+  return best>0?best:null;
+}
+// Ist die Wiedereinstiegs-Rampe mit dem heutigen Training abgeschlossen?
+function comebackFinishesToday(){
+  const cb=getComebackState();
+  return !!(cb&&cb.sessionIdx===cb.total-1);
+}
+function startComebackBlock(){
+  const todayStr=new Date().toISOString().slice(0,10);
+  const cur=DATA.cycle.currentMeso;
+  DATA.cycle.currentMeso={phase:'wiedereinstieg',startDate:todayStr,lengthWeeks:2,currentWeek:1,lastWeekAdvance:todayStr,isBridge:true,resumePhase:cur.phase,resumeWeeks:cur.lengthWeeks};
+  saveData(DATA);closeModal();
+  showToast('Wiedereinstiegsblock gestartet (2 Wochen)',3500);
+  renderToday();
+}
+function showComebackBlockInfo(){
+  const cur=DATA.cycle.currentMeso;
+  const resume=PHASE_DEFS[cur.phase]?(PHASE_DEFS[cur.phase].shortLabel||PHASE_DEFS[cur.phase].label):cur.phase;
+  showModal(`<h2>Neu einsteigen</h2>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">
+    Nach einer Pause von mehreren Wochen bringt eine Deload-Woche nichts mehr, denn es gibt keine Ermüdung, von der du dich erholen müsstest.</p>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">
+    Vorschlag: <strong style="color:var(--text);">2 Wochen Wiedereinstieg</strong> mit moderatem Gewicht, weniger Sätzen und viel Reserve. Danach startet dein <strong style="color:var(--text);">${resume}</strong>-Block automatisch neu bei Woche 1. Der große Zyklus bleibt erhalten, du wiederholst nur den aktuellen Block.</p>
+    <button class="btn btn-full" onclick="startComebackBlock()">Wiedereinstiegsblock starten</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Später</button>`);
+}
+
+// ============================================================
+// ===== WOCHEN-STREAK ========================================
+// ============================================================
+// Gezählt werden WOCHEN, nicht Tage. Wer das Wochenziel erreicht, hält die
+// Serie. Krankheit und Urlaub frieren die Woche ein, statt sie zu brechen.
+function getWeeklyTarget(){return Math.max(1,(DATA.cycle.frequency||3)-1);}
+function getWeeklyPerfect(){return Math.max(1,DATA.cycle.frequency||3);}
+function mondayOf(d){
+  const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  const wd=x.getDay()||7;
+  x.setDate(x.getDate()-wd+1);
+  return x;
+}
+function isoOf(d){
+  return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+}
+function addDaysIso(iso,n){
+  const d=new Date(iso);d.setDate(d.getDate()+n);return isoOf(d);
+}
+// Zeiträume, die die Serie einfrieren: Krankheit, Verletzung, Urlaub
+function getFreezeRanges(){
+  return (DATA.skippedSessions||[]).filter(s=>['sick','vacation','injury'].includes(s.reason)&&!s.exerciseId)
+    .map(s=>({start:s.date,end:addDaysIso(s.date,Math.max(1,s.days||1)-1),reason:s.reason}));
+}
+function weekIsFrozen(weekStartIso){
+  const weekEnd=addDaysIso(weekStartIso,6);
+  return getFreezeRanges().some(r=>r.start<=weekEnd&&r.end>=weekStartIso);
+}
+function calcWeeklyStreak(){
+  const target=getWeeklyTarget();
+  const dates=allTrainingDates();
+  const out={weeks:0,frozen:0,target,perfect:getWeeklyPerfect(),thisWeek:0,best:0};
+  const curStart=isoOf(mondayOf(new Date()));
+  const countIn=ws=>{const we=addDaysIso(ws,6);return dates.filter(d=>d>=ws&&d<=we).length;};
+  out.thisWeek=countIn(curStart);
+  if(dates.length===0)return out;
+  const firstDate=dates[dates.length-1];
+  let cursor=curStart;
+  for(let i=0;i<120;i++){
+    if(addDaysIso(cursor,6)<firstDate)break;
+    const cnt=countIn(cursor);
+    if(cnt>=target){out.weeks++;}
+    else if(i===0){/* laufende Woche ist noch offen, bricht nichts */}
+    else if(weekIsFrozen(cursor)){out.frozen++;}
+    else break;
+    cursor=addDaysIso(cursor,-7);
+  }
+  out.best=out.weeks;
+  return out;
+}
+
+// ============================================================
+// ===== ABZEICHEN ============================================
+// ============================================================
+// Grundregel: Kein Abzeichen belohnt MEHR Training als geplant, keines belohnt
+// Training trotz Krankheit. Erholung wird ausdrücklich mit ausgezeichnet.
+const BADGE_CATS={konstanz:'Konstanz',rekorde:'Rekorde',klug:'Kluges Training',comeback:'Comeback'};
+const BADGE_DEFS=[
+  {id:'first_session',cat:'konstanz',icon:'🌱',title:'Der erste Schritt',desc:'Die erste Einheit ist gespeichert.'},
+  {id:'sessions_10',cat:'konstanz',icon:'📅',title:'Angekommen',desc:'10 Einheiten trainiert.',tier:{kind:'sessions',need:10}},
+  {id:'sessions_25',cat:'konstanz',icon:'📗',title:'Stammgast',desc:'25 Einheiten trainiert.',tier:{kind:'sessions',need:25}},
+  {id:'sessions_50',cat:'konstanz',icon:'🏅',title:'Halbes Hundert',desc:'50 Einheiten trainiert.',tier:{kind:'sessions',need:50}},
+  {id:'sessions_100',cat:'konstanz',icon:'💎',title:'Hundertmal da',desc:'100 Einheiten trainiert.',tier:{kind:'sessions',need:100}},
+  {id:'sessions_200',cat:'konstanz',icon:'👑',title:'Zweihundert',desc:'200 Einheiten trainiert.',tier:{kind:'sessions',need:200}},
+  {id:'week_goal',cat:'konstanz',icon:'✅',title:'Woche im Kasten',desc:'Zum ersten Mal das Wochenziel erreicht.'},
+  {id:'perfect_week',cat:'konstanz',icon:'🎯',title:'Perfekte Woche',desc:'Alle geplanten Einheiten einer Woche geschafft.'},
+  {id:'streak_4',cat:'konstanz',icon:'🔗',title:'Vier am Stück',desc:'4 Wochen in Folge das Wochenziel erreicht.',tier:{kind:'streak',need:4}},
+  {id:'streak_12',cat:'konstanz',icon:'🛡',title:'Quartalsheld',desc:'12 Wochen in Folge das Wochenziel erreicht.',tier:{kind:'streak',need:12}},
+  {id:'streak_26',cat:'konstanz',icon:'⚓',title:'Halbes Jahr',desc:'26 Wochen in Folge das Wochenziel erreicht.',tier:{kind:'streak',need:26}},
+  {id:'pr_first',cat:'rekorde',icon:'⭐',title:'Erster Bestwert',desc:'Zum ersten Mal einen persönlichen Rekord aufgestellt.'},
+  {id:'pr_double',cat:'rekorde',icon:'✨',title:'Doppelschlag',desc:'2 Bestwerte in einer Einheit.'},
+  {id:'pr_triple',cat:'rekorde',icon:'💥',title:'Rekordtag',desc:'3 Bestwerte in einer Einheit.'},
+  {id:'club_100',cat:'rekorde',icon:'💯',title:'100-kg-Klub',desc:'Erstmals 100 kg in einem Satz bewegt.',tier:{kind:'weight',need:100}},
+  {id:'club_150',cat:'rekorde',icon:'🗿',title:'Schwergewicht',desc:'Erstmals 150 kg in einem Satz bewegt.',tier:{kind:'weight',need:150}},
+  {id:'session_5t',cat:'rekorde',icon:'🏋',title:'Fünf Tonnen',desc:'5 Tonnen Gesamtvolumen in einer Einheit.',tier:{kind:'sessionTon',need:5000}},
+  {id:'session_8t',cat:'rekorde',icon:'🐘',title:'Acht Tonnen',desc:'8 Tonnen Gesamtvolumen in einer Einheit.',tier:{kind:'sessionTon',need:8000}},
+  {id:'life_100t',cat:'rekorde',icon:'🚚',title:'100 Tonnen bewegt',desc:'Insgesamt 100 Tonnen bewegt.',tier:{kind:'lifeTon',need:100000}},
+  {id:'life_250t',cat:'rekorde',icon:'🚛',title:'250 Tonnen bewegt',desc:'Insgesamt 250 Tonnen bewegt.',tier:{kind:'lifeTon',need:250000}},
+  {id:'life_500t',cat:'rekorde',icon:'🏗',title:'500 Tonnen bewegt',desc:'Insgesamt 500 Tonnen bewegt.',tier:{kind:'lifeTon',need:500000}},
+  {id:'honest_rest',cat:'klug',icon:'🛌',title:'Ehrlich zu sich',desc:'Ein Training bewusst wegen Krankheit, Muskelkater oder Urlaub ausgesetzt.'},
+  {id:'deload_respected',cat:'klug',icon:'🧊',title:'Klug pausiert',desc:'Eine Deload-Einheit wirklich leicht gehalten, statt sie zu überziehen.'},
+  {id:'meso_done',cat:'klug',icon:'🧱',title:'Blockmeister',desc:'Einen kompletten Mesozyklus abgeschlossen.'},
+  {id:'macro_done',cat:'klug',icon:'🏛',title:'Zyklus vollendet',desc:'Drei Blöcke hintereinander sauber durchgezogen.',tier:{kind:'meso',need:3}},
+  {id:'comeback_start',cat:'comeback',icon:'🔄',title:'Wieder da',desc:'Nach längerer Pause zurück im Training.'},
+  {id:'comeback_done',cat:'comeback',icon:'🧗',title:'Geduldsprobe',desc:'Die Wiedereinstiegs-Rampe sauber zu Ende gegangen, ohne vorzeitig hochzugehen.'},
+  {id:'phoenix',cat:'comeback',icon:'🔥',title:'Phönix',desc:'Nach einer Pause den alten Bestwert wieder erreicht.'}
+];
+function getBadgeDef(id){return BADGE_DEFS.find(b=>b.id===id);}
+function ensureAchievements(){
+  if(!DATA.achievements)DATA.achievements={startDate:new Date().toISOString().slice(0,10),earned:{},baselineDone:false};
+  if(!DATA.achievements.earned)DATA.achievements.earned={};
+  return DATA.achievements;
+}
+function isBadgeEarned(id){return !!(ensureAchievements().earned[id]);}
+function countSessionsTotal(){return allTrainingDates().length;}
+function getLifetimeTonnage(){
+  let t=0;
+  (DATA.history||[]).forEach(h=>{if(!h.legacy)t+=calcTonnage(h.sets);});
+  return t;
+}
+function getBestWeightEver(){
+  let w=0;
+  (DATA.history||[]).forEach(h=>{if(h.legacy)return;(h.sets||[]).forEach(s=>{if((s.weight||0)>w)w=s.weight||0;});});
+  return w;
+}
+function getBestSessionTonnage(){
+  const byDate={};
+  (DATA.history||[]).forEach(h=>{if(h.legacy)return;byDate[h.date]=(byDate[h.date]||0)+calcTonnage(h.sets);});
+  const vals=Object.values(byDate);
+  return vals.length?Math.max(...vals):0;
+}
+// Einmalig beim ersten Start: Schwellen, die längst überschritten sind, still
+// als erreicht markieren. Keine Zeremonie für Vergangenes, aber die Übersicht
+// zeigt den ehrlichen Stand.
+function applyBadgeBaseline(){
+  const a=ensureAchievements();
+  if(a.baselineDone)return;
+  const stats={sessions:countSessionsTotal(),lifeTon:getLifetimeTonnage(),weight:getBestWeightEver(),sessionTon:getBestSessionTonnage(),streak:calcWeeklyStreak().weeks,meso:((DATA.cycle&&DATA.cycle.mesoHistory)||[]).length};
+  BADGE_DEFS.forEach(b=>{
+    if(!b.tier)return;
+    if((stats[b.tier.kind]||0)>=b.tier.need)a.earned[b.id]={date:a.startDate,pre:true};
+  });
+  if(stats.sessions>0)a.earned.first_session={date:a.startDate,pre:true};
+  a.baselineDone=true;
+  saveData(DATA);
+}
+function awardBadge(id,meta){
+  const a=ensureAchievements();
+  if(a.earned[id])return null;
+  a.earned[id]={date:new Date().toISOString().slice(0,10),meta:meta||null};
+  return getBadgeDef(id);
+}
+// Wird nach dem Speichern einer Einheit aufgerufen
+function evaluateBadges(ctx){
+  const won=[];
+  const push=(id,meta)=>{const b=awardBadge(id,meta);if(b)won.push(Object.assign({},b,{meta:meta||null}));};
+  const stats={sessions:countSessionsTotal(),lifeTon:getLifetimeTonnage(),weight:getBestWeightEver(),sessionTon:getBestSessionTonnage(),streak:ctx.streak.weeks,meso:((DATA.cycle&&DATA.cycle.mesoHistory)||[]).length};
+  push('first_session');
+  BADGE_DEFS.forEach(b=>{
+    if(!b.tier)return;
+    if((stats[b.tier.kind]||0)>=b.tier.need)push(b.id);
+  });
+  if(ctx.prCount>=1)push('pr_first',{name:ctx.prNames[0]});
+  if(ctx.prCount>=2)push('pr_double');
+  if(ctx.prCount>=3)push('pr_triple');
+  if(ctx.streak.thisWeek>=ctx.streak.target)push('week_goal');
+  if(ctx.streak.thisWeek>=ctx.streak.perfect)push('perfect_week');
+  if(ctx.wasDeload&&ctx.deloadRespected)push('deload_respected');
+  if(ctx.mesoFinished)push('meso_done');
+  if(ctx.comebackWasActive&&ctx.comebackSessionIdx===0)push('comeback_start',{days:ctx.comebackGap});
+  if(ctx.comebackFinished)push('comeback_done');
+  if(ctx.phoenix)push('phoenix',{name:ctx.phoenixName});
+  return won;
+}
+// Was ist heute noch erreichbar? Nur realistische, im Plan liegende Ziele.
+function getBadgeProgressList(max){
+  max=max||3;
+  const out=[];
+  const earned=ensureAchievements().earned;
+  const st=calcWeeklyStreak();
+  const cb=getComebackState();
+  if(st.thisWeek<st.target){
+    const missing=st.target-st.thisWeek;
+    out.push({icon:'✅',label:`Noch ${missing} ${missing===1?'Einheit':'Einheiten'} diese Woche, dann hält deine Wochen-Serie`,cur:st.thisWeek,need:st.target});
+  }else if(st.thisWeek<st.perfect&&!earned.perfect_week){
+    out.push({icon:'🎯',label:`Noch ${st.perfect-st.thisWeek} Einheit bis zur perfekten Woche`,cur:st.thisWeek,need:st.perfect});
+  }
+  const sessions=countSessionsTotal();
+  const nextSession=BADGE_DEFS.filter(b=>b.tier&&b.tier.kind==='sessions'&&!earned[b.id]).sort((a,b)=>a.tier.need-b.tier.need)[0];
+  if(nextSession&&nextSession.tier.need-sessions<=5){
+    out.push({icon:nextSession.icon,label:`Noch ${nextSession.tier.need-sessions} Einheiten bis „${nextSession.title}"`,cur:sessions,need:nextSession.tier.need});
+  }
+  const lifeTon=getLifetimeTonnage();
+  const nextTon=BADGE_DEFS.filter(b=>b.tier&&b.tier.kind==='lifeTon'&&!earned[b.id]).sort((a,b)=>a.tier.need-b.tier.need)[0];
+  if(nextTon&&nextTon.tier.need-lifeTon<=12000){
+    out.push({icon:nextTon.icon,label:`Noch ${Math.round((nextTon.tier.need-lifeTon)/100)/10} t bis „${nextTon.title}"`,cur:lifeTon,need:nextTon.tier.need});
+  }
+  if(cb){
+    out.push({icon:'🧗',label:`Wiedereinstieg: Einheit ${cb.sessionIdx+1} von ${cb.total} bis zum Abzeichen „Geduldsprobe"`,cur:cb.sessionIdx,need:cb.total});
+  }else if(currentWorkoutDraft){
+    // Bestwert in Reichweite: nur wenn der heutige Vorschlag ihn wirklich schlägt
+    const cands=[];
+    currentWorkoutDraft.exercises.forEach(ex=>{
+      const def=getExerciseInfo(ex.exerciseId);
+      if(!def||def.type==='time'||(def.bodyweight&&!def.allowAddedWeight))return;
+      const best=getBestE1RM(ex.exerciseId);
+      if(!best||best<=0)return;
+      const sug=progressionSuggestion(ex.exerciseId,ex);
+      const[rMin]=getEffectiveRepsRange(ex);
+      const projected=calcE1RM(sug.weight,rMin)||0;
+      if(projected>best*1.001)cands.push({name:def.name,w:sug.weight,reps:rMin});
+    });
+    cands.slice(0,2).forEach(c=>{
+      out.push({icon:'⭐',label:`Bestwert in Reichweite: ${c.name} mit ${fmtWeight(c.w)} kg × ${c.reps} Wdh`});
+    });
+  }
+  return out.slice(0,max);
+}
+
+// ============================================================
+// ===== ABZEICHEN-VERLEIHUNG (ANIMATION) =====================
+// ============================================================
+let _badgeQueue=[],_badgeDone=null;
+function showBadgeCeremony(list,onDone){
+  if(!list||list.length===0){if(onDone)onDone();return;}
+  _badgeQueue=list.slice();
+  _badgeDone=onDone||null;
+  renderNextBadge();
+}
+function renderNextBadge(){
+  const ov=document.getElementById('badge-overlay');
+  if(_badgeQueue.length===0){
+    ov.classList.remove('show');ov.innerHTML='';
+    const cb=_badgeDone;_badgeDone=null;
+    if(cb)cb();
+    return;
+  }
+  const b=_badgeQueue.shift();
+  const remaining=_badgeQueue.length;
+  let sparks='';
+  for(let i=0;i<10;i++){
+    const ang=(360/10)*i;
+    sparks+=`<span class="badge-spark" style="--a:${ang}deg;animation-delay:${(i*0.08).toFixed(2)}s;"></span>`;
+  }
+  let sub='';
+  if(b.meta&&b.meta.name)sub=`<div class="badge-meta">${escapeHtml(b.meta.name)}</div>`;
+  if(b.meta&&b.meta.days)sub=`<div class="badge-meta">${b.meta.days} Tage Pause, und du stehst wieder hier.</div>`;
+  ov.innerHTML=`<div class="badge-card">
+    <div class="badge-glow"></div>
+    <div class="badge-shine"></div>
+    <div class="badge-kicker">Abzeichen freigeschaltet</div>
+    <div class="badge-medal-wrap">${sparks}<div class="badge-medal">${b.icon}</div></div>
+    <div class="badge-name">${b.title}</div>
+    <div class="badge-desc">${b.desc}</div>
+    ${sub}
+    <button class="btn btn-full" style="margin-top:16px;" onclick="renderNextBadge()">${remaining>0?`Weiter (noch ${remaining})`:'Stark!'}</button>
+  </div>`;
+  ov.classList.add('show');
+  safeVibrate([18,60,18]);
+}
+
+// ============================================================
+// ===== BEGRÜSSUNG UND TAGESZIELE ============================
+// ============================================================
+function greetingPrefix(){
+  const h=new Date().getHours();
+  if(h<10)return'Guten Morgen';
+  if(h<13)return'Guten Vormittag';
+  if(h<17)return'Guten Nachmittag';
+  if(h<22)return'Guten Abend';
+  return'Späte Stunde';
+}
+const MOTIVATION_NORMAL=[
+  'Die Einheit von heute ist die Basis für die nächste.',
+  'Sauber ausgeführt schlägt schwer geladen.',
+  'Du musst nicht alles geben, nur alles machen.',
+  'Kleine Steigerungen, oft wiederholt, ergeben große Sprünge.',
+  'Der schwerste Satz ist der, der dich zum Gerät bringt.'
+];
+const MOTIVATION_STREAK=[
+  'Deine Serie steht. Halte sie ruhig locker.',
+  'Konstanz ist dein größter Vorteil. Weiter so.',
+  'Regelmäßigkeit schlägt Intensität. Du machst genau das richtige.'
+];
+function pickRandom(arr){return arr[Math.floor(Math.random()*arr.length)];}
+// Kurze, konkrete Tagesziele aus den Vorschlägen der einzelnen Übungen
+function buildSessionGoals(planKey){
+  if(!currentWorkoutDraft)return[];
+  const todayStr=currentWorkoutDraft.date;
+  const goals=[];
+  currentWorkoutDraft.exercises.forEach(ex=>{
+    if(isExerciseSkipped(todayStr,planKey,ex.exerciseId))return;
+    const def=getExerciseInfo(ex.exerciseId);
+    if(!def)return;
+    const last=getLastWorkout(ex.exerciseId);
+    const sug=progressionSuggestion(ex.exerciseId,ex);
+    if(!sug)return;
+    const lastValid=last&&!last.legacy?last.sets.filter(s=>s.reps):[];
+    const lastW=lastValid.length?Math.max(...lastValid.map(s=>s.weight||0)):0;
+    const lastReps=lastValid.length?Math.max(...lastValid.map(s=>s.reps||0)):0;
+    if(def.type==='time')return;
+    let text=null,prio=3;
+    const cbG=getComebackState();
+    if(cbG&&sug.weight>0){text=`<strong>${def.name}</strong>: ${fmtWeight(sug.weight)} kg, kontrolliert, mit Reserve`;prio=2;}
+    else if(sug.weight>lastW&&lastW>0){text=`<strong>${def.name}</strong>: ${fmtWeight(sug.weight)} kg statt ${fmtWeight(lastW)} kg`;prio=1;}
+    else if(sug.weight<lastW&&lastW>0){text=`<strong>${def.name}</strong>: bewusst leichter mit ${fmtWeight(sug.weight)} kg`;prio=4;}
+    else if(lastReps>0){text=`<strong>${def.name}</strong>: ${fmtWeight(sug.weight||lastW)} kg, Ziel ${lastReps+1} Wdh im ersten Satz`;prio=2;}
+    if(text)goals.push({text,prio});
+  });
+  goals.sort((a,b)=>a.prio-b.prio);
+  return goals.slice(0,3);
+}
+function renderSessionIntro(planKey){
+  const cb=getComebackState();
+  const st=calcWeeklyStreak();
+  const goals=buildSessionGoals(planKey);
+  let headline,lead;
+  if(cb){
+    headline=`${greetingPrefix()}, schön dass du wieder da bist.`;
+    lead=`Nach ${cb.gapDays} Tagen Pause geht es heute bewusst ruhig los: Einheit <strong>${cb.sessionIdx+1} von ${cb.total}</strong> auf dem Weg zurück zu deinen alten Gewichten. Kraft kommt schnell wieder, Sehnen und Bänder brauchen etwas länger. Deshalb heute leichter, weniger Sätze und viel Luft nach oben.`;
+  }else if(getEffectivePhase()==='deload'){
+    headline=`${greetingPrefix()}. Heute ist Erholung das Ziel.`;
+    lead='Deload-Einheit: leichter als gewohnt, damit dein Körper die Arbeit der letzten Wochen verarbeitet. Kein Ehrgeiz beim Gewicht, das zahlt sich im nächsten Block aus.';
+  }else if(st.weeks>=2){
+    headline=`${greetingPrefix()}. ${st.weeks} Wochen in Folge dabei.`;
+    lead=pickRandom(MOTIVATION_STREAK);
+  }else{
+    headline=`${greetingPrefix()}. Los geht es.`;
+    lead=pickRandom(MOTIVATION_NORMAL);
+  }
+  let html=`<div class="intro-card">
+    <div class="intro-head">${headline}</div>
+    <div class="intro-lead">${lead}</div>`;
+  if(goals.length){
+    html+=`<div class="intro-goals"><div class="intro-goals-title">Deine Ziele heute</div>`;
+    goals.forEach(g=>{html+=`<div class="intro-goal">▸ ${g.text}</div>`;});
+    html+=`</div>`;
+  }
+  const streakLine=st.weeks>0?`🔥 ${st.weeks} ${st.weeks===1?'Woche':'Wochen'} Serie`:'Serie startet mit dieser Woche';
+  html+=`<div class="intro-foot">
+      <span>${streakLine}</span>
+      <span>${st.thisWeek}/${st.perfect} diese Woche</span>
+    </div></div>`;
+  // In Reichweite
+  const prog=getBadgeProgressList(3);
+  if(prog.length){
+    html+=`<div class="reach-card"><div class="reach-title">🏅 Heute in Reichweite</div>`;
+    prog.forEach(p=>{
+      let bar='';
+      if(p.need&&p.cur!==undefined){
+        const pct=Math.max(0,Math.min(100,Math.round((p.cur/p.need)*100)));
+        bar=`<div class="reach-bar"><span style="width:${pct}%"></span></div>`;
+      }
+      html+=`<div class="reach-item"><div class="reach-line"><span class="reach-icon">${p.icon}</span><span>${p.label}</span></div>${bar}</div>`;
+    });
+    html+=`</div>`;
+  }
+  return html;
+}
+
+// ============================================================
+// ===== ERFOLGE-TAB ==========================================
+// ============================================================
+function getRecordsList(){
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const seen=new Set();
+  const recs=[];
+  Object.values(DATA.plans||{}).forEach(p=>(p.exercises||[]).forEach(e=>seen.add(e.exerciseId)));
+  Object.keys(_historyByExerciseId||{}).forEach(id=>seen.add(id));
+  seen.forEach(id=>{
+    const def=getExerciseInfo(id);
+    if(!def)return;
+    const list=(_historyByExerciseId[id]||[]).filter(h=>!h.legacy);
+    if(!list.length)return;
+    let best=null;
+    list.forEach(h=>{
+      (h.sets||[]).forEach(s=>{
+        const e=calcE1RM(s.weight,s.reps)||0;
+        const val=def.type==='time'?(s.reps||0):e;
+        if(!best||val>best.val)best={val,weight:s.weight,reps:s.reps,date:h.date,isTime:def.type==='time'};
+      });
+    });
+    if(best)recs.push({name:def.name,best});
+  });
+  recs.sort((a,b)=>b.best.val-a.best.val);
+  return recs;
+}
+function renderAwards(){
+  applyBadgeBaseline();
+  const a=ensureAchievements();
+  const st=calcWeeklyStreak();
+  const total=BADGE_DEFS.length;
+  const got=Object.keys(a.earned).length;
+  const lifeTon=getLifetimeTonnage();
+  let html=`<div class="award-stats">
+    <div class="award-stat"><div class="v">${st.weeks}</div><div class="l">Wochen Serie</div></div>
+    <div class="award-stat"><div class="v">${countSessionsTotal()}</div><div class="l">Einheiten</div></div>
+    <div class="award-stat"><div class="v">${Math.round(lifeTon/100)/10} t</div><div class="l">bewegt</div></div>
+    <div class="award-stat"><div class="v">${got}/${total}</div><div class="l">Abzeichen</div></div>
+  </div>`;
+  html+=`<div class="card"><div class="card-title">Wochen-Serie</div>
+    <div class="card-sub">Ziel: mindestens ${st.target} von ${st.perfect} geplanten Einheiten pro Woche. Diese Woche: <strong style="color:var(--text)">${st.thisWeek}</strong>.${st.frozen>0?` ${st.frozen} ${st.frozen===1?'Woche wurde':'Wochen wurden'} wegen Krankheit oder Urlaub eingefroren, die Serie lief weiter.`:''}</div></div>`;
+  const prog=getBadgeProgressList(4);
+  if(prog.length){
+    html+=`<div class="card"><div class="card-title">Als Nächstes</div>`;
+    prog.forEach(p=>{html+=`<div class="reach-item"><div class="reach-line"><span class="reach-icon">${p.icon}</span><span>${p.label}</span></div></div>`;});
+    html+=`</div>`;
+  }
+  Object.keys(BADGE_CATS).forEach(cat=>{
+    const list=BADGE_DEFS.filter(b=>b.cat===cat);
+    html+=`<h3 style="margin:16px 0 8px;">${BADGE_CATS[cat]}</h3><div class="badge-grid">`;
+    list.forEach(b=>{
+      const e=a.earned[b.id];
+      html+=`<div class="badge-tile${e?' earned':''}" onclick="showBadgeDetail('${b.id}')">
+        <div class="bt-icon">${b.icon}</div>
+        <div class="bt-title">${b.title}</div>
+        <div class="bt-sub">${e?(e.pre?'bereits erreicht':fmtDate(e.date)):'offen'}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  const recs=getRecordsList();
+  if(recs.length){
+    html+=`<h3 style="margin:18px 0 8px;">Persönliche Rekorde</h3><div class="card" style="padding:6px 12px;">`;
+    recs.forEach(r=>{
+      const b=r.best;
+      const val=b.isTime?`${b.reps}s`:`${fmtWeight(b.weight)} kg × ${b.reps}`;
+      html+=`<div class="rec-row"><span class="rec-name">${r.name}</span><span class="rec-val">${val}</span><span class="rec-date">${fmtDate(b.date)}</span></div>`;
+    });
+    html+=`</div>`;
+    html+=`<div class="card"><div class="card-title">Beste Einheit</div><div class="card-sub">${Math.round(getBestSessionTonnage()).toLocaleString('de-DE')} kg Gesamtvolumen an einem Tag.</div></div>`;
+  }
+  document.getElementById('awards-content').innerHTML=html;
+}
+function showBadgeDetail(id){
+  const b=getBadgeDef(id);if(!b)return;
+  const e=ensureAchievements().earned[id];
+  showModal(`<div style="text-align:center;padding:6px 0 2px;">
+    <div style="font-size:52px;line-height:1;">${b.icon}</div>
+    <h2 style="margin-top:10px;">${b.title}</h2>
+    <p style="color:var(--text-dim);font-size:14px;line-height:1.6;margin:10px 0 4px;">${b.desc}</p>
+    <p style="color:${e?'var(--success)':'var(--text-faint)'};font-size:13px;">${e?(e.pre?'Bereits vor Einführung der Abzeichen erreicht':'Erhalten am '+fmtDateLong(e.date)):'Noch offen'}</p>
+  </div><button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeModal()">Schließen</button>`);
+}
+
+// Trainings-Einheiten, die durch eine lange Pause getrennt sind, gehören nicht
+// in denselben Vergleich. Alles vor der Lücke wird abgeschnitten.
+function splitAtGap(list){
+  const out=[];
+  // Liegt schon die jüngste Einheit lange zurück, gibt es nichts zu bewerten:
+  // eine Trainingspause ist kein Leistungsstillstand.
+  const todayStr=new Date().toISOString().slice(0,10);
+  if(list.length&&daysBetweenIso(todayStr,list[0].date)>=COMEBACK_MIN_GAP)return[];
+  for(let i=0;i<list.length;i++){
+    if(i>0&&daysBetweenIso(list[i-1].date,list[i].date)>=COMEBACK_MIN_GAP)break;
+    out.push(list[i]);
+  }
+  return out;
+}
+
 // START
+applyBadgeBaseline();
 renderToday();
 </script>
 </body>
