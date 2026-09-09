@@ -1149,7 +1149,15 @@ function progressionSuggestion(exerciseId,exercise){
       const ofBase=base?` (${pct}% von deinem alten Niveau, ca. ${fmtWeight(base)} kg bei ${COMEBACK_REF_REPS} Wdh)`:'';
       if(held)return{weight:w,text:`Wiedereinstieg, Stufe ${step} von ${cbState.total} wird wiederholt: ${fmtWeight(w)} kg${ofBase}. Letztes Mal waren es nur ${st.lastTop.reps} Wdh, also unter dem Zielbereich. Das Gewicht steigt erst nach ${COMEBACK_MIN_REPS} sauberen Wiederholungen weiter.`};
       if(!st||st.sessions===0)return{weight:w,text:`Wiedereinstieg nach ${cbState.gapDays} Tagen Pause. Stufe 1 von ${cbState.total}: ${fmtWeight(w)} kg${ofBase}. Ziel heute ist Bewegung, nicht Leistung: etwa 4 Wiederholungen in Reserve lassen.`};
-      if(step>=cbState.total)return{weight:w,text:`Letzte Stufe des Wiedereinstiegs: ${fmtWeight(w)} kg${ofBase}. ${COMEBACK_MIN_REPS} bis 12 saubere Wiederholungen mit Reserve, dann ist die Rampe durch.`};
+      if(step>=cbState.total){
+        // Alle Stufen bestätigt, aber die Mindestdauer läuft noch: Niveau halten,
+        // nicht weiter steigern. Sehnen und Bänder brauchen die Zeit, nicht die Last.
+        if(st&&st.clean>=cbState.plan.length&&cbState.daysLeft>0)
+          return{weight:w,text:`Oberste Stufe erreicht: ${fmtWeight(w)} kg${ofBase}. Die Rampe läuft noch ${cbState.daysLeft} ${cbState.daysLeft===1?'Tag':'Tage'}, damit Sehnen und Bänder die Zeit bekommen. Bis dahin das Niveau halten statt weiter steigern.`};
+        if(cbState.daysLeft>0)
+          return{weight:w,text:`Letzte Stufe des Wiedereinstiegs: ${fmtWeight(w)} kg${ofBase}. ${COMEBACK_MIN_REPS} bis 12 saubere Wiederholungen. Danach läuft die Rampe noch ${cbState.daysLeft} ${cbState.daysLeft===1?'Tag':'Tage'} aus.`};
+        return{weight:w,text:`Letzte Stufe des Wiedereinstiegs: ${fmtWeight(w)} kg${ofBase}. ${COMEBACK_MIN_REPS} bis 12 saubere Wiederholungen mit Reserve, dann ist die Rampe durch.`};
+      }
       return{weight:w,text:`Wiedereinstieg, Stufe ${step} von ${cbState.total}: ${fmtWeight(w)} kg${ofBase}. ${COMEBACK_MIN_REPS} bis 12 Wiederholungen mit Reserve. Das Gewicht steigt erst nach einer sauberen Einheit weiter.`};
     }
   }
@@ -1720,7 +1728,7 @@ function renderToday(){
     <div class="phase-indicator" style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div class="phase-name">${phaseDef.label}</div>
-        <div style="font-size:12px;color:var(--text-dim);">${isComebackActive()&&getComebackState()?`Wiedereinstieg · Stufe ${Math.min(getComebackState().stepsDone+1,getComebackState().total)} von ${getComebackState().total}`:`Woche ${week} von ${mesoLen}`}</div>
+        <div style="font-size:12px;color:var(--text-dim);">${isComebackActive()&&getComebackState()?comebackHeaderLabel():`Woche ${week} von ${mesoLen}`}</div>
       </div>
       <div class="rir-hint">Heute: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh · Pause ~${phaseDef.pauseSec}s</div>
     </div>
@@ -2720,7 +2728,7 @@ function buildCelebrationCards(summaries){
   }
   // 7. Wiedereinstieg geschafft
   const _cbNow=getComebackState();
-  if(_cbNow&&_cbNow.stepsDone>=_cbNow.total-1&&_cbNow.daysSince>=_cbNow.minWeeks*7-1){
+  if(_cbNow&&_cbNow.stepsDone>=_cbNow.total-1&&_cbNow.daysLeft<=1){
     cards.push({icon:'🧗',kicker:'Wiedereinstieg',big:'Rampe durch',
       unit:'nach '+_cbNow.gapDays+' Tagen Pause',
       sub:'Sauber hochgearbeitet statt zu früh hochgegangen.',color:'#8b5cf6',hold:3000});
@@ -3750,7 +3758,7 @@ function renderCycle(){
     maxkraft:'Intensität steigt, Volumen sinkt -- Kraft wird aus dem Aufbau-Block spezifisch.',
     kraftausdauer:'Kurze, konstante Phase: Ermüdung abbauen, Stoffwechsel und Bindegewebe stärken.',
     deload:'Volumen und Intensität stark reduziert -- aktive Erholung.',
-    wiedereinstieg:'Zwei Wochen zurück in die Belastung. Danach startet dein unterbrochener Block neu bei Woche 1.'
+    wiedereinstieg:'Stufenweise zurück in die Belastung. Danach startet dein unterbrochener Block neu bei Woche 1.'
   };
 
   let weekTimeline='<div class="week-timeline">';
@@ -3768,7 +3776,61 @@ function renderCycle(){
   }
   weekTimeline+='</div>';
 
-  let html=`<div class="phase-indicator">
+  // Waehrend der Rampe zeigt der Zyklus-Tab die Rampe, nicht die Wochen des
+  // pausierten Blocks. Sonst steht dort die Maxkraft-Woche unter der
+  // Wiedereinstiegs-Ueberschrift, was sich widerspricht.
+  const cbCycle=getComebackState();
+  let html;
+  if(cbCycle){
+    const stufe=Math.min(cbCycle.stepsDone+1,cbCycle.total);
+    const resumeDef=PHASE_DEFS[phase];
+    const resumeLbl=resumeDef?(resumeDef.shortLabel||resumeDef.label):phase;
+    let stepRows='<div class="week-timeline">';
+    for(let i=1;i<=cbCycle.total;i++){
+      const cls=i<=cbCycle.stepsDone?'done':(i===stufe?'current':'future');
+      const pct=Math.round(cbCycle.plan[i-1]*100);
+      const state=i<=cbCycle.stepsDone?'bestätigt':(i===stufe?'aktuell':'offen');
+      stepRows+=`<div class="week-row ${cls}">
+        <div class="week-num">${i}</div>
+        <div>
+          <div class="week-label">${pct}% vom alten Niveau</div>
+          <div class="week-sub">${state} · mindestens ${COMEBACK_MIN_REPS} Wdh im Topsatz</div>
+        </div>
+        <div class="week-rir">${i<=cbCycle.stepsDone?'✓':''}</div>
+      </div>`;
+    }
+    stepRows+='</div>';
+    const dauer=cbCycle.daysLeft>0
+      ? `Mindestdauer: noch ${cbCycle.daysLeft} ${cbCycle.daysLeft===1?'Tag':'Tage'}. Die Rampe endet erst, wenn alle ${cbCycle.total} Stufen bestätigt sind <em>und</em> diese Zeit abgelaufen ist.`
+      : `Mindestdauer erfüllt. Es ${cbCycle.stepsLeft===1?'fehlt noch 1 Stufe':'fehlen noch '+cbCycle.stepsLeft+' Stufen'}, dann ist die Rampe durch.`;
+    const danach=phase==='maxkraft'
+      ? `Danach folgen 3 Wochen Aufbau mit 8-12 Wdh, erst dann startet dein Maxkraft-Block neu bei Woche 1.`
+      : `Danach startet dein ${resumeLbl}-Block neu bei Woche 1.`;
+    html=`<div class="phase-indicator">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="phase-name">${PHASE_DEFS.wiedereinstieg.label}</div>
+      <span class="badge ${PHASE_DEFS.wiedereinstieg.badge}">Stufe ${stufe}/${cbCycle.total}</span>
+    </div>
+    <div style="color:var(--text-dim);font-size:12px;margin-top:2px;">${DATA.cycle.frequency}× pro Woche · Tag ${cbCycle.daysSince} seit dem Neustart</div>
+    <div class="rir-hint">Aktuell: <span class="rir-value">RIR ${rir}</span> · ${PHASE_DEFS.wiedereinstieg.repsRange[0]}-${PHASE_DEFS.wiedereinstieg.repsRange[1]} Wdh</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Rampen-Übersicht</div>
+    <div class="card-sub">Gewichtsstufen statt fester Wochen. Eine Stufe wird erst freigeschaltet, wenn du sie sauber bestätigt hast. Jede Übung läuft dabei auf ihrer eigenen Stufe.</div>
+    ${stepRows}
+    <div class="card-sub" style="margin-top:10px;">${dauer}</div>
+    <button class="btn btn-ghost btn-full btn-small" style="margin-top:8px;" onclick="showComebackBlockInfo()">Wiedereinstieg verwalten</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Aktueller Schwerpunkt</div>
+    <div class="card-sub" style="margin-bottom:8px;">Wiedereinstieg · ${Math.round(PHASE_DEFS.wiedereinstieg.intensityPct[0]*100)}-${Math.round(PHASE_DEFS.wiedereinstieg.intensityPct[1]*100)}% des alten Niveaus · Pause ${PHASE_DEFS.wiedereinstieg.pauseSec}s</div>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.5;">${PHASE_DEFS.wiedereinstieg.description}</p>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.5;margin-top:8px;"><strong style="color:var(--text);">Pausiert:</strong> dein ${resumeLbl}-Block bei Woche ${week} von ${mesoLen}. ${danach}</p>
+  </div>`;
+  }else{
+  html=`<div class="phase-indicator">
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div class="phase-name">${phaseDef.label}</div>
       <span class="badge ${phaseDef.badge}">Woche ${week}/${mesoLen}</span>
@@ -3793,6 +3855,7 @@ function renderCycle(){
     <div class="card-sub" style="margin-bottom:8px;">${effPhase==='deload'?'Deload':(curPhaseDef.shortLabel||curPhaseDef.label)} · ~${Math.round(curPhaseDef.intensityPct[0]*100)}-${Math.round(curPhaseDef.intensityPct[1]*100)}% 1RM · Pause ${curPhaseDef.pauseSec}s</div>
     <p style="font-size:13px;color:var(--text-dim);line-height:1.5;">${phaseDef.description}</p>
   </div>`;
+  }
 
   // Makro-Übersicht
   const blocks=DATA.macro.blocks;
@@ -5034,13 +5097,28 @@ function getComebackState(){
     if(!finished){
       val={sessionIdx:Math.min(clean,plan.length-1),stepsDone:clean,total:plan.length,plan,
            gapDays:gap,refDate:refDate,startDate:startDate,minWeeks:minWeeks,
-           daysSince:daysSince,sessionsDone:days.length};
+           daysSince:daysSince,sessionsDone:days.length,
+           // Restliche Tage der Mindestdauer. Die Rampe endet erst, wenn alle
+           // Stufen bestätigt sind UND diese Zeit abgelaufen ist.
+           daysLeft:Math.max(0,minWeeks*7-daysSince),
+           stepsLeft:Math.max(0,plan.length-clean)};
     }
   }
   _cbMemo={key,val};
   return val;
 }
 function isComebackActive(){return !!getComebackState();}
+// Kurzlabel für die Kopfzeile. Die Stufen sind GEWICHTSSTUFEN, nicht Einheiten,
+// deshalb wird die verbleibende Mindestdauer mit angezeigt.
+function comebackHeaderLabel(){
+  const cb=getComebackState();
+  if(!cb)return'';
+  const stufe=Math.min(cb.stepsDone+1,cb.total);
+  let txt='Wiedereinstieg · Stufe '+stufe+' von '+cb.total;
+  if(cb.daysLeft>0)txt+=' · noch '+cb.daysLeft+(cb.daysLeft===1?' Tag':' Tage');
+  else if(cb.stepsLeft>0)txt+=' · '+cb.stepsLeft+(cb.stepsLeft===1?' Stufe offen':' Stufen offen');
+  return txt;
+}
 // Stufe pro UEBUNG: der Ruecken kann schneller zurueckkommen als die Brust.
 function getComebackStepFor(exerciseId,cb){
   if(!cb)return null;
@@ -5457,7 +5535,9 @@ function renderSessionIntro(planKey){
   let headline,lead;
   if(cb){
     headline=`${greetingPrefix()}, schön dass du wieder da bist.`;
-    lead=`Nach ${cb.gapDays} Tagen Pause geht es heute bewusst ruhig los: Einheit <strong>${cb.sessionIdx+1} von ${cb.total}</strong> auf dem Weg zurück zu deinen alten Gewichten. Kraft kommt schnell wieder, Sehnen und Bänder brauchen etwas länger. Deshalb heute leichter, weniger Sätze und viel Luft nach oben.`;
+    const _stufe=Math.min(cb.stepsDone+1,cb.total);
+    const _rest=cb.daysLeft>0?` Danach läuft die Rampe noch ${cb.daysLeft} ${cb.daysLeft===1?'Tag':'Tage'}, bis Sehnen und Bänder nachgezogen haben.`:'';
+    lead=`Nach ${cb.gapDays} Tagen Pause geht es weiter auf dem Weg zurück zu deinen alten Gewichten: <strong>Gewichtsstufe ${_stufe} von ${cb.total}</strong>. Eine Stufe zählt erst, wenn du sie mit mindestens ${COMEBACK_MIN_REPS} sauberen Wiederholungen bestätigt hast.${_rest} Deshalb heute leichter, weniger Sätze und viel Luft nach oben.`;
   }else if(getEffectivePhase()==='deload'){
     headline=`${greetingPrefix()}. Heute ist Erholung das Ziel.`;
     lead='Deload-Einheit: leichter als gewohnt, damit dein Körper die Arbeit der letzten Wochen verarbeitet. Kein Ehrgeiz beim Gewicht, das zahlt sich im nächsten Block aus.';
