@@ -301,6 +301,33 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 .badge-name{position:relative;font-size:21px;font-weight:700;letter-spacing:-0.02em}
 .badge-desc{position:relative;font-size:13.5px;color:var(--text-dim);line-height:1.55;margin-top:7px}
 .badge-meta{position:relative;font-size:13px;color:var(--accent);margin-top:8px;font-weight:600}
+/* ===== Abschluss-Zeremonie ===== */
+.cele-overlay{position:fixed;inset:0;z-index:310;display:none;align-items:center;justify-content:center;background:rgba(6,8,12,0.95);padding:24px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cele-overlay.show{display:flex;animation:fadeIn .2s ease}
+.cele-card{position:relative;width:min(340px,88vw);background:linear-gradient(165deg,var(--bg-elev2),var(--bg-elev));border:1px solid var(--c,#f97316);border-radius:24px;padding:26px 20px 18px;text-align:center;overflow:hidden;animation:celeIn .55s cubic-bezier(.2,1.2,.35,1) both}
+@keyframes celeIn{0%{opacity:0;transform:scale(.72) translateY(18px)}70%{opacity:1;transform:scale(1.04) translateY(0)}100%{opacity:1;transform:scale(1)}}
+.cele-glow{position:absolute;left:-40%;right:-40%;top:-55%;height:150%;background:radial-gradient(circle at 50% 34%,var(--c,#f97316),transparent 60%);opacity:.28;animation:celeGlow 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes celeGlow{0%,100%{opacity:.20;transform:scale(1)}50%{opacity:.42;transform:scale(1.14)}}
+.cele-kicker{position:relative;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--c,#f97316);font-weight:700}
+.cele-iconwrap{position:relative;height:96px;display:flex;align-items:center;justify-content:center;margin:2px 0}
+.cele-icon{font-size:60px;line-height:1;animation:celePop .7s .05s cubic-bezier(.2,1.7,.4,1) both,celeFloat 2.6s .75s ease-in-out infinite;filter:drop-shadow(0 6px 18px var(--c,#f97316))}
+@keyframes celePop{0%{opacity:0;transform:scale(.2) rotate(-18deg)}70%{opacity:1;transform:scale(1.22) rotate(5deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes celeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.cele-ember{position:absolute;bottom:14px;left:50%;width:6px;height:6px;border-radius:50%;background:var(--c,#f97316);opacity:0;animation:emberRise 1.9s ease-out infinite}
+@keyframes emberRise{0%{opacity:0;transform:translate(var(--x,0),0) scale(.4)}18%{opacity:.9}100%{opacity:0;transform:translate(calc(var(--x,0px)*2.4),-86px) scale(.2)}}
+.cele-num{position:relative;font-size:58px;font-weight:800;line-height:1;letter-spacing:-.04em;color:var(--c,#f97316);font-variant-numeric:tabular-nums}
+.cele-num.tick{animation:celeTick .16s ease}
+@keyframes celeTick{0%{transform:scale(1)}50%{transform:scale(1.14)}100%{transform:scale(1)}}
+.cele-big{position:relative;font-size:30px;font-weight:800;line-height:1.15;letter-spacing:-.03em;color:var(--c,#f97316)}
+.cele-unit{position:relative;font-size:14.5px;font-weight:600;color:var(--text);margin-top:8px}
+.cele-sub{position:relative;font-size:13px;color:var(--text-dim);line-height:1.5;margin-top:8px}
+.cele-dots{position:relative;display:flex;gap:6px;justify-content:center;margin-top:16px}
+.cele-dot{width:6px;height:6px;border-radius:50%;background:var(--text-faint);opacity:.35}
+.cele-dot.on{background:var(--c,#f97316);opacity:1}
+.cele-bar{position:relative;height:3px;border-radius:2px;background:rgba(255,255,255,.10);margin-top:12px;overflow:hidden}
+.cele-bar i{display:block;height:100%;background:var(--c,#f97316);transform-origin:left center;animation:celeBar linear forwards}
+@keyframes celeBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.cele-hint{position:relative;font-size:11px;color:var(--text-faint);margin-top:9px}
 /* ===== Erfolge-Tab ===== */
 .award-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
 .award-stat{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 4px;text-align:center}
@@ -344,6 +371,7 @@ label{display:block;font-size:12px;color:var(--text-dim);margin:10px 0 4px}
 </nav>
 <div class="modal-bg" id="modal-bg"><div class="modal" id="modal-content"></div></div>
 <div class="badge-overlay" id="badge-overlay"></div>
+<div class="cele-overlay" id="cele-overlay" onclick="celeNext()"></div>
 <div class="toast" id="toast"></div>
 <script>
 // ===== KONSTANTEN =====
@@ -467,7 +495,7 @@ const PHASE_DEFS={
   hypertrophie:{label:'Hypertrophie · Akkumulation',shortLabel:'Hypertrophie',badge:'badge-hyp',color:'#f59e0b',repsRange:[8,12],intensityPct:[0.70,0.80],weeklyRIR:{1:'3-4',2:'2-3',3:'1-2',4:'0-1',5:'0-1',6:'0-1',7:'0-1',8:'0-1'},description:'Akkumulationsblock. Aufbau-Phase mit hohem Volumen (Volumen steigt MEV → MRV) und moderater Intensität. 8-12 Wdh bei 70-80% 1RM, 60-90s Pause. RIR fällt von 3-4 in Woche 1 auf 0-1 in der Peak-Woche. Hauptarbeit für Muskelaufbau.',pauseSec:90},
   maxkraft:{label:'Maximalkraft · Transmutation',shortLabel:'Maxkraft',badge:'badge-maxkraft',color:'#ef4444',repsRange:[3,6],intensityPct:[0.85,0.95],weeklyRIR:{1:'2-3',2:'2',3:'1-2',4:'1',5:'0-1',6:'0-1'},description:'Transmutationsblock. Wandelt die Hypertrophie-Basis in spezifische Kraft. 3-6 Wdh bei 85-95% 1RM, 3-5 Min Pause, niedriges Volumen, RPE 7.5-9. Macht dich für den nächsten Aufbau-Block stärker, sodass du dort schwerere Gewichte für 10 Wdh bewegen kannst.',pauseSec:240},
   kraftausdauer:{label:'Kraftausdauer · Variation',shortLabel:'Kraftausdauer',badge:'badge-kraftaus',color:'#22c55e',repsRange:[15,20],intensityPct:[0.55,0.65],weeklyRIR:{1:'4-5',2:'3-4',3:'2-3',4:'1-2',5:'1-2'},description:'Variations- und Erhaltungsphase. 15-20 Wdh bei 55-65% 1RM, kurze Pausen (45-60s). Bindegewebe und Stoffwechselkapazität, gleichzeitig Abbau systemischer Ermüdung. Kurz halten (2-3 Wochen), dann zurück zur Akkumulation.',pauseSec:60},
-  wiedereinstieg:{label:'Wiedereinstieg · Zurück nach der Pause',shortLabel:'Wiedereinstieg',badge:'badge-comeback',color:'#8b5cf6',repsRange:[8,12],intensityPct:[0.60,0.92],weeklyRIR:{1:'4-5',2:'3-4'},description:'Aufbau nach einer längeren Pause. Die Kraft kommt schnell zurück, Sehnen, Bänder und Bindegewebe brauchen länger. Deshalb wird das Gewicht über mehrere Einheiten von etwa 60 auf über 90 Prozent des alten Niveaus hochgefahren, bei einem Satz weniger und viel Reserve. Kein Satz bis zum Muskelversagen.',pauseSec:90},
+  wiedereinstieg:{label:'Wiedereinstieg · Zurück nach der Pause',shortLabel:'Wiedereinstieg',badge:'badge-comeback',color:'#8b5cf6',repsRange:[8,12],intensityPct:[0.60,0.92],weeklyRIR:{1:'4-5',2:'3-4'},description:'Aufbau nach einer längeren Pause. Die Kraft kommt schnell zurück, Sehnen, Bänder und Bindegewebe brauchen länger. Deshalb wird das Gewicht über mehrere Stufen von etwa 60 auf über 90 Prozent des alten Niveaus hochgefahren, bei einem Satz weniger und viel Reserve. Referenz ist dabei das alte Gewicht umgerechnet auf 10 Wiederholungen, nicht das schwerste Gewicht aus einem Maxkraft-Block. Eine Stufe wird erst freigeschaltet, wenn sie mit mindestens 8 sauberen Wiederholungen bestätigt wurde. Kein Satz bis zum Muskelversagen.',pauseSec:90},
   deload:{label:'Deload',shortLabel:'Deload',badge:'badge-deload',color:'#3b82f6',repsRange:[8,10],intensityPct:[0.50,0.60],weeklyRIR:{1:'4-6'},description:'Aktive Erholung. Volumen ca. 50% reduziert, Gewicht 50-60% des Arbeitsgewichts. Ermüdung abbauen, Fitness erhalten. Eingebaut als jeweils letzte Woche jedes Mesozyklus.',pauseSec:120}
 };
 const PERIODIZATION_PRESETS={
@@ -1093,14 +1121,36 @@ function progressionSuggestion(exerciseId,exercise){
   // keine Ermüdung zum Abbauen, sondern nur Gewebe, das wieder Last lernen muss.
   const cbState=getComebackState();
   if(cbState&&!isBW){
-    const ref=getPreGapReference(exerciseId,cbState.refDate);
-    if(ref){
-      const f=cbState.plan[cbState.sessionIdx];
-      let w=snapWeight(ref*f,exerciseId,exercise,'near');
-      const step=cbState.sessionIdx+1,pct=Math.round(f*100);
-      if(step===1)return{weight:w,text:`Wiedereinstieg nach ${cbState.gapDays} Tagen Pause. Einheit 1 von ${cbState.total}: ${fmtWeight(w)} kg, also ${pct}% von deinen alten ${fmtWeight(ref)} kg. Ziel heute ist Bewegung, nicht Leistung: etwa 4 Wiederholungen in Reserve lassen.`};
-      if(step===cbState.total)return{weight:w,text:`Letzte Stufe des Wiedereinstiegs: ${fmtWeight(w)} kg (${pct}% von ${fmtWeight(ref)} kg). Wenn sich das gut anfühlt, bist du ab der nächsten Einheit wieder in der normalen Progression.`};
-      return{weight:w,text:`Wiedereinstieg, Einheit ${step} von ${cbState.total}: ${fmtWeight(w)} kg (${pct}% von ${fmtWeight(ref)} kg). Sauber und kontrolliert, das Gewicht steigt beim nächsten Mal weiter.`};
+    const base=getComebackBaseline(exerciseId,cbState.refDate);
+    const st=getComebackStepFor(exerciseId,cbState);
+    if(base||(st&&st.lastTop&&st.lastTop.weight>0)){
+      const f=cbState.plan[st.step];
+      let target=base?base*f:st.lastTop.weight;
+      let w=snapWeight(target,exerciseId,exercise,'near');
+      // Deckelung an der Realitaet: nie mehr als 10% ueber der letzten
+      // tatsaechlich bewegten Last, und gar nicht mehr, wenn der Zielbereich
+      // beim letzten Mal verfehlt wurde.
+      let held=false;
+      if(st&&st.lastTop&&st.lastTop.weight>0){
+        held=!st.lastOk;
+        const cap=snapWeight(st.lastTop.weight*(st.lastOk?COMEBACK_MAX_STEP_UP:1),exerciseId,exercise,'down');
+        if(cap>0&&w>cap)w=cap;
+        // Nie weniger verlangen, als zuletzt sauber geschafft wurde. Uebungen
+        // erholen sich unterschiedlich schnell, und der Ruecken ist oft weiter
+        // als die Brust.
+        if(st.lastOk&&w<st.lastTop.weight)w=st.lastTop.weight;
+        // Uebung ist durch die Rampe durch, die Rampe laeuft aber noch (Mindest-
+        // dauer oder andere Uebungen): dann in kleinen Schritten weiterlaufen.
+        if(st.lastOk&&st.clean>=cbState.plan.length&&st.lastTop.reps>=12)
+          w=nextWeightUp(st.lastTop.weight,exerciseId,exercise,1);
+      }
+      const step=st.step+1;
+      const pct=base?Math.round((w/base)*100):null;
+      const ofBase=base?` (${pct}% von deinem alten Niveau, ca. ${fmtWeight(base)} kg bei ${COMEBACK_REF_REPS} Wdh)`:'';
+      if(held)return{weight:w,text:`Wiedereinstieg, Stufe ${step} von ${cbState.total} wird wiederholt: ${fmtWeight(w)} kg${ofBase}. Letztes Mal waren es nur ${st.lastTop.reps} Wdh, also unter dem Zielbereich. Das Gewicht steigt erst nach ${COMEBACK_MIN_REPS} sauberen Wiederholungen weiter.`};
+      if(!st||st.sessions===0)return{weight:w,text:`Wiedereinstieg nach ${cbState.gapDays} Tagen Pause. Stufe 1 von ${cbState.total}: ${fmtWeight(w)} kg${ofBase}. Ziel heute ist Bewegung, nicht Leistung: etwa 4 Wiederholungen in Reserve lassen.`};
+      if(step>=cbState.total)return{weight:w,text:`Letzte Stufe des Wiedereinstiegs: ${fmtWeight(w)} kg${ofBase}. ${COMEBACK_MIN_REPS} bis 12 saubere Wiederholungen mit Reserve, dann ist die Rampe durch.`};
+      return{weight:w,text:`Wiedereinstieg, Stufe ${step} von ${cbState.total}: ${fmtWeight(w)} kg${ofBase}. ${COMEBACK_MIN_REPS} bis 12 Wiederholungen mit Reserve. Das Gewicht steigt erst nach einer sauberen Einheit weiter.`};
     }
   }
   if(phase==='deload'){
@@ -1670,7 +1720,7 @@ function renderToday(){
     <div class="phase-indicator" style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div class="phase-name">${phaseDef.label}</div>
-        <div style="font-size:12px;color:var(--text-dim);">${isComebackActive()&&getComebackState()?`Einheit ${getComebackState().sessionIdx+1} von ${getComebackState().total}`:`Woche ${week} von ${mesoLen}`}</div>
+        <div style="font-size:12px;color:var(--text-dim);">${isComebackActive()&&getComebackState()?`Wiedereinstieg · Stufe ${Math.min(getComebackState().stepsDone+1,getComebackState().total)} von ${getComebackState().total}`:`Woche ${week} von ${mesoLen}`}</div>
       </div>
       <div class="rir-hint">Heute: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh · Pause ~${phaseDef.pauseSec}s</div>
     </div>
@@ -1691,7 +1741,9 @@ function renderToday(){
   html+=renderSessionIntro(planKey);
   // Empfehlung nach langer Pause: Block neu aufsetzen statt Deload fortführen
   const cbToday=getComebackState();
-  if(cbToday&&cbToday.gapDays>=COMEBACK_MIN_GAP&&!DATA.cycle.currentMeso.isBridge){
+  // Nur anzeigen, solange die Rampe noch nicht laeuft. Sonst taucht der
+  // Vorschlag mitten im Wiedereinstieg wieder auf und bietet an, ihn erneut zu starten.
+  if(cbToday&&cbToday.gapDays>=COMEBACK_MIN_GAP&&cbToday.sessionsDone===0&&!DATA.cycle.currentMeso.isBridge){
     html+=`<div class="suggest" style="margin-bottom:10px;">🧭 <strong>Dein Zyklus passt nicht mehr zur Lage.</strong> Nach ${cbToday.gapDays} Tagen Pause bringt die laufende Woche im ${PHASE_DEFS[getCurrentPhase()].shortLabel||getCurrentPhase()}-Block nichts. Sinnvoller: zwei Wochen Wiedereinstieg, danach startet dieser Block neu bei Woche 1.<br><button class="btn btn-small" style="margin-top:8px;" onclick="showComebackBlockInfo()">Ansehen</button></div>`;
   }
   // Automatischer Volumen-Ausgleich für heute sichtbar machen
@@ -2558,9 +2610,13 @@ function pickHeadline(pool,replacements){
   return{emoji:item.e,headline:t};
 }
 // Streak: aufeinanderfolgende Trainings in den letzten 21 Tagen (Sessions, nicht Übungen)
-function calcRecentStreak(){
-  if(!DATA.workoutSessions||DATA.workoutSessions.length===0)return 0;
-  const sorted=DATA.workoutSessions.slice().sort((a,b)=>b.date.localeCompare(a.date));
+// includeDate: das heutige Training wird erst NACH der Zusammenfassung gespeichert.
+// Ohne diesen Parameter zaehlt die Serie in der Zusammenfassung eine Einheit zu wenig.
+function calcRecentStreak(includeDate){
+  const dates=(DATA.workoutSessions||[]).map(s=>s.date);
+  if(includeDate&&dates.indexOf(includeDate)===-1)dates.push(includeDate);
+  if(dates.length===0)return 0;
+  const sorted=Array.from(new Set(dates)).sort((a,b)=>b.localeCompare(a)).map(d=>({date:d}));
   // erwartete Frequenz: ~7/frequency Tage Abstand, +1 Toleranz
   const freq=Math.max(1,DATA.cycle.frequency||3);
   const expectedGap=Math.ceil(7/freq);
@@ -2574,9 +2630,154 @@ function calcRecentStreak(){
   }
   return streak;
 }
+// ============================================================
+// ===== ABSCHLUSS-ZEREMONIE ==================================
+// ============================================================
+// Laeuft VOR der Zusammenfassung. Alle Werte werden vorausberechnet, weil das
+// heutige Training erst nach der Zusammenfassung gespeichert wird.
+let _celeQueue=[],_celeDone=null,_celeTimer=null,_celeTotal=0;
+function celeAnimateNumber(el,from,to,dur){
+  if(!el)return;
+  const t0=performance.now(),span=to-from;
+  if(span===0){el.textContent=to;return;}
+  function frame(t){
+    const k=Math.min(1,(t-t0)/dur);
+    const eased=1-Math.pow(1-k,3);
+    const v=Math.round(from+span*eased);
+    if(el.textContent!==String(v)){
+      el.textContent=v;
+      el.classList.remove('tick');void el.offsetWidth;el.classList.add('tick');
+    }
+    if(k<1)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+// Würde der laufende Mesozyklus mit dem heutigen Training enden?
+function willFinishMesoToday(){
+  try{
+    if(isComebackActive())return false;
+    const meso=DATA.cycle&&DATA.cycle.currentMeso;
+    if(!meso||meso.currentWeek<meso.lengthWeeks)return false;
+    const today=currentWorkoutDraft?currentWorkoutDraft.date:new Date().toISOString().slice(0,10);
+    const refStr=meso.lastWeekAdvance||meso.startDate;
+    const days=Math.floor((new Date(today)-new Date(refStr))/86400000);
+    const set=new Set((DATA.history||[]).filter(h=>h.date>=refStr&&!h.legacy).map(h=>h.date));
+    set.add(today);
+    return set.size>=(DATA.cycle.frequency||3)||(days>=7&&set.size>=1);
+  }catch(e){return false;}
+}
+function buildCelebrationCards(summaries){
+  const cards=[];
+  const today=currentWorkoutDraft?currentWorkoutDraft.date:new Date().toISOString().slice(0,10);
+  // 1. Trainings-Serie
+  const streak=calcRecentStreak(today);
+  if(streak>=2){
+    cards.push({icon:'🔥',kicker:'Serie',from:Math.max(0,streak-1),to:streak,
+      unit:'Trainings in Folge',
+      sub:streak>=8?'Das ist keine Phase mehr, das ist deine Gewohnheit.':(streak>=5?'Konstanz schlägt Intensität. Genau so geht es.':'Die nächste Einheit hält die Serie.'),
+      color:'#f97316',embers:true,hold:2800});
+  }
+  // 2. Wochenziel / perfekte Woche
+  const wsNow=calcWeeklyStreak(today),wsBefore=calcWeeklyStreak();
+  if(wsNow.perfect>wsNow.target&&wsNow.thisWeek===wsNow.perfect&&wsBefore.thisWeek<wsNow.perfect){
+    cards.push({icon:'💎',kicker:'Perfekte Woche',from:wsNow.perfect-1,to:wsNow.perfect,
+      unit:'von '+wsNow.perfect+' Einheiten diese Woche',
+      sub:'Volle Frequenz. Mehr geht diese Woche nicht.',color:'#38bdf8',hold:2600});
+  }else if(wsNow.thisWeek>=wsNow.target&&wsBefore.thisWeek<wsNow.target){
+    cards.push({icon:'🎯',kicker:'Wochenziel',from:Math.max(0,wsNow.target-1),to:wsNow.thisWeek,
+      unit:'von '+wsNow.target+' Einheiten diese Woche',
+      sub:'Wochenziel erreicht. Alles darüber ist Bonus.',color:'#22c55e',hold:2600});
+  }
+  // 3. Wochen-Serie
+  if(wsNow.weeks>wsBefore.weeks&&wsNow.weeks>=2){
+    cards.push({icon:'📅',kicker:'Wochen-Serie',from:wsBefore.weeks,to:wsNow.weeks,
+      unit:'Wochen in Folge',
+      sub:'Die Zahl, die langfristig am meisten zählt.',color:'#f59e0b',hold:2600});
+  }
+  // 4. Persoenliche Rekorde
+  const prs=(summaries||[]).filter(s=>s.isPR);
+  if(prs.length){
+    cards.push({icon:'🏆',kicker:prs.length===1?'Neuer Bestwert':'Neue Bestwerte',from:0,to:prs.length,
+      unit:prs.length===1?'persönlicher Rekord':'persönliche Rekorde',
+      sub:prs.map(s=>s.def.name).join(' · '),color:'#eab308',hold:2900});
+  }
+  // 5. Tonnage-Meilenstein (kumuliert ueber alle Trainings)
+  const tonNow=(summaries||[]).reduce((a,s)=>a+(s.tonnage||0),0);
+  const tonBefore=(DATA.history||[]).filter(h=>!h.legacy).reduce((a,h)=>a+calcTonnage(h.sets||[]),0);
+  const MS=[10,25,50,100,250,500,1000,1500,2000,3000,5000];
+  const crossed=MS.filter(m=>tonBefore<m*1000&&(tonBefore+tonNow)>=m*1000).pop();
+  if(crossed){
+    cards.push({icon:'🏋️',kicker:'Meilenstein',from:Math.floor(tonBefore/1000),to:crossed,
+      unit:'Tonnen insgesamt bewegt',
+      sub:'Summiert über alle Trainings, die du hier eingetragen hast.',color:'#a78bfa',hold:2900});
+  }
+  // 6. Block endet mit dieser Einheit
+  if(willFinishMesoToday()){
+    const ph=PHASE_DEFS[getCurrentPhase()];
+    cards.push({icon:'🏁',kicker:'Block abgeschlossen',big:(ph&&(ph.shortLabel||ph.label))||'Block',
+      unit:(DATA.cycle.currentMeso.lengthWeeks||0)+' Wochen durchgezogen',
+      sub:'Der nächste Block startet mit der nächsten Einheit.',color:'#ef4444',hold:3000});
+  }
+  // 7. Wiedereinstieg geschafft
+  const _cbNow=getComebackState();
+  if(_cbNow&&_cbNow.stepsDone>=_cbNow.total-1&&_cbNow.daysSince>=_cbNow.minWeeks*7-1){
+    cards.push({icon:'🧗',kicker:'Wiedereinstieg',big:'Rampe durch',
+      unit:'nach '+_cbNow.gapDays+' Tagen Pause',
+      sub:'Sauber hochgearbeitet statt zu früh hochgegangen.',color:'#8b5cf6',hold:3000});
+  }
+  return cards.slice(0,4);
+}
+function showCelebration(cards,onDone){
+  if(!cards||cards.length===0){if(onDone)onDone();return;}
+  _celeQueue=cards.slice();_celeTotal=cards.length;_celeDone=onDone||null;
+  celeNext();
+}
+function celeNext(){
+  clearTimeout(_celeTimer);
+  const ov=document.getElementById('cele-overlay');
+  if(!ov)return;
+  if(_celeQueue.length===0){
+    ov.classList.remove('show');ov.innerHTML='';
+    const cb=_celeDone;_celeDone=null;
+    if(cb)cb();
+    return;
+  }
+  const c=_celeQueue.shift();
+  const idx=_celeTotal-_celeQueue.length;
+  const hold=c.hold||2600;
+  let embers='';
+  if(c.embers){
+    for(let i=0;i<7;i++)embers+=`<span class="cele-ember" style="--x:${(i-3)*11}px;animation-delay:${(i*0.24).toFixed(2)}s;"></span>`;
+  }
+  let dots='';
+  if(_celeTotal>1){
+    for(let i=0;i<_celeTotal;i++)dots+=`<span class="cele-dot${i<idx?' on':''}"></span>`;
+  }
+  const body=c.big
+    ? `<div class="cele-big">${c.big}</div>`
+    : `<div class="cele-num" id="cele-num">${c.from}</div>`;
+  ov.innerHTML=`<div class="cele-card" style="--c:${c.color};">
+    <div class="cele-glow"></div>
+    <div class="cele-kicker">${c.kicker}</div>
+    <div class="cele-iconwrap">${embers}<div class="cele-icon">${c.icon}</div></div>
+    ${body}
+    <div class="cele-unit">${c.unit}</div>
+    <div class="cele-sub">${c.sub}</div>
+    ${dots?`<div class="cele-dots">${dots}</div>`:''}
+    <div class="cele-bar"><i style="animation-duration:${hold}ms;"></i></div>
+    <div class="cele-hint">${_celeQueue.length>0?'Tippen für weiter':'Tippen für die Auswertung'}</div>
+  </div>`;
+  ov.classList.add('show');
+  if(!c.big)celeAnimateNumber(document.getElementById('cele-num'),c.from,c.to,900);
+  safeVibrate(c.embers?[14,50,14,50,26]:[16,60,20]);
+  _celeTimer=setTimeout(celeNext,hold);
+}
 function showWorkoutSummary(finished){
   const summaries=finished.map(computeExerciseSummary).filter(Boolean);
   window._pendingSummaries=summaries;
+  showCelebration(buildCelebrationCards(summaries),()=>renderWorkoutSummary(finished,summaries));
+}
+function renderWorkoutSummary(finished,summaries){
   const trendCounts={up:0,flat:0,down:0,pr:0};
   summaries.forEach(s=>{if(s.isPR)trendCounts.pr++;if(s.trend==='up')trendCounts.up++;else if(s.trend==='down')trendCounts.down++;else trendCounts.flat++;});
   const totalTonnage=summaries.reduce((a,s)=>a+(s.tonnage||0),0);
@@ -2630,7 +2831,7 @@ function showWorkoutSummary(finished){
   });
   if(fullSets&&summaries.length>=3)positives.push(`Komplett durchgezogen – ${summaries.length} Übungen, alle Sätze`);
   // 7. Streak
-  const streak=calcRecentStreak();
+  const streak=calcRecentStreak(currentWorkoutDraft?currentWorkoutDraft.date:null);
   if(streak>=3)positives.push(`<strong>${streak}. Training in Folge</strong> ohne lange Pause`);
   // 8. Booster fair anrechnen
   if(currentWorkoutDraft.boostered)positives.push(`Mit Booster trainiert (wird beim nächsten Vorschlag berücksichtigt)`);
@@ -2749,6 +2950,9 @@ function confirmFinishWorkout(){
   _cbMemo={key:null,val:null};
   window._mesoJustFinished=false;
   advanceCycleIfNeeded();
+  // Rampe gerade abgeschlossen? Dann sauber in den naechsten Block ueberleiten.
+  const _cbAfter=getComebackState();
+  const _rampDone=!!cbBefore&&!_cbAfter;
   // Abzeichen auswerten (erst jetzt, mit vollständiger Historie)
   applyBadgeBaseline();
   const wonBadges=evaluateBadges({
@@ -2759,7 +2963,7 @@ function confirmFinishWorkout(){
     comebackWasActive:!!cbBefore,
     comebackSessionIdx:cbBefore?cbBefore.sessionIdx:-1,
     comebackGap:cbBefore?cbBefore.gapDays:0,
-    comebackFinished:!!(cbBefore&&cbBefore.sessionIdx===cbBefore.total-1),
+    comebackFinished:_rampDone,
     phoenix:!!phoenixName,phoenixName
   });
   saveData(DATA);
@@ -2769,13 +2973,17 @@ function confirmFinishWorkout(){
   window._pendingWorkout=null;
   closeModal();
   showToast(durationSec>0?`Training gespeichert ✓ · ${fmtTime(durationSec)}`:'Training gespeichert ✓');
+  if(_rampDone)finishComebackRamp();
   if(wonBadges.length)showBadgeCeremony(wonBadges,()=>switchTab('awards'));
   else switchTab('stats');
 }
 function advanceCycleIfNeeded(){
   // Während des Wiedereinstiegs steht der Zyklus still: eine Pause soll den Block
   // nicht durchlaufen lassen, sonst rutscht man ohne Training in den nächsten.
-  if(isComebackActive()&&!DATA.cycle.currentMeso.isBridge)return;
+  // Auch der Wiedereinstiegsblock selbst rueckt nicht vor. Sonst laeuft die
+  // Wochen-Bruecke ab, waehrend die Rampe noch mitten in den Stufen steckt,
+  // und der unterbrochene Block wird zu frueh wieder scharf geschaltet.
+  if(isComebackActive())return;
   const today=new Date();
   const todayStr=today.toISOString().slice(0,10);
   const meso=DATA.cycle.currentMeso;
@@ -4752,10 +4960,28 @@ function finishWizard(){
 // mehrere Einheiten hochgefahren, das Volumen gesenkt und der Reserve-Puffer
 // (RIR) vergrößert. Referenz ist immer das Niveau VOR der Pause.
 const COMEBACK_MIN_GAP=21;
+const COMEBACK_REF_REPS=10;       // Wiederholungszahl, auf die die Referenz normiert wird
+const COMEBACK_MIN_REPS=8;        // untere Grenze des Zielbereichs im Wiedereinstieg
+const COMEBACK_MAX_STEP_UP=1.10;  // maximaler Sprung gegenueber der letzten echten Last
+const COMEBACK_HARD_CAP_WEEKS=8;  // Notbremse, damit die Rampe nicht endlos laeuft
 function comebackPlanForGap(gap){
   if(gap>=42)return[0.60,0.72,0.82,0.92];
   if(gap>=28)return[0.65,0.78,0.90];
   return[0.72,0.85];
+}
+// Mindestdauer in WOCHEN. Bindegewebe adaptiert ueber Zeit, nicht ueber Einheiten:
+// bei 4x/Woche darf dieselbe Rampe nicht in der halben Zeit durch sein.
+function comebackMinWeeks(gap){
+  if(gap>=42)return 3;
+  if(gap>=28)return 2;
+  return 1;
+}
+function e1rmOf(w,r){if(!w||!r||r<1)return 0;return w*(1+Math.min(r,15)/30);}
+function topSetOf(sets){
+  let best={weight:0,reps:0};
+  (sets||[]).forEach(s=>{const w=s.weight||0,r=s.reps||0;
+    if(w>best.weight||(w===best.weight&&r>best.reps))best={weight:w,reps:r};});
+  return best;
 }
 function allTrainingDates(){
   const set=new Set();
@@ -4763,35 +4989,75 @@ function allTrainingDates(){
   return Array.from(set).sort((a,b)=>b.localeCompare(a));
 }
 function daysBetweenIso(aIso,bIso){return Math.round((new Date(aIso)-new Date(bIso))/86400000);}
+// War eine Einheit ein sauberer Rampen-Schritt? Nur dann wird weitergeschaltet.
+// Massstab ist der Topsatz jeder Gewichtsuebung: liegt er unter dem Zielbereich,
+// war das Gewicht zu hoch, und die Stufe wird wiederholt statt erhoeht.
+function comebackSessionClean(entries){
+  let counted=0,ok=0;
+  (entries||[]).forEach(h=>{
+    const t=topSetOf(h.sets);
+    if(t.weight<=0)return;
+    counted++;
+    if(t.reps>=COMEBACK_MIN_REPS)ok++;
+  });
+  if(!counted)return false;
+  return ok===counted;
+}
 let _cbMemo={key:null,val:null};
 function getComebackState(){
   const todayStr=new Date().toISOString().slice(0,10);
-  const key=((DATA.history&&DATA.history.length)||0)+'_'+todayStr;
+  const key=((DATA.history&&DATA.history.length)||0)+'_'+todayStr+'_'+(DATA.comebackEndedFor||'');
   if(_cbMemo.key===key)return _cbMemo.val;
   let val=null;
   const dates=allTrainingDates();
+  let gap=null,refDate=null,startDate=null;
   if(dates.length>0){
     const gapNow=daysBetweenIso(todayStr,dates[0]);
-    if(gapNow>=COMEBACK_MIN_GAP){
-      const plan=comebackPlanForGap(gapNow);
-      val={sessionIdx:0,total:plan.length,plan,gapDays:gapNow,refDate:dates[0],startDate:todayStr};
-    }else{
-      for(let i=0;i<Math.min(dates.length-1,8);i++){
-        const gap=daysBetweenIso(dates[i],dates[i+1]);
-        if(gap>=COMEBACK_MIN_GAP){
-          const plan=comebackPlanForGap(gap);
-          const done=i+1;
-          if(done<plan.length)val={sessionIdx:done,total:plan.length,plan,gapDays:gap,refDate:dates[i+1],startDate:dates[i]};
-          break;
-        }
+    if(gapNow>=COMEBACK_MIN_GAP){gap=gapNow;refDate=dates[0];startDate=todayStr;}
+    else{
+      for(let i=0;i<Math.min(dates.length-1,14);i++){
+        const g=daysBetweenIso(dates[i],dates[i+1]);
+        if(g>=COMEBACK_MIN_GAP){gap=g;refDate=dates[i+1];startDate=dates[i];break;}
       }
+    }
+  }
+  if(gap!==null&&DATA.comebackEndedFor!==refDate){
+    const plan=comebackPlanForGap(gap);
+    const minWeeks=comebackMinWeeks(gap);
+    const byDate={};
+    (DATA.history||[]).forEach(h=>{if(!h.legacy&&h.date>refDate)(byDate[h.date]=byDate[h.date]||[]).push(h);});
+    const days=Object.keys(byDate).sort();
+    let clean=0;
+    days.forEach(d=>{if(comebackSessionClean(byDate[d]))clean++;});
+    const daysSince=daysBetweenIso(todayStr,startDate);
+    const finished=(clean>=plan.length&&daysSince>=minWeeks*7)||daysSince>=COMEBACK_HARD_CAP_WEEKS*7;
+    if(!finished){
+      val={sessionIdx:Math.min(clean,plan.length-1),stepsDone:clean,total:plan.length,plan,
+           gapDays:gap,refDate:refDate,startDate:startDate,minWeeks:minWeeks,
+           daysSince:daysSince,sessionsDone:days.length};
     }
   }
   _cbMemo={key,val};
   return val;
 }
 function isComebackActive(){return !!getComebackState();}
-// Letzte echte Arbeitslast VOR der Pause (Deload und Wiedereinstieg zählen nicht)
+// Stufe pro UEBUNG: der Ruecken kann schneller zurueckkommen als die Brust.
+function getComebackStepFor(exerciseId,cb){
+  if(!cb)return null;
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const list=(_historyByExerciseId[exerciseId]||[])
+    .filter(h=>!h.legacy&&h.date>cb.refDate)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  let clean=0,lastTop=null,lastOk=false,sessions=0;
+  list.forEach(h=>{
+    const t=topSetOf(h.sets);
+    if(t.weight<=0)return;
+    sessions++;lastTop=t;lastOk=t.reps>=COMEBACK_MIN_REPS;
+    if(lastOk)clean++;
+  });
+  return {step:Math.min(clean,cb.plan.length-1),clean:clean,lastTop:lastTop,lastOk:lastOk,sessions:sessions};
+}
+// Letzte echte Arbeitslast VOR der Pause (Deload und Wiedereinstieg zaehlen nicht)
 function getPreGapReference(exerciseId,refDate){
   if(!_historyByExerciseId)buildHistoryIndex();
   const list=(_historyByExerciseId[exerciseId]||[]).filter(h=>!h.legacy&&h.date<=refDate&&h.phase!=='deload'&&h.phase!=='wiedereinstieg');
@@ -4801,29 +5067,92 @@ function getPreGapReference(exerciseId,refDate){
   list.slice(0,3).forEach(h=>{(h.sets||[]).forEach(s=>{if((s.weight||0)>best)best=s.weight||0;});});
   return best>0?best:null;
 }
-// Ist die Wiedereinstiegs-Rampe mit dem heutigen Training abgeschlossen?
+// Basis fuer die Rampe: das alte Niveau, umgerechnet auf den Wiederholungs-
+// bereich, der im Wiedereinstieg tatsaechlich gefordert ist (8-12 Wdh).
+// Ohne diese Korrektur dient ein Maxkraft-Gewicht (3-6 Wdh) als Basis fuer
+// 8-12 Wdh, und die letzte Rampenstufe liegt ueber dem alten Arbeitsgewicht.
+function getComebackBaseline(exerciseId,refDate){
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const list=(_historyByExerciseId[exerciseId]||[]).filter(h=>!h.legacy&&h.date<=refDate&&h.phase!=='deload'&&h.phase!=='wiedereinstieg');
+  if(!list.length)return null;
+  list.sort((a,b)=>b.date.localeCompare(a.date));
+  let bestE=0,bestRaw=0;
+  list.slice(0,3).forEach(h=>{(h.sets||[]).forEach(s=>{
+    const w=s.weight||0,r=s.reps||0;
+    if(w>bestRaw)bestRaw=w;
+    const e=e1rmOf(w,r);if(e>bestE)bestE=e;
+  });});
+  if(bestRaw<=0)return null;
+  if(bestE<=0)return bestRaw;
+  const v=bestE/(1+COMEBACK_REF_REPS/30);
+  return Math.round(Math.min(v,bestRaw)*10)/10;
+}
+// Ist die Rampe mit dem heutigen Training abgeschlossen?
 function comebackFinishesToday(){
   const cb=getComebackState();
-  return !!(cb&&cb.sessionIdx===cb.total-1);
+  return !!(cb&&cb.stepsDone>=cb.total-1&&cb.daysSince>=cb.minWeeks*7-1);
+}
+// Wenn die Rampe durch ist, geht es NICHT direkt in einen Maxkraft-Block.
+// Nach einer langen Pause fehlt zuerst die Volumenbasis; Transmutation ohne
+// vorherige Akkumulation ist der klassische Weg in die Ueberlastung.
+function finishComebackRamp(){
+  const cur=DATA.cycle.currentMeso;
+  const today=new Date().toISOString().slice(0,10);
+  if(cur.isBridge&&cur.phase==='hypertrophie')return;
+  const target=cur.isBridge?(cur.resumePhase||'hypertrophie'):cur.phase;
+  const targetWeeks=(cur.isBridge?cur.resumeWeeks:cur.lengthWeeks)||3;
+  if(target==='maxkraft'){
+    DATA.cycle.currentMeso={phase:'hypertrophie',startDate:today,lengthWeeks:3,currentWeek:1,
+      lastWeekAdvance:today,isBridge:true,resumePhase:'maxkraft',resumeWeeks:targetWeeks};
+    saveData(DATA);
+    showToast('Wiedereinstieg geschafft. Jetzt 3 Wochen Aufbau mit 8-12 Wdh, danach startet Maxkraft neu bei Woche 1.',6500);
+  }else{
+    DATA.cycle.currentMeso={phase:target,startDate:today,lengthWeeks:targetWeeks,currentWeek:1,lastWeekAdvance:today};
+    saveData(DATA);
+    const lbl=PHASE_DEFS[target]?(PHASE_DEFS[target].shortLabel||PHASE_DEFS[target].label):target;
+    showToast('Wiedereinstieg geschafft. '+lbl+' startet neu bei Woche 1.',5000);
+  }
 }
 function startComebackBlock(){
   const todayStr=new Date().toISOString().slice(0,10);
   const cur=DATA.cycle.currentMeso;
-  DATA.cycle.currentMeso={phase:'wiedereinstieg',startDate:todayStr,lengthWeeks:2,currentWeek:1,lastWeekAdvance:todayStr,isBridge:true,resumePhase:cur.phase,resumeWeeks:cur.lengthWeeks};
+  const cb=getComebackState();
+  const weeks=cb?comebackMinWeeks(cb.gapDays):2;
+  DATA.cycle.currentMeso={phase:'wiedereinstieg',startDate:todayStr,lengthWeeks:weeks,currentWeek:1,
+    lastWeekAdvance:todayStr,isBridge:true,resumePhase:cur.phase,resumeWeeks:cur.lengthWeeks};
   saveData(DATA);closeModal();
-  showToast('Wiedereinstiegsblock gestartet (2 Wochen)',3500);
+  showToast('Wiedereinstiegsblock gestartet (mind. '+weeks+' Wochen)',3500);
+  renderToday();
+}
+// Notausgang: die Rampe bewusst beenden, wenn sie sich falsch anfuehlt.
+function endComebackRamp(){
+  const cb=getComebackState();
+  if(!cb)return;
+  DATA.comebackEndedFor=cb.refDate;
+  _cbMemo={key:null,val:null};
+  saveData(DATA);closeModal();
+  finishComebackRamp();
   renderToday();
 }
 function showComebackBlockInfo(){
   const cur=DATA.cycle.currentMeso;
+  const cb=getComebackState();
   const resume=PHASE_DEFS[cur.phase]?(PHASE_DEFS[cur.phase].shortLabel||PHASE_DEFS[cur.phase].label):cur.phase;
+  const weeks=cb?comebackMinWeeks(cb.gapDays):2;
+  const steps=cb?cb.total:2;
+  const running=!!(cb&&cb.sessionsDone>0);
   showModal(`<h2>Neu einsteigen</h2>
     <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">
     Nach einer Pause von mehreren Wochen bringt eine Deload-Woche nichts mehr, denn es gibt keine Ermüdung, von der du dich erholen müsstest.</p>
     <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">
-    Vorschlag: <strong style="color:var(--text);">2 Wochen Wiedereinstieg</strong> mit moderatem Gewicht, weniger Sätzen und viel Reserve. Danach startet dein <strong style="color:var(--text);">${resume}</strong>-Block automatisch neu bei Woche 1. Der große Zyklus bleibt erhalten, du wiederholst nur den aktuellen Block.</p>
-    <button class="btn btn-full" onclick="startComebackBlock()">Wiedereinstiegsblock starten</button>
-    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Später</button>`);
+    Vorschlag: <strong style="color:var(--text);">mindestens ${weeks} Wochen Wiedereinstieg</strong> über ${steps} Gewichtsstufen, mit weniger Sätzen und viel Reserve. Eine Stufe wird erst freigeschaltet, wenn du sie mit mindestens ${COMEBACK_MIN_REPS} sauberen Wiederholungen bestätigt hast.</p>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">
+    Danach folgen ${cur.phase==='maxkraft'?'3 Wochen Aufbau (8-12 Wdh) und erst dann dein Maxkraft-Block':'dein '+resume+'-Block'}, jeweils neu ab Woche 1. Der große Zyklus bleibt erhalten.</p>
+    ${running?`<p style="font-size:13px;color:var(--text-dim);line-height:1.55;margin-bottom:12px;">Die Rampe läuft bereits: Stufe ${Math.min(cb.stepsDone+1,cb.total)} von ${cb.total}, ${cb.sessionsDone} Einheiten seit dem Start.</p>
+    <button class="btn btn-ghost btn-full" onclick="endComebackRamp()">Wiedereinstieg jetzt beenden</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Schließen</button>`
+    :`<button class="btn btn-full" onclick="startComebackBlock()">Wiedereinstiegsblock starten</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Später</button>`}`);
 }
 
 // ============================================================
@@ -4854,9 +5183,12 @@ function weekIsFrozen(weekStartIso){
   const weekEnd=addDaysIso(weekStartIso,6);
   return getFreezeRanges().some(r=>r.start<=weekEnd&&r.end>=weekStartIso);
 }
-function calcWeeklyStreak(){
+// includeDate: das heutige Training ist zum Zeitpunkt der Zusammenfassung noch
+// nicht gespeichert und muss für die Vorschau mitgezählt werden.
+function calcWeeklyStreak(includeDate){
   const target=getWeeklyTarget();
-  const dates=allTrainingDates();
+  let dates=allTrainingDates();
+  if(includeDate&&dates.indexOf(includeDate)===-1)dates=dates.concat([includeDate]).sort((a,b)=>b.localeCompare(a));
   const out={weeks:0,frozen:0,target,perfect:getWeeklyPerfect(),thisWeek:0,best:0};
   const curStart=isoOf(mondayOf(new Date()));
   const countIn=ws=>{const we=addDaysIso(ws,6);return dates.filter(d=>d>=ws&&d<=we).length;};
