@@ -43,7 +43,10 @@ button:focus-visible{outline:3px solid var(--mustard);outline-offset:2px}
   border:3px solid var(--line);border-radius:10px;overflow:hidden;background:var(--line);box-shadow:0 6px 0 rgba(0,0,0,.1)}
 @supports not (height:100dvh){ #board{width:min(100%, calc(100vh - 300px), 480px)} }
 .cell{position:relative;display:grid;place-items:center;border:0 solid var(--line);min-width:0;min-height:0;overflow:hidden}
-.cell .mk{width:62%;height:62%;pointer-events:none}
+.cell .ct{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.cell .mk{width:66%;height:66%;pointer-events:none;overflow:visible}
+/* iPhone: unsichtbarer Schalter über jedem Feld. Nur ein echter Fingertipp auf einen Schalter löst das Klopfen aus. */
+.cell .hapin{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:.011;z-index:2;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cell .cat{width:86%;height:86%;pointer-events:none;animation:plop .25s cubic-bezier(.2,.9,.3,1.4)}
 .cell.clash::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid var(--bad);animation:pulse .8s ease-in-out infinite alternate}
 .cell.clash .cat{animation:shake .4s}
@@ -169,6 +172,7 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
       </div>
       <h3>Helfer</h3>
       <p class="lead" style="font-size:14px;margin:0">„Auto-Kreuze“ kreuzt nach jeder Katze automatisch Zeile, Spalte, Farbe und Nachbarfelder an. „Hinweis“ zeigt dir einen Fehler oder eine richtige Katze.</p>
+      <p style="font-size:11.5px;line-height:1.45;color:var(--muted);margin:14px 0 0">Klick-Geräusch: „The press of a button“ von Spooky-Lukey (<a href="https://freesound.org/people/Spooky-Lukey/sounds/869478/" target="_blank" rel="noopener" style="color:var(--wall)">Freesound 869478</a>), <a href="https://creativecommons.org/licenses/by/4.0/deed.de" target="_blank" rel="noopener" style="color:var(--wall)">CC BY 4.0</a>, gekürzt.</p>
       <div class="foot"><button class="btn" id="introGo">Los geht's</button></div>
     </div>
   </section>
@@ -259,11 +263,11 @@ function catSVG(k){
     <g stroke="${c.line ? "rgba(255,255,255,.6)" : "rgba(70,50,45,.45)"}" stroke-width="1.4" stroke-linecap="round"><path d="M38 68L12 63M38 71L13 75M62 68L88 63M62 71L87 75"/></g>
   </svg>`;
 }
-const XSVG = `<svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="#3B3330" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg>`;
+const XSVG = `<svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 5.5l13 13M18.5 5.5l-13 13" stroke="rgba(59,51,48,.55)" stroke-width="7" stroke-linecap="round"/><path d="M5.5 5.5l13 13M18.5 5.5l-13 13" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/></svg>`;
 
 /* ---------- Echte Aufnahmen ---------- */
 const SND = (() => {
-  const NAMES = ["meow1","meow2","meow3","meow5","meowhigh","meowlow","purr","chorus","angry1","angry2"];
+  const NAMES = ["meow1","meow2","meow3","meow5","meowhigh","meowlow","purr","chorus","angry1","angry2","kreuz"];
   let ctx = null, out = null, muted = false, loading = null; const buf = {}, last = {};
   try { muted = localStorage.getItem("katzensudoku-mute") === "1"; } catch(e) {}
   function load(){
@@ -302,6 +306,13 @@ const SND = (() => {
   function tick(kind = "set", step = 0){
     if (muted || !ctx) return;
     const now = ctx.currentTime; if (now - lastTick < .035) return; lastTick = now;
+    // Echte Klick-Aufnahme (sounds/kreuz.mp3), beim Wischen Stufe für Stufe etwas höher, beim Entfernen tiefer
+    if (buf.kreuz){
+      const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = buf.kreuz;
+      s.playbackRate.value = kind === "set" ? Math.pow(2, PENTA[Math.min(step, PENTA.length - 1)]/12*.5) : .78;
+      g.gain.value = kind === "set" ? .9 : .6; s.connect(g); g.connect(out); s.start(now);
+      return;
+    }
     if (kind === "set"){
       const f = 587*Math.pow(2, PENTA[Math.min(step, PENTA.length - 1)]/12);
       tone("sine", f*1.5, f, now, .3, .13);         // Holzblock-Körper mit kurzem Tonfall
@@ -322,25 +333,20 @@ muteBtn.addEventListener("click", () => { SND.unlock(); SND.muted = !SND.muted; 
 
 /* ---------- Haptisches Feedback ----------
    Android: Vibrations-Schnittstelle des Browsers.
-   iPhone: Safari kennt diese Schnittstelle nicht. Ab iOS 18 löst das Umschalten eines
-   Schalter-Kästchens (input type=checkbox switch) ein kurzes Klopfen aus, das nutzen wir unsichtbar. */
+   iPhone: Seit iOS 26.5 darf eine Webseite das Klopfen nicht mehr selbst auslösen. Es klappt nur,
+   wenn der Finger direkt auf einem Schalter (input type=checkbox switch) landet. Deshalb liegt über
+   jedem Feld ein unsichtbarer Schalter (siehe build()), und tap() macht auf dem iPhone nichts. */
 const HAPTIC = (() => {
   const canVibrate = typeof navigator.vibrate === "function";
-  let label = null, last = 0;
-  if (!canVibrate){
-    label = document.createElement("label"); label.setAttribute("aria-hidden", "true");
-    label.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none";
-    const inp = document.createElement("input"); inp.type = "checkbox"; inp.setAttribute("switch", ""); inp.tabIndex = -1;
-    label.appendChild(inp); document.body.appendChild(label);
-  }
+  let last = 0;
   function tap(kind = "light"){
+    if (!canVibrate) return;
     const now = performance.now();
     if (kind === "light" && now - last < 35) return;
     last = now;
-    if (canVibrate){ try { navigator.vibrate(kind === "cat" ? [18, 45, 18] : kind === "bad" ? [45, 35, 45] : 9); } catch(e) {} }
-    else if (label){ label.click(); if (kind !== "light") setTimeout(() => label.click(), 110); }
+    try { navigator.vibrate(kind === "cat" ? [18, 45, 18] : kind === "bad" ? [45, 35, 45] : 9); } catch(e) {}
   }
-  return {tap};
+  return {tap, useSwitches: !canVibrate};
 })();
 
 /* ---------- Speicher ---------- */
@@ -380,6 +386,8 @@ function build(){
     d.style.borderLeftWidth = bl === null ? "0" : bl ? thick : thin;
     d.style.borderTopColor = bt ? "var(--line)" : "rgba(59,51,48,.22)";
     d.style.borderLeftColor = bl ? "var(--line)" : "rgba(59,51,48,.22)";
+    d.innerHTML = '<span class="ct"></span>' + (HAPTIC.useSwitches ? '<input type="checkbox" switch class="hapin" tabindex="-1" aria-hidden="true">' : "");
+    d.ct = d.firstChild;
     boardEl.appendChild(d); cells.push(d);
   }
 }
@@ -389,7 +397,7 @@ function render(){
   for (let i = 0; i < cells.length; i++){
     const v = L.b[i], d = cells[i];
     if (shown[i] !== v || d.dataset.n !== String(L.N)){
-      d.innerHTML = v === 1 ? XSVG : v === 2 ? catSVG(L.reg[i]) : "";
+      d.ct.innerHTML = v === 1 ? XSVG : v === 2 ? catSVG(L.reg[i]) : "";
       shown[i] = v; d.dataset.n = L.N;
     }
     d.classList.toggle("clash", v === 2 && bad.has(i));
@@ -473,14 +481,17 @@ function cellAt(x, y){
 boardEl.addEventListener("pointerdown", e => {
   if (!L || L.solved) return;
   const i = cellAt(e.clientX, e.clientY); if (i < 0) return;
-  e.preventDefault(); SND.unlock();
-  try { boardEl.setPointerCapture(e.pointerId); } catch(err) {}
+  // Auf dem iPhone muss der Tipp den unsichtbaren Schalter erreichen, sonst klopft nichts.
+  // Deshalb dort weder Standardaktion abbrechen noch den Zeiger an das Spielfeld binden.
+  if (!HAPTIC.useSwitches){ e.preventDefault(); try { boardEl.setPointerCapture(e.pointerId); } catch(err) {} }
+  SND.unlock();
   const now = performance.now();
   const dbl = lastTap.i === i && now - lastTap.t < 340;
   lastTap = {i, t: dbl ? 0 : now};
   if (dbl){ drag = {done:true}; setCat(i); return; }
   snapshot();
-  drag = {start:i, startVal:L.b[i], moved:false, x:e.clientX, y:e.clientY, id:e.pointerId};
+  // Beginnt das Wischen auf einem Kreuz, werden Kreuze entfernt, sonst gesetzt. Katzen bleiben immer liegen.
+  drag = {start:i, startVal:L.b[i], mode:L.b[i] === 1 ? "clear" : "set", moved:false, x:e.clientX, y:e.clientY, id:e.pointerId};
   if (L.b[i] === 0){ L.b[i] = 1; render(); SND.tick("set"); HAPTIC.tap(); }
 });
 boardEl.addEventListener("pointermove", e => {
@@ -492,8 +503,14 @@ boardEl.addEventListener("pointermove", e => {
   for (let k = 1; k <= n; k++){
     const i = cellAt(drag.x + dx*k/n, drag.y + dy*k/n);
     if (i < 0) continue;
-    if (i !== drag.start && !drag.moved){ drag.moved = true; drag.n = 0; lastTap = {i:-1, t:0}; if (L.b[drag.start] === 0){ L.b[drag.start] = 1; changed = true; } }
-    if (drag.moved && L.b[i] === 0){ L.b[i] = 1; changed = true; SND.tick("set", ++drag.n); HAPTIC.tap(); }
+    if (i !== drag.start && !drag.moved){
+      drag.moved = true; drag.n = 0; lastTap = {i:-1, t:0};
+      if (drag.mode === "set" && L.b[drag.start] === 0){ L.b[drag.start] = 1; changed = true; }
+      if (drag.mode === "clear" && L.b[drag.start] === 1){ L.b[drag.start] = 0; changed = true; SND.tick("clear"); }
+    }
+    if (!drag.moved) continue;
+    if (drag.mode === "set" && L.b[i] === 0){ L.b[i] = 1; changed = true; SND.tick("set", ++drag.n); HAPTIC.tap(); }
+    else if (drag.mode === "clear" && L.b[i] === 1){ L.b[i] = 0; changed = true; SND.tick("clear"); HAPTIC.tap(); }
   }
   drag.x = e.clientX; drag.y = e.clientY;
   if (changed) render();
@@ -509,9 +526,11 @@ function endDrag(e){
   dropSame(); afterChange(-1);
 }
 boardEl.addEventListener("pointerup", endDrag);
-// iPhone/iPad: Doppeltippen darf die Seite nicht vergrößern. Das Spiel liest die Berührungen über Pointer-Ereignisse,
-// die Standardaktion des Browsers (Zoomen, Scrollen, Lupe) wird auf dem Spielfeld abgeschaltet.
-["touchstart", "touchmove", "touchend", "gesturestart"].forEach(ev => boardEl.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, {passive:false}));
+window.addEventListener("pointerup", e => { if (drag && !drag.done && e.pointerId === drag.id) endDrag(e); });
+// iPhone/iPad: Doppeltippen darf die Seite nicht vergrößern. Zoomen und Scrollen verhindert touch-action:none am Spielfeld.
+// touchstart/touchend dürfen hier NICHT abgebrochen werden, sonst erreicht der Tipp den Schalter nicht (kein Klopfen).
+["touchmove", "gesturestart"].forEach(ev => boardEl.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, {passive:false}));
+if (!HAPTIC.useSwitches) ["touchstart", "touchend"].forEach(ev => boardEl.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, {passive:false}));
 boardEl.addEventListener("dblclick", e => e.preventDefault());
 boardEl.addEventListener("pointercancel", endDrag);
 
@@ -625,7 +644,7 @@ $("#winLv").addEventListener("click", () => { stopReward(); $("#winOv").hidden =
 /* ---------- Anleitung ---------- */
 $("#exX").innerHTML = XSVG;
 $("#exCat").innerHTML = catSVG(0).replace('class="cat"', 'class="cat" style="width:34px;height:34px"');
-$("#exSwipe").innerHTML = `<svg viewBox="0 0 40 24" style="width:40px"><path d="M3 12h34" stroke="#E5B440" stroke-width="3" stroke-dasharray="3 3"/><path d="M5 7l6 6M11 7l-6 6M17 7l6 6M23 7l-6 6M29 7l6 6M35 7l-6 6" stroke="#3B3330" stroke-width="2" stroke-linecap="round"/></svg>`;
+$("#exSwipe").innerHTML = `<svg viewBox="0 0 40 24" style="width:40px"><path d="M3 12h34" stroke="#E5B440" stroke-width="3" stroke-dasharray="3 3"/><path d="M5 7l6 6M11 7l-6 6M17 7l6 6M23 7l-6 6M29 7l6 6M35 7l-6 6" stroke="rgba(59,51,48,.55)" stroke-width="3.6" stroke-linecap="round"/><path d="M5 7l6 6M11 7l-6 6M17 7l6 6M23 7l-6 6M29 7l6 6M35 7l-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>`;
 $("#helpBtn").addEventListener("click", () => $("#introOv").hidden = false);
 $("#introGo").addEventListener("click", () => { SND.unlock(); $("#introOv").hidden = true; SAVE.intro = true; persist(); });
 
