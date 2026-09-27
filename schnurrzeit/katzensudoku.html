@@ -145,7 +145,7 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
 
   <main class="mid">
     <div id="board" role="grid" aria-label="Spielfeld"></div>
-    <p class="help"><b>Tippen</b> setzt ein Kreuz · <b>Doppeltippen</b> setzt eine Katze · <b>Wischen</b> kreuzt ganze Reihen an</p>
+    <p class="help"><b>Tippen</b> setzt ein Kreuz · <b>Doppeltippen</b> setzt eine Katze · <b>Wischen</b> kreuzt ganze Reihen an · <b>Wischen ab einem Kreuz</b> löscht Kreuze</p>
   </main>
 
   <nav id="tools" aria-label="Werkzeuge">
@@ -165,7 +165,7 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
       <div class="steps">
         <div class="step"><span class="ex" id="exX"></span><span><b>Einmal tippen:</b> Kreuz. Hier kann keine Katze liegen. Nochmal tippen entfernt es.</span></div>
         <div class="step"><span class="ex" id="exCat"></span><span><b>Doppelt tippen:</b> Katze. Einmal tippen auf die Katze nimmt sie wieder weg.</span></div>
-        <div class="step"><span class="ex" id="exSwipe" style="background:#B9DDA0"></span><span><b>Mit dem Finger wischen:</b> Jedes Feld, über das du fährst, bekommt ein Kreuz. Katzen bleiben dabei liegen.</span></div>
+        <div class="step"><span class="ex" id="exSwipe" style="background:#B9DDA0"></span><span><b>Mit dem Finger wischen:</b> Jedes Feld, über das du fährst, bekommt ein Kreuz. Beginnst du auf einem Kreuz, werden stattdessen alle Kreuze auf dem Weg gelöscht. Katzen bleiben dabei immer liegen.</span></div>
       </div>
       <h3>Helfer</h3>
       <p class="lead" style="font-size:14px;margin:0">„Auto-Kreuze“ kreuzt nach jeder Katze automatisch Zeile, Spalte, Farbe und Nachbarfelder an. „Hinweis“ zeigt dir einen Fehler oder eine richtige Katze.</p>
@@ -261,7 +261,7 @@ function catSVG(k){
 }
 const XSVG = `<svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="#3B3330" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg>`;
 
-/* ---------- Echte Aufnahmen ---------- */
+/* ---------- Katzenlaute ---------- */
 const SND = (() => {
   const NAMES = ["meow1","meow2","meow3","meow5","meowhigh","meowlow","purr","chorus","angry1","angry2"];
   let ctx = null, out = null, muted = false, loading = null; const buf = {}, last = {};
@@ -307,21 +307,35 @@ muteBtn.addEventListener("click", () => { SND.unlock(); SND.muted = !SND.muted; 
    iPhone: Safari kennt diese Schnittstelle nicht. Ab iOS 18 löst das Umschalten eines
    Schalter-Kästchens (input type=checkbox switch) ein kurzes Klopfen aus, das nutzen wir unsichtbar. */
 const HAPTIC = (() => {
+  // Android: Vibration des Browsers. iPhone: Safari kann nicht vibrieren; ab iOS 18 löst das Umschalten
+  // eines Schalter-Kästchens ein kurzes Klopfen aus. Safari erlaubt das nur im Moment, in dem der Finger
+  // den Bildschirm verlässt. Impulse, die beim Aufsetzen oder Wischen entstehen, werden deshalb gesammelt
+  // und beim Loslassen ausgegeben.
   const canVibrate = typeof navigator.vibrate === "function";
-  let label = null, last = 0;
-  if (!canVibrate){
-    label = document.createElement("label"); label.setAttribute("aria-hidden", "true");
-    label.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none";
-    const inp = document.createElement("input"); inp.type = "checkbox"; inp.setAttribute("switch", ""); inp.tabIndex = -1;
-    label.appendChild(inp); document.body.appendChild(label);
+  let last = 0, pending = 0;
+  function knock(){
+    const label = document.createElement("label"); label.ariaHidden = "true"; label.style.display = "none";
+    const inp = document.createElement("input"); inp.type = "checkbox"; inp.setAttribute("switch", "");
+    label.appendChild(inp); document.head.appendChild(label);
+    try { label.click(); } catch(e) {}
+    document.head.removeChild(label);
   }
+  const active = () => navigator.userActivation ? navigator.userActivation.isActive : false;
   function tap(kind = "light"){
     const now = performance.now();
     if (kind === "light" && now - last < 35) return;
     last = now;
-    if (canVibrate){ try { navigator.vibrate(kind === "cat" ? [18, 45, 18] : kind === "bad" ? [45, 35, 45] : 9); } catch(e) {} }
-    else if (label){ label.click(); if (kind !== "light") setTimeout(() => label.click(), 110); }
+    if (canVibrate){ try { navigator.vibrate(kind === "cat" ? [18, 45, 18] : kind === "bad" ? [45, 35, 45] : 9); } catch(e) {} return; }
+    const n = kind === "light" ? 1 : 2;
+    if (active()){ knock(); if (n > 1) setTimeout(knock, 110); }
+    else pending = Math.max(pending, n);
   }
+  function flush(){
+    if (!pending) return;
+    const n = pending; pending = 0;
+    knock(); if (n > 1) setTimeout(knock, 110);
+  }
+  ["touchend", "pointerup", "click"].forEach(ev => document.addEventListener(ev, flush, true));
   return {tap};
 })();
 
@@ -474,8 +488,15 @@ boardEl.addEventListener("pointermove", e => {
   for (let k = 1; k <= n; k++){
     const i = cellAt(drag.x + dx*k/n, drag.y + dy*k/n);
     if (i < 0) continue;
-    if (i !== drag.start && !drag.moved){ drag.moved = true; drag.n = 0; lastTap = {i:-1, t:0}; if (L.b[drag.start] === 0){ L.b[drag.start] = 1; changed = true; } }
-    if (drag.moved && L.b[i] === 0){ L.b[i] = 1; changed = true; SND.tick("set", ++drag.n); HAPTIC.tap(); }
+    if (i !== drag.start && !drag.moved){
+      // Wischen ab einem Kreuz löscht Kreuze, sonst werden Kreuze gesetzt. Katzen bleiben immer liegen.
+      drag.moved = true; drag.n = 0; lastTap = {i:-1, t:0};
+      drag.erase = drag.startVal === 1;
+      if (drag.erase){ if (L.b[drag.start] === 1){ L.b[drag.start] = 0; changed = true; SND.tick("clear"); HAPTIC.tap(); } }
+      else if (L.b[drag.start] === 0){ L.b[drag.start] = 1; changed = true; }
+    }
+    if (drag.moved && !drag.erase && L.b[i] === 0){ L.b[i] = 1; changed = true; SND.tick("set", ++drag.n); HAPTIC.tap(); }
+    if (drag.moved && drag.erase && L.b[i] === 1){ L.b[i] = 0; changed = true; SND.tick("clear"); HAPTIC.tap(); }
   }
   drag.x = e.clientX; drag.y = e.clientY;
   if (changed) render();

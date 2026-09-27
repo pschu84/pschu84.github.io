@@ -55,7 +55,7 @@ footer b{color:var(--paper)}
     <div>
       <div class="kicker">Vier Katzenspiele für zwischendurch</div>
       <h1>Schnurr&shy;zeit</h1>
-      <p class="lead">Füttern, jagen, stapeln, knobeln. Überall sind echte Katzenstimmen versteckt.</p>
+      <p class="lead">Füttern, jagen, stapeln, knobeln. Und überall miaut, schnurrt und faucht es.</p>
     </div>
     <button id="mascot" aria-label="Katze antippen">
       <svg viewBox="0 0 120 134" aria-hidden="true">
@@ -158,7 +158,6 @@ footer b{color:var(--paper)}
   </nav>
 
   <footer>
-    <p><b>Echte Katzenstimmen:</b> Miauen, Schnurren, Fauchen, Knurren und Jaulen stammen aus frei lizenzierten Aufnahmen (CC0, gemeinfrei, CC BY 3.0). Die genauen Quellen stehen in jedem Spiel unter „Aufnahmen und Lizenzen“.</p>
     <p>Rekorde werden nur auf diesem Gerät gespeichert.</p>
   </footer>
 </div>
@@ -171,7 +170,7 @@ footer b{color:var(--paper)}
     let v = 0; try { v = +localStorage.getItem(ch.dataset.key) || 0; } catch(e) {}
     ch.textContent = v ? "Rekord " + v : "Noch kein Rekord";
   });
-  // Maskottchen: echte Aufnahmen, erst nach dem ersten Antippen geladen
+  // Maskottchen: Laute werden erst nach dem ersten Antippen geladen
   let ctx = null; const buf = {}; let n = 0, timer = 0;
   const NAMES = ["meow1","meow2","meow3","meowhigh","purr"];
   async function load(){

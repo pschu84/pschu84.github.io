@@ -125,31 +125,15 @@ a.btn{display:block;text-align:center;text-decoration:none}
       <a class="home" href="./">‹ Alle Spiele</a>
       <div class="kicker">Spiel 2 von 3 · Demo</div>
       <h1>Mäusejagd</h1>
-      <p class="lead">Deine Katze jagt durch Küche, Keller und Garten. Schnapp dir die Mäuse, spring über Hindernisse und hör auf die Warnungen: Wer faucht, hat eine Gurke gesehen.</p>
-      <span class="real wait" id="loadState"><i></i><span>Lade echte Katzenaufnahmen …</span></span>
+      <p class="lead">Deine Katze jagt durch Küche, Keller und Garten. Schnapp dir die Mäuse, spring über Hindernisse und pass auf die Gurken auf: Katzen können sie nicht ausstehen.</p>
+      <span class="real fail" id="loadState" hidden><i></i><span>Töne konnten nicht geladen werden. Das Spiel läuft ohne Ton.</span></span>
 
       <h3>So jagst du</h3>
       <div class="how" id="how"></div>
 
-      <h3>Echte Katzen zum Anhören</h3>
+      <h3>Katzen zum Anhören</h3>
       <div class="sounds" id="sounds"></div>
 
-      <details>
-        <summary>Aufnahmen und Lizenzen</summary>
-        <p>Alle Laute sind echte Aufnahmen. Ich habe sie gekürzt, Rumpeln unter 150 Hz herausgefiltert und die Lautstärke angeglichen.</p>
-        <ul>
-          <li>Miauen: „cat meow“ und „cat meow II“ von tuberatanka (<a href="https://freesound.org/people/tuberatanka/sounds/110011/" target="_blank" rel="noopener">Freesound 110011</a>, <a href="https://freesound.org/people/tuberatanka/sounds/110010/" target="_blank" rel="noopener">110010</a>), CC0</li>
-          <li>Miauen: „Cat meow“ von philsapphire (<a href="https://freesound.org/people/philsapphire/sounds/256452/" target="_blank" rel="noopener">Freesound 256452</a>), CC0</li>
-          <li>Miauen: „Cat meowing x5“ von peridactyloptrix (<a href="https://freesound.org/people/peridactyloptrix/sounds/214759/" target="_blank" rel="noopener">Freesound 214759</a>), CC0</li>
-          <li>Futter-Miau: „Cat Wants Food“ von Oneirophile (<a href="https://freesound.org/people/Oneirophile/sounds/120160/" target="_blank" rel="noopener">Freesound 120160</a>), CC0</li>
-          <li>Katzenchor: „Hungry cats“ von missozzy (<a href="https://freesound.org/people/missozzy/sounds/169983/" target="_blank" rel="noopener">Freesound 169983</a>), CC0</li>
-          <li>Jaulen, Knurren, Kreischen: „catHowling1“, „catHowling2“, „catAttack“ von Zabuhailo (<a href="https://freesound.org/people/Zabuhailo/sounds/146964/" target="_blank" rel="noopener">Freesound 146964</a>, <a href="https://freesound.org/people/Zabuhailo/sounds/146965/" target="_blank" rel="noopener">146965</a>, <a href="https://freesound.org/people/Zabuhailo/sounds/146972/" target="_blank" rel="noopener">146972</a>), CC0</li>
-          <li>Wütendes Miauen: „MAD CAT !“ von temawas (<a href="https://freesound.org/people/temawas/sounds/133047/" target="_blank" rel="noopener">Freesound 133047</a>), CC0</li>
-          <li>Schnurren: „Purring cat“ von Mysid (<a href="https://commons.wikimedia.org/wiki/File:Purring_cat.oga" target="_blank" rel="noopener">Wikimedia Commons</a>), gemeinfrei</li>
-          <li>Fauchen: „Cat hissing“ von Zabuhailo (<a href="https://commons.wikimedia.org/wiki/File:Cat_hissing_-_Zabuhailo.wav" target="_blank" rel="noopener">Wikimedia Commons</a>), <a href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank" rel="noopener">CC BY 3.0</a></li>
-        </ul>
-        <p>Die Freesound-Ausschnitte stammen aus dem Datensatz <a href="https://github.com/karolpiczak/ESC-50" target="_blank" rel="noopener">ESC-50</a> von Karol J. Piczak. Schnurren und Fauchen in vorgeschnittener Form stammen aus dem Projekt <a href="https://github.com/hfgong/bark" target="_blank" rel="noopener">bark</a>.</p>
-      </details>
 
       <div class="foot"><button class="btn" id="startBtn">Jagd starten</button></div>
     </div>
@@ -168,7 +152,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
       </div>
       <div class="foot">
         <button class="btn" id="againBtn">Nochmal jagen</button>
-        <button class="btn ghost" id="menuBtn">Zu den Aufnahmen</button>
+        <button class="btn ghost" id="menuBtn">Zu den Katzenlauten</button>
         <a class="btn ghost" href="./">Zum Menü</a>
       </div>
     </div>
@@ -211,7 +195,7 @@ $("#bJump").innerHTML = ICON.jump + "<span>Sprung</span>";
 $("#pauseBtn").innerHTML = ICON.pause;
 $("#lives").innerHTML = ICON.paw + ICON.paw + ICON.paw;
 
-/* ---------- Echte Aufnahmen ---------- */
+/* ---------- Katzenlaute ---------- */
 const SND = (() => {
   const NAMES = ["meow1","meow2","meow3","meow4","meow5","meowlow","demand1","demand2","chorus","yowl1","yowl2","angry1","angry2","screech","growl","purr","hiss"];
   let ctx = null, out = null, muted = false, loaded = 0, failed = 0;
@@ -257,13 +241,7 @@ const SND = (() => {
   function setMuted(m){ muted = m; if (out) out.gain.value = m ? 0 : 1; }
   return {load, unlock, play, meow, setMuted, onProgress:f => listeners.push(f), get muted(){ return muted; }};
 })();
-SND.onProgress((ok, bad, all) => {
-  const el = $("#loadState");
-  if (ok + bad < all){ el.className = "real wait"; el.lastChild.textContent = `Lade echte Katzenaufnahmen … ${ok} von ${all}`; return; }
-  if (ok === all){ el.className = "real"; el.lastChild.textContent = `${all} echte Katzenaufnahmen bereit`; }
-  else if (ok > 0){ el.className = "real"; el.lastChild.textContent = `${ok} von ${all} Aufnahmen geladen`; }
-  else { el.className = "real fail"; el.lastChild.textContent = "Aufnahmen konnten nicht geladen werden. Das Spiel läuft ohne Ton."; }
-});
+SND.onProgress((ok, bad, all) => { if (ok + bad === all) $("#loadState").hidden = ok > 0; });
 SND.load();
 
 const muteBtn = $("#muteBtn");
@@ -275,7 +253,7 @@ const LIB = [
   {id:"meow1",   name:"Miauen",        where:"Maus geschnappt", o:{}},
   {id:"demand1", name:"Futter-Miau",   where:"Jagd startet",    o:{}},
   {id:"purr",    name:"Schnurren",     where:"Wollknäuel, Fisch", o:{dur:2.6}},
-  {id:"hiss",    name:"Fauchen",       where:"Gurke in Sicht",  o:{}},
+  {id:"hiss",    name:"Fauchen",       where:"Gurke berührt",   o:{}},
   {id:"growl",   name:"Knurren",       where:"fremder Kater",   o:{}},
   {id:"angry1",  name:"Wütend",        where:"Zusammenstoß",    o:{}},
   {id:"screech", name:"Kreischen",     where:"Treffer",         o:{}},
@@ -526,7 +504,6 @@ function spawnRow(){
     const q = Math.random();
     const type = q < .45 ? "cucumber" : q < .7 ? "puddle" : "block";
     G.ents.push({type, lane:l, x:laneX(l), y:-40*S, tx:laneX(l), zone:G.zone});
-    if (type === "cucumber" && SND.play("hiss", {vol:.55, gap:1.6, rate:rand(.95,1.05)})) G.cat.scared = .9;
   }
   if (free.length && Math.random() < .75){
     const l = pick(free), q = Math.random();
@@ -554,8 +531,10 @@ function hit(e, what){
   const c = G.cat;
   if (c.inv > 0) return;
   G.lives--; G.combo = 0; c.inv = 1.4; G.shake = .35;
-  SND.play("screech", {vol:.8, rate:rand(.95,1.05)});
-  if (what === "rival") SND.play("angry1", {vol:.9, when:.25});
+  if (what === "cucumber"){ SND.play("hiss", {vol:.9, rate:rand(.95,1.05)}); c.scared = 1.2; }
+  else SND.play("screech", {vol:.8, rate:rand(.95,1.05)});
+  if (what === "cucumber") SND.play("angry2", {vol:.7, when:.7});
+  else if (what === "rival") SND.play("angry1", {vol:.9, when:.25});
   else if (what === "puddle") SND.play("angry2", {vol:.9, when:.2});
   else SND.play(pick(["angry1","angry2"]), {vol:.8, when:.25});
   addText(c.x, catY() - 60*S, what === "puddle" ? "Igitt, nass!" : what === "cucumber" ? "Eine Gurke!" : what === "rival" ? "Rauferei!" : "Autsch!", "#FFD2C8", true);
@@ -739,7 +718,7 @@ $("#menuBtn").addEventListener("click", () => { $("#endOv").hidden = true; $("#s
 /* ---------- Anleitung mit Mini-Zeichnungen ---------- */
 const HOW = [
   ["mouse",    "<b>Mäuse schnappen.</b> Wischen oder die Pfeile wechseln die Spur. Fängst du eine Maus im Sprung, zählt sie doppelt."],
-  ["cucumber", "<b>Gurken meiden.</b> Katzen erschrecken vor ihnen. Hörst du ein Fauchen, kommt gleich eine."],
+  ["cucumber", "<b>Gurken meiden.</b> Katzen erschrecken vor ihnen. Läufst du in eine hinein, faucht deine Katze und verliert ein Leben."],
   ["rival",    "<b>Fremder Kater!</b> Ein Knurren warnt dich. Er läuft auf deine Spur zu: rechtzeitig ausweichen oder drüberspringen."],
   ["yarn",     "<b>Wollknäuel und Fisch</b> bringen Extrapunkte und Schnurren. Ein Fisch gibt ein verlorenes Leben zurück."]
 ];
