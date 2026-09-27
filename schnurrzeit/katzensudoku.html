@@ -39,11 +39,20 @@ button:focus-visible{outline:3px solid var(--mustard);outline-offset:2px}
 .rule svg{width:24px;height:24px}
 
 .mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding-inline:16px;padding-block:6px}
-#board{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;position:relative;display:grid;width:min(100%, calc(100dvh - 300px), 480px);aspect-ratio:1;touch-action:none;
+#board{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;position:relative;display:grid;width:min(100%, calc(100dvh - 300px), 480px);aspect-ratio:1;touch-action:manipulation;
   border:3px solid var(--line);border-radius:10px;overflow:hidden;background:var(--line);box-shadow:0 6px 0 rgba(0,0,0,.1)}
 @supports not (height:100dvh){ #board{width:min(100%, calc(100vh - 300px), 480px)} }
-.cell{position:relative;display:grid;place-items:center;border:0 solid var(--line);min-width:0;min-height:0;overflow:hidden}
+.cell{position:relative;display:grid;place-items:center;border:0 solid var(--line);min-width:0;min-height:0;overflow:hidden;touch-action:manipulation}
+.slot{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.hap{position:absolute;inset:0;z-index:2;display:block;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.hap input{position:absolute;left:0;top:0;width:1px;height:1px;margin:0;visibility:hidden}
+.cell::after{pointer-events:none}
+.pen{position:absolute;z-index:5;pointer-events:none;font:800 18px "Grandstander",ui-rounded,system-ui,sans-serif;color:#fff;background:var(--bad);padding:2px 8px;border-radius:10px;transform:translate(-50%,-50%);animation:pen 1.1s ease-out forwards}
+@keyframes pen{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-160%) scale(1)}}
+.cell.wrong{animation:flash .45s ease-in-out 2}
+.tool .cnt{font-size:10px;opacity:.8}
 .cell .mk{width:62%;height:62%;pointer-events:none}
+.slot .mk{width:62%;height:62%}.slot .cat{width:86%;height:86%}
 .cell .cat{width:86%;height:86%;pointer-events:none;animation:plop .25s cubic-bezier(.2,.9,.3,1.4)}
 .cell.clash::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid var(--bad);animation:pulse .8s ease-in-out infinite alternate}
 .cell.clash .cat{animation:shake .4s}
@@ -168,6 +177,7 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
         <div class="step"><span class="ex" id="exSwipe" style="background:#B9DDA0"></span><span><b>Mit dem Finger wischen:</b> Jedes Feld, über das du fährst, bekommt ein Kreuz. Beginnst du auf einem Kreuz, werden stattdessen alle Kreuze auf dem Weg gelöscht. Katzen bleiben dabei immer liegen.</span></div>
       </div>
       <h3>Helfer</h3>
+      <p class="lead" style="font-size:14px;margin:0 0 8px">Jedes Rätsel startet mit 200 Punkten pro Zeile, ein 5×5-Rätsel also mit 1000. Setzt du eine Katze auf ein Feld, auf dem sie nicht liegen kann, wird sie rot, kostet 100 Punkte und wird zum Kreuz. Pro Rätsel hast du 3 Hinweise, jeder kostet 150 Punkte.</p>
       <p class="lead" style="font-size:14px;margin:0">„Auto-Kreuze“ kreuzt nach jeder Katze automatisch Zeile, Spalte, Farbe und Nachbarfelder an. „Hinweis“ zeigt dir einen Fehler oder eine richtige Katze.</p>
       <div class="foot"><button class="btn" id="introGo">Los geht's</button></div>
     </div>
@@ -189,10 +199,10 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
       <h2 id="winTitle">Alle Katzen schlafen!</h2>
       <p class="lead" id="winText"></p>
       <div class="stats">
+        <div class="stat"><span>Punkte</span><b id="stPts">0</b></div>
         <div class="stat"><span>Zeit</span><b id="stTime">0:00</b></div>
-        <div class="stat"><span>Bestzeit</span><b id="stBest">0:00</b></div>
+        <div class="stat"><span>Fehler</span><b id="stMiss">0</b></div>
         <div class="stat"><span>Hinweise</span><b id="stHints">0</b></div>
-        <div class="stat"><span>Gelöst</span><b id="stDone">0 / 60</b></div>
       </div>
       <div class="foot"><button class="btn" id="nextBtn">Nächstes Rätsel</button><button class="btn ghost" id="winLv">Alle Rätsel</button></div>
     </div>
@@ -307,35 +317,18 @@ muteBtn.addEventListener("click", () => { SND.unlock(); SND.muted = !SND.muted; 
    iPhone: Safari kennt diese Schnittstelle nicht. Ab iOS 18 löst das Umschalten eines
    Schalter-Kästchens (input type=checkbox switch) ein kurzes Klopfen aus, das nutzen wir unsichtbar. */
 const HAPTIC = (() => {
-  // Android: Vibration des Browsers. iPhone: Safari kann nicht vibrieren; ab iOS 18 löst das Umschalten
-  // eines Schalter-Kästchens ein kurzes Klopfen aus. Safari erlaubt das nur im Moment, in dem der Finger
-  // den Bildschirm verlässt. Impulse, die beim Aufsetzen oder Wischen entstehen, werden deshalb gesammelt
-  // und beim Loslassen ausgegeben.
+  // Android: Vibration des Browsers. iPhone: Safari kann nicht vibrieren. Seit iOS 26.5 klopft das Handy nur,
+  // wenn der Finger selbst einen Schalter (input type=checkbox switch) umlegt. Deshalb liegt über jedem Feld
+  // eine unsichtbare Schalter-Fläche; das Klopfen entsteht beim Antippen von selbst, hier ist nichts zu tun.
   const canVibrate = typeof navigator.vibrate === "function";
-  let last = 0, pending = 0;
-  function knock(){
-    const label = document.createElement("label"); label.ariaHidden = "true"; label.style.display = "none";
-    const inp = document.createElement("input"); inp.type = "checkbox"; inp.setAttribute("switch", "");
-    label.appendChild(inp); document.head.appendChild(label);
-    try { label.click(); } catch(e) {}
-    document.head.removeChild(label);
-  }
-  const active = () => navigator.userActivation ? navigator.userActivation.isActive : false;
+  let last = 0;
   function tap(kind = "light"){
+    if (!canVibrate) return;
     const now = performance.now();
     if (kind === "light" && now - last < 35) return;
     last = now;
-    if (canVibrate){ try { navigator.vibrate(kind === "cat" ? [18, 45, 18] : kind === "bad" ? [45, 35, 45] : 9); } catch(e) {} return; }
-    const n = kind === "light" ? 1 : 2;
-    if (active()){ knock(); if (n > 1) setTimeout(knock, 110); }
-    else pending = Math.max(pending, n);
+    try { navigator.vibrate(kind === "cat" ? [18, 45, 18] : kind === "bad" ? [45, 35, 45] : 9); } catch(e) {}
   }
-  function flush(){
-    if (!pending) return;
-    const n = pending; pending = 0;
-    knock(); if (n > 1) setTimeout(knock, 110);
-  }
-  ["touchend", "pointerup", "click"].forEach(ev => document.addEventListener(ev, flush, true));
   return {tap};
 })();
 
@@ -352,9 +345,9 @@ let cells = [];
 function load(idx){
   const [r, s] = LEVELS[idx].split("|"), N = s.length;
   L = {idx, N, reg:[...r].map(ch => ch.charCodeAt(0) - 97), sol:[...s].map(Number), b:new Array(N*N).fill(0),
-       hist:[], t:0, hints:0, solved:false};
+       hist:[], t:0, hints:0, miss:0, pts:N*200, solved:false};
   const saved = SAVE.boards[idx];
-  if (saved && !SAVE.solved[idx]){ L.b = [...saved.b].map(Number); L.t = saved.t || 0; L.hints = saved.h || 0; }
+  if (saved && !SAVE.solved[idx]){ L.b = [...saved.b].map(Number); L.t = saved.t || 0; L.hints = saved.h || 0; L.miss = saved.m || 0; L.pts = saved.p != null ? saved.p : N*200 - L.hints*HINT_COST - L.miss*MISS_COST; }
   SAVE.cur = idx; persist();
   build(); render(); hud();
 }
@@ -376,6 +369,8 @@ function build(){
     d.style.borderLeftWidth = bl === null ? "0" : bl ? thick : thin;
     d.style.borderTopColor = bt ? "var(--line)" : "rgba(59,51,48,.22)";
     d.style.borderLeftColor = bl ? "var(--line)" : "rgba(59,51,48,.22)";
+    d.innerHTML = '<span class="slot"></span><label class="hap" aria-hidden="true"><input type="checkbox" switch tabindex="-1"></label>';
+    d._slot = d.firstChild;
     boardEl.appendChild(d); cells.push(d);
   }
 }
@@ -385,7 +380,7 @@ function render(){
   for (let i = 0; i < cells.length; i++){
     const v = L.b[i], d = cells[i];
     if (shown[i] !== v || d.dataset.n !== String(L.N)){
-      d.innerHTML = v === 1 ? XSVG : v === 2 ? catSVG(L.reg[i]) : "";
+      d._slot.innerHTML = v === 1 ? XSVG : v === 2 ? catSVG(L.reg[i]) : "";
       shown[i] = v; d.dataset.n = L.N;
     }
     d.classList.toggle("clash", v === 2 && bad.has(i));
@@ -405,11 +400,24 @@ function conflicts(){
   return bad;
 }
 const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+const HINTS = 3, HINT_COST = 150, MISS_COST = 100;
 function hud(){
   $("#lvName").textContent = `Rätsel ${L.idx + 1}`;
-  $("#lvInfo").textContent = `${L.N}×${L.N} · ${fmt(L.t)}`;
+  $("#lvInfo").textContent = `${L.N}×${L.N} · ${fmt(L.t)} · ${L.pts} Punkte`;
+  const left = HINTS - L.hints;
+  $("#hintBtn").innerHTML = ICON.hint + `<span>Hinweis <span class="cnt">(${left})</span></span>`;
+  $("#hintBtn").disabled = left <= 0 || L.solved;
 }
-function saveBoard(){ if (!L.solved){ SAVE.boards[L.idx] = {b:L.b.join(""), t:Math.floor(L.t), h:L.hints}; persist(); } }
+function saveBoard(){ if (!L.solved){ SAVE.boards[L.idx] = {b:L.b.join(""), t:Math.floor(L.t), h:L.hints, m:L.miss, p:L.pts}; persist(); } }
+const isSol = i => L.sol[Math.floor(i/L.N)] === i % L.N;
+function penalty(i, amount){
+  L.pts = Math.max(0, L.pts - amount);
+  const d = cells[i], b = boardEl.getBoundingClientRect(), r = d.getBoundingClientRect();
+  const t = document.createElement("div"); t.className = "pen"; t.textContent = "−" + amount;
+  t.style.left = (r.left - b.left + r.width/2) + "px"; t.style.top = (r.top - b.top + r.height/2) + "px";
+  boardEl.appendChild(t); setTimeout(() => t.remove(), 1150);
+  hud();
+}
 function snapshot(){ L.hist.push(L.b.slice()); if (L.hist.length > 200) L.hist.shift(); }
 function dropSame(){ const top = L.hist[L.hist.length - 1]; if (top && top.every((v, i) => v === L.b[i])) L.hist.pop(); }
 
@@ -425,6 +433,16 @@ function afterChange(placedCat){
 }
 function setCat(i){
   L.b[i] = 2;
+  if (!isSol(i)){
+    // Hier kann keine Katze liegen: kurz zeigen, Punkte abziehen, dann in ein Kreuz verwandeln
+    L.miss++; HAPTIC.tap("bad");
+    render(); cells[i].classList.add("clash", "wrong");
+    SND.play("angry1", {vol:.8, gap:.3});
+    penalty(i, MISS_COST);
+    saveBoard();
+    setTimeout(() => { if (L.b[i] === 2 && !isSol(i)){ L.b[i] = 1; cells[i].classList.remove("wrong"); render(); saveBoard(); } }, 900);
+    return;
+  }
   HAPTIC.tap("cat");
   if (SAVE.auto){
     const N = L.N, r = Math.floor(i/N), c = i % N;
@@ -445,17 +463,19 @@ function checkWin(bad){
   cells.forEach((d, i) => d.style.animationDelay = ((Math.floor(i/L.N) + i % L.N)*.04) + "s");
   const prev = SAVE.solved[L.idx];
   const time = Math.floor(L.t);
-  SAVE.solved[L.idx] = {t: prev ? Math.min(prev.t, time) : time, h: prev ? Math.min(prev.h, L.hints) : L.hints};
+  const perfect = L.miss === 0 && L.hints === 0;
+  const recP = !prev || L.pts > (prev.p || 0);
+  SAVE.solved[L.idx] = {t: prev ? Math.min(prev.t, time) : time, h: prev ? Math.min(prev.h, L.hints) : L.hints, p: Math.max(prev ? (prev.p || 0) : 0, L.pts)};
   delete SAVE.boards[L.idx]; persist();
   SND.play("purr", {vol:.9, dur:2});
   const done = Object.keys(SAVE.solved).length;
-  $("#winKicker").textContent = prev && time < prev.t ? "Neue Bestzeit" : `Rätsel ${L.idx + 1} gelöst`;
-  $("#winTitle").textContent = L.hints === 0 ? "Alle Katzen schlafen!" : "Geschafft!";
-  $("#winText").textContent = L.hints === 0 ? `${L.N} Katzen, jede auf ihrer eigenen Decke, und das ganz ohne Hinweis.` : `${L.N} Katzen liegen zufrieden auf ihren Decken. Du hast ${L.hints} ${L.hints === 1 ? "Hinweis" : "Hinweise"} gebraucht.`;
-  $("#stTime").textContent = fmt(time); $("#stBest").textContent = fmt(SAVE.solved[L.idx].t);
-  $("#stHints").textContent = L.hints; $("#stDone").textContent = `${done} / ${LEVELS.length}`;
+  $("#winKicker").textContent = prev && recP ? "Neuer Punkterekord" : `Rätsel ${L.idx + 1} gelöst · ${done} von ${LEVELS.length}`;
+  $("#winTitle").textContent = perfect ? "Perfekt!" : "Geschafft!";
+  $("#winText").textContent = perfect ? `${L.N} Katzen, jede auf ihrer eigenen Decke, ohne einen einzigen Fehler und ohne Hinweis.` : `${L.N} Katzen liegen zufrieden auf ihren Decken. Dein Rekord für dieses Rätsel: ${SAVE.solved[L.idx].p} Punkte, Bestzeit ${fmt(SAVE.solved[L.idx].t)}.`;
+  $("#stPts").textContent = L.pts; $("#stTime").textContent = fmt(time);
+  $("#stMiss").textContent = L.miss; $("#stHints").textContent = `${L.hints} / ${HINTS}`;
   $("#nextBtn").hidden = L.idx >= LEVELS.length - 1;
-  setTimeout(() => { $("#winOv").hidden = false; reward(L.hints === 0); }, 1900);
+  setTimeout(() => { $("#winOv").hidden = false; reward(perfect); }, 1900);
 }
 
 /* ---------- Eingabe: Tippen, Doppeltippen, Wischen ---------- */
@@ -470,7 +490,7 @@ boardEl.addEventListener("pointerdown", e => {
   if (!L || L.solved) return;
   const i = cellAt(e.clientX, e.clientY); if (i < 0) return;
   e.preventDefault(); SND.unlock();
-  try { boardEl.setPointerCapture(e.pointerId); } catch(err) {}
+  if (e.pointerType === "mouse"){ try { boardEl.setPointerCapture(e.pointerId); } catch(err) {} }
   const now = performance.now();
   const dbl = lastTap.i === i && now - lastTap.t < 340;
   lastTap = {i, t: dbl ? 0 : now};
@@ -514,7 +534,10 @@ function endDrag(e){
 boardEl.addEventListener("pointerup", endDrag);
 // iPhone/iPad: Doppeltippen darf die Seite nicht vergrößern. Das Spiel liest die Berührungen über Pointer-Ereignisse,
 // die Standardaktion des Browsers (Zoomen, Scrollen, Lupe) wird auf dem Spielfeld abgeschaltet.
-["touchstart", "touchmove", "touchend", "gesturestart"].forEach(ev => boardEl.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, {passive:false}));
+// Nur das Verschieben der Seite beim Wischen und das Zoomen mit zwei Fingern werden unterdrückt.
+// Tippen bleibt ein echter Klick, damit der Schalter unter dem Finger auf dem iPhone klopfen kann.
+// Den Doppeltipp-Zoom verhindert touch-action: manipulation.
+["touchmove", "gesturestart"].forEach(ev => boardEl.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, {passive:false}));
 boardEl.addEventListener("dblclick", e => e.preventDefault());
 boardEl.addEventListener("pointercancel", endDrag);
 
@@ -528,12 +551,12 @@ $("#resetYes").addEventListener("click", () => { $("#resetOv").hidden = true; sn
 $("#hintBtn").addEventListener("click", () => {
   if (L.solved) return;
   SND.unlock();
-  const N = L.N, isSol = i => L.sol[Math.floor(i/N)] === i % N;
-  L.hints++; saveBoard();
-  const wrongCat = L.b.findIndex((v, i) => v === 2 && !isSol(i));
-  if (wrongCat >= 0){ flash(wrongCat, "flash"); SND.play("angry2", {vol:.7}); return toast("Diese Katze liegt hier falsch."); }
+  if (L.hints >= HINTS) return toast("Für dieses Rätsel sind alle Hinweise aufgebraucht.");
+  const N = L.N;
+  L.hints++; L.pts = Math.max(0, L.pts - HINT_COST); hud(); saveBoard();
+  toast(`Hinweis ${L.hints} von ${HINTS}: −${HINT_COST} Punkte`, 1400);
   const wrongX = L.b.findIndex((v, i) => v === 1 && isSol(i));
-  if (wrongX >= 0){ flash(wrongX, "flash"); SND.play("meowhigh", {vol:.6}); return toast("Hier hast du ein Kreuz gesetzt, aber genau hier gehört eine Katze hin."); }
+  if (wrongX >= 0){ flash(wrongX, "flash"); SND.play("meowhigh", {vol:.6}); return toast(`Hier hast du ein Kreuz gesetzt, aber genau hier gehört eine Katze hin. (−${HINT_COST} Punkte)`); }
   // Farbe mit den wenigsten freien Feldern zuerst
   let best = -1, bestFree = 99;
   for (let r = 0; r < N; r++){
@@ -541,7 +564,7 @@ $("#hintBtn").addEventListener("click", () => {
     const g = L.reg[i], free = L.b.filter((v, j) => v === 0 && L.reg[j] === g).length;
     if (free < bestFree){ bestFree = free; best = i; }
   }
-  if (best >= 0){ snapshot(); setCat(best); flash(best, "hintok"); toast("Diese Katze gehört hierher."); }
+  if (best >= 0){ snapshot(); setCat(best); flash(best, "hintok"); toast(`Diese Katze gehört hierher. (−${HINT_COST} Punkte)`); }
 });
 function flash(i, cls){ const d = cells[i]; d.classList.remove(cls); void d.offsetWidth; d.classList.add(cls); setTimeout(() => d.classList.remove(cls), 1600); }
 let toastT = 0;
@@ -616,7 +639,7 @@ function renderList(){
   LEVELS.forEach((l, i) => { const n = l.split("|")[1].length; (groups[n] = groups[n] || []).push(i); });
   $("#lvList").innerHTML = Object.keys(groups).map(n => `<h3>${n}×${n}</h3><div class="lv-group">` + groups[n].map(i => {
     const s = SAVE.solved[i];
-    return `<button class="lv${s ? " done" : ""}${L && L.idx === i ? " cur" : ""}" data-i="${i}">${i + 1}<small>${s ? fmt(s.t) : SAVE.boards[i] ? "begonnen" : "&nbsp;"}</small></button>`;
+    return `<button class="lv${s ? " done" : ""}${L && L.idx === i ? " cur" : ""}" data-i="${i}">${i + 1}<small>${s ? (s.p != null ? s.p + " P" : fmt(s.t)) : SAVE.boards[i] ? "begonnen" : "&nbsp;"}</small></button>`;
   }).join("") + `</div>`).join("");
 }
 $("#lvBtn").addEventListener("click", () => { renderList(); $("#lvOv").hidden = false; });

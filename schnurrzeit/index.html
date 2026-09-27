@@ -165,7 +165,7 @@ footer b{color:var(--paper)}
 <script>
 (() => {
   const sd = document.querySelector("[data-sudoku]");
-  try { const d = JSON.parse(localStorage.getItem("katzensudoku") || "null"); const n = d && d.solved ? Object.keys(d.solved).length : 0; if (n) sd.textContent = n + " von 60 gelöst"; } catch(e) {}
+  try { const d = JSON.parse(localStorage.getItem("katzensudoku") || "null"); const n = d && d.solved ? Object.keys(d.solved).length : 0; const pts = n ? Object.values(d.solved).reduce((x, v) => x + (v.p || 0), 0) : 0; if (n) sd.textContent = n + " von 60 gelöst" + (pts ? " · " + pts.toLocaleString("de-DE") + " Punkte" : ""); } catch(e) {}
   document.querySelectorAll(".chip.rec[data-key]").forEach(ch => {
     let v = 0; try { v = +localStorage.getItem(ch.dataset.key) || 0; } catch(e) {}
     ch.textContent = v ? "Rekord " + v : "Noch kein Rekord";
