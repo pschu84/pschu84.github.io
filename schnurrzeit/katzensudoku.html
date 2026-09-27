@@ -51,6 +51,13 @@ button:focus-visible{outline:3px solid var(--mustard);outline-offset:2px}
 .cell.clash::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid var(--bad);animation:pulse .8s ease-in-out infinite alternate}
 .cell.clash .cat{animation:shake .4s}
 .cell.flash{animation:flash .5s ease-in-out 3}
+/* Falsche Katze: rot umrandet, böser Blick, dann wird sie zum Kreuz */
+.cell.wrongcat::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid var(--bad);background:rgba(217,72,59,.18)}
+.cell.wrongcat .cat{animation:shake .4s}
+.cell.wrongcat .cat .angry{display:inline}.cell.wrongcat .cat .eyes{display:none}
+.pts-fly{position:fixed;z-index:80;transform:translate(-50%,-50%);pointer-events:none;font:800 24px "Grandstander",ui-rounded,system-ui,sans-serif;color:var(--bad);text-shadow:0 2px 0 #fff,0 0 8px rgba(255,255,255,.9);animation:ptsfly 1.1s ease-out forwards}
+@keyframes ptsfly{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-160%) scale(1)}}
+.lvpart{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--pink);margin:18px 0 -8px}
 .cell.hintok{animation:glow 1s ease-in-out 2}
 .cat .angry,.cat .happy{display:none}
 .cell.clash .cat .angry{display:inline}.cell.clash .cat .eyes{display:none}
@@ -148,7 +155,7 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
 
   <main class="mid">
     <div id="board" role="grid" aria-label="Spielfeld"></div>
-    <p class="help"><b>Tippen</b> setzt ein Kreuz · <b>Doppeltippen</b> setzt eine Katze · <b>Wischen</b> kreuzt ganze Reihen an</p>
+    <p class="help"><b>Tippen</b> setzt ein Kreuz · <b>Doppeltippen</b> setzt eine Katze · <b>Wischen</b> kreuzt an oder räumt Kreuze weg</p>
   </main>
 
   <nav id="tools" aria-label="Werkzeuge">
@@ -168,10 +175,12 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
       <div class="steps">
         <div class="step"><span class="ex" id="exX"></span><span><b>Einmal tippen:</b> Kreuz. Hier kann keine Katze liegen. Nochmal tippen entfernt es.</span></div>
         <div class="step"><span class="ex" id="exCat"></span><span><b>Doppelt tippen:</b> Katze. Einmal tippen auf die Katze nimmt sie wieder weg.</span></div>
-        <div class="step"><span class="ex" id="exSwipe" style="background:#B9DDA0"></span><span><b>Mit dem Finger wischen:</b> Jedes Feld, über das du fährst, bekommt ein Kreuz. Katzen bleiben dabei liegen.</span></div>
+        <div class="step"><span class="ex" id="exSwipe" style="background:#B9DDA0"></span><span><b>Mit dem Finger wischen:</b> Jedes Feld, über das du fährst, bekommt ein Kreuz. Beginnst du auf einem Kreuz, werden die Kreuze stattdessen entfernt. Katzen bleiben liegen.</span></div>
       </div>
       <h3>Helfer</h3>
       <p class="lead" style="font-size:14px;margin:0">„Auto-Kreuze“ kreuzt nach jeder Katze automatisch Zeile, Spalte, Farbe und Nachbarfelder an. „Hinweis“ zeigt dir einen Fehler oder eine richtige Katze.</p>
+      <h3>Punkte</h3>
+      <p class="lead" style="font-size:14px;margin:0">Jedes Rätsel startet mit 200 Punkten pro Zeile, ein 5×5-Rätsel also mit 1000. Eine Katze auf einem Feld, auf dem sie nicht liegen kann, kostet <b>100 Punkte</b> und wird zum Kreuz. Pro Rätsel gibt es <b>3 Hinweise</b>, jeder kostet <b>150 Punkte</b>. „Perfekt“ gibt es nur ohne Fehler und ohne Hinweis.</p>
       <p style="font-size:11.5px;line-height:1.45;color:var(--muted);margin:14px 0 0">Klick-Geräusch: „The press of a button“ von Spooky-Lukey (<a href="https://freesound.org/people/Spooky-Lukey/sounds/869478/" target="_blank" rel="noopener" style="color:var(--wall)">Freesound 869478</a>), <a href="https://creativecommons.org/licenses/by/4.0/deed.de" target="_blank" rel="noopener" style="color:var(--wall)">CC BY 4.0</a>, gekürzt.</p>
       <div class="foot"><button class="btn" id="introGo">Los geht's</button></div>
     </div>
@@ -179,7 +188,7 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
 
   <section class="overlay" id="lvOv" hidden>
     <div class="sheet">
-      <div class="kicker">60 Rätsel</div>
+      <div class="kicker" id="lvCount">Rätsel</div>
       <h2>Rätsel wählen</h2>
       <div id="lvList"></div>
       <div class="foot"><button class="btn ghost" id="lvClose">Schließen</button></div>
@@ -193,10 +202,10 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
       <h2 id="winTitle">Alle Katzen schlafen!</h2>
       <p class="lead" id="winText"></p>
       <div class="stats">
+        <div class="stat"><span>Punkte</span><b id="stPts">0</b></div>
+        <div class="stat" style="color:var(--pink)"><span>Punkterekord</span><b id="stBestPts" style="color:var(--pink)">0</b></div>
         <div class="stat"><span>Zeit</span><b id="stTime">0:00</b></div>
-        <div class="stat"><span>Bestzeit</span><b id="stBest">0:00</b></div>
-        <div class="stat"><span>Hinweise</span><b id="stHints">0</b></div>
-        <div class="stat"><span>Gelöst</span><b id="stDone">0 / 60</b></div>
+        <div class="stat"><span>Fehler · Hinweise</span><b id="stEH">0 · 0</b></div>
       </div>
       <div class="foot"><button class="btn" id="nextBtn">Nächstes Rätsel</button><button class="btn ghost" id="winLv">Alle Rätsel</button></div>
     </div>
@@ -215,7 +224,9 @@ h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase
 <script>
 (() => {
 "use strict";
-const LEVELS = ["aaaacadbccdddccdddeedddee|02413","aaaccaabccaabccadbeebbbee|02413","aaaadaaabdacccdaceddeeeee|03142","abbbdacbbdccdddccdddccedd|03142","bbbbabbeeaeeeccdeecceeeec|41302","aaaaaccbaacceddceeddceddd|42031","baaadbbaadbecddeedddeeddd|30241","aaaaaaccabcccabccdddceddd|24031","eaaaaaeccbdaecccdaeeddddeeddddeffffd|531402","aceeeeacccbecccbbeccfdbecfffbecfffee|041352","aaaaaaaabbccaaadccaaadfcfefffcffffff|025314","aaabddaaabddacaeedaeeeedeeeeeeeeefff|031524","aaaaababbbbbabbbccadbbbbadeebbddeeef|024135","ccbbaacbbfffcfffdfeeefdfeeefffeeffff|520413","abbbbbcbdbbbccdbbbffddeefffdeefffdee|041352","ccbaaaccbbbacccbbbccccbdfcfeeeffffee|420531","aaaabbacaabbeccadbeeedddeeedddeeedfd|251304","aaabbbacbbdbacccddccccddccecddcceedf|031425","aaabbbbaabbbbcadbbcccadbbcccdddgggedddfgggdddgggg|0241635","eeeaaaaeeebaaaeeedffceeddffceeeffffeeeffgfggggggg|5362041","bbbbbbabbbbbbbcdddbbbdddebbgffdeeegfffeeegfffeegg|6302415","abbbdddbbbddccbdddeccfdddeeefffdgegfffggggffggggg|0263514","aaabbbbaaabbbbacaadddaggeddfaggeeffagggfffagggfff|0415362","aaaabbbaaacbbbaaacebfddaceffddeeeffdddffffdgdddff|2530461","bbbaaaabbbaacabaaaaccbdddaccbedddccbgddccfbgggccc|4053162","aaaaaaaaaabaddacbbbddabbddddabeddffabeffffabefgff|0315264","aaaabbbaeecbbdeeecbddeeeeeddeeeeeedfeeeeedggggeed|1536402","aaeedddaaeeddbeecedddeeeeeddgggeedgfggggggfgggggg|1625304","aaaadddaaabdddacbbdddaceddddaeefggdgegffgdggggggg|0315246","aabbbbdaabbbddaccbdddaabbdddaaefdddafeffddafffffg|0315246","aaaaaaaadaaabaaadcccaaaadcgcccffddgcfffedgggffhhdddgghhhgggghhhh|14207536","ccccaaaaccbbedafceeeedafeeeeedafeeeeddffeeffffffhhhfffgfhhffffff|73052461","aaaaabbeadaabbeeadddbbecaaaddeeeddddeeeedfdfeeeeffffegeefhhhhgge|04736152","ccbbbbbacccccbbbdddcceffdeeeceffdeeeeeffggeeeeffgggggfffgggghhhf|75302614","dddaabbbdddaabbbdddcabbbdddeebffddeeeeffddeeefffggffffffghhhffff|46315702","bbbbbccaeeebcccceeedcccceeeddddceeefgggcefffggccefhfggcchhhfgggc|73640251","bbbbbaaaeebbbbaaeeecbbbaeeedbddaeeddddaahhgffaaahgggggaahhhggaaa|75361420","bbaaaacfbaaacacfbbeecccfeeeecedfeeeeeeffeeeeefffeegfffffeegghhhf|30461725","aaaaaabbaaaabbbdaaacccbdaaaaabbdaafeeeedafffeeedffffeeggffhhgggg|05374162","aaffbbbbeaffbcbceeffdcccheffddddheffdggghhhffggghhhhgggghhhhhggg|04751362","aaaaaaabaaaaababeecddbbbeddddbbbedfdfgbbeefffgbbhehffggghhhhhggg|57240361","bbbbbaaabbbbaaecbbbbbeecdbbbbeccdbeeeeeedddeefeeddghhfffgggghhff|61703524","aaabbbbbbaaaaffbbbaacffbbbbacccffbdbegggffddbgggggfihhggggiiihhggggiiihhggggiiiii|162705384","ddccbbbaadcccbbbbadcdcceeeadddccceeefddfcceeefffffeeeegfffeeeeegfffeeeehgfffieeeh|753162084","aaaaaaaccaaabbaaacaaabdfffcaaabdffcceggdddffcgghhhhfffgghhhffffgihhhhiiigiiiiiiii|638407152","caaaaabbgcabbbbbggcccbeegggcccceegddcccceegffcheeegggfchhhhggggcchhhigggchhhhiggg|130748625","aaaaaafbbaaaaaffbdacaaaafddacaaaafddcceeaafdgeeeefffggeeeiifgggeeihiggggeeiiiiiii|071824635","ffffffbaaffffdbbdacffeddddaiffeeddddiiffeeeddiffgeeeddifigggehhiiiiiiihiiiiiiiiii|850641372","bbbbbbaaabbbbbbbaabbbbbaaacbbdeaafaceeeeeafcceheffffggehhfffiggeehhffiigehhhfiiig|618204735","eeebbaaaaeeebbbbaaeebbbbbdceebgddddceggghdddhgggghhhfhgigghhhhhiiiiiihhhiiiiihhhh|538407261","aaaaaaaaaaaabbbdccaabbbddcfaaeeedfffaeeehhfffaeehhhfffageeehhffaggeehhhfggihhhhhh|047538162","caccccbbbcccccccebcccdddeeeccfdddeeeffffieeeeffiiiigggfiiiiigigiiihiiiighhhhiiiig|182470635","aaaccccbbaacccccbbeaccccccdecccccccdeecccccddeeeefgdddfffffgggdhfffiiggdhiiiigggg|275814603","bbbaaaaafbbbcadddfbbccadddfeeeeefdffiegeffffhiggeehhfhigggghhhhiggghhhhhiigghhhhh|502637481","aaaaaaaaaaaaaaabaaaaaaaccbbaaadccccceeeaccccecehfacceeeeehffiieggghhffiieehhhhhhiieehhhhjhiiiihhhhjh|2530694718","bbbaaadddgbbbadddddgcbbbdddeggfddddfdeggfffffffeggfffhhffhggfffhhfhhhgfffhhhhhhgjjfhhhhhiijjhhhhhhhi|4203759681","aaaaaaaaaaaabbddacaabbbbddccacbbdddddccceegdddddcceigggddfcceigggggffceiihhgggfceiihhgfffciiihjffffc|8296075314","ccccbbbbaacccbbbdbbdchebeeddddhheeeffffdhhhheiifffggjhhiifffggjjhiiiffgjjhhiiiifgjhhhiiiifgjjjjiiiif|8509471362","aaaaabbbbdaabbbbbbddaabbbcfffdaccbccfdddaacccffddeaaccffffdjgacffffffjggffhffffjgiifhfffjjgihhhfffjj|1357960428","caaaaaabbbcacaaaabbbccccaaaffbcccccdafeecccdddfffecggdddfeeeccgggddieigggghgdiiiggggggggiigggjjiiiii|1705962483"];
+const LEVELS = ["aaaacadbccdddccdddeedddee|02413","aaaccaabccaabccadbeebbbee|02413","aaaadaaabdacccdaceddeeeee|03142","abbbdacbbdccdddccdddccedd|03142","bbbbabbeeaeeeccdeecceeeec|41302","aaaaaccbaacceddceeddceddd|42031","baaadbbaadbecddeedddeeddd|30241","aaaaaaccabcccabccdddceddd|24031","eaaaaaeccbdaecccdaeeddddeeddddeffffd|531402","aceeeeacccbecccbbeccfdbecfffbecfffee|041352","aaaaaaaabbccaaadccaaadfcfefffcffffff|025314","aaabddaaabddacaeedaeeeedeeeeeeeeefff|031524","aaaaababbbbbabbbccadbbbbadeebbddeeef|024135","ccbbaacbbfffcfffdfeeefdfeeefffeeffff|520413","abbbbbcbdbbbccdbbbffddeefffdeefffdee|041352","ccbaaaccbbbacccbbbccccbdfcfeeeffffee|420531","aaaabbacaabbeccadbeeedddeeedddeeedfd|251304","aaabbbacbbdbacccddccccddccecddcceedf|031425","aaabbbbaabbbbcadbbcccadbbcccdddgggedddfgggdddgggg|0241635","eeeaaaaeeebaaaeeedffceeddffceeeffffeeeffgfggggggg|5362041","bbbbbbabbbbbbbcdddbbbdddebbgffdeeegfffeeegfffeegg|6302415","abbbdddbbbddccbdddeccfdddeeefffdgegfffggggffggggg|0263514","aaabbbbaaabbbbacaadddaggeddfaggeeffagggfffagggfff|0415362","aaaabbbaaacbbbaaacebfddaceffddeeeffdddffffdgdddff|2530461","bbbaaaabbbaacabaaaaccbdddaccbedddccbgddccfbgggccc|4053162","aaaaaaaaaabaddacbbbddabbddddabeddffabeffffabefgff|0315264","aaaabbbaeecbbdeeecbddeeeeeddeeeeeedfeeeeedggggeed|1536402","aaeedddaaeeddbeecedddeeeeeddgggeedgfggggggfgggggg|1625304","aaaadddaaabdddacbbdddaceddddaeefggdgegffgdggggggg|0315246","aabbbbdaabbbddaccbdddaabbdddaaefdddafeffddafffffg|0315246","aaaaaaaadaaabaaadcccaaaadcgcccffddgcfffedgggffhhdddgghhhgggghhhh|14207536","ccccaaaaccbbedafceeeedafeeeeedafeeeeddffeeffffffhhhfffgfhhffffff|73052461","aaaaabbeadaabbeeadddbbecaaaddeeeddddeeeedfdfeeeeffffegeefhhhhgge|04736152","ccbbbbbacccccbbbdddcceffdeeeceffdeeeeeffggeeeeffgggggfffgggghhhf|75302614","dddaabbbdddaabbbdddcabbbdddeebffddeeeeffddeeefffggffffffghhhffff|46315702","bbbbbccaeeebcccceeedcccceeeddddceeefgggcefffggccefhfggcchhhfgggc|73640251","bbbbbaaaeebbbbaaeeecbbbaeeedbddaeeddddaahhgffaaahgggggaahhhggaaa|75361420","bbaaaacfbaaacacfbbeecccfeeeecedfeeeeeeffeeeeefffeegfffffeegghhhf|30461725","aaaaaabbaaaabbbdaaacccbdaaaaabbdaafeeeedafffeeedffffeeggffhhgggg|05374162","aaffbbbbeaffbcbceeffdcccheffddddheffdggghhhffggghhhhgggghhhhhggg|04751362","aaaaaaabaaaaababeecddbbbeddddbbbedfdfgbbeefffgbbhehffggghhhhhggg|57240361","bbbbbaaabbbbaaecbbbbbeecdbbbbeccdbeeeeeedddeefeeddghhfffgggghhff|61703524","aaabbbbbbaaaaffbbbaacffbbbbacccffbdbegggffddbgggggfihhggggiiihhggggiiihhggggiiiii|162705384","ddccbbbaadcccbbbbadcdcceeeadddccceeefddfcceeefffffeeeegfffeeeeegfffeeeehgfffieeeh|753162084","aaaaaaaccaaabbaaacaaabdfffcaaabdffcceggdddffcgghhhhfffgghhhffffgihhhhiiigiiiiiiii|638407152","caaaaabbgcabbbbbggcccbeegggcccceegddcccceegffcheeegggfchhhhggggcchhhigggchhhhiggg|130748625","aaaaaafbbaaaaaffbdacaaaafddacaaaafddcceeaafdgeeeefffggeeeiifgggeeihiggggeeiiiiiii|071824635","ffffffbaaffffdbbdacffeddddaiffeeddddiiffeeeddiffgeeeddifigggehhiiiiiiihiiiiiiiiii|850641372","bbbbbbaaabbbbbbbaabbbbbaaacbbdeaafaceeeeeafcceheffffggehhfffiggeehhffiigehhhfiiig|618204735","eeebbaaaaeeebbbbaaeebbbbbdceebgddddceggghdddhgggghhhfhgigghhhhhiiiiiihhhiiiiihhhh|538407261","aaaaaaaaaaaabbbdccaabbbddcfaaeeedfffaeeehhfffaeehhhfffageeehhffaggeehhhfggihhhhhh|047538162","caccccbbbcccccccebcccdddeeeccfdddeeeffffieeeeffiiiigggfiiiiigigiiihiiiighhhhiiiig|182470635","aaaccccbbaacccccbbeaccccccdecccccccdeecccccddeeeefgdddfffffgggdhfffiiggdhiiiigggg|275814603","bbbaaaaafbbbcadddfbbccadddfeeeeefdffiegeffffhiggeehhfhigggghhhhiggghhhhhiigghhhhh|502637481","aaaaaaaaaaaaaaabaaaaaaaccbbaaadccccceeeaccccecehfacceeeeehffiieggghhffiieehhhhhhiieehhhhjhiiiihhhhjh|2530694718","bbbaaadddgbbbadddddgcbbbdddeggfddddfdeggfffffffeggfffhhffhggfffhhfhhhgfffhhhhhhgjjfhhhhhiijjhhhhhhhi|4203759681","aaaaaaaaaaaabbddacaabbbbddccacbbdddddccceegdddddcceigggddfcceigggggffceiihhgggfceiihhgfffciiihjffffc|8296075314","ccccbbbbaacccbbbdbbdchebeeddddhheeeffffdhhhheiifffggjhhiifffggjjhiiiffgjjhhiiiifgjhhhiiiifgjjjjiiiif|8509471362","aaaaabbbbdaabbbbbbddaabbbcfffdaccbccfdddaacccffddeaaccffffdjgacffffffjggffhffffjgiifhfffjjgihhhfffjj|1357960428","caaaaaabbbcacaaaabbbccccaaaffbcccccdafeecccdddfffecggdddfeeeccgggddieigggghgdiiiggggggggiigggjjiiiii|1705962483",
+/* Sammlung 2 (Rätsel 61 bis 120): per Programm erzeugt, jedes mit genau einer Lösung und ohne Raten lösbar */
+"aaabbacdbbcccebcccebcceee|02413","aaaaaabbcadbbcaddbbeddddd|03142","aaabcaabbcabbccdebbbddddd|02413","aaaabaccabadcacddccceeccc|24130","aaaaaabbaaaabbaaacbdddacbbbdefbbffff|305142","aaaaabcccaabcccdbbcecccccccfccccffff|053142","aaaaabcaaabbdbbbbbdddbebfdddebffddee|305241","aabbbbcabbddcbbbddbbbeeebbeeefbbeeff|140253","aabbccdaadccddddcedddccedfdeeeffeeee|314250","aaabbbcabbdecabbddccbdddfcbdffffffff|052413","aaaaaaabbbaacdbbbaacdbbeeaccbbefcccggefffceeeeccc|4615302","aaaaaaaaaaaaabacdaaabccddddbceddfffeeddddfeggddff|4613502","aaaaaaaabccaaaabbbbaadefffaadeggfagddgffggdgggggg|5241630","aabbbccaaaadccaddddceadffccegffcceeggeeceeeeeeeee|4135206","aaaabbbaabbbbbabbbbbcadeecccadeccffaeegggfaagggff|0361524","aaaaaaaaaabacadabbccedabbbeedaddbffdddffffddgggff|1536042","aaaaaaaabccaccabccccdaddddddadedffdaeedgfdeeedgfd|0613524","aaaaabbaaaccbdaeaacbdeeaccbfeaafcffeegffffeeggggg|5163042","aabbbcccabbbbdddaaaabbeeaaaaaeeeaaaeeefeafaffffgffffhfggffhhhfgg|57403162","aabbbbbbaabbbbbbaccbbbbbaacbbbbdeefbbfddgeffffdhgeeeehhhhhhhhhhh|14275036","aaaaaabbaaaacaddaaeccaddaeeeaafdaeeeaaffeegeffffeeggghffeeegghff|60371425","aaaaaaaaaabbcaaabbbbcccabdbcceccddccceccffffggccffffgghcfffffghh|03615247","abccddddabbccccdaabcedcdaaccedddaaaceeedaccceefdacaggefdaaaggghh|51420637","aaabccccaddbecccfddeeeecfdddeeecffdddgccfhhdgggghhhdgggghhddgggg|13574026","aaaabbbbaabbbccbaabdbccbaaaddcccaaadeceeaaaaeeefgggahhffghhhhhff|51364702","aaabbbbbacabdbbbccabddbdeaaeddddeaaedeeeeeeeeefeggeefffhgfffffhh|42053617","aabbccccadbeccccddeeececddfeeeecddfgggcchhfggggghfffffgfhhhfffff|30751642","aaaaabccadddabccaddddbbbeedddfbbeddfffgbefffgggbeeefgggbegggghhh|17530246","aaaabbbbbaccabbbbdaccabddddccccccdddecccccdddeeeffffddeeeffgddhiieeggdhheeeeeehhh|268403517","abbbcddeeaabcccdeebbbbfddeebbbbfddeebbgbfdeeebbgbdddeegbgggghhegggiihhhegggghheee|051642738","aabbcccccaabbbbddcaaabbeefcabbbggeffhhbbbeefehbbeeeeeebbbbeeieiiibbbiiiiiiiiiiiii|862470531","aaaaaaabbacccaaaadccaaaaaddceaafddddgeaaffhhdgffaffhhiggfaffhhigffffhhhhggfffffhh|724618053","aaaaaaaabaaaccbaabacccbbbdbacbbbbddbecefbbbdbeeefbbbbbggeeeebbbggghbbbbigghhiiiii|647503182","abbcccccdabdddddcdaadddddcdeeeddddddffedddfddfffddffggfhfffffgifhhggfggifhhhggggg|170425863","abbbcccddabebbfccdaeeeefcddgeeefffhdgeeeffhhdgggfffhddgiifhhhddgggffffdfggfffffff|640738251","aaaaaaaaaaabbaaacaabbccccccabccccdccabbeeeddcaabeffgggaabefgghhaaieehgghiiiiihhhh|071638425","aaaaabbbcddabbbbccdaaababbcdddaaaaaaddeeeeeefddggeeeffdhhggeiifddggeeiiidddeeeeii|572083164","abbacccccaaaaaadccaaeeaadccaeeeeddcdaeededccdafeddddddaffffggddhhhffgiidhhhfggidd|247381506","aabcccccddaabbcceccdaabbbcecccfffbbeecccfffffeeccgfhhheeeeigffhhhheiiifhheeeeeiifjhhheeiiijjhhheeiii|8504293617","aaaaaabcddeeaaabbccdeeaeabddddeeaeeeddddeeeefffdddggeeefffddhgieeifdddhgiieifdddhiiiiijdddiiiiiijddd|4859271306","aaaaabccccaabbbbcccdaaabccceedaabbbbffeeaaagggfffeaaaggffffhaaaaggfhfhagaggihhhhagggiihihhajjiiiiihh|6938057142","aabbbbbccdaabebbddddaafeeeddddagfeeedhhhagfeeeddhhfffeeeehhhfffffeehhhifffjjehhhiiiffjhhhhiiffjjjjhh|8406153927","abbcccccccabddccefffaaddeeeddfadddedeedgaddeeddddgaaddddddgghaddddddighajddjddighjjjjjiiighhjjjiiiii|2496083571","aaaaaaabccadddaaabbceeddbbbbbcfddbbbbbgcfdffbhhbggfffffhhbbbiiifffhhbbjjffjhhhhbjjjjjhhhhhjjjjjjjhhh|8502971364","aaabbbccddaaabcbbceeaabbcccceebbbbccccfeggbhchcffegiihhhcffeiiihhhffffijjjjhhhffijjjjhjjffiijjjjjjjf|8263197504","aaabccddddaabbccdcdeafbbbcdccegffbbccccegffbbccceegfbbbfhheifffffffeeijjjfjffiiijjjfjjjjiijjjjjjjjii|7150468392","aaaaabbbccaaaaddbddcaaaadddddcaaaadeeffcggaddeeeehgggiddhehhgggidihehhgggiiihhhhgggjjiiihhggjjjiiihh|5918473602","aaaaaabcccaaaabbbddcaaaababbccaaaaaaeffcaghheeeeffggheeeieefgghheiieifgggjeieeifgjjjeiiiiigggjjjjiii|9741852063","abbbbccccccabbbbbcccccabbbbbccccdaaabbbbcdddeaaaabbfdddeaaaabbfdgdehhaafbffgieehhaffffgiejjjffffiiijjkjiiffiiijjkkkiiiiii|75a20916384","aabbbbbccddaaaabbbbccdaaaeebbccddffaaeeedcddfaaaageddddffaaagdddddfaafggggddhfaffiihgddhffffiihhhdhiffiijkkhhhiiiijjjkkkk|2038a164759","aabbbbbccddaaaabbbbccdaaaeebbccddffaaeeedcddfaaaageddddffaaagdddddfaafggggddhfaffiihgddhffffiihhhdhiffiijkkhhhiiiijjjkkkk|2038a164759","aaaabbbbbbbacccbbbbbbbaccbbbbdddbccccedddfdfccgeeddffffccggeddffffccggeffffffcgggeffffhhccggiijjjjhccgggijjhhhccciiikkhhh|0416392a857","aaaabbbbbbbacccbbbbbbbaccbbbbdddbccccedddfdfccgeeddffffccggeddffffccggeffffffcgggeffffhhccggiijjjjhccgggijjhhhccciiikkhhh|0416392a857","aaabbbccdddaabbbccddddabbbbcceeddaabbbbccccfgbbggggcfffgggggggchhfggggggihhhhggggggihhhhggjjgiiihhhggkkiiiiihhggkiiiiiiii|90861a47352","aaaaaaaabbbbcacaaaaabbbdccceeaffbdddceeeefffbbggeeeeeefffffgeeeeehhffffgeeeeehhfffggieeeeiffffjjieeeeikkfkkjiieeiiikkkkjieeiiiikkkkkiiiillkkkkkk|839025a6b174","aaabbbbbbbbbaaaaabbcbbbbadabbbbcebbbadaabbfeegggaddddffeggggaddfdffgghghaddfffggghhhaidfffffhhhhaiifffffffhhiijffkfhhhhhjjjkkklllhhhjjjjkkklhhhh|97083a51b264","aaabbbbbccccdabbeebbbbffdaaeeeebbbffdadeggegbfffdddgggggbfffgddggggggfhhgggggiggghhhiggiiiggghhhiiiiiiigggjhiiiiiiiggjjhiiikiikghhhhillkkkkkkhhh|8173094b5a62","abbbbbbbccddaaefbffbbcddgaefffffddddgaeefffffdddgggeeeffffddhhhheffffffdhhhhhffffiiihhhhjfkffikkhhjjjfkkkikkhhhhjjkkkkklhhjjjkkkkkklhhhhjjjkklll|84130b62957a","aaaaaaabbbbbcaaaaaaaabbbcacaaaaaabbbccccdaaaaabbcccdddaaaaeecccffdaaaaagcfffffaahgggccfffffahhggiiffjjjhhkkgiifjjjjjhgggiilljjggggggiilllggggggg|7064a38b9152","aaaabbbcccccaaabbdbceeeeaaabfdeeeeegafaffdeeeeegafffhdeieeggaajjhdiiieegkkjhhddlieegkkkkhhdlidggkkkhhhddddghkkkhhhddhgghkhhhhhhhhhhhkkkhhhhhhhhh|b4193827a605"];
 const $ = s => document.querySelector(s);
 const rand = (a,b) => a + Math.random()*(b-a);
 const pick = a => a[Math.floor(Math.random()*a.length)];
@@ -234,7 +245,7 @@ $("#autoBtn").innerHTML = ICON.auto + "Auto-Kreuze";
 $("#resetBtn").innerHTML = ICON.reset + "Neu";
 
 /* ---------- Farben und Katzen ---------- */
-const REG = ["#F4C987","#A9CDEB","#B9DDA0","#E8A9B8","#C9B6E6","#F2E08A","#9FD4CC","#E7B894","#C8CFD8","#D9C7A7"];
+const REG = ["#F4C987","#A9CDEB","#B9DDA0","#E8A9B8","#C9B6E6","#F2E08A","#9FD4CC","#E7B894","#C8CFD8","#D9C7A7","#D4E47A","#E79BC9"];
 const COATS = [
   {fur:"#E68A3A", dark:"#B65C1C", light:"#F8DDBB", eye:"#7FB33D"},
   {fur:"#2B2A31", dark:"#18171C", light:"#F7F3EC", eye:"#EBC43A", line:"#E6DCCB"},
@@ -324,12 +335,39 @@ const SND = (() => {
       click(now, 1800, .12, .03);
     }
   }
-  return {unlock, play, tick, get muted(){ return muted; }, set muted(v){ muted = v; try { localStorage.setItem("katzensudoku-mute", v ? "1" : "0"); } catch(e) {} }};
+  return {unlock, play, tick, get ctx(){ return ctx; }, get out(){ return out; }, get muted(){ return muted; }, set muted(v){ muted = v; try { localStorage.setItem("katzensudoku-mute", v ? "1" : "0"); } catch(e) {} }};
 })();
 const muteBtn = $("#muteBtn");
 const renderMute = () => { muteBtn.innerHTML = SND.muted ? ICON.off : ICON.on; muteBtn.setAttribute("aria-label", SND.muted ? "Ton an" : "Ton aus"); };
 renderMute();
 muteBtn.addEventListener("click", () => { SND.unlock(); SND.muted = !SND.muted; renderMute(); });
+
+/* ---------- Tasten-Klang für Menüs ----------
+   Weiches "Plopp" bei jedem Knopf. Links zu anderen Seiten warten kurz, damit der Klang noch zu hören ist. */
+function installUiClicks(getCtx, getOut, isMuted, unlock, selector){
+  function pop(){
+    if (unlock) unlock();
+    const ctx = getCtx(), out = getOut(); if (!ctx || !out || isMuted()) return;
+    const t = ctx.currentTime + .004;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(620, t); o.frequency.exponentialRampToValueAtTime(1180, t + .045);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.2, t + .004); g.gain.exponentialRampToValueAtTime(.0008, t + .11);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t + .14);
+    const b = ctx.createOscillator(), bg = ctx.createGain();
+    b.type = "sine"; b.frequency.setValueAtTime(240, t); b.frequency.exponentialRampToValueAtTime(150, t + .05);
+    bg.gain.setValueAtTime(0, t); bg.gain.linearRampToValueAtTime(.14, t + .003); bg.gain.exponentialRampToValueAtTime(.0008, t + .07);
+    b.connect(bg); bg.connect(out); b.start(t); b.stop(t + .1);
+  }
+  document.addEventListener("click", e => {
+    const el = e.target.closest(selector);
+    if (!el || el.disabled) return;
+    pop();
+    const a = el.closest("a[href]");
+    if (a && !a.target && !e.metaKey && !e.ctrlKey && !e.shiftKey){ e.preventDefault(); setTimeout(() => { location.href = a.href; }, 170); }
+  }, true);
+  return pop;
+}
+installUiClicks(() => SND.ctx, () => SND.out, () => SND.muted, () => SND.unlock(), ".btn, .iconbtn, .back, .lv, #lvBtn, #tools .tool");
 
 /* ---------- Haptisches Feedback ----------
    Android: Vibrations-Schnittstelle des Browsers.
@@ -358,13 +396,15 @@ const persist = () => { try { localStorage.setItem("katzensudoku", JSON.stringif
 /* ---------- Spielzustand ---------- */
 let L = null;   // aktuelles Rätsel
 const boardEl = $("#board");
+// Punkte: Start 200 je Zeile, falsche Katze -100, Hinweis -150, höchstens 3 Hinweise
+const START_PTS = 200, WRONG_COST = 100, HINT_COST = 150, MAX_HINTS = 3;
 let cells = [];
 function load(idx){
   const [r, s] = LEVELS[idx].split("|"), N = s.length;
-  L = {idx, N, reg:[...r].map(ch => ch.charCodeAt(0) - 97), sol:[...s].map(Number), b:new Array(N*N).fill(0),
-       hist:[], t:0, hints:0, solved:false};
+  L = {idx, N, reg:[...r].map(ch => ch.charCodeAt(0) - 97), sol:[...s].map(ch => parseInt(ch, 36)), b:new Array(N*N).fill(0),
+       hist:[], t:0, hints:0, err:0, pts:START_PTS*N, lock:false, solved:false};
   const saved = SAVE.boards[idx];
-  if (saved && !SAVE.solved[idx]){ L.b = [...saved.b].map(Number); L.t = saved.t || 0; L.hints = saved.h || 0; }
+  if (saved && !SAVE.solved[idx]){ L.b = [...saved.b].map(Number); L.t = saved.t || 0; L.hints = saved.h || 0; L.err = saved.e || 0; if (saved.p != null) L.pts = saved.p; }
   SAVE.cur = idx; persist();
   build(); render(); hud();
 }
@@ -375,7 +415,7 @@ function build(){
   boardEl.classList.remove("won");
   boardEl.innerHTML = "";
   cells = [];
-  const thin = "1px", thick = N >= 9 ? "2.5px" : "3px";
+  const thin = "1px", thick = N >= 11 ? "2px" : N >= 9 ? "2.5px" : "3px";
   for (let i = 0; i < N*N; i++){
     const r = Math.floor(i/N), c = i % N, g = L.reg[i];
     const d = document.createElement("div"); d.className = "cell"; d.setAttribute("role", "gridcell");
@@ -419,9 +459,12 @@ function conflicts(){
 const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 function hud(){
   $("#lvName").textContent = `Rätsel ${L.idx + 1}`;
-  $("#lvInfo").textContent = `${L.N}×${L.N} · ${fmt(L.t)}`;
+  $("#lvInfo").textContent = `${L.N}×${L.N} · ${fmt(L.t)} · ${L.pts} Punkte`;
+  const left = MAX_HINTS - L.hints;
+  $("#hintBtn").innerHTML = ICON.hint + (left > 0 ? `Hinweis · ${left}` : "Keine mehr");
+  $("#hintBtn").disabled = left <= 0 || L.solved;
 }
-function saveBoard(){ if (!L.solved){ SAVE.boards[L.idx] = {b:L.b.join(""), t:Math.floor(L.t), h:L.hints}; persist(); } }
+function saveBoard(){ if (!L.solved){ SAVE.boards[L.idx] = {b:L.b.join(""), t:Math.floor(L.t), h:L.hints, e:L.err, p:L.pts}; persist(); } }
 function snapshot(){ L.hist.push(L.b.slice()); if (L.hist.length > 200) L.hist.shift(); }
 function dropSame(){ const top = L.hist[L.hist.length - 1]; if (top && top.every((v, i) => v === L.b[i])) L.hist.pop(); }
 
@@ -435,7 +478,27 @@ function afterChange(placedCat){
   saveBoard();
   checkWin(bad);
 }
+function floatPts(el, text){
+  const r = el.getBoundingClientRect(), f = document.createElement("div");
+  f.className = "pts-fly"; f.textContent = text; f.style.left = Math.min(window.innerWidth - 44, Math.max(44, r.left + r.width/2)) + "px"; f.style.top = (r.top + r.height/2) + "px";
+  document.body.appendChild(f); setTimeout(() => f.remove(), 1200);
+}
 function setCat(i){
+  const N = L.N;
+  // Liegt die Katze hier nicht in der einzigen Lösung, ist sie falsch, auch wenn noch keine Regel sichtbar verletzt ist
+  if (L.sol[Math.floor(i/N)] !== i % N){
+    L.b[i] = 2; render();
+    const d = cells[i]; d.classList.add("wrongcat");
+    SND.play("angry1", {vol:.8}); HAPTIC.tap("bad");
+    L.err++; L.pts = Math.max(0, L.pts - WRONG_COST); floatPts(d, "−" + WRONG_COST); hud();
+    L.lock = true;
+    setTimeout(() => {
+      L.lock = false; d.classList.remove("wrongcat");
+      if (L.b[i] === 2) L.b[i] = 1;
+      render(); saveBoard();
+    }, 900);
+    return;
+  }
   L.b[i] = 2;
   HAPTIC.tap("cat");
   if (SAVE.auto){
@@ -456,18 +519,23 @@ function checkWin(bad){
   boardEl.classList.add("won");
   cells.forEach((d, i) => d.style.animationDelay = ((Math.floor(i/L.N) + i % L.N)*.04) + "s");
   const prev = SAVE.solved[L.idx];
-  const time = Math.floor(L.t);
-  SAVE.solved[L.idx] = {t: prev ? Math.min(prev.t, time) : time, h: prev ? Math.min(prev.h, L.hints) : L.hints};
+  const time = Math.floor(L.t), pts = L.pts, perfect = L.err === 0 && L.hints === 0;
+  const prevPts = prev && prev.p != null ? prev.p : null;
+  SAVE.solved[L.idx] = {t: prev ? Math.min(prev.t, time) : time, h: prev ? Math.min(prev.h, L.hints) : L.hints,
+                        p: prevPts != null ? Math.max(prevPts, pts) : pts, e: prev && prev.e != null ? Math.min(prev.e, L.err) : L.err};
   delete SAVE.boards[L.idx]; persist();
   SND.play("purr", {vol:.9, dur:2});
   const done = Object.keys(SAVE.solved).length;
-  $("#winKicker").textContent = prev && time < prev.t ? "Neue Bestzeit" : `Rätsel ${L.idx + 1} gelöst`;
-  $("#winTitle").textContent = L.hints === 0 ? "Alle Katzen schlafen!" : "Geschafft!";
-  $("#winText").textContent = L.hints === 0 ? `${L.N} Katzen, jede auf ihrer eigenen Decke, und das ganz ohne Hinweis.` : `${L.N} Katzen liegen zufrieden auf ihren Decken. Du hast ${L.hints} ${L.hints === 1 ? "Hinweis" : "Hinweise"} gebraucht.`;
-  $("#stTime").textContent = fmt(time); $("#stBest").textContent = fmt(SAVE.solved[L.idx].t);
-  $("#stHints").textContent = L.hints; $("#stDone").textContent = `${done} / ${LEVELS.length}`;
+  $("#winKicker").textContent = prevPts != null && pts > prevPts ? "Neuer Punkterekord" : prev && time < prev.t ? "Neue Bestzeit" : `Rätsel ${L.idx + 1} gelöst`;
+  $("#winTitle").textContent = perfect ? "Perfekt!" : "Geschafft!";
+  const eh = [L.err ? `${L.err} Fehler gemacht` : "", L.hints ? `${L.hints} ${L.hints === 1 ? "Hinweis" : "Hinweise"} gebraucht` : ""].filter(Boolean).join(" und ");
+  $("#winText").textContent = (perfect ? `${L.N} Katzen, jede auf ihrer eigenen Decke, ganz ohne Fehler und ohne Hinweis.` : `${L.N} Katzen liegen zufrieden auf ihren Decken. Du hast ${eh}.`)
+    + ` Bestzeit ${fmt(SAVE.solved[L.idx].t)} · ${done} von ${LEVELS.length} gelöst.`;
+  $("#stPts").textContent = pts; $("#stBestPts").textContent = SAVE.solved[L.idx].p;
+  $("#stTime").textContent = fmt(time); $("#stEH").textContent = `${L.err} · ${L.hints}`;
   $("#nextBtn").hidden = L.idx >= LEVELS.length - 1;
-  setTimeout(() => { $("#winOv").hidden = false; reward(L.hints === 0); }, 1900);
+  hud();
+  setTimeout(() => { $("#winOv").hidden = false; reward(perfect); }, 1900);
 }
 
 /* ---------- Eingabe: Tippen, Doppeltippen, Wischen ---------- */
@@ -479,7 +547,7 @@ function cellAt(x, y){
   return row*N + c;
 }
 boardEl.addEventListener("pointerdown", e => {
-  if (!L || L.solved) return;
+  if (!L || L.solved || L.lock) return;
   const i = cellAt(e.clientX, e.clientY); if (i < 0) return;
   // Auf dem iPhone muss der Tipp den unsichtbaren Schalter erreichen, sonst klopft nichts.
   // Deshalb dort weder Standardaktion abbrechen noch den Zeiger an das Spielfeld binden.
@@ -542,10 +610,12 @@ $("#resetBtn").addEventListener("click", () => { if (!L.solved) $("#resetOv").hi
 $("#resetNo").addEventListener("click", () => $("#resetOv").hidden = true);
 $("#resetYes").addEventListener("click", () => { $("#resetOv").hidden = true; snapshot(); L.b.fill(0); afterChange(-1); });
 $("#hintBtn").addEventListener("click", () => {
-  if (L.solved) return;
+  if (L.solved || L.lock) return;
   SND.unlock();
+  if (L.hints >= MAX_HINTS) return toast("Für dieses Rätsel sind alle Hinweise verbraucht.");
   const N = L.N, isSol = i => L.sol[Math.floor(i/N)] === i % N;
-  L.hints++; saveBoard();
+  L.hints++; L.pts = Math.max(0, L.pts - HINT_COST); saveBoard(); hud();
+  floatPts($("#hintBtn"), "−" + HINT_COST);
   const wrongCat = L.b.findIndex((v, i) => v === 2 && !isSol(i));
   if (wrongCat >= 0){ flash(wrongCat, "flash"); SND.play("angry2", {vol:.7}); return toast("Diese Katze liegt hier falsch."); }
   const wrongX = L.b.findIndex((v, i) => v === 1 && isSol(i));
@@ -627,14 +697,22 @@ function reward(perfect){
 }
 
 /* ---------- Rätselauswahl ---------- */
+// Zwei Sammlungen zu je 60 Rätseln, innerhalb nach Größe sortiert
+const PARTS = [["Sammlung 1", 0, 60], ["Sammlung 2 · schwerer", 60, LEVELS.length]];
 function renderList(){
-  const groups = {};
-  LEVELS.forEach((l, i) => { const n = l.split("|")[1].length; (groups[n] = groups[n] || []).push(i); });
-  $("#lvList").innerHTML = Object.keys(groups).map(n => `<h3>${n}×${n}</h3><div class="lv-group">` + groups[n].map(i => {
-    const s = SAVE.solved[i];
-    return `<button class="lv${s ? " done" : ""}${L && L.idx === i ? " cur" : ""}" data-i="${i}">${i + 1}<small>${s ? fmt(s.t) : SAVE.boards[i] ? "begonnen" : "&nbsp;"}</small></button>`;
-  }).join("") + `</div>`).join("");
+  const solvedN = Object.keys(SAVE.solved).length;
+  $("#lvCount").textContent = `${LEVELS.length} Rätsel · ${solvedN} gelöst · ${totalPts()} Punkte`;
+  $("#lvList").innerHTML = PARTS.filter(p => p[2] > p[1]).map(([title, a, b]) => {
+    const groups = {};
+    for (let i = a; i < b; i++){ const n = LEVELS[i].split("|")[1].length; (groups[n] = groups[n] || []).push(i); }
+    return `<div class="lvpart">${title}</div>` + Object.keys(groups).sort((x, y) => x - y).map(n => `<h3>${n}×${n}</h3><div class="lv-group">` + groups[n].map(i => {
+      const s = SAVE.solved[i];
+      const sub = s ? (s.p != null ? s.p + " P" : fmt(s.t)) : SAVE.boards[i] ? "begonnen" : "&nbsp;";
+      return `<button class="lv${s ? " done" : ""}${L && L.idx === i ? " cur" : ""}" data-i="${i}">${i + 1}<small>${sub}</small></button>`;
+    }).join("") + `</div>`).join("");
+  }).join("");
 }
+function totalPts(){ return Object.values(SAVE.solved).reduce((a, s) => a + (s.p || 0), 0); }
 $("#lvBtn").addEventListener("click", () => { renderList(); $("#lvOv").hidden = false; });
 $("#lvClose").addEventListener("click", () => $("#lvOv").hidden = true);
 $("#lvList").addEventListener("click", e => { const b = e.target.closest(".lv"); if (!b) return; $("#lvOv").hidden = true; load(+b.dataset.i); });

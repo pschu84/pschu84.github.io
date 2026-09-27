@@ -64,6 +64,10 @@ h3{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;c
 .real.wait i{background:var(--mustard)}
 .real.fail{background:#F6DCD6}
 .real.fail i{background:#D9483B}
+.tog{display:flex;align-items:center;gap:8px;margin-top:10px;border:0;border-radius:12px;background:var(--paper-2);color:var(--ink);padding:8px 12px;font-size:14px;font-weight:800}
+.tog svg{width:20px;height:20px;color:var(--wall)}
+.tog[aria-pressed="true"]{background:#DCEBD8}
+.tog small{font-size:12px;font-weight:700;color:var(--muted)}
 .how{margin:0;padding-left:20px;font-size:14px;line-height:1.5;display:grid;gap:6px}
 .how b{font-weight:800}
 .tiers{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -113,6 +117,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
       <h1>Katzenkiste</h1>
       <p class="lead">Katzen lieben Kartons. Lass sie in die Kiste plumpsen: Berühren sich zwei gleiche Katzen, werden sie zur nächstgrößeren. Schaffst du es bis zum Katzenkönig?</p>
       <span class="real wait" id="loadState"><i></i><span>Lade echte Katzenaufnahmen …</span></span>
+      <button class="tog musicTog" aria-pressed="true"></button>
       <p class="err" id="physErr" hidden>Die Physik-Bibliothek konnte nicht geladen werden. Prüfe die Internetverbindung und lade die Seite neu.</p>
 
       <h3>So spielst du</h3>
@@ -170,6 +175,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
     <div class="sheet">
       <div class="kicker">Pause</div>
       <h2>Alle Katzen dösen</h2>
+      <button class="tog musicTog" aria-pressed="true"></button>
       <div class="foot"><button class="btn" id="resumeBtn">Weiter</button><button class="btn ghost" id="quitBtn">Runde beenden</button></div>
     </div>
   </section>
@@ -328,7 +334,7 @@ const SND = (() => {
   }
   const voice = (tier, o = {}) => { const T = TIERS[tier]; return play(T.snd, {rate:T.rate*rand(.97, 1.03), vol:T.vol, ...o}); };
   function setMuted(m){ muted = m; if (out) out.gain.value = m ? 0 : 1; }
-  return {load, unlock, play, voice, setMuted, onProgress:f => subs.push(f), get muted(){ return muted; }};
+  return {load, unlock, play, voice, setMuted, onProgress:f => subs.push(f), get muted(){ return muted; }, get ctx(){ return ctx; }, get out(){ return out; }};
 })();
 SND.onProgress((ok, bad, all) => {
   const el = $("#loadState");
@@ -342,6 +348,118 @@ const muteBtn = $("#muteBtn");
 const renderMute = () => { muteBtn.innerHTML = SND.muted ? ICON.off : ICON.on; muteBtn.setAttribute("aria-label", SND.muted ? "Ton an" : "Ton aus"); };
 renderMute();
 muteBtn.addEventListener("click", () => { SND.unlock(); SND.setMuted(!SND.muted); renderMute(); });
+
+/* ---------- Musik-Werkzeug ----------
+   Erzeugt die Musik live im Browser (keine Datei nötig). Ein Stück besteht aus Takten mit Akkord,
+   Bass und optionaler Melodie. Achtel-Raster, auf Wunsch mit Swing. */
+function makeTune(getCtx, getOut, song, key){
+  let on = true; try { on = localStorage.getItem(key) !== "0"; } catch(e) {}
+  let bus = null, timer = 0, next = 0, step = 0, playing = false, noise = null;
+  const mtof = m => 440*Math.pow(2, (m - 69)/12);
+  function env(g, t, vol, att, dec){ g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + att); g.gain.exponentialRampToValueAtTime(.0006, t + att + dec); }
+  function tone(type, f, t, vol, att, dec, filt, det){
+    const ctx = getCtx(), o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = f; if (det) o.detune.value = det;
+    env(g, t, vol, att, dec);
+    if (filt){ const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = filt; o.connect(lp); lp.connect(g); } else o.connect(g);
+    g.connect(bus); o.start(t); o.stop(t + att + dec + .05);
+  }
+  // Instrumente
+  const ep = (m, t, dur, vol) => { const f = mtof(m); tone("sine", f, t, vol, .012, dur, 0, -4); tone("sine", f, t, vol*.6, .012, dur*.9, 0, 5); tone("sine", f*2, t, vol*.18, .005, dur*.35); };
+  const bell = (m, t, dur, vol) => { const f = mtof(m); tone("sine", f, t, vol, .006, dur); tone("sine", f*3.01, t, vol*.14, .003, dur*.25); };
+  const bass = (m, t, dur, vol) => { tone("triangle", mtof(m), t, vol, .01, dur, 900); tone("sawtooth", mtof(m), t, vol*.25, .01, dur*.6, 500); };
+  function brush(t, vol, dec, freq, hp){
+    const ctx = getCtx();
+    if (!noise){ noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate*.5), ctx.sampleRate); const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; }
+    const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = noise; f.type = hp ? "highpass" : "bandpass"; f.frequency.value = freq; f.Q.value = .8;
+    env(g, t, vol, .004, dec); s.connect(f); f.connect(g); g.connect(bus); s.start(t, Math.random()*.3); s.stop(t + dec + .05);
+  }
+  const INST = {ep, bell, bass};
+  function schedule(st, t, e8){
+    const bars = song.bars, bi = Math.floor(st/8) % bars.length, e = st % 8, loop = Math.floor(st/(8*bars.length));
+    const B = bars[bi], beat = e8*2;
+    // Akkorde
+    for (const [s0, len, v] of song.comp) if (s0 === e) B.chord.forEach(m => INST[song.chordInst](m, t, len*e8, v));
+    // Bass
+    (song.bassSteps || [0, 2, 4, 6]).forEach((s0, k) => { if (s0 === e && B.bass[k] != null) bass(B.bass[k], t, e8*(song.bassLen || 1.6), song.bassVol); });
+    // Melodie, jeder zweite Durchgang ohne Melodie (nur Begleitung)
+    if (loop % 2 === 0 && B.mel) for (const [s0, m, len] of B.mel) if (s0 === e) INST[song.melInst](m, t, len*e8*1.1, song.melVol);
+    if (loop % 2 === 1 && song.arp && e % 2 === 0) INST[song.melInst](B.chord[(e/2) % B.chord.length] + 12, t, e8*2.5, song.melVol*.45);
+    // Schlagwerk
+    if (song.perc) song.perc(e, t, brush);
+  }
+  function tick(){
+    const ctx = getCtx(); if (!ctx || !playing) return;
+    const e8 = 60/song.bpm/2;
+    while (next < ctx.currentTime + .15){
+      const sw = (step % 2) ? e8*(song.swing || 0) : 0;
+      schedule(step, next + sw, e8);
+      next += e8; step++;
+    }
+  }
+  function start(){
+    const ctx = getCtx(); if (!on || !ctx || playing) return;
+    if (!bus){ bus = ctx.createGain(); bus.gain.value = .0001; bus.connect(getOut()); }
+    const now = ctx.currentTime;
+    bus.gain.cancelScheduledValues(now); bus.gain.setValueAtTime(Math.max(.0001, bus.gain.value), now); bus.gain.exponentialRampToValueAtTime(song.vol, now + 1.2);
+    next = now + .1; playing = true; clearInterval(timer); timer = setInterval(tick, 30); tick();
+  }
+  function stop(fade = .5){
+    clearInterval(timer); const ctx = getCtx();
+    if (playing && ctx && bus){ const now = ctx.currentTime; bus.gain.cancelScheduledValues(now); bus.gain.setValueAtTime(Math.max(.0001, bus.gain.value), now); bus.gain.exponentialRampToValueAtTime(.0001, now + fade); }
+    playing = false;
+  }
+  return {start, stop, get playing(){ return playing; },
+          get on(){ return on; }, set on(v){ on = v; try { localStorage.setItem(key, v ? "1" : "0"); } catch(e) {} if (!v) stop(.3); }};
+}
+
+/* Ruhige Kistenmusik: weiches E-Piano, tiefer Bass, ab und zu ein Glöckchen */
+const MUSIC = makeTune(() => SND.ctx, () => SND.out, {
+  bpm:68, swing:0, vol:.24, chordInst:"ep", melInst:"bell", melVol:.2, bassVol:.22, bassSteps:[0, 4], bassLen:3.5, arp:true,
+  comp:[[0, 7, .07], [5, 2.5, .04]],
+  bars:[
+    {chord:[52,55,59,62], bass:[48,55], mel:[[2,76,2],[5,79,3]]},
+    {chord:[57,60,64,67], bass:[45,52], mel:[[1,81,2],[4,76,4]]},
+    {chord:[53,57,60,64], bass:[41,48], mel:[[2,72,2],[5,74,3]]},
+    {chord:[55,59,62,64], bass:[43,50], mel:[[0,74,2],[3,71,2],[6,67,2]]}
+  ]
+}, "katzenkiste-music");
+const NOTE = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17.5a3 3 0 1 1-2-2.83V5l12-2v11.5a3 3 0 1 1-2-2.83V7.3L9 8.6z"/></svg>`;
+function renderMusic(){ document.querySelectorAll(".musicTog").forEach(b => { b.setAttribute("aria-pressed", MUSIC.on); b.innerHTML = NOTE + (MUSIC.on ? "Musik an <small>antippen zum Ausschalten</small>" : "Musik aus <small>antippen zum Einschalten</small>"); }); }
+renderMusic();
+document.querySelectorAll(".musicTog").forEach(b => b.addEventListener("click", () => {
+  SND.unlock(); MUSIC.on = !MUSIC.on; renderMusic();
+  if (MUSIC.on && G && G.running && !G.paused) MUSIC.start();
+}));
+
+/* ---------- Tasten-Klang für Menüs ----------
+   Weiches "Plopp" bei jedem Knopf. Links zu anderen Seiten warten kurz, damit der Klang noch zu hören ist. */
+function installUiClicks(getCtx, getOut, isMuted, unlock, selector){
+  function pop(){
+    if (unlock) unlock();
+    const ctx = getCtx(), out = getOut(); if (!ctx || !out || isMuted()) return;
+    const t = ctx.currentTime + .004;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(620, t); o.frequency.exponentialRampToValueAtTime(1180, t + .045);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.2, t + .004); g.gain.exponentialRampToValueAtTime(.0008, t + .11);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t + .14);
+    const b = ctx.createOscillator(), bg = ctx.createGain();
+    b.type = "sine"; b.frequency.setValueAtTime(240, t); b.frequency.exponentialRampToValueAtTime(150, t + .05);
+    bg.gain.setValueAtTime(0, t); bg.gain.linearRampToValueAtTime(.14, t + .003); bg.gain.exponentialRampToValueAtTime(.0008, t + .07);
+    b.connect(bg); bg.connect(out); b.start(t); b.stop(t + .1);
+  }
+  document.addEventListener("click", e => {
+    const el = e.target.closest(selector);
+    if (!el || el.disabled) return;
+    pop();
+    const a = el.closest("a[href]");
+    if (a && !a.target && !e.metaKey && !e.ctrlKey && !e.shiftKey){ e.preventDefault(); setTimeout(() => { location.href = a.href; }, 170); }
+  }, true);
+  return pop;
+}
+
+installUiClicks(() => SND.ctx, () => SND.out, () => SND.muted, () => SND.unlock(), ".btn, .iconbtn, .home, .tog");
 
 /* ---------- Vibration ----------
    Android: Vibrations-Schnittstelle des Browsers.
@@ -446,6 +564,7 @@ function newGame(){
   ["#startOv", "#endOv", "#pauseOv"].forEach(s => $(s).hidden = true);
   resize(); hud(); drawNext(); ladder();
   SND.play("demand1", {vol:.8});
+  MUSIC.start();
   cancelAnimationFrame(raf); last = performance.now(); acc = 0; raf = requestAnimationFrame(loop);
 }
 function hud(){
@@ -608,6 +727,7 @@ function loop(ts){
 function gameOver(){
   if (G.over) return;
   G.over = true; G.running = false;
+  MUSIC.stop(2.5);
   HAPTIC.tap("hit");
   SND.play("angry1", {vol:.8}); SND.play("yowl1", {vol:.85, when:.6});
   let best = 0; try { best = +localStorage.getItem("katzenkiste-best") || 0; } catch(e) {}
@@ -622,8 +742,8 @@ function gameOver(){
   drawScene(performance.now()/1000);
   setTimeout(() => { $("#endOv").hidden = false; $("#againBtn").focus(); }, 1200);
 }
-function pause(){ if (!G || !G.running || G.paused) return; G.paused = true; $("#pauseOv").hidden = false; }
-function resume(){ if (!G || !G.paused) return; G.paused = false; $("#pauseOv").hidden = true; last = performance.now(); SND.unlock(); }
+function pause(){ if (!G || !G.running || G.paused) return; G.paused = true; MUSIC.stop(.4); $("#pauseOv").hidden = false; }
+function resume(){ if (!G || !G.paused) return; G.paused = false; $("#pauseOv").hidden = true; last = performance.now(); SND.unlock(); MUSIC.start(); }
 
 /* ---------- Eingabe ---------- */
 const toWorldX = cx => (cx - cv.getBoundingClientRect().left - OX)/SC;
