@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{touch-action:manipulation}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>Katzen-Sudoku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+[hidden]{display:none!important}
+:root{
+  --deep:#1B3B43; --wall:#2F5F69; --ink:#15262B; --paper:#FBF6EA; --paper-2:#F0E7D3; --muted:#5B6B6E;
+  --mustard:#E5B440; --mustard-dark:#A67C1F; --pink:#E3587B; --bad:#D9483B; --line:#3B3330;
+  color-scheme:light;
+}
+html{box-sizing:border-box;height:100%;touch-action:manipulation;-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--deep);color:var(--ink);font-family:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  -webkit-tap-highlight-color:transparent;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button{font-family:inherit;cursor:pointer;color:inherit}
+button:focus-visible{outline:3px solid var(--mustard);outline-offset:2px}
+#app{position:relative;height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+
+#hud{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 16px;background:var(--deep);color:var(--paper)}
+.back{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);color:var(--paper);text-decoration:none;font-size:20px;font-weight:800}
+.title{display:flex;flex-direction:column;align-items:center;line-height:1.05}
+.title b{font:800 21px "Grandstander",ui-rounded,system-ui,sans-serif}
+.title span{font-size:12px;font-weight:800;opacity:.75;font-variant-numeric:tabular-nums}
+.hud-r{display:flex;gap:8px}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:var(--paper);display:grid;place-items:center;padding:0}
+.iconbtn svg{width:19px;height:19px}
+
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:12px 16px 4px}
+.rule{display:grid;grid-template-columns:24px 1fr;gap:6px;align-items:center;background:var(--paper-2);border-radius:12px;padding:6px 8px;font-size:11px;font-weight:800;line-height:1.2}
+.rule svg{width:24px;height:24px}
+
+.mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding-inline:16px;padding-block:6px}
+#board{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;position:relative;display:grid;width:min(100%, calc(100dvh - 300px), 480px);aspect-ratio:1;touch-action:none;
+  border:3px solid var(--line);border-radius:10px;overflow:hidden;background:var(--line);box-shadow:0 6px 0 rgba(0,0,0,.1)}
+@supports not (height:100dvh){ #board{width:min(100%, calc(100vh - 300px), 480px)} }
+.cell{position:relative;display:grid;place-items:center;border:0 solid var(--line);min-width:0;min-height:0;overflow:hidden}
+.cell .mk{width:62%;height:62%;pointer-events:none}
+.cell .cat{width:86%;height:86%;pointer-events:none;animation:plop .25s cubic-bezier(.2,.9,.3,1.4)}
+.cell.clash::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid var(--bad);animation:pulse .8s ease-in-out infinite alternate}
+.cell.clash .cat{animation:shake .4s}
+.cell.flash{animation:flash .5s ease-in-out 3}
+.cell.hintok{animation:glow 1s ease-in-out 2}
+.cat .angry,.cat .happy{display:none}
+.cell.clash .cat .angry{display:inline}.cell.clash .cat .eyes{display:none}
+#board.won .cat .happy{display:inline}#board.won .cat .eyes{display:none}
+#board.won .cell{animation:won .6s ease-out both}
+.help{font-size:12.5px;font-weight:700;color:var(--muted);text-align:center;line-height:1.4}
+.help b{color:var(--ink)}
+
+#tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px 12px;background:var(--deep)}
+.tool{border:0;border-radius:16px;background:rgba(255,255,255,.1);color:var(--paper);height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11.5px;font-weight:800}
+.tool svg{width:24px;height:24px}
+.tool[aria-pressed="true"]{background:var(--mustard);color:var(--ink);box-shadow:0 4px 0 var(--mustard-dark)}
+.tool:disabled{opacity:.4}
+
+#toast{position:absolute;left:16px;right:16px;top:62px;z-index:30;background:var(--ink);color:var(--paper);border-radius:14px;padding:10px 14px;font-size:14px;font-weight:700;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:drop .3s ease-out}
+
+.overlay{position:absolute;inset:0;z-index:60;background:rgba(15,28,33,.82);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding-block:16px;padding-inline:16px}
+.sheet{width:100%;max-height:100%;overflow:auto;background:var(--paper);border-radius:22px;padding:22px 18px 0;box-shadow:0 20px 40px rgba(0,0,0,.35);touch-action:pan-y}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--pink)}
+h1,h2{font-family:"Grandstander",ui-rounded,system-ui,sans-serif;font-weight:800;color:var(--deep);margin:4px 0 0;line-height:1;text-wrap:balance}
+h1{font-size:40px}
+h2{font-size:32px}
+h3{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px}
+.lead{font-size:15px;line-height:1.45;margin:10px 0 0}
+.steps{display:grid;gap:10px;margin-top:4px}
+.step{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;font-size:14px;line-height:1.35}
+.step .ex{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:#A9CDEB;border:2px solid var(--line)}
+.step .ex svg{width:30px;height:30px}
+.foot{position:sticky;bottom:0;padding:18px 0;background:linear-gradient(rgba(251,246,234,0),var(--paper) 35%);display:grid;gap:8px}
+.btn{width:100%;border:0;border-radius:16px;background:var(--mustard);color:var(--ink);font:800 19px "Grandstander",ui-rounded,system-ui,sans-serif;padding:14px;box-shadow:0 5px 0 var(--mustard-dark);text-align:center;text-decoration:none;display:block}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--mustard-dark)}
+.btn.ghost{background:var(--paper-2);box-shadow:none;font-size:15px;padding:11px}
+.lv-group{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.lv{border:0;border-radius:10px;background:var(--paper-2);padding:8px 0 6px;font:800 16px "Grandstander",ui-rounded,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:1px;font-variant-numeric:tabular-nums}
+.lv small{font:700 9.5px "Nunito",ui-rounded,system-ui,sans-serif;color:var(--muted)}
+.lv.done{background:#DCEBD8}
+.lv.cur{outline:3px solid var(--mustard)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{background:var(--paper-2);border-radius:14px;padding:10px 12px}
+.stat span{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat b{font:800 26px "Grandstander",ui-rounded,system-ui,sans-serif;color:var(--deep);font-variant-numeric:tabular-nums}
+.confirm{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.rw-stage{position:relative;height:150px;margin:6px 0 2px;border-radius:18px;background:var(--wall);overflow:hidden}
+.rw-cushion{position:absolute;left:50%;bottom:10px;width:150px;height:34px;transform:translateX(-50%);border-radius:50%;background:var(--mustard);box-shadow:0 5px 0 rgba(0,0,0,.2),inset 0 -6px 0 rgba(0,0,0,.12)}
+.rw-cat{position:absolute;left:50%;bottom:18px;width:118px;margin-left:-59px;border:0;background:none;padding:0;cursor:pointer;animation:rwIn .7s cubic-bezier(.2,.9,.3,1.35) .1s both}
+.rw-body{display:block;transform-origin:50% 100%}
+.rw-svg{display:block;width:100%;overflow:visible}
+.rw-tail{transform-box:view-box;transform-origin:98px 132px;animation:rwTail 1.8s ease-in-out infinite alternate}
+.rw-eo{transform-box:fill-box;transform-origin:center;animation:rwBlink 3.6s infinite}
+.rw-ec,.rw-mo{display:none}
+.rw-blush{opacity:0;transition:opacity .3s}
+.rw-cat.talk .rw-mo{display:inline}.rw-cat.talk .rw-mc{display:none}
+.rw-cat.purr .rw-eo{display:none}.rw-cat.purr .rw-ec{display:inline}.rw-cat.purr .rw-blush{opacity:.8}
+.rw-cat.purr .rw-body{animation:rwPurr .09s linear infinite}
+.rw-cat.purr .rw-tail{animation-duration:.9s}
+.rw-paw{transform-box:fill-box;transform-origin:30% 20%;transition:transform .25s}
+.rw-cat.wave .rw-paw{animation:rwWave .45s ease-in-out 3}
+.rw-cat.hop .rw-body{animation:rwHop .45s ease-out}
+.rw-bubble{position:absolute;right:-64px;top:-4px;background:var(--paper);color:var(--ink);font:800 15px "Grandstander",ui-rounded,system-ui,sans-serif;padding:6px 10px;border-radius:14px;white-space:nowrap;box-shadow:0 3px 0 rgba(0,0,0,.2);animation:plop .2s ease-out}
+.rw-heart{position:absolute;bottom:60px;width:18px;color:var(--pink);animation:rwHeart 1.8s ease-out forwards;pointer-events:none}
+.rw-heart svg{width:100%;display:block}
+@keyframes rwIn{0%{transform:translateY(140%) scale(.6)}60%{transform:translateY(-12%) scale(1.04)}100%{transform:none}}
+@keyframes rwTail{from{transform:rotate(-8deg)}to{transform:rotate(10deg)}}
+@keyframes rwBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes rwPurr{0%,100%{transform:translateX(0)}50%{transform:translateX(.8px)}}
+@keyframes rwWave{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(4px,-44px) rotate(-30deg)}}
+@keyframes rwHop{0%,100%{transform:none}40%{transform:translateY(-22px) scale(1.04,.96)}}
+@keyframes rwHeart{0%{opacity:0;transform:translateY(0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translateY(-90px) scale(1.2)}}
+@keyframes plop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes pulse{from{opacity:.55}to{opacity:1}}
+@keyframes flash{50%{box-shadow:inset 0 0 0 999px rgba(217,72,59,.55)}}
+@keyframes glow{50%{box-shadow:inset 0 0 0 999px rgba(255,255,255,.7)}}
+@keyframes won{0%{filter:brightness(1)}50%{filter:brightness(1.25)}100%{filter:brightness(1)}}
+@keyframes drop{from{transform:translateY(-16px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){ .cell .cat,.cell.clash::after,#board.won .cell{animation:none!important} }
+</style>
+
+<div id="app">
+  <header id="hud">
+    <a class="back" href="./" aria-label="Alle Spiele">‹</a>
+    <button class="title" id="lvBtn" style="border:0;background:none;color:inherit" aria-label="Rätsel auswählen"><b id="lvName">Rätsel 1</b><span id="lvInfo">5×5 · 0:00</span></button>
+    <div class="hud-r">
+      <button class="iconbtn" id="muteBtn" aria-label="Ton aus"></button>
+      <button class="iconbtn" id="helpBtn" aria-label="Anleitung">?</button>
+    </div>
+  </header>
+
+  <section class="rules" aria-label="Regeln">
+    <div class="rule"><svg viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="4" fill="#A9CDEB"/><rect x="1" y="1" width="14" height="28" rx="4" fill="#F4C987"/><circle cx="8" cy="15" r="4.5" fill="#15262B"/></svg><span>1 Katze pro Farbe</span></div>
+    <div class="rule"><svg viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="4" fill="#F0E7D3" stroke="#B9AE98"/><rect x="1" y="11" width="28" height="8" fill="#E5B440" opacity=".55"/><rect x="11" y="1" width="8" height="28" fill="#E5B440" opacity=".55"/><circle cx="15" cy="15" r="4" fill="#15262B"/></svg><span>1 Katze pro Zeile &amp; Spalte</span></div>
+    <div class="rule"><svg viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="4" fill="#F0E7D3" stroke="#B9AE98"/><rect x="6" y="6" width="18" height="18" fill="#E3587B" opacity=".25"/><circle cx="15" cy="15" r="4" fill="#15262B"/></svg><span>Nie berühren, auch schräg</span></div>
+  </section>
+
+  <main class="mid">
+    <div id="board" role="grid" aria-label="Spielfeld"></div>
+    <p class="help"><b>Tippen</b> setzt ein Kreuz · <b>Doppeltippen</b> setzt eine Katze · <b>Wischen</b> kreuzt ganze Reihen an</p>
+  </main>
+
+  <nav id="tools" aria-label="Werkzeuge">
+    <button class="tool" id="undoBtn"></button>
+    <button class="tool" id="hintBtn"></button>
+    <button class="tool" id="autoBtn" aria-pressed="false"></button>
+    <button class="tool" id="resetBtn"></button>
+  </nav>
+  <div id="toast" hidden></div>
+
+  <section class="overlay" id="introOv" hidden>
+    <div class="sheet">
+      <div class="kicker">Spiel 4 · Rätsel</div>
+      <h1>Katzen-Sudoku</h1>
+      <p class="lead">Jede Katze braucht ihre eigene Decke. Setze in jede Farbe genau eine Katze. In jeder Zeile und jeder Spalte darf auch nur eine Katze liegen. Und weil Katzen ihre Ruhe wollen, dürfen sie sich nicht berühren, auch nicht über Eck.</p>
+      <h3>So markierst du</h3>
+      <div class="steps">
+        <div class="step"><span class="ex" id="exX"></span><span><b>Einmal tippen:</b> Kreuz. Hier kann keine Katze liegen. Nochmal tippen entfernt es.</span></div>
+        <div class="step"><span class="ex" id="exCat"></span><span><b>Doppelt tippen:</b> Katze. Einmal tippen auf die Katze nimmt sie wieder weg.</span></div>
+        <div class="step"><span class="ex" id="exSwipe" style="background:#B9DDA0"></span><span><b>Mit dem Finger wischen:</b> Jedes Feld, über das du fährst, bekommt ein Kreuz. Katzen bleiben dabei liegen.</span></div>
+      </div>
+      <h3>Helfer</h3>
+      <p class="lead" style="font-size:14px;margin:0">„Auto-Kreuze“ kreuzt nach jeder Katze automatisch Zeile, Spalte, Farbe und Nachbarfelder an. „Hinweis“ zeigt dir einen Fehler oder eine richtige Katze.</p>
+      <div class="foot"><button class="btn" id="introGo">Los geht's</button></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="lvOv" hidden>
+    <div class="sheet">
+      <div class="kicker">60 Rätsel</div>
+      <h2>Rätsel wählen</h2>
+      <div id="lvList"></div>
+      <div class="foot"><button class="btn ghost" id="lvClose">Schließen</button></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="winOv" hidden>
+    <div class="sheet">
+      <div class="kicker" id="winKicker">Gelöst</div>
+      <div class="rw-stage" id="rwStage" aria-hidden="true"></div>
+      <h2 id="winTitle">Alle Katzen schlafen!</h2>
+      <p class="lead" id="winText"></p>
+      <div class="stats">
+        <div class="stat"><span>Zeit</span><b id="stTime">0:00</b></div>
+        <div class="stat"><span>Bestzeit</span><b id="stBest">0:00</b></div>
+        <div class="stat"><span>Hinweise</span><b id="stHints">0</b></div>
+        <div class="stat"><span>Gelöst</span><b id="stDone">0 / 60</b></div>
+      </div>
+      <div class="foot"><button class="btn" id="nextBtn">Nächstes Rätsel</button><button class="btn ghost" id="winLv">Alle Rätsel</button></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="resetOv" hidden>
+    <div class="sheet">
+      <div class="kicker">Neu anfangen</div>
+      <h2>Alles löschen?</h2>
+      <p class="lead">Alle Katzen und Kreuze in diesem Rätsel werden entfernt. Die Zeit läuft weiter.</p>
+      <div class="foot confirm"><button class="btn ghost" id="resetNo">Abbrechen</button><button class="btn" id="resetYes">Löschen</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+"use strict";
+const LEVELS = ["aaaacadbccdddccdddeedddee|02413","aaaccaabccaabccadbeebbbee|02413","aaaadaaabdacccdaceddeeeee|03142","abbbdacbbdccdddccdddccedd|03142","bbbbabbeeaeeeccdeecceeeec|41302","aaaaaccbaacceddceeddceddd|42031","baaadbbaadbecddeedddeeddd|30241","aaaaaaccabcccabccdddceddd|24031","eaaaaaeccbdaecccdaeeddddeeddddeffffd|531402","aceeeeacccbecccbbeccfdbecfffbecfffee|041352","aaaaaaaabbccaaadccaaadfcfefffcffffff|025314","aaabddaaabddacaeedaeeeedeeeeeeeeefff|031524","aaaaababbbbbabbbccadbbbbadeebbddeeef|024135","ccbbaacbbfffcfffdfeeefdfeeefffeeffff|520413","abbbbbcbdbbbccdbbbffddeefffdeefffdee|041352","ccbaaaccbbbacccbbbccccbdfcfeeeffffee|420531","aaaabbacaabbeccadbeeedddeeedddeeedfd|251304","aaabbbacbbdbacccddccccddccecddcceedf|031425","aaabbbbaabbbbcadbbcccadbbcccdddgggedddfgggdddgggg|0241635","eeeaaaaeeebaaaeeedffceeddffceeeffffeeeffgfggggggg|5362041","bbbbbbabbbbbbbcdddbbbdddebbgffdeeegfffeeegfffeegg|6302415","abbbdddbbbddccbdddeccfdddeeefffdgegfffggggffggggg|0263514","aaabbbbaaabbbbacaadddaggeddfaggeeffagggfffagggfff|0415362","aaaabbbaaacbbbaaacebfddaceffddeeeffdddffffdgdddff|2530461","bbbaaaabbbaacabaaaaccbdddaccbedddccbgddccfbgggccc|4053162","aaaaaaaaaabaddacbbbddabbddddabeddffabeffffabefgff|0315264","aaaabbbaeecbbdeeecbddeeeeeddeeeeeedfeeeeedggggeed|1536402","aaeedddaaeeddbeecedddeeeeeddgggeedgfggggggfgggggg|1625304","aaaadddaaabdddacbbdddaceddddaeefggdgegffgdggggggg|0315246","aabbbbdaabbbddaccbdddaabbdddaaefdddafeffddafffffg|0315246","aaaaaaaadaaabaaadcccaaaadcgcccffddgcfffedgggffhhdddgghhhgggghhhh|14207536","ccccaaaaccbbedafceeeedafeeeeedafeeeeddffeeffffffhhhfffgfhhffffff|73052461","aaaaabbeadaabbeeadddbbecaaaddeeeddddeeeedfdfeeeeffffegeefhhhhgge|04736152","ccbbbbbacccccbbbdddcceffdeeeceffdeeeeeffggeeeeffgggggfffgggghhhf|75302614","dddaabbbdddaabbbdddcabbbdddeebffddeeeeffddeeefffggffffffghhhffff|46315702","bbbbbccaeeebcccceeedcccceeeddddceeefgggcefffggccefhfggcchhhfgggc|73640251","bbbbbaaaeebbbbaaeeecbbbaeeedbddaeeddddaahhgffaaahgggggaahhhggaaa|75361420","bbaaaacfbaaacacfbbeecccfeeeecedfeeeeeeffeeeeefffeegfffffeegghhhf|30461725","aaaaaabbaaaabbbdaaacccbdaaaaabbdaafeeeedafffeeedffffeeggffhhgggg|05374162","aaffbbbbeaffbcbceeffdcccheffddddheffdggghhhffggghhhhgggghhhhhggg|04751362","aaaaaaabaaaaababeecddbbbeddddbbbedfdfgbbeefffgbbhehffggghhhhhggg|57240361","bbbbbaaabbbbaaecbbbbbeecdbbbbeccdbeeeeeedddeefeeddghhfffgggghhff|61703524","aaabbbbbbaaaaffbbbaacffbbbbacccffbdbegggffddbgggggfihhggggiiihhggggiiihhggggiiiii|162705384","ddccbbbaadcccbbbbadcdcceeeadddccceeefddfcceeefffffeeeegfffeeeeegfffeeeehgfffieeeh|753162084","aaaaaaaccaaabbaaacaaabdfffcaaabdffcceggdddffcgghhhhfffgghhhffffgihhhhiiigiiiiiiii|638407152","caaaaabbgcabbbbbggcccbeegggcccceegddcccceegffcheeegggfchhhhggggcchhhigggchhhhiggg|130748625","aaaaaafbbaaaaaffbdacaaaafddacaaaafddcceeaafdgeeeefffggeeeiifgggeeihiggggeeiiiiiii|071824635","ffffffbaaffffdbbdacffeddddaiffeeddddiiffeeeddiffgeeeddifigggehhiiiiiiihiiiiiiiiii|850641372","bbbbbbaaabbbbbbbaabbbbbaaacbbdeaafaceeeeeafcceheffffggehhfffiggeehhffiigehhhfiiig|618204735","eeebbaaaaeeebbbbaaeebbbbbdceebgddddceggghdddhgggghhhfhgigghhhhhiiiiiihhhiiiiihhhh|538407261","aaaaaaaaaaaabbbdccaabbbddcfaaeeedfffaeeehhfffaeehhhfffageeehhffaggeehhhfggihhhhhh|047538162","caccccbbbcccccccebcccdddeeeccfdddeeeffffieeeeffiiiigggfiiiiigigiiihiiiighhhhiiiig|182470635","aaaccccbbaacccccbbeaccccccdecccccccdeecccccddeeeefgdddfffffgggdhfffiiggdhiiiigggg|275814603","bbbaaaaafbbbcadddfbbccadddfeeeeefdffiegeffffhiggeehhfhigggghhhhiggghhhhhiigghhhhh|502637481","aaaaaaaaaaaaaaabaaaaaaaccbbaaadccccceeeaccccecehfacceeeeehffiieggghhffiieehhhhhhiieehhhhjhiiiihhhhjh|2530694718","bbbaaadddgbbbadddddgcbbbdddeggfddddfdeggfffffffeggfffhhffhggfffhhfhhhgfffhhhhhhgjjfhhhhhiijjhhhhhhhi|4203759681","aaaaaaaaaaaabbddacaabbbbddccacbbdddddccceegdddddcceigggddfcceigggggffceiihhgggfceiihhgfffciiihjffffc|8296075314","ccccbbbbaacccbbbdbbdchebeeddddhheeeffffdhhhheiifffggjhhiifffggjjhiiiffgjjhhiiiifgjhhhiiiifgjjjjiiiif|8509471362","aaaaabbbbdaabbbbbbddaabbbcfffdaccbccfdddaacccffddeaaccffffdjgacffffffjggffhffffjgiifhfffjjgihhhfffjj|1357960428","caaaaaabbbcacaaaabbbccccaaaffbcccccdafeecccdddfffecggdddfeeeccgggddieigggghgdiiiggggggggiigggjjiiiii|1705962483"];
+const $ = s => document.querySelector(s);
+const rand = (a,b) => a + Math.random()*(b-a);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const ic = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const ICON = {
+  on: ic('<path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.3 6.3a8 8 0 0 1 0 11.4"/>'),
+  off: ic('<path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>'),
+  undo: ic('<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>'),
+  hint: ic('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/>'),
+  auto: ic('<path d="M4 4l6 6M10 4l-6 6"/><path d="M14 14l6 6M20 14l-6 6"/><path d="M14 4l6 6M20 4l-6 6"/>'),
+  reset: ic('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>')
+};
+$("#undoBtn").innerHTML = ICON.undo + "Zurück";
+$("#hintBtn").innerHTML = ICON.hint + "Hinweis";
+$("#autoBtn").innerHTML = ICON.auto + "Auto-Kreuze";
+$("#resetBtn").innerHTML = ICON.reset + "Neu";
+
+/* ---------- Farben und Katzen ---------- */
+const REG = ["#F4C987","#A9CDEB","#B9DDA0","#E8A9B8","#C9B6E6","#F2E08A","#9FD4CC","#E7B894","#C8CFD8","#D9C7A7"];
+const COATS = [
+  {fur:"#E68A3A", dark:"#B65C1C", light:"#F8DDBB", eye:"#7FB33D"},
+  {fur:"#2B2A31", dark:"#18171C", light:"#F7F3EC", eye:"#EBC43A", line:"#E6DCCB"},
+  {fur:"#9AA3AD", dark:"#666F79", light:"#DADEE2", eye:"#9CC24A"},
+  {fur:"#F6F0E6", dark:"#CFC5B6", light:"#FFFFFF", eye:"#5AA6E6"},
+  {fur:"#7D8FA3", dark:"#5E6E84", light:"#AAB7C5", eye:"#E8A93A"},
+  {fur:"#8E6A45", dark:"#553D27", light:"#D9C09C", eye:"#A6C23F"},
+  {fur:"#EEDFC8", dark:"#5C4032", light:"#F9F1E4", eye:"#4E8FD8"},
+  {fur:"#232228", dark:"#0E0E11", light:"#3A3940", eye:"#F2D14A", line:"#E6DCCB"},
+  {fur:"#F0B940", dark:"#C98A1E", light:"#FFE6A8", eye:"#3F8F5E"},
+  {fur:"#C87B55", dark:"#8F4E2F", light:"#F1D2BC", eye:"#6FA8DC"}
+];
+function catSVG(k){
+  const c = COATS[k % COATS.length], line = c.line || "#3A2A26";
+  return `<svg class="cat" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M17 42L20 8L44 26Z" fill="${c.fur}"/><path d="M83 42L80 8L56 26Z" fill="${c.fur}"/>
+    <path d="M23 34L25 17L38 28Z" fill="#EFA3AC"/><path d="M77 34L75 17L62 28Z" fill="#EFA3AC"/>
+    <circle cx="50" cy="56" r="38" fill="${c.fur}" stroke="rgba(0,0,0,.18)" stroke-width="2"/>
+    <g stroke="${c.dark}" stroke-width="3.4" stroke-linecap="round"><path d="M42 21l1 8"/><path d="M50 19v9"/><path d="M58 21l-1 8"/></g>
+    <ellipse cx="50" cy="70" rx="15" ry="10" fill="${c.light}"/>
+    <g class="eyes"><ellipse cx="36" cy="52" rx="7" ry="8" fill="${c.eye}"/><ellipse cx="64" cy="52" rx="7" ry="8" fill="${c.eye}"/><ellipse cx="36" cy="52" rx="2.3" ry="6.6" fill="#111"/><ellipse cx="64" cy="52" rx="2.3" ry="6.6" fill="#111"/><circle cx="38.5" cy="48.5" r="1.8" fill="#fff"/><circle cx="66.5" cy="48.5" r="1.8" fill="#fff"/></g>
+    <g class="happy" stroke="${line}" stroke-width="3.2" fill="none" stroke-linecap="round"><path d="M29 54Q36 46 43 54"/><path d="M57 54Q64 46 71 54"/></g>
+    <g class="angry"><circle cx="36" cy="53" r="6.5" fill="${c.eye}"/><circle cx="64" cy="53" r="6.5" fill="${c.eye}"/><circle cx="36" cy="53" r="4.4" fill="#111"/><circle cx="64" cy="53" r="4.4" fill="#111"/><path d="M27 42l15 5M73 42l-15 5" stroke="${line}" stroke-width="3" stroke-linecap="round"/></g>
+    <path d="M46 63h8l-4 4.5z" fill="#E27C8A"/>
+    <path d="M50 67.5q-3 5-8 3M50 67.5q3 5 8 3" stroke="${line}" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <g stroke="${c.line ? "rgba(255,255,255,.6)" : "rgba(70,50,45,.45)"}" stroke-width="1.4" stroke-linecap="round"><path d="M38 68L12 63M38 71L13 75M62 68L88 63M62 71L87 75"/></g>
+  </svg>`;
+}
+const XSVG = `<svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="#3B3330" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg>`;
+
+/* ---------- Echte Aufnahmen ---------- */
+const SND = (() => {
+  const NAMES = ["meow1","meow2","meow3","meow5","meowhigh","meowlow","purr","chorus","angry1","angry2"];
+  let ctx = null, out = null, muted = false, loading = null; const buf = {}, last = {};
+  try { muted = localStorage.getItem("katzensudoku-mute") === "1"; } catch(e) {}
+  function load(){
+    if (loading) return loading;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return (loading = Promise.resolve());
+    ctx = new AC(); out = ctx.createGain(); out.gain.value = 1; out.connect(ctx.destination);
+    loading = Promise.all(NAMES.map(async n => { try { const r = await fetch("sounds/" + n + ".mp3"); if (!r.ok) return; const ab = await r.arrayBuffer(); buf[n] = await new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)); } catch(e) {} }));
+    return loading;
+  }
+  function unlock(){ load(); if (ctx && ctx.state === "suspended") ctx.resume(); }
+  function play(n, o = {}){
+    if (muted || !ctx || !buf[n]) return;
+    const {vol = .8, rate = 1, when = 0, dur = 0, gap = 0} = o, now = ctx.currentTime;
+    if (gap && last[n] && now - last[n] < gap) return; last[n] = now;
+    const s = ctx.createBufferSource(); s.buffer = buf[n]; s.playbackRate.value = rate;
+    const g = ctx.createGain(); g.gain.value = vol; s.connect(g); g.connect(out);
+    const t = now + when; s.start(t);
+    if (dur){ g.gain.setValueAtTime(vol, t + Math.max(0, dur - .25)); g.gain.linearRampToValueAtTime(.0001, t + dur); s.stop(t + dur + .05); }
+  }
+  // Leises Pfoten-Tippen für Kreuze: hell beim Setzen, dunkler beim Entfernen, beim Wischen steigend
+  let lastTick = 0;
+  function tick(kind = "set", step = 0){
+    if (muted || !ctx) return;
+    const now = ctx.currentTime; if (now - lastTick < .03) return; lastTick = now;
+    const f = kind === "set" ? 820*Math.pow(1.045, Math.min(step, 14)) : 520;
+    const o = ctx.createOscillator(); o.type = "triangle";
+    o.frequency.setValueAtTime(f, now); o.frequency.exponentialRampToValueAtTime(f*.62, now + .06);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(.22, now + .004); g.gain.exponentialRampToValueAtTime(.001, now + .08);
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400;
+    o.connect(lp); lp.connect(g); g.connect(out); o.start(now); o.stop(now + .1);
+  }
+  return {unlock, play, tick, get muted(){ return muted; }, set muted(v){ muted = v; try { localStorage.setItem("katzensudoku-mute", v ? "1" : "0"); } catch(e) {} }};
+})();
+const muteBtn = $("#muteBtn");
+const renderMute = () => { muteBtn.innerHTML = SND.muted ? ICON.off : ICON.on; muteBtn.setAttribute("aria-label", SND.muted ? "Ton an" : "Ton aus"); };
+renderMute();
+muteBtn.addEventListener("click", () => { SND.unlock(); SND.muted = !SND.muted; renderMute(); });
+
+/* ---------- Haptisches Feedback ----------
+   Android: Vibrations-Schnittstelle des Browsers.
+   iPhone: Safari kennt diese Schnittstelle nicht. Ab iOS 18 löst das Umschalten eines
+   Schalter-Kästchens (input type=checkbox switch) ein kurzes Klopfen aus, das nutzen wir unsichtbar. */
+const HAPTIC = (() => {
+  const canVibrate = typeof navigator.vibrate === "function";
+  let label = null, last = 0;
+  if (!canVibrate){
+    label = document.createElement("label"); label.setAttribute("aria-hidden", "true");
+    label.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none";
+    const inp = document.createElement("input"); inp.type = "checkbox"; inp.setAttribute("switch", ""); inp.tabIndex = -1;
+    label.appendChild(inp); document.body.appendChild(label);
+  }
+  function tap(kind = "light"){
+    const now = performance.now();
+    if (kind === "light" && now - last < 35) return;
+    last = now;
+    if (canVibrate){ try { navigator.vibrate(kind === "cat" ? [18, 45, 18] : kind === "bad" ? [45, 35, 45] : 9); } catch(e) {} }
+    else if (label){ label.click(); if (kind !== "light") setTimeout(() => label.click(), 110); }
+  }
+  return {tap};
+})();
+
+/* ---------- Speicher ---------- */
+let SAVE = {solved:{}, boards:{}, cur:0, intro:false, auto:false};
+try { const s = JSON.parse(localStorage.getItem("katzensudoku") || "null"); if (s) SAVE = Object.assign(SAVE, s); } catch(e) {}
+if (SAVE.v !== 2){ SAVE.solved = {}; SAVE.boards = {}; SAVE.cur = 0; SAVE.v = 2; }
+const persist = () => { try { localStorage.setItem("katzensudoku", JSON.stringify(SAVE)); } catch(e) {} };
+
+/* ---------- Spielzustand ---------- */
+let L = null;   // aktuelles Rätsel
+const boardEl = $("#board");
+let cells = [];
+function load(idx){
+  const [r, s] = LEVELS[idx].split("|"), N = s.length;
+  L = {idx, N, reg:[...r].map(ch => ch.charCodeAt(0) - 97), sol:[...s].map(Number), b:new Array(N*N).fill(0),
+       hist:[], t:0, hints:0, solved:false};
+  const saved = SAVE.boards[idx];
+  if (saved && !SAVE.solved[idx]){ L.b = [...saved.b].map(Number); L.t = saved.t || 0; L.hints = saved.h || 0; }
+  SAVE.cur = idx; persist();
+  build(); render(); hud();
+}
+function build(){
+  const N = L.N;
+  boardEl.style.gridTemplateColumns = `repeat(${N}, minmax(0, 1fr))`;
+  boardEl.style.gridTemplateRows = `repeat(${N}, minmax(0, 1fr))`;
+  boardEl.classList.remove("won");
+  boardEl.innerHTML = "";
+  cells = [];
+  const thin = "1px", thick = N >= 9 ? "2.5px" : "3px";
+  for (let i = 0; i < N*N; i++){
+    const r = Math.floor(i/N), c = i % N, g = L.reg[i];
+    const d = document.createElement("div"); d.className = "cell"; d.setAttribute("role", "gridcell");
+    d.style.background = REG[g];
+    const diff = (rr, cc) => rr < 0 || cc < 0 || rr >= N || cc >= N ? null : L.reg[rr*N + cc] !== g;
+    const bt = diff(r-1, c), bl = diff(r, c-1);
+    d.style.borderTopWidth = bt === null ? "0" : bt ? thick : thin;
+    d.style.borderLeftWidth = bl === null ? "0" : bl ? thick : thin;
+    d.style.borderTopColor = bt ? "var(--line)" : "rgba(59,51,48,.22)";
+    d.style.borderLeftColor = bl ? "var(--line)" : "rgba(59,51,48,.22)";
+    boardEl.appendChild(d); cells.push(d);
+  }
+}
+const shown = [];
+function render(){
+  const bad = conflicts();
+  for (let i = 0; i < cells.length; i++){
+    const v = L.b[i], d = cells[i];
+    if (shown[i] !== v || d.dataset.n !== String(L.N)){
+      d.innerHTML = v === 1 ? XSVG : v === 2 ? catSVG(L.reg[i]) : "";
+      shown[i] = v; d.dataset.n = L.N;
+    }
+    d.classList.toggle("clash", v === 2 && bad.has(i));
+    const r = Math.floor(i/L.N), c = i % L.N;
+    d.setAttribute("aria-label", `Zeile ${r+1}, Spalte ${c+1}: ${v === 2 ? "Katze" : v === 1 ? "Kreuz" : "leer"}`);
+  }
+  $("#undoBtn").disabled = !L.hist.length || L.solved;
+  return bad;
+}
+function conflicts(){
+  const N = L.N, bad = new Set(), cats = [];
+  L.b.forEach((v, i) => { if (v === 2) cats.push(i); });
+  for (let a = 0; a < cats.length; a++) for (let b = a + 1; b < cats.length; b++){
+    const i = cats[a], j = cats[b], ri = Math.floor(i/N), ci = i % N, rj = Math.floor(j/N), cj = j % N;
+    if (ri === rj || ci === cj || L.reg[i] === L.reg[j] || (Math.abs(ri - rj) <= 1 && Math.abs(ci - cj) <= 1)){ bad.add(i); bad.add(j); }
+  }
+  return bad;
+}
+const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+function hud(){
+  $("#lvName").textContent = `Rätsel ${L.idx + 1}`;
+  $("#lvInfo").textContent = `${L.N}×${L.N} · ${fmt(L.t)}`;
+}
+function saveBoard(){ if (!L.solved){ SAVE.boards[L.idx] = {b:L.b.join(""), t:Math.floor(L.t), h:L.hints}; persist(); } }
+function snapshot(){ L.hist.push(L.b.slice()); if (L.hist.length > 200) L.hist.shift(); }
+function dropSame(){ const top = L.hist[L.hist.length - 1]; if (top && top.every((v, i) => v === L.b[i])) L.hist.pop(); }
+
+let clashCount = 0;
+function afterChange(placedCat){
+  const bad = render();
+  if (placedCat >= 0){
+    if (bad.has(placedCat)){ SND.play("angry1", {vol:.8, gap:.6}); HAPTIC.tap("bad"); }
+    else SND.play(pick(["meow1","meow2","meow3","meow5"]), {vol:.55, rate:rand(1.02, 1.15), gap:.12});
+  }
+  saveBoard();
+  checkWin(bad);
+}
+function setCat(i){
+  L.b[i] = 2;
+  HAPTIC.tap("cat");
+  if (SAVE.auto){
+    const N = L.N, r = Math.floor(i/N), c = i % N;
+    for (let j = 0; j < N*N; j++){
+      if (L.b[j] !== 0) continue;
+      const rj = Math.floor(j/N), cj = j % N;
+      if (rj === r || cj === c || L.reg[j] === L.reg[i] || (Math.abs(rj - r) <= 1 && Math.abs(cj - c) <= 1)) L.b[j] = 1;
+    }
+  }
+  afterChange(i);
+}
+function checkWin(bad){
+  const cats = L.b.filter(v => v === 2).length;
+  if (cats !== L.N || bad.size) return;
+  L.solved = true;
+  L.b = L.b.map(v => v === 1 ? 0 : v); render();
+  boardEl.classList.add("won");
+  cells.forEach((d, i) => d.style.animationDelay = ((Math.floor(i/L.N) + i % L.N)*.04) + "s");
+  const prev = SAVE.solved[L.idx];
+  const time = Math.floor(L.t);
+  SAVE.solved[L.idx] = {t: prev ? Math.min(prev.t, time) : time, h: prev ? Math.min(prev.h, L.hints) : L.hints};
+  delete SAVE.boards[L.idx]; persist();
+  SND.play("purr", {vol:.9, dur:2});
+  const done = Object.keys(SAVE.solved).length;
+  $("#winKicker").textContent = prev && time < prev.t ? "Neue Bestzeit" : `Rätsel ${L.idx + 1} gelöst`;
+  $("#winTitle").textContent = L.hints === 0 ? "Alle Katzen schlafen!" : "Geschafft!";
+  $("#winText").textContent = L.hints === 0 ? `${L.N} Katzen, jede auf ihrer eigenen Decke, und das ganz ohne Hinweis.` : `${L.N} Katzen liegen zufrieden auf ihren Decken. Du hast ${L.hints} ${L.hints === 1 ? "Hinweis" : "Hinweise"} gebraucht.`;
+  $("#stTime").textContent = fmt(time); $("#stBest").textContent = fmt(SAVE.solved[L.idx].t);
+  $("#stHints").textContent = L.hints; $("#stDone").textContent = `${done} / ${LEVELS.length}`;
+  $("#nextBtn").hidden = L.idx >= LEVELS.length - 1;
+  setTimeout(() => { $("#winOv").hidden = false; reward(L.hints === 0); }, 1900);
+}
+
+/* ---------- Eingabe: Tippen, Doppeltippen, Wischen ---------- */
+let drag = null, lastTap = {i:-1, t:0};
+function cellAt(x, y){
+  const r = boardEl.getBoundingClientRect(), N = L.N;
+  const c = Math.floor((x - r.left)/r.width*N), row = Math.floor((y - r.top)/r.height*N);
+  if (c < 0 || row < 0 || c >= N || row >= N) return -1;
+  return row*N + c;
+}
+boardEl.addEventListener("pointerdown", e => {
+  if (!L || L.solved) return;
+  const i = cellAt(e.clientX, e.clientY); if (i < 0) return;
+  e.preventDefault(); SND.unlock();
+  try { boardEl.setPointerCapture(e.pointerId); } catch(err) {}
+  const now = performance.now();
+  const dbl = lastTap.i === i && now - lastTap.t < 340;
+  lastTap = {i, t: dbl ? 0 : now};
+  if (dbl){ drag = {done:true}; setCat(i); return; }
+  snapshot();
+  drag = {start:i, startVal:L.b[i], moved:false, x:e.clientX, y:e.clientY, id:e.pointerId};
+  if (L.b[i] === 0){ L.b[i] = 1; render(); SND.tick("set"); HAPTIC.tap(); }
+});
+boardEl.addEventListener("pointermove", e => {
+  if (!drag || drag.done || e.pointerId !== drag.id) return;
+  const r = boardEl.getBoundingClientRect(), step = r.width/L.N/4;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y, dist = Math.hypot(dx, dy);
+  const n = Math.max(1, Math.ceil(dist/step));
+  let changed = false;
+  for (let k = 1; k <= n; k++){
+    const i = cellAt(drag.x + dx*k/n, drag.y + dy*k/n);
+    if (i < 0) continue;
+    if (i !== drag.start && !drag.moved){ drag.moved = true; drag.n = 0; lastTap = {i:-1, t:0}; if (L.b[drag.start] === 0){ L.b[drag.start] = 1; changed = true; } }
+    if (drag.moved && L.b[i] === 0){ L.b[i] = 1; changed = true; SND.tick("set", ++drag.n); HAPTIC.tap(); }
+  }
+  drag.x = e.clientX; drag.y = e.clientY;
+  if (changed) render();
+});
+function endDrag(e){
+  if (!drag) return;
+  if (!drag.done && !drag.moved){
+    const i = drag.start;
+    if (drag.startVal === 1 || drag.startVal === 2){ L.b[i] = 0; if (drag.startVal === 1) SND.tick("clear"); HAPTIC.tap(); }
+  }
+  const d = drag; drag = null;
+  if (d.done) return;
+  dropSame(); afterChange(-1);
+}
+boardEl.addEventListener("pointerup", endDrag);
+// iPhone/iPad: Doppeltippen darf die Seite nicht vergrößern. Das Spiel liest die Berührungen über Pointer-Ereignisse,
+// die Standardaktion des Browsers (Zoomen, Scrollen, Lupe) wird auf dem Spielfeld abgeschaltet.
+["touchstart", "touchmove", "touchend", "gesturestart"].forEach(ev => boardEl.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, {passive:false}));
+boardEl.addEventListener("dblclick", e => e.preventDefault());
+boardEl.addEventListener("pointercancel", endDrag);
+
+/* ---------- Werkzeuge ---------- */
+$("#undoBtn").addEventListener("click", () => { if (!L.hist.length || L.solved) return; L.b = L.hist.pop(); afterChange(-1); });
+$("#autoBtn").addEventListener("click", () => { SAVE.auto = !SAVE.auto; persist(); $("#autoBtn").setAttribute("aria-pressed", SAVE.auto); toast(SAVE.auto ? "Auto-Kreuze an: Nach jeder Katze werden Zeile, Spalte, Farbe und Nachbarn angekreuzt." : "Auto-Kreuze aus."); });
+$("#autoBtn").setAttribute("aria-pressed", SAVE.auto);
+$("#resetBtn").addEventListener("click", () => { if (!L.solved) $("#resetOv").hidden = false; });
+$("#resetNo").addEventListener("click", () => $("#resetOv").hidden = true);
+$("#resetYes").addEventListener("click", () => { $("#resetOv").hidden = true; snapshot(); L.b.fill(0); afterChange(-1); });
+$("#hintBtn").addEventListener("click", () => {
+  if (L.solved) return;
+  SND.unlock();
+  const N = L.N, isSol = i => L.sol[Math.floor(i/N)] === i % N;
+  L.hints++; saveBoard();
+  const wrongCat = L.b.findIndex((v, i) => v === 2 && !isSol(i));
+  if (wrongCat >= 0){ flash(wrongCat, "flash"); SND.play("angry2", {vol:.7}); return toast("Diese Katze liegt hier falsch."); }
+  const wrongX = L.b.findIndex((v, i) => v === 1 && isSol(i));
+  if (wrongX >= 0){ flash(wrongX, "flash"); SND.play("meowhigh", {vol:.6}); return toast("Hier hast du ein Kreuz gesetzt, aber genau hier gehört eine Katze hin."); }
+  // Farbe mit den wenigsten freien Feldern zuerst
+  let best = -1, bestFree = 99;
+  for (let r = 0; r < N; r++){
+    const i = r*N + L.sol[r]; if (L.b[i] === 2) continue;
+    const g = L.reg[i], free = L.b.filter((v, j) => v === 0 && L.reg[j] === g).length;
+    if (free < bestFree){ bestFree = free; best = i; }
+  }
+  if (best >= 0){ snapshot(); setCat(best); flash(best, "hintok"); toast("Diese Katze gehört hierher."); }
+});
+function flash(i, cls){ const d = cells[i]; d.classList.remove(cls); void d.offsetWidth; d.classList.add(cls); setTimeout(() => d.classList.remove(cls), 1600); }
+let toastT = 0;
+function toast(m, ms = 2600){ const t = $("#toast"); t.textContent = m; t.hidden = false; t.style.animation = "none"; void t.offsetWidth; t.style.animation = ""; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, ms); }
+
+/* ---------- Belohnungskatze ---------- */
+function rewardSVG(c){
+  const line = c.line || "#3A2A26", wh = c.line ? "rgba(255,255,255,.7)" : "rgba(70,50,45,.5)";
+  return `<svg viewBox="0 0 140 150" class="rw-svg">
+    <g class="rw-tail"><path d="M98 132C128 130 136 102 122 78" stroke="${c.fur}" stroke-width="10" stroke-linecap="round" fill="none"/></g>
+    <ellipse cx="70" cy="106" rx="36" ry="33" fill="${c.fur}"/>
+    <ellipse cx="70" cy="114" rx="16" ry="22" fill="${c.light}"/>
+    <ellipse cx="54" cy="137" rx="11" ry="7" fill="${c.light}"/>
+    <g class="rw-paw"><ellipse cx="86" cy="137" rx="11" ry="7" fill="${c.light}"/></g>
+    <path d="M36 52L40 14L65 36Z" fill="${c.fur}"/><path d="M104 52L100 14L75 36Z" fill="${c.fur}"/>
+    <path d="M43 44L45 23L58 37Z" fill="#EFA3AC"/><path d="M97 44L95 23L82 37Z" fill="#EFA3AC"/>
+    <ellipse cx="70" cy="60" rx="37" ry="31" fill="${c.fur}"/>
+    <g stroke="${c.dark}" stroke-width="3.4" stroke-linecap="round"><path d="M62 33l2 10"/><path d="M70 30v12"/><path d="M78 33l-2 10"/></g>
+    <ellipse cx="70" cy="74" rx="15" ry="10" fill="${c.light}"/>
+    <g class="rw-blush" fill="#F29AA6"><ellipse cx="46" cy="72" rx="6" ry="3.5"/><ellipse cx="94" cy="72" rx="6" ry="3.5"/></g>
+    <g class="rw-eo"><ellipse cx="55" cy="58" rx="7.5" ry="8.5" fill="${c.eye}"/><ellipse cx="85" cy="58" rx="7.5" ry="8.5" fill="${c.eye}"/><ellipse cx="55" cy="58" rx="2.4" ry="7" fill="#111"/><ellipse cx="85" cy="58" rx="2.4" ry="7" fill="#111"/><circle cx="57.5" cy="54.5" r="2" fill="#fff"/><circle cx="87.5" cy="54.5" r="2" fill="#fff"/></g>
+    <g class="rw-ec" stroke="${line}" stroke-width="3" fill="none" stroke-linecap="round"><path d="M47 60Q55 52 63 60"/><path d="M77 60Q85 52 93 60"/></g>
+    <path d="M65.5 67H74.5L70 72Z" fill="#E27C8A"/>
+    <g class="rw-mc" stroke="${line}" stroke-width="2" fill="none" stroke-linecap="round"><path d="M70 72Q66 78 60 75"/><path d="M70 72Q74 78 80 75"/></g>
+    <g class="rw-mo"><ellipse cx="70" cy="79" rx="7" ry="8" fill="#5B1F2A"/><ellipse cx="70" cy="83.5" rx="4.5" ry="2.8" fill="#E27C8A"/></g>
+    <g stroke="${wh}" stroke-width="1.4" stroke-linecap="round"><path d="M56 75L26 69M56 78L27 81M84 75L114 69M84 78L113 81"/></g>
+  </svg>`;
+}
+const RW = {timers:[]};
+function stopReward(){ RW.timers.forEach(clearTimeout); RW.timers = []; }
+function rwHearts(n = 4){
+  const st = $("#rwStage");
+  for (let k = 0; k < n; k++){
+    const h = document.createElement("span"); h.className = "rw-heart";
+    h.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.7 1.2 5.3 3.1 1.6-1.9 3.1-3.1 5.3-3.1 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>`;
+    h.style.left = (k % 2 ? 62 + Math.random()*14 : 22 + Math.random()*14) + "%"; h.style.animationDelay = (k*.18) + "s";
+    st.appendChild(h); setTimeout(() => h.remove(), 1900);
+  }
+}
+function rwSay(cat, text, ms){
+  cat.classList.add("talk"); const b = cat.querySelector(".rw-bubble"); b.textContent = text; b.hidden = false;
+  RW.timers.push(setTimeout(() => { cat.classList.remove("talk"); b.hidden = true; }, ms));
+}
+function reward(perfect){
+  stopReward();
+  const coat = COATS[Math.floor(Math.random()*COATS.length)];
+  const st = $("#rwStage");
+  st.innerHTML = `<div class="rw-cushion"></div><button class="rw-cat" id="rwCat" aria-label="Katze streicheln"><span class="rw-bubble" hidden></span><span class="rw-body">${rewardSVG(coat)}</span></button>`;
+  const cat = $("#rwCat");
+  const at = (ms, f) => RW.timers.push(setTimeout(f, ms));
+  // 1. hereinspringen und miauen
+  at(250, () => { SND.play("meow2", {vol:.8}); rwSay(cat, "Miau!", 900); });
+  // 2. schnurren mit geschlossenen Augen und Herzchen
+  at(1400, () => { cat.classList.add("purr"); SND.play("purr", {vol:.9, dur:2.8}); rwHearts(5); });
+  at(2600, () => rwHearts(3));
+  // 3. zum Abschluss winken und zufrieden miauen, bei Lösung ohne Hinweis mit Katzenchor
+  at(4300, () => { cat.classList.remove("purr"); cat.classList.add("wave"); SND.play("meow1", {vol:.8}); rwSay(cat, perfect ? "Perfekt!" : "Danke!", 1100); });
+  if (perfect) at(4900, () => SND.play("chorus", {vol:.5, dur:3}));
+  at(5600, () => cat.classList.remove("wave"));
+  let n = 0;
+  cat.addEventListener("click", () => {
+    const k = ["meow3","meow5","meowhigh","meowlow","meow2"][n++ % 5];
+    SND.play(k, {vol:.8, rate:k === "meowhigh" ? 1.15 : 1});
+    cat.classList.remove("hop"); void cat.offsetWidth; cat.classList.add("hop");
+    rwSay(cat, ["Mau!","Miau?","Mii!","Mrrau","Miau!"][(n - 1) % 5], 700); rwHearts(2);
+  });
+}
+
+/* ---------- Rätselauswahl ---------- */
+function renderList(){
+  const groups = {};
+  LEVELS.forEach((l, i) => { const n = l.split("|")[1].length; (groups[n] = groups[n] || []).push(i); });
+  $("#lvList").innerHTML = Object.keys(groups).map(n => `<h3>${n}×${n}</h3><div class="lv-group">` + groups[n].map(i => {
+    const s = SAVE.solved[i];
+    return `<button class="lv${s ? " done" : ""}${L && L.idx === i ? " cur" : ""}" data-i="${i}">${i + 1}<small>${s ? fmt(s.t) : SAVE.boards[i] ? "begonnen" : "&nbsp;"}</small></button>`;
+  }).join("") + `</div>`).join("");
+}
+$("#lvBtn").addEventListener("click", () => { renderList(); $("#lvOv").hidden = false; });
+$("#lvClose").addEventListener("click", () => $("#lvOv").hidden = true);
+$("#lvList").addEventListener("click", e => { const b = e.target.closest(".lv"); if (!b) return; $("#lvOv").hidden = true; load(+b.dataset.i); });
+$("#nextBtn").addEventListener("click", () => { stopReward(); $("#winOv").hidden = true; load(Math.min(LEVELS.length - 1, L.idx + 1)); });
+$("#winLv").addEventListener("click", () => { stopReward(); $("#winOv").hidden = true; renderList(); $("#lvOv").hidden = false; });
+
+/* ---------- Anleitung ---------- */
+$("#exX").innerHTML = XSVG;
+$("#exCat").innerHTML = catSVG(0).replace('class="cat"', 'class="cat" style="width:34px;height:34px"');
+$("#exSwipe").innerHTML = `<svg viewBox="0 0 40 24" style="width:40px"><path d="M3 12h34" stroke="#E5B440" stroke-width="3" stroke-dasharray="3 3"/><path d="M5 7l6 6M11 7l-6 6M17 7l6 6M23 7l-6 6M29 7l6 6M35 7l-6 6" stroke="#3B3330" stroke-width="2" stroke-linecap="round"/></svg>`;
+$("#helpBtn").addEventListener("click", () => $("#introOv").hidden = false);
+$("#introGo").addEventListener("click", () => { SND.unlock(); $("#introOv").hidden = true; SAVE.intro = true; persist(); });
+
+/* ---------- Uhr ---------- */
+let lastT = performance.now();
+function tick(now){
+  const dt = (now - lastT)/1000; lastT = now;
+  const busy = !$("#introOv").hidden || !$("#lvOv").hidden || !$("#winOv").hidden;
+  if (L && !L.solved && !busy && !document.hidden){
+    const before = Math.floor(L.t); L.t += Math.min(dt, .5);
+    if (Math.floor(L.t) !== before){ hud(); if (Math.floor(L.t) % 5 === 0) saveBoard(); }
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+document.addEventListener("visibilitychange", () => { if (document.hidden && L) saveBoard(); });
+
+let startIdx = SAVE.cur || 0;
+if (SAVE.solved[startIdx] && !SAVE.boards[startIdx]){ const nxt = LEVELS.findIndex((_, i) => !SAVE.solved[i]); if (nxt >= 0) startIdx = nxt; }
+load(startIdx);
+if (!SAVE.intro) $("#introOv").hidden = false;
+})();
+</script>
+
+</body>
+</html>

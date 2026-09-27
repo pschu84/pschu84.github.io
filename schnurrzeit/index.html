@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{touch-action:manipulation}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>Schnurrzeit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wall:#2F5F69; --deep:#1B3B43; --ink:#15262B; --paper:#FBF6EA; --paper-2:#F0E7D3; --muted:#5B6B6E;
+  --mustard:#E5B440; --mustard-dark:#A67C1F; --pink:#E3587B; --sage:#8FB58C; --wood:#B97C4B;
+  color-scheme:light;
+}
+html{box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--wall);color:var(--ink);font-family:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 14px,transparent 14px 28px);-webkit-tap-highlight-color:transparent}
+.wrap{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:22px 28px}
+header{display:grid;grid-template-columns:1fr auto;align-items:end;gap:10px;color:var(--paper)}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mustard)}
+h1{font-family:"Grandstander",ui-rounded,system-ui,sans-serif;font-weight:800;font-size:52px;line-height:.95;margin:6px 0 0;letter-spacing:-.01em}
+.lead{font-size:15px;line-height:1.45;margin:12px 0 0;color:rgba(251,246,234,.85);max-width:34ch}
+#mascot{border:0;background:none;padding:0;width:104px;cursor:pointer}
+#mascot svg{width:100%;display:block;overflow:visible}
+#mascot .mo{display:none}
+#mascot.talk .mo{display:inline}#mascot.talk .mc{display:none}
+#mascot.purr .eo{display:none}#mascot.purr .ec{display:inline}
+#mascot .ec{display:none}
+.hint{grid-column:1/-1;font-size:12px;font-weight:700;color:rgba(251,246,234,.6);text-align:right;margin-top:-4px}
+.list{display:grid;gap:14px;margin-top:22px}
+.card{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;background:var(--paper);border-radius:20px;padding:12px 14px 12px 12px;
+  text-decoration:none;color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .15s}
+.card:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.card:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
+.pic{width:96px;height:96px;border-radius:14px;overflow:hidden;background:var(--wall)}
+.pic svg{width:100%;height:100%;display:block}
+.num{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--pink)}
+.card h2{font-family:"Grandstander",ui-rounded,system-ui,sans-serif;font-weight:800;font-size:25px;line-height:1;margin:3px 0 4px;color:var(--deep)}
+.card p{margin:0;font-size:13.5px;line-height:1.4}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:11.5px;font-weight:800}
+.chip{background:var(--paper-2);padding:2px 8px;border-radius:8px}
+.chip.rec{background:#FBE3E9;color:#A63358}
+.chip.real{background:#DCEBD8;color:#2E5E36}
+footer{margin-top:22px;font-size:12.5px;line-height:1.5;color:rgba(251,246,234,.7)}
+footer b{color:var(--paper)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="kicker">Vier Katzenspiele für zwischendurch</div>
+      <h1>Schnurr&shy;zeit</h1>
+      <p class="lead">Füttern, jagen, stapeln, knobeln. Überall sind echte Katzenstimmen versteckt.</p>
+    </div>
+    <button id="mascot" aria-label="Katze antippen">
+      <svg viewBox="0 0 120 134" aria-hidden="true">
+        <path d="M84 120C108 118 116 96 104 74" stroke="#E3893A" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <ellipse cx="60" cy="96" rx="33" ry="31" fill="#E3893A"/>
+        <g stroke="#B35B1C" stroke-width="3.2" stroke-linecap="round" fill="none"><path d="M34 88q7 3 9 11"/><path d="M86 88q-7 3-9 11"/></g>
+        <ellipse cx="60" cy="102" rx="14" ry="21" fill="#F7DDBB"/>
+        <ellipse cx="47" cy="125" rx="10" ry="6.5" fill="#F7DDBB"/><ellipse cx="73" cy="125" rx="10" ry="6.5" fill="#F7DDBB"/>
+        <path d="M29 44L33 9L57 30Z" fill="#E3893A"/><path d="M35 37L37 17L50 31Z" fill="#EFA3AC"/>
+        <path d="M91 44L87 9L63 30Z" fill="#E3893A"/><path d="M85 37L83 17L70 31Z" fill="#EFA3AC"/>
+        <ellipse cx="60" cy="52" rx="34" ry="28" fill="#E3893A"/>
+        <g stroke="#B35B1C" stroke-width="3.2" stroke-linecap="round" fill="none"><path d="M53 29l2 9"/><path d="M60 26v11"/><path d="M67 29l-2 9"/></g>
+        <ellipse cx="60" cy="65" rx="14" ry="9" fill="#F7DDBB"/>
+        <g class="eo"><ellipse cx="46" cy="50" rx="7" ry="8" fill="#8DBA3C"/><ellipse cx="46" cy="50" rx="2.2" ry="6.4" fill="#111"/><circle cx="48.5" cy="46.8" r="1.7" fill="#fff"/><ellipse cx="74" cy="50" rx="7" ry="8" fill="#8DBA3C"/><ellipse cx="74" cy="50" rx="2.2" ry="6.4" fill="#111"/><circle cx="76.5" cy="46.8" r="1.7" fill="#fff"/></g>
+        <g class="ec" stroke="#3A2A26" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M39 51Q46 44 53 51"/><path d="M67 51Q74 44 81 51"/></g>
+        <path d="M55.5 59H64.5L60 64Z" fill="#E27C8A"/>
+        <g class="mc" stroke="#3A2A26" stroke-width="1.7" fill="none" stroke-linecap="round"><path d="M60 64Q57 69 52 67"/><path d="M60 64Q63 69 68 67"/></g>
+        <g class="mo"><ellipse cx="60" cy="69.5" rx="6" ry="6.5" fill="#5B1F2A"/><ellipse cx="60" cy="73" rx="3.8" ry="2.4" fill="#E27C8A"/></g>
+        <g stroke="rgba(70,50,45,.5)" stroke-width="1.2" stroke-linecap="round"><path d="M47 66L20 61"/><path d="M47 68.5L21 70.5"/><path d="M73 66L100 61"/><path d="M73 68.5L99 70.5"/></g>
+      </svg>
+    </button>
+    <div class="hint">Tipp die Katze an</div>
+  </header>
+
+  <nav class="list" aria-label="Spiele">
+    <a class="card" href="katzenhof.html">
+      <div class="pic"><svg viewBox="0 0 96 96" aria-hidden="true">
+        <rect width="96" height="58" fill="#2F5F69"/><rect y="58" width="96" height="38" fill="#B97C4B"/>
+        <rect x="26" y="8" width="44" height="34" rx="4" fill="#8ECBE0" stroke="#EEE6D4" stroke-width="4"/>
+        <ellipse cx="42" cy="82" rx="26" ry="8" fill="#E5B440"/>
+        <ellipse cx="42" cy="68" rx="16" ry="15" fill="#2B2A31"/>
+        <path d="M28 52l2-16 11 10zM56 52l-2-16-11 10z" fill="#2B2A31"/>
+        <ellipse cx="42" cy="52" rx="16" ry="13" fill="#2B2A31"/>
+        <ellipse cx="36" cy="51" rx="3.2" ry="3.8" fill="#EBC43A"/><ellipse cx="48" cy="51" rx="3.2" ry="3.8" fill="#EBC43A"/>
+        <ellipse cx="36" cy="51" rx="1" ry="3" fill="#111"/><ellipse cx="48" cy="51" rx="1" ry="3" fill="#111"/>
+        <circle cx="74" cy="40" r="15" fill="#FBF6EA"/><circle cx="62" cy="50" r="4" fill="#FBF6EA"/>
+        <path d="M65 40c3-5 9-6 13-3l4-3v12l-4-3c-4 3-10 2-13-3z" fill="#15262B"/>
+      </svg></div>
+      <div>
+        <div class="num">Spiel 1</div>
+        <h2>Katzenhof</h2>
+        <p>Hör genau hin, was jede Katze will, und gib ihr Futter, Streicheleinheiten, Spielzeug oder ein Körbchen.</p>
+        <div class="meta"><span class="chip">Reaktion · 75 s</span><span class="chip rec" data-key="schnurrzeit-best">Rekord 0</span></div>
+      </div>
+    </a>
+    <a class="card" href="maeusejagd.html">
+      <div class="pic"><svg viewBox="0 0 96 96" aria-hidden="true">
+        <rect width="96" height="96" fill="#EDE6D3"/>
+        <g fill="#D2C9AF"><rect x="0" y="0" width="24" height="24"/><rect x="48" y="0" width="24" height="24"/><rect x="24" y="24" width="24" height="24"/><rect x="72" y="24" width="24" height="24"/><rect x="0" y="48" width="24" height="24"/><rect x="48" y="48" width="24" height="24"/><rect x="24" y="72" width="24" height="24"/><rect x="72" y="72" width="24" height="24"/></g>
+        <path d="M60 30q4 8 0 14" stroke="#C9A3A8" stroke-width="1.6" fill="none"/>
+        <ellipse cx="60" cy="24" rx="5" ry="8" fill="#9A9AA6"/><circle cx="56.5" cy="16" r="3" fill="#B8B8C4"/><circle cx="63.5" cy="16" r="3" fill="#B8B8C4"/>
+        <path d="M40 86c10 0 14-8 8-14" stroke="#E3893A" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <ellipse cx="38" cy="66" rx="11" ry="18" fill="#E3893A"/>
+        <g stroke="#B35B1C" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M29 62q9-5 18 0"/><path d="M29 70q9-5 18 0"/></g>
+        <path d="M28 48l0-14 8 9zM48 48l0-14-8 9z" fill="#E3893A"/>
+        <circle cx="38" cy="47" r="10.5" fill="#E3893A"/>
+        <ellipse cx="34" cy="43" rx="2.4" ry="2.8" fill="#8DBA3C"/><ellipse cx="42" cy="43" rx="2.4" ry="2.8" fill="#8DBA3C"/>
+        <path d="M16 30c2-2 6 1 4 4" stroke="#3F7A2B" stroke-width="0" fill="none"/>
+        <rect x="74" y="54" width="10" height="26" rx="5" fill="#3F7A2B" transform="rotate(14 79 67)"/>
+      </svg></div>
+      <div>
+        <div class="num">Spiel 2</div>
+        <h2>Mäusejagd</h2>
+        <p>Rase durch Küche, Keller und Garten, fang Mäuse und weich Gurken und fremden Katern aus.</p>
+        <div class="meta"><span class="chip">Laufen · endlos</span><span class="chip rec" data-key="maeusejagd-best">Rekord 0</span></div>
+      </div>
+    </a>
+    <a class="card" href="katzenkiste.html">
+      <div class="pic"><svg viewBox="0 0 96 96" aria-hidden="true">
+        <rect width="96" height="96" fill="#2F5F69"/>
+        <rect x="14" y="34" width="68" height="56" fill="#C9A26B"/>
+        <path d="M14 34l-10-14 6-3 8 17zM82 34l10-14-6-3-8 17z" fill="#B98E58"/>
+        <g><path d="M22 70l2-11 7 6zM44 70l-2-11-7 6z" fill="#F6F0E6"/><circle cx="33" cy="75" r="12" fill="#F6F0E6"/><ellipse cx="27" cy="70" rx="6" ry="5" fill="#E68A3A"/><ellipse cx="40" cy="71" rx="5" ry="6" fill="#2B2A31"/><circle cx="29" cy="75" r="2" fill="#C9A13A"/><circle cx="37" cy="75" r="2" fill="#C9A13A"/></g>
+        <g><path d="M50 60l2-14 9 8zM78 60l-2-14-9 8z" fill="#7D8FA3"/><circle cx="64" cy="68" r="16" fill="#7D8FA3"/><circle cx="58" cy="66" r="2.6" fill="#E8A93A"/><circle cx="70" cy="66" r="2.6" fill="#E8A93A"/><path d="M62 72h4l-2 2z" fill="#E27C8A"/></g>
+        <g><path d="M34 42l1-8 5 5zM48 42l-1-8-5 5z" fill="#E68A3A"/><circle cx="41" cy="46" r="8" fill="#E68A3A"/><circle cx="38" cy="45" r="1.4" fill="#111"/><circle cx="44" cy="45" r="1.4" fill="#111"/></g>
+        <rect x="10" y="86" width="76" height="8" fill="#A77B45"/>
+      </svg></div>
+      <div>
+        <div class="num">Spiel 3</div>
+        <h2>Katzenkiste</h2>
+        <p>Lass gleiche Katzen zusammenplumpsen, bis aus dem Kätzchen ein Katzenkönig wird.</p>
+        <div class="meta"><span class="chip">Knobeln · Physik</span><span class="chip rec" data-key="katzenkiste-best">Rekord 0</span></div>
+      </div>
+    </a>
+    <a class="card" href="katzensudoku.html">
+      <div class="pic"><svg viewBox="0 0 96 96" aria-hidden="true">
+        <rect width="96" height="96" fill="#3B3330"/>
+        <g><rect x="3" y="3" width="44" height="29" fill="#F4C987"/><rect x="49" y="3" width="44" height="29" fill="#A9CDEB"/><rect x="3" y="34" width="29" height="59" fill="#B9DDA0"/><rect x="34" y="34" width="29" height="29" fill="#E8A9B8"/><rect x="65" y="34" width="28" height="59" fill="#C9B6E6"/><rect x="34" y="65" width="29" height="28" fill="#F2E08A"/></g>
+        <g stroke="#3B3330" stroke-width="3" stroke-linecap="round" opacity=".7"><path d="M68 72l8 8M76 72l-8 8"/><path d="M40 72l8 8M48 72l-8 8"/><path d="M10 44l8 8M18 44l-8 8"/></g>
+        <g><path d="M13 22l1-12 8 7zM37 22l-1-12-8 7z" fill="#2B2A31"/><circle cx="25" cy="21" r="10" fill="#2B2A31"/><circle cx="21" cy="20" r="2.3" fill="#EBC43A"/><circle cx="29" cy="20" r="2.3" fill="#EBC43A"/></g>
+        <g><path d="M64 60l1-12 8 7zM88 60l-1-12-8 7z" fill="#E68A3A"/><circle cx="76" cy="58" r="10" fill="#E68A3A"/><circle cx="72" cy="57" r="2.3" fill="#7FB33D"/><circle cx="80" cy="57" r="2.3" fill="#7FB33D"/></g>
+      </svg></div>
+      <div>
+        <div class="num">Spiel 4</div>
+        <h2>Katzen-Sudoku</h2>
+        <p>Jede Farbe, Zeile und Spalte bekommt genau eine Katze, und keine darf eine andere berühren.</p>
+        <div class="meta"><span class="chip">Logik · 60 Rätsel</span><span class="chip rec" data-sudoku>Noch keins gelöst</span></div>
+      </div>
+    </a>
+  </nav>
+
+  <footer>
+    <p><b>Echte Katzenstimmen:</b> Miauen, Schnurren, Fauchen, Knurren und Jaulen stammen aus frei lizenzierten Aufnahmen (CC0, gemeinfrei, CC BY 3.0). Die genauen Quellen stehen in jedem Spiel unter „Aufnahmen und Lizenzen“.</p>
+    <p>Rekorde werden nur auf diesem Gerät gespeichert.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const sd = document.querySelector("[data-sudoku]");
+  try { const d = JSON.parse(localStorage.getItem("katzensudoku") || "null"); const n = d && d.solved ? Object.keys(d.solved).length : 0; if (n) sd.textContent = n + " von 60 gelöst"; } catch(e) {}
+  document.querySelectorAll(".chip.rec[data-key]").forEach(ch => {
+    let v = 0; try { v = +localStorage.getItem(ch.dataset.key) || 0; } catch(e) {}
+    ch.textContent = v ? "Rekord " + v : "Noch kein Rekord";
+  });
+  // Maskottchen: echte Aufnahmen, erst nach dem ersten Antippen geladen
+  let ctx = null; const buf = {}; let n = 0, timer = 0;
+  const NAMES = ["meow1","meow2","meow3","meowhigh","purr"];
+  async function load(){
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    ctx = new AC();
+    await Promise.all(NAMES.map(async k => {
+      try { const r = await fetch("sounds/" + k + ".mp3"); if (!r.ok) return; const ab = await r.arrayBuffer(); buf[k] = await new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)); } catch(e) {}
+    }));
+  }
+  let loading = null;
+  const m = document.getElementById("mascot");
+  m.addEventListener("click", async () => {
+    if (!loading) loading = load();
+    if (ctx && ctx.state === "suspended") ctx.resume();
+    await loading;
+    if (!ctx) return;
+    if (ctx.state === "suspended") await ctx.resume();
+    const k = n % 4 === 3 ? "purr" : ["meow1","meow2","meow3","meowhigh"][n % 4]; n++;
+    if (!buf[k]) return;
+    const s = ctx.createBufferSource(); s.buffer = buf[k];
+    const g = ctx.createGain(); g.gain.value = 1; s.connect(g); g.connect(ctx.destination);
+    const dur = k === "purr" ? 2.2 : buf[k].duration;
+    s.start(); if (k === "purr"){ g.gain.setValueAtTime(1, ctx.currentTime + dur - .25); g.gain.linearRampToValueAtTime(0, ctx.currentTime + dur); s.stop(ctx.currentTime + dur + .05); }
+    m.classList.remove("talk", "purr"); m.classList.add(k === "purr" ? "purr" : "talk");
+    clearTimeout(timer); timer = setTimeout(() => m.classList.remove("talk", "purr"), dur*1000);
+  });
+})();
+</script>
+
+</body>
+</html>

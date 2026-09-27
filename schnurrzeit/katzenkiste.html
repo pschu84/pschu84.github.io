@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{touch-action:manipulation}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>Katzenkiste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+<style>
+[hidden]{display:none!important}
+:root{
+  --ink:#15262B; --deep:#1B3B43; --wall:#2F5F69; --paper:#FBF6EA; --paper-2:#F0E7D3; --muted:#5B6B6E;
+  --mustard:#E5B440; --mustard-dark:#A67C1F; --pink:#E3587B; --card:#C9A26B;
+  color-scheme:light;
+}
+html{box-sizing:border-box;height:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--deep);color:var(--ink);
+  font-family:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  -webkit-tap-highlight-color:transparent;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
+#app{position:relative;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;background:var(--wall);overflow:hidden;touch-action:none}
+
+#hud{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:14px;padding:10px 16px;color:var(--paper);background:var(--deep)}
+.lbl{display:block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.num{font:800 26px/1 "Grandstander",ui-rounded,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.best .num{font-size:17px;opacity:.85}
+.next{display:flex;align-items:center;gap:8px;justify-self:end}
+.next canvas{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.08)}
+.right{display:flex;gap:8px}
+.iconbtn{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:var(--paper);display:grid;place-items:center;padding:0}
+.iconbtn svg{width:18px;height:18px}
+
+#stage{position:relative;flex:1;min-height:0;overflow:hidden}
+#cv{position:absolute;inset:0;display:block;touch-action:none}
+#toast{position:absolute;left:16px;right:16px;top:10px;z-index:20;background:var(--paper);border-radius:14px;padding:10px 14px;font-size:14px;font-weight:700;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:drop .3s ease-out}
+
+#ladder{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;align-items:end;padding:8px 12px 12px;background:var(--deep)}
+.rung{min-width:0;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--paper);font-size:9px;font-weight:800;opacity:.4;transition:opacity .3s,transform .3s}
+.rung.got{opacity:1}
+.rung.pop{animation:rungpop .5s}
+.rung canvas{width:100%;max-width:34px;aspect-ratio:1}
+.rung span{font-size:10px;font-variant-numeric:tabular-nums}
+
+.overlay{position:absolute;inset:0;z-index:60;background:rgba(15,28,33,.84);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;padding-block:16px;padding-inline:16px}
+.sheet{width:100%;max-height:100%;overflow:auto;background:var(--paper);border-radius:22px;padding:22px 18px 0;box-shadow:0 20px 40px rgba(0,0,0,.35);user-select:text;-webkit-user-select:text;touch-action:pan-y}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--pink)}
+h1,h2{font-family:"Grandstander",ui-rounded,system-ui,sans-serif;font-weight:800;color:var(--deep);margin:4px 0 0;line-height:1;text-wrap:balance}
+h1{font-size:44px}
+h2{font-size:34px}
+h3{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+.lead{font-size:15px;line-height:1.45;margin:10px 0 0}
+.real{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;font-weight:800;color:var(--deep);background:#DCEBD8;padding:4px 10px;border-radius:10px}
+.real i{width:8px;height:8px;border-radius:50%;background:#58A85A}
+.real.wait i{background:var(--mustard)}
+.real.fail{background:#F6DCD6}
+.real.fail i{background:#D9483B}
+.how{margin:0;padding-left:20px;font-size:14px;line-height:1.5;display:grid;gap:6px}
+.how b{font-weight:800}
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tier{border:0;border-radius:12px;background:var(--paper-2);padding:6px 10px 6px 6px;text-align:left;color:var(--ink);display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:center;font-size:13.5px;font-weight:800;line-height:1.2}
+.tier small{display:block;font-size:11px;font-weight:700;color:var(--muted)}
+.tier canvas{width:40px;height:40px}
+.tier.on{background:var(--mustard)}
+details{margin-top:16px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+summary{font-weight:800;color:var(--deep);cursor:pointer;font-size:13px}
+details ul{padding-left:18px;margin:8px 0}
+details a{color:var(--wall)}
+.foot{position:sticky;bottom:0;padding:18px 0;background:linear-gradient(rgba(251,246,234,0),var(--paper) 35%);display:grid;gap:8px}
+.btn{width:100%;border:0;border-radius:16px;background:var(--mustard);color:var(--ink);font:800 19px "Grandstander",ui-rounded,system-ui,sans-serif;padding:14px;box-shadow:0 5px 0 var(--mustard-dark)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--mustard-dark)}
+.btn.ghost{background:var(--paper-2);box-shadow:none;font-size:15px;padding:11px}
+.btn:focus-visible{outline:3px solid var(--wall)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stat{background:var(--paper-2);border-radius:14px;padding:10px 12px}
+.stat span{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat b{font:800 26px "Grandstander",ui-rounded,system-ui,sans-serif;color:var(--deep);font-variant-numeric:tabular-nums}
+.stat.rec b{color:var(--pink)}
+.err{background:#F6DCD6;border-radius:12px;padding:10px 12px;font-size:14px;margin-top:12px}
+@keyframes drop{from{transform:translateY(-20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes rungpop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+
+.home{display:inline-flex;align-items:center;gap:4px;margin-bottom:10px;font-size:13px;font-weight:800;color:var(--muted);text-decoration:none;background:var(--paper-2);padding:5px 10px;border-radius:10px}
+a.btn{display:block;text-align:center;text-decoration:none}
+</style>
+
+<div id="app">
+  <header id="hud">
+    <div><span class="lbl">Punkte</span><span class="num" id="score">0</span></div>
+    <div class="best"><span class="lbl">Rekord</span><span class="num" id="best">0</span></div>
+    <div class="next"><span class="lbl">Als<br>Nächstes</span><canvas id="nextCv" width="84" height="84"></canvas></div>
+    <div class="right">
+      <button class="iconbtn" id="muteBtn" aria-label="Ton aus"></button>
+      <button class="iconbtn" id="pauseBtn" aria-label="Pause"></button>
+    </div>
+  </header>
+  <main id="stage"><canvas id="cv"></canvas><div id="toast" hidden></div></main>
+  <nav id="ladder" aria-label="Katzenleiter"></nav>
+
+  <section class="overlay" id="startOv">
+    <div class="sheet">
+      <a class="home" href="./">‹ Alle Spiele</a>
+      <div class="kicker">Spiel 3 von 3 · Demo</div>
+      <h1>Katzenkiste</h1>
+      <p class="lead">Katzen lieben Kartons. Lass sie in die Kiste plumpsen: Berühren sich zwei gleiche Katzen, werden sie zur nächstgrößeren. Schaffst du es bis zum Katzenkönig?</p>
+      <span class="real wait" id="loadState"><i></i><span>Lade echte Katzenaufnahmen …</span></span>
+      <p class="err" id="physErr" hidden>Die Physik-Bibliothek konnte nicht geladen werden. Prüfe die Internetverbindung und lade die Seite neu.</p>
+
+      <h3>So spielst du</h3>
+      <ol class="how">
+        <li><b>Zielen:</b> Finger über der Kiste nach links oder rechts ziehen.</li>
+        <li><b>Loslassen:</b> Die Katze fällt in die Kiste.</li>
+        <li><b>Verschmelzen:</b> Zwei gleiche Katzen werden eine größere. Jede Stufe hat ihre eigene Stimme, vom hohen Kätzchen bis zum tiefen Katzenkönig.</li>
+        <li><b>Vorsicht:</b> Liegt eine Katze zu lange über der gestrichelten Linie, fauchen alle. Nach drei Sekunden ist die Kiste voll.</li>
+      </ol>
+
+      <h3>Die Katzenleiter zum Anhören</h3>
+      <div class="tiers" id="tiers"></div>
+
+      <details>
+        <summary>Aufnahmen und Lizenzen</summary>
+        <p>Alle Stimmen sind echte Aufnahmen. Ich habe sie gekürzt, gefiltert und die Lautstärke angeglichen. Für die kleinen Katzenstufen spiele ich einige Aufnahmen etwas schneller und damit höher ab, für die großen etwas langsamer und tiefer.</p>
+        <ul>
+          <li>„cat meow“ und „cat meow II“ von tuberatanka (<a href="https://freesound.org/people/tuberatanka/sounds/110011/" target="_blank" rel="noopener">Freesound 110011</a>, <a href="https://freesound.org/people/tuberatanka/sounds/110010/" target="_blank" rel="noopener">110010</a>), CC0</li>
+          <li>„Cat meow“ von philsapphire (<a href="https://freesound.org/people/philsapphire/sounds/256452/" target="_blank" rel="noopener">Freesound 256452</a>), CC0</li>
+          <li>„Cat meowing x5“ von peridactyloptrix (<a href="https://freesound.org/people/peridactyloptrix/sounds/214759/" target="_blank" rel="noopener">Freesound 214759</a>), CC0</li>
+          <li>„Hungry cats“ von missozzy (<a href="https://freesound.org/people/missozzy/sounds/169983/" target="_blank" rel="noopener">Freesound 169983</a>), CC0</li>
+          <li>„Cat wants something“ von Jeanine2012 (<a href="https://freesound.org/people/Jeanine2012/sounds/149940/" target="_blank" rel="noopener">Freesound 149940</a>), CC0</li>
+          <li>„Cat Wants Food“ von Oneirophile (<a href="https://freesound.org/people/Oneirophile/sounds/120160/" target="_blank" rel="noopener">Freesound 120160</a>), CC0</li>
+          <li>„catHowling1“ und „catHowling2“ von Zabuhailo (<a href="https://freesound.org/people/Zabuhailo/sounds/146964/" target="_blank" rel="noopener">Freesound 146964</a>, <a href="https://freesound.org/people/Zabuhailo/sounds/146965/" target="_blank" rel="noopener">146965</a>), CC0</li>
+          <li>„MAD CAT !“ von temawas (<a href="https://freesound.org/people/temawas/sounds/133047/" target="_blank" rel="noopener">Freesound 133047</a>), CC0</li>
+          <li>Schnurren: „Purring cat“ von Mysid (<a href="https://commons.wikimedia.org/wiki/File:Purring_cat.oga" target="_blank" rel="noopener">Wikimedia Commons</a>), gemeinfrei</li>
+          <li>Fauchen: „Cat hissing“ von Zabuhailo (<a href="https://commons.wikimedia.org/wiki/File:Cat_hissing_-_Zabuhailo.wav" target="_blank" rel="noopener">Wikimedia Commons</a>), <a href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank" rel="noopener">CC BY 3.0</a></li>
+        </ul>
+        <p>Die Freesound-Ausschnitte stammen aus dem Datensatz <a href="https://github.com/karolpiczak/ESC-50" target="_blank" rel="noopener">ESC-50</a> von Karol J. Piczak, Schnurren und Fauchen vorgeschnitten aus dem Projekt <a href="https://github.com/hfgong/bark" target="_blank" rel="noopener">bark</a>. Physik: <a href="https://brm.io/matter-js/" target="_blank" rel="noopener">Matter.js</a> (MIT).</p>
+      </details>
+      <div class="foot"><button class="btn" id="startBtn">Kiste öffnen</button></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="endOv" hidden>
+    <div class="sheet">
+      <div class="kicker" id="endKicker">Kiste voll</div>
+      <h2 id="endTitle">Kein Platz mehr!</h2>
+      <p class="lead" id="endText"></p>
+      <div class="stats">
+        <div class="stat"><span>Punkte</span><b id="stScore">0</b></div>
+        <div class="stat rec"><span>Rekord</span><b id="stBest">0</b></div>
+        <div class="stat"><span>Größte Katze</span><b id="stTop">-</b></div>
+        <div class="stat"><span>Verschmolzen</span><b id="stMerges">0</b></div>
+      </div>
+      <div class="foot">
+        <button class="btn" id="againBtn">Neue Kiste</button>
+        <button class="btn ghost" id="menuBtn">Zur Katzenleiter</button>
+        <a class="btn ghost" href="./">Zum Menü</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay" id="pauseOv" hidden>
+    <div class="sheet">
+      <div class="kicker">Pause</div>
+      <h2>Alle Katzen dösen</h2>
+      <div class="foot"><button class="btn" id="resumeBtn">Weiter</button><button class="btn ghost" id="quitBtn">Runde beenden</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const rand = (a,b) => a + Math.random()*(b-a);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const TAU = Math.PI*2;
+const ic = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const ICON = {
+  on: ic('<path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.3 6.3a8 8 0 0 1 0 11.4"/>'),
+  off: ic('<path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>'),
+  pause: ic('<path d="M8 5v14M16 5v14" stroke-width="3"/>')
+};
+$("#pauseBtn").innerHTML = ICON.pause;
+
+/* ---------- Die zehn Katzenstufen ---------- */
+const TIERS = [
+  {name:"Kätzchen",    r:15, fur:"#F2E3C9", dark:"#D9C29E", light:"#FFF7EA", eye:"#6FA8DC", pat:"plain",  snd:"meowhigh", rate:1.28, vol:.7},
+  {name:"Tigerchen",   r:20, fur:"#9AA3AD", dark:"#666F79", light:"#DADEE2", eye:"#9CC24A", pat:"tabby",  snd:"meowhigh", rate:1.05, vol:.75},
+  {name:"Mieze",       r:26, fur:"#E68A3A", dark:"#B65C1C", light:"#F8DDBB", eye:"#7FB33D", pat:"tabby",  snd:"meow5",    rate:1.15, vol:.8},
+  {name:"Socke",       r:33, fur:"#2B2A31", dark:"#18171C", light:"#F7F3EC", eye:"#EBC43A", pat:"tux",    snd:"meow3",    rate:1.08, vol:.85},
+  {name:"Glückskatze", r:40, fur:"#F6F0E6", dark:"#D2C7B8", light:"#FFFFFF", eye:"#C9A13A", pat:"calico", snd:"meow2",    rate:1.0,  vol:.85},
+  {name:"Kartäuser",   r:48, fur:"#7D8FA3", dark:"#5E6E84", light:"#AAB7C5", eye:"#E8A93A", pat:"plain",  snd:"meow1",    rate:.96,  vol:.85},
+  {name:"Siamkatze",   r:57, fur:"#EEDFC8", dark:"#5C4032", light:"#F9F1E4", eye:"#4E8FD8", pat:"point",  snd:"meowlong", rate:1.0,  vol:.9},
+  {name:"Maine Coon",  r:67, fur:"#8E6A45", dark:"#553D27", light:"#D9C09C", eye:"#A6C23F", pat:"tabby",  snd:"meowlow",  rate:.9,   vol:.95, tufts:true},
+  {name:"Hauspanther", r:78, fur:"#232228", dark:"#0E0E11", light:"#3A3940", eye:"#F2D14A", pat:"plain",  snd:"demand1",  rate:.82,  vol:1},
+  {name:"Katzenkönig", r:90, fur:"#F0B940", dark:"#C98A1E", light:"#FFE6A8", eye:"#3F8F5E", pat:"tabby",  snd:"yowl2",    rate:.88,  vol:1, crown:true}
+];
+const PTS = TIERS.map((_, i) => (i + 1)*(i + 2));
+const DROP_W = [.34, .28, .2, .11, .07];
+const isDark = t => t.pat === "tux" || t.fur === "#2B2A31" || t.fur === "#232228";
+
+/* ---------- Katze als runde Kugel ---------- */
+function drawCat(c, x, y, r, ang, tier, o = {}){
+  const T = TIERS[tier], {expr = "idle", t = 0, scale = 1, blink = false} = o;
+  const line = (T.fur === "#232228" || T.fur === "#2B2A31") ? "#E6DCCB" : "#3A2A26";
+  c.save(); c.translate(x, y); c.rotate(ang); c.scale(scale, scale);
+  const angry = expr === "angry", happy = expr === "happy";
+  // Ohren
+  const earFill = T.pat === "point" ? T.dark : T.fur;
+  for (const s of [-1, 1]){
+    const flat = angry ? .35 : 0;
+    const a0 = s*(.55 + flat), a1 = s*(1.02 + flat*.6);
+    const tip = [Math.sin(s*(.78 + flat))*r*1.32, -Math.cos(s*(.78 + flat))*r*1.32];
+    c.beginPath(); c.moveTo(Math.sin(a0)*r*.9, -Math.cos(a0)*r*.9); c.lineTo(tip[0], tip[1]); c.lineTo(Math.sin(a1)*r*.9, -Math.cos(a1)*r*.9); c.closePath();
+    c.fillStyle = earFill; c.fill();
+    c.beginPath(); c.moveTo(Math.sin(a0*1.05)*r*.95, -Math.cos(a0*1.05)*r*.95); c.lineTo(tip[0]*.9, tip[1]*.9); c.lineTo(Math.sin(a1*.97)*r*.95, -Math.cos(a1*.97)*r*.95); c.closePath();
+    c.fillStyle = "#EFA3AC"; c.fill();
+    if (T.tufts){ c.strokeStyle = T.dark; c.lineWidth = r*.04; c.beginPath(); c.moveTo(tip[0], tip[1]); c.lineTo(tip[0] + s*r*.05, tip[1] - r*.16); c.stroke(); }
+  }
+  // Körper
+  c.beginPath(); c.arc(0, 0, r, 0, TAU); c.fillStyle = T.fur; c.fill();
+  c.save(); c.beginPath(); c.arc(0, 0, r, 0, TAU); c.clip();
+  if (T.pat === "tabby"){
+    c.strokeStyle = T.dark; c.lineWidth = r*.09; c.lineCap = "round";
+    for (const dx of [-.2, 0, .2]){ c.beginPath(); c.moveTo(dx*r, -r); c.lineTo(dx*r*.8, -r*.62); c.stroke(); }
+    for (const s of [-1, 1]) for (const dy of [-.05, .22, .48]){ c.beginPath(); c.moveTo(s*r, dy*r); c.lineTo(s*r*.74, (dy + .04)*r); c.stroke(); }
+  } else if (T.pat === "tux"){
+    c.fillStyle = T.light; c.beginPath(); c.ellipse(0, r*.75, r*.62, r*.62, 0, 0, TAU); c.fill();
+    c.beginPath(); c.moveTo(0, -r*.35); c.quadraticCurveTo(r*.4, r*.3, 0, r*.4); c.quadraticCurveTo(-r*.4, r*.3, 0, -r*.35); c.fill();
+  } else if (T.pat === "calico"){
+    c.fillStyle = "#E68A3A"; c.beginPath(); c.ellipse(-r*.55, -r*.45, r*.5, r*.42, .4, 0, TAU); c.fill();
+    c.fillStyle = "#2B2A31"; c.beginPath(); c.ellipse(r*.6, -r*.35, r*.42, r*.5, -.3, 0, TAU); c.fill();
+    c.fillStyle = "#E68A3A"; c.beginPath(); c.ellipse(r*.5, r*.75, r*.4, r*.3, 0, 0, TAU); c.fill();
+  } else if (T.pat === "point"){
+    c.fillStyle = T.dark; c.globalAlpha = .88; c.beginPath(); c.ellipse(0, r*.2, r*.55, r*.5, 0, 0, TAU); c.fill(); c.globalAlpha = 1;
+  }
+  c.restore();
+  c.strokeStyle = "rgba(0,0,0,.16)"; c.lineWidth = Math.max(1, r*.05); c.beginPath(); c.arc(0, 0, r, 0, TAU); c.stroke();
+  if (T.pat !== "point" && T.pat !== "tux"){ c.fillStyle = T.light; c.beginPath(); c.ellipse(0, r*.3, r*.38, r*.26, 0, 0, TAU); c.fill(); }
+  // Wangenröte
+  if (happy){ c.fillStyle = "rgba(242,154,166,.8)"; for (const s of [-1, 1]){ c.beginPath(); c.ellipse(s*r*.52, r*.2, r*.13, r*.08, 0, 0, TAU); c.fill(); } }
+  // Augen
+  const ey = -r*.08, ex = r*.36, er = r*.17;
+  if (happy || blink){
+    c.strokeStyle = line; c.lineWidth = Math.max(1.2, r*.07); c.lineCap = "round";
+    for (const s of [-1, 1]){ c.beginPath(); if (happy) c.arc(s*ex, ey + er*.3, er*.8, Math.PI*1.15, Math.PI*1.85); else { c.moveTo(s*ex - er, ey); c.lineTo(s*ex + er, ey); } c.stroke(); }
+  } else {
+    for (const s of [-1, 1]){
+      c.fillStyle = T.eye; c.beginPath(); c.ellipse(s*ex, ey, er, er*1.12, 0, 0, TAU); c.fill();
+      c.fillStyle = "#111"; c.beginPath();
+      if (angry) c.arc(s*ex, ey, er*.72, 0, TAU); else c.ellipse(s*ex, ey, er*.32, er*.92, 0, 0, TAU);
+      c.fill();
+      c.fillStyle = "#fff"; c.beginPath(); c.arc(s*ex + er*.35, ey - er*.4, er*.25, 0, TAU); c.fill();
+      if (angry){ c.strokeStyle = line; c.lineWidth = Math.max(1.2, r*.06); c.beginPath(); c.moveTo(s*(ex + er*1.1), ey - er*1.5); c.lineTo(s*(ex - er*.9), ey - er*1.05); c.stroke(); }
+    }
+  }
+  // Nase und Mund
+  c.fillStyle = "#E27C8A"; c.beginPath(); c.moveTo(-r*.09, r*.12); c.lineTo(r*.09, r*.12); c.lineTo(0, r*.22); c.closePath(); c.fill();
+  c.strokeStyle = line; c.lineWidth = Math.max(1, r*.045); c.lineCap = "round";
+  if (expr === "talk" || angry){
+    c.fillStyle = "#5B1F2A"; c.beginPath(); c.ellipse(0, r*.36, r*.12, r*.13, 0, 0, TAU); c.fill();
+  } else {
+    c.beginPath(); c.moveTo(0, r*.22); c.quadraticCurveTo(-r*.06, r*.34, -r*.16, r*.29); c.moveTo(0, r*.22); c.quadraticCurveTo(r*.06, r*.34, r*.16, r*.29); c.stroke();
+  }
+  // Schnurrhaare
+  c.strokeStyle = isDark(T) && T.pat !== "tux" ? "rgba(255,255,255,.6)" : "rgba(70,50,45,.45)"; c.lineWidth = Math.max(.8, r*.025);
+  for (const s of [-1, 1]){ c.beginPath(); c.moveTo(s*r*.22, r*.24); c.lineTo(s*r*.82, r*.14); c.moveTo(s*r*.22, r*.29); c.lineTo(s*r*.8, r*.34); c.stroke(); }
+  // Krone
+  if (T.crown){
+    const w = r*.62, h = r*.36, top = -r*.98;
+    c.fillStyle = "#FFD447"; c.strokeStyle = "#B8860B"; c.lineWidth = r*.03;
+    c.beginPath(); c.moveTo(-w/2, top); c.lineTo(-w/2, top - h); c.lineTo(-w/4, top - h*.55); c.lineTo(0, top - h*1.1); c.lineTo(w/4, top - h*.55); c.lineTo(w/2, top - h); c.lineTo(w/2, top); c.closePath(); c.fill(); c.stroke();
+    for (const [dx, col] of [[-w/4, "#E3587B"], [0, "#6FA3C7"], [w/4, "#58A85A"]]){ c.fillStyle = col; c.beginPath(); c.arc(dx, top - h*.25, r*.05, 0, TAU); c.fill(); }
+  }
+  c.restore();
+}
+function iconCanvas(cv, tier, pad = .12){
+  const c = cv.getContext("2d"), w = cv.width, h = cv.height;
+  c.clearRect(0, 0, w, h);
+  const r = Math.min(w, h)*(.5 - pad)/1.2;
+  drawCat(c, w/2, h/2 + r*.18, r, 0, tier, {});
+}
+
+/* ---------- Echte Aufnahmen ---------- */
+const SND = (() => {
+  const NAMES = ["meowhigh","meowlong","meow1","meow2","meow3","meow5","meowlow","demand1","chorus","yowl1","yowl2","angry1","purr","hiss"];
+  let ctx = null, out = null, muted = false, ok = 0, bad = 0;
+  const buf = {}, last = {}, subs = [];
+  function ensure(){
+    if (ctx) return ctx;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+    ctx = new AC();
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -12; comp.ratio.value = 4;
+    out = ctx.createGain(); out.gain.value = muted ? 0 : 1; out.connect(comp); comp.connect(ctx.destination);
+    return ctx;
+  }
+  const decode = ab => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej));
+  function load(){
+    if (!ensure()){ bad = NAMES.length; tell(); return; }
+    NAMES.forEach(async n => {
+      try { const r = await fetch("sounds/" + n + ".mp3"); if (!r.ok) throw 0; buf[n] = await decode(await r.arrayBuffer()); ok++; }
+      catch(e){ bad++; }
+      tell();
+    });
+  }
+  const tell = () => subs.forEach(f => f(ok, bad, NAMES.length));
+  function unlock(){ ensure(); if (ctx && ctx.state === "suspended") ctx.resume(); }
+  function play(name, o = {}){
+    if (!ctx || !buf[name] || muted) return 0;
+    const {vol = 1, rate = 1, when = 0, dur = 0, gap = 0} = o;
+    const now = ctx.currentTime;
+    if (gap && last[name] && now - last[name] < gap) return 0;
+    last[name] = now;
+    const s = ctx.createBufferSource(); s.buffer = buf[name]; s.playbackRate.value = rate;
+    const g = ctx.createGain(); g.gain.value = vol; s.connect(g); g.connect(out);
+    const t = now + when; s.start(t);
+    if (dur){ g.gain.setValueAtTime(vol, t + Math.max(0, dur - .2)); g.gain.linearRampToValueAtTime(.0001, t + dur); s.stop(t + dur + .02); }
+    return buf[name].duration/rate;
+  }
+  const voice = (tier, o = {}) => { const T = TIERS[tier]; return play(T.snd, {rate:T.rate*rand(.97, 1.03), vol:T.vol, ...o}); };
+  function setMuted(m){ muted = m; if (out) out.gain.value = m ? 0 : 1; }
+  return {load, unlock, play, voice, setMuted, onProgress:f => subs.push(f), get muted(){ return muted; }};
+})();
+SND.onProgress((ok, bad, all) => {
+  const el = $("#loadState");
+  if (ok + bad < all){ el.className = "real wait"; el.lastChild.textContent = `Lade echte Katzenaufnahmen … ${ok} von ${all}`; }
+  else if (ok === all){ el.className = "real"; el.lastChild.textContent = `${all} echte Katzenaufnahmen bereit`; }
+  else if (ok){ el.className = "real"; el.lastChild.textContent = `${ok} von ${all} Aufnahmen geladen`; }
+  else { el.className = "real fail"; el.lastChild.textContent = "Aufnahmen konnten nicht geladen werden. Das Spiel läuft ohne Ton."; }
+});
+SND.load();
+const muteBtn = $("#muteBtn");
+const renderMute = () => { muteBtn.innerHTML = SND.muted ? ICON.off : ICON.on; muteBtn.setAttribute("aria-label", SND.muted ? "Ton an" : "Ton aus"); };
+renderMute();
+muteBtn.addEventListener("click", () => { SND.unlock(); SND.setMuted(!SND.muted); renderMute(); });
+
+/* ---------- Startseite: Katzenleiter ---------- */
+const VOICE_TXT = ["hohes Maunzen","helles Miau","kurzes Miau","freches Miau","Miau","ruhiges Miau","langes Miau","tiefes Miau","fordernd, tief","Jaulen und Chor"];
+$("#tiers").innerHTML = TIERS.map((T, i) => `<button class="tier" data-i="${i}"><canvas width="80" height="80"></canvas><span>${i + 1}. ${T.name}<small>${VOICE_TXT[i]}</small></span></button>`).join("");
+document.querySelectorAll(".tier canvas").forEach((cv, i) => iconCanvas(cv, i));
+$("#tiers").addEventListener("click", e => {
+  const b = e.target.closest(".tier"); if (!b) return;
+  SND.unlock(); const i = +b.dataset.i;
+  const d = SND.voice(i) || 1;
+  if (i === 9) SND.play("chorus", {vol:.5, when:.8, dur:2.5});
+  document.querySelectorAll(".tier").forEach(x => x.classList.toggle("on", x === b));
+  setTimeout(() => b.classList.remove("on"), d*1000);
+});
+$("#ladder").innerHTML = TIERS.map((T, i) => `<button class="rung" data-i="${i}" aria-label="${T.name}"><canvas width="68" height="68"></canvas><span>${i + 1}</span></button>`).join("");
+document.querySelectorAll(".rung canvas").forEach((cv, i) => iconCanvas(cv, i, .06));
+$("#ladder").addEventListener("click", e => { const b = e.target.closest(".rung"); if (!b) return; SND.unlock(); SND.voice(+b.dataset.i); });
+
+/* ---------- Welt ---------- */
+const BW = 400, BH = 560, WALL = 14, DANGER = 44, HOLD_Y = -48;
+const cv = $("#cv"), ctx = cv.getContext("2d");
+let DPR = 1, CW = 0, CH = 0, SC = 1, OX = 0, OY = 0;
+function resize(){
+  const r = $("#stage").getBoundingClientRect();
+  DPR = Math.min(2, window.devicePixelRatio || 1); CW = r.width; CH = r.height;
+  cv.width = Math.round(CW*DPR); cv.height = Math.round(CH*DPR); cv.style.width = CW + "px"; cv.style.height = CH + "px";
+  const worldW = BW + 2*WALL + 40, worldH = BH + WALL + 150;
+  SC = Math.min((CW - 16)/worldW, (CH - 8)/worldH);
+  OX = (CW - BW*SC)/2; OY = CH - (BH + WALL + 6)*SC;
+}
+window.addEventListener("resize", () => { resize(); });
+
+let M = null, engine = null, G = null, raf = 0, last = 0, acc = 0;
+const bodies = () => engine ? M.Composite.allBodies(engine.world).filter(b => b.tier != null) : [];
+
+function setupWorld(){
+  M = window.Matter;
+  engine = M.Engine.create({gravity:{x:0, y:1, scale:.0011}});
+  engine.positionIterations = 8; engine.velocityIterations = 6;
+  const opt = {isStatic:true, friction:.3, restitution:.05};
+  M.Composite.add(engine.world, [
+    M.Bodies.rectangle(BW/2, BH + 50, BW + 200, 100, opt),
+    M.Bodies.rectangle(-50, BH/2 - 200, 100, BH + 600, opt),
+    M.Bodies.rectangle(BW + 50, BH/2 - 200, 100, BH + 600, opt)
+  ]);
+  M.Events.on(engine, "collisionStart", e => queue(e.pairs));
+  M.Events.on(engine, "collisionActive", e => queue(e.pairs));
+}
+function queue(pairs){
+  for (const p of pairs){
+    const a = p.bodyA, b = p.bodyB;
+    if (a.tier != null && a.tier === b.tier && !a.gone && !b.gone){ a.gone = b.gone = true; G.merges.push([a, b]); }
+  }
+}
+function makeCat(tier, x, y, vx = 0, vy = 0){
+  const T = TIERS[tier];
+  const b = M.Bodies.circle(x, y, T.r, {restitution:.12, friction:.18, frictionStatic:.4, frictionAir:.004, density:.0012, slop:.03});
+  b.tier = tier; b.born = G.time; b.happy = 0; b.talk = 0; b.pop = 1;
+  M.Body.setVelocity(b, {x:vx, y:vy});
+  M.Composite.add(engine.world, b);
+  return b;
+}
+function rollTier(){
+  const maxT = Math.min(4, Math.max(2, G.topTier - 1));
+  let r = Math.random()*DROP_W.slice(0, maxT + 1).reduce((a, b) => a + b, 0);
+  for (let i = 0; i <= maxT; i++){ r -= DROP_W[i]; if (r <= 0) return i; }
+  return 0;
+}
+
+function newGame(){
+  if (!window.Matter){ $("#physErr").hidden = false; return; }
+  SND.unlock();
+  if (!engine) setupWorld();
+  bodies().forEach(b => M.Composite.remove(engine.world, b));
+  G = {time:0, score:0, merges:[], mergesDone:0, topTier:0, cur:0, next:0, aimX:BW/2, cooldown:0, danger:0,
+       combo:0, lastMerge:-9, texts:[], sparks:[], idle:rand(7, 11), running:true, paused:false, over:false, seen:new Set([0])};
+  G.cur = rollTier(); G.next = rollTier();
+  ["#startOv", "#endOv", "#pauseOv"].forEach(s => $(s).hidden = true);
+  resize(); hud(); drawNext(); ladder();
+  SND.play("demand1", {vol:.8});
+  cancelAnimationFrame(raf); last = performance.now(); acc = 0; raf = requestAnimationFrame(loop);
+}
+function hud(){
+  $("#score").textContent = G.score;
+  let best = 0; try { best = +localStorage.getItem("katzenkiste-best") || 0; } catch(e) {}
+  $("#best").textContent = Math.max(best, G.score);
+}
+function drawNext(){ iconCanvas($("#nextCv"), G.next, .1); }
+function ladder(pop = -1){
+  document.querySelectorAll(".rung").forEach((b, i) => {
+    b.classList.toggle("got", G ? G.seen.has(i) : false);
+    if (i === pop){ b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
+  });
+}
+let toastT = 0;
+function toast(msg, ms = 2600){ const t = $("#toast"); t.textContent = msg; t.hidden = false; t.style.animation = "none"; void t.offsetWidth; t.style.animation = ""; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, ms); }
+
+function drop(){
+  if (!G || !G.running || G.paused || G.over || G.cooldown > 0) return;
+  const r = TIERS[G.cur].r;
+  makeCat(G.cur, clamp(G.aimX, r + 1, BW - r - 1), HOLD_Y, 0, 1);
+  G.cur = G.next; G.next = rollTier(); G.cooldown = .55;
+  drawNext();
+}
+
+function doMerges(){
+  for (const [a, b] of G.merges){
+    const tier = a.tier, x = (a.position.x + b.position.x)/2, y = (a.position.y + b.position.y)/2;
+    const vx = (a.velocity.x + b.velocity.x)/2, vy = (a.velocity.y + b.velocity.y)/2;
+    M.Composite.remove(engine.world, a); M.Composite.remove(engine.world, b);
+    G.mergesDone++;
+    G.combo = G.time - G.lastMerge < 1.2 ? G.combo + 1 : 1; G.lastMerge = G.time;
+    sparks(x, y, TIERS[tier].r, TIERS[tier].fur);
+    if (tier === TIERS.length - 1){
+      G.score += 1000; addText(x, y, "Katzenparty +1000", "#FFD447", true);
+      SND.play("chorus", {vol:.8, dur:3.5}); SND.play("purr", {vol:.9, when:1.5, dur:3});
+      toast("Zwei Katzenkönige! Sie feiern und machen Platz in der Kiste.", 3000);
+      continue;
+    }
+    const nt = tier + 1;
+    const nb = makeCat(nt, x, y, vx*.5, Math.min(vy, 0));
+    nb.happy = .9; nb.pop = .55;
+    const pts = PTS[nt]*(G.combo >= 2 ? G.combo : 1);
+    G.score += pts;
+    addText(x, y - TIERS[nt].r - 6, (G.combo >= 2 ? `${G.combo}× ` : "") + "+" + pts, "#FBF6EA", G.combo >= 2);
+    SND.voice(nt, {gap:.06});
+    if (nt === 9){ SND.play("chorus", {vol:.6, when:.9, dur:3}); toast("Der Katzenkönig ist da! Die ganze Kiste jubelt.", 3200); }
+    if (G.combo === 3) { SND.play("purr", {vol:.85, dur:2.4, gap:2}); addText(BW/2, DANGER + 40, "Kettenreaktion!", "#FFD447", true); }
+    if (!G.seen.has(nt)){
+      G.seen.add(nt); ladder(nt);
+      if (nt >= 4 && nt < 9) toast(`Neu in der Kiste: ${TIERS[nt].name}!`, 1800);
+    }
+    G.topTier = Math.max(G.topTier, nt);
+  }
+  G.merges.length = 0;
+  hud();
+}
+function addText(x, y, s, col, big = false){ G.texts.push({x, y, s, col, big, t:0}); }
+function sparks(x, y, r, col){ for (let i = 0; i < 10; i++){ const a = rand(0, TAU), v = rand(60, 160); G.sparks.push({x:x + Math.cos(a)*r*.6, y:y + Math.sin(a)*r*.6, vx:Math.cos(a)*v, vy:Math.sin(a)*v - 40, t:0, col}); } }
+
+function step(dt){
+  G.time += dt;
+  if (G.cooldown > 0) G.cooldown -= dt;
+  acc += dt*1000;
+  let n = 0;
+  while (acc >= 1000/60 && n < 4){ M.Engine.update(engine, 1000/60); acc -= 1000/60; n++; if (G.merges.length) doMerges(); }
+  if (n === 4) acc = 0;
+  const all = bodies();
+  let over = false;
+  for (const b of all){
+    if (b.happy > 0) b.happy -= dt;
+    if (b.talk > 0) b.talk -= dt;
+    if (b.pop < 1) b.pop = Math.min(1, b.pop + dt*3);
+    b.angry = false;
+    if (G.time - b.born > 1.4 && b.position.y - TIERS[b.tier].r < DANGER && Math.abs(b.velocity.y) < 2.5){ over = true; b.angry = true; }
+  }
+  if (over){
+    if (G.danger === 0){ SND.play("hiss", {vol:.7, gap:2.5}); all.forEach(b => { if (!b.angry && Math.random() < .5) b.angry = true; }); }
+    G.danger += dt;
+    if (G.danger > 3) gameOver();
+  } else G.danger = 0;
+  G.idle -= dt;
+  if (G.idle <= 0 && all.length){
+    G.idle = rand(8, 13);
+    const b = pick(all); b.talk = .7; SND.voice(b.tier, {vol:TIERS[b.tier].vol*.45});
+  }
+  for (const s of G.sparks){ s.t += dt; s.x += s.vx*dt; s.y += s.vy*dt; s.vy += 300*dt; }
+  G.sparks = G.sparks.filter(s => s.t < .6);
+  for (const tx of G.texts){ tx.t += dt; tx.y -= 30*dt; }
+  G.texts = G.texts.filter(tx => tx.t < 1.2);
+}
+
+/* ---------- Zeichnen ---------- */
+function drawScene(t){
+  const c = ctx;
+  c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  // Wand und Boden
+  c.fillStyle = "#2F5F69"; c.fillRect(0, 0, CW, CH);
+  c.fillStyle = "rgba(255,255,255,.04)"; for (let x = 0; x < CW; x += 28) c.fillRect(x, 0, 14, CH);
+  const floorY = OY + (BH + WALL)*SC - 4;
+  c.fillStyle = "#B97C4B"; c.fillRect(0, floorY, CW, CH - floorY);
+  c.fillStyle = "#E9DFC9"; c.fillRect(0, floorY - 6, CW, 6);
+  c.setTransform(DPR*SC, 0, 0, DPR*SC, DPR*OX, DPR*OY);
+  // Kiste: Rückwand
+  c.fillStyle = "rgba(0,0,0,.18)"; c.beginPath(); c.ellipse(BW/2, BH + WALL + 4, BW*.62, 12, 0, 0, TAU); c.fill();
+  c.fillStyle = "#C9A26B"; c.fillRect(0, 0, BW, BH);
+  c.strokeStyle = "rgba(120,80,40,.12)"; c.lineWidth = 3;
+  for (let y = 18; y < BH; y += 22){ c.beginPath(); c.moveTo(0, y); c.lineTo(BW, y); c.stroke(); }
+  c.fillStyle = "rgba(60,35,15,.18)"; c.fillRect(0, 0, BW, 26);
+  // Gefahrenlinie
+  const warn = G && G.danger > 0;
+  c.strokeStyle = warn ? (Math.floor(t*8) % 2 ? "#E3587B" : "#FBF6EA") : "rgba(251,246,234,.55)";
+  c.lineWidth = warn ? 4 : 2.5; c.setLineDash([12, 10]);
+  c.beginPath(); c.moveTo(0, DANGER); c.lineTo(BW, DANGER); c.stroke(); c.setLineDash([]);
+  // Zielen
+  if (G && G.running && !G.over){
+    const T = TIERS[G.cur], x = clamp(G.aimX, T.r + 1, BW - T.r - 1);
+    c.strokeStyle = "rgba(251,246,234,.35)"; c.lineWidth = 2; c.setLineDash([4, 8]);
+    c.beginPath(); c.moveTo(x, HOLD_Y + T.r); c.lineTo(x, BH); c.stroke(); c.setLineDash([]);
+    if (G.cooldown <= 0){ c.globalAlpha = 1; drawCat(c, x, HOLD_Y + Math.sin(t*3)*2, T.r, Math.sin(t*2)*.08, G.cur, {t, blink:Math.floor(t*10) % 40 === 0}); }
+  }
+  // Katzen
+  for (const b of bodies()){
+    const T = TIERS[b.tier];
+    const expr = b.angry ? "angry" : b.happy > 0 ? "happy" : b.talk > 0 ? "talk" : "idle";
+    const s = b.pop < 1 ? .55 + .45*easeBack(b.pop) : 1;
+    drawCat(c, b.position.x, b.position.y, T.r, b.angle, b.tier, {expr, t, scale:s, blink:(Math.floor(t*6 + b.id*7) % 37) === 0});
+  }
+  // Vorderwand, Klappen
+  c.fillStyle = "#A77B45"; c.fillRect(-WALL, 0, WALL, BH + WALL); c.fillRect(BW, 0, WALL, BH + WALL); c.fillRect(-WALL, BH, BW + 2*WALL, WALL);
+  c.fillStyle = "#B98E58";
+  c.beginPath(); c.moveTo(-WALL, 0); c.lineTo(0, 0); c.lineTo(-44, -62); c.lineTo(-58, -54); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(BW + WALL, 0); c.lineTo(BW, 0); c.lineTo(BW + 44, -62); c.lineTo(BW + 58, -54); c.closePath(); c.fill();
+  c.fillStyle = "rgba(90,55,25,.55)"; c.font = "800 11px Nunito, ui-rounded, system-ui, sans-serif"; c.textAlign = "center";
+  c.fillText("VORSICHT KATZEN", BW/2, BH + 11);
+  // Effekte
+  if (G){
+    for (const s of G.sparks){ c.globalAlpha = 1 - s.t/.6; c.fillStyle = s.col; c.beginPath(); c.arc(s.x, s.y, 4, 0, TAU); c.fill(); }
+    c.globalAlpha = 1;
+    for (const tx of G.texts){
+      c.globalAlpha = 1 - Math.max(0, tx.t - .7)/.5;
+      c.font = `800 ${tx.big ? 26 : 20}px Grandstander, ui-rounded, system-ui, sans-serif`;
+      c.fillStyle = "rgba(0,0,0,.35)"; c.fillText(tx.s, tx.x, tx.y + 2); c.fillStyle = tx.col; c.fillText(tx.s, tx.x, tx.y);
+    }
+    c.globalAlpha = 1;
+  }
+}
+const easeBack = x => { const k = 1.7; return 1 + (k + 1)*Math.pow(x - 1, 3) + k*Math.pow(x - 1, 2); };
+
+function loop(ts){
+  const dt = Math.min(.05, (ts - last)/1000); last = ts;
+  if (G && G.running && !G.paused && !G.over) step(dt);
+  drawScene(ts/1000);
+  if (G && G.running) raf = requestAnimationFrame(loop);
+}
+
+function gameOver(){
+  if (G.over) return;
+  G.over = true; G.running = false;
+  SND.play("angry1", {vol:.8}); SND.play("yowl1", {vol:.85, when:.6});
+  let best = 0; try { best = +localStorage.getItem("katzenkiste-best") || 0; } catch(e) {}
+  const rec = G.score > best;
+  if (rec){ best = G.score; try { localStorage.setItem("katzenkiste-best", best); } catch(e) {} SND.play("chorus", {vol:.7, when:3.6, dur:3.5}); }
+  $("#endKicker").textContent = rec ? "Neuer Rekord" : "Kiste voll";
+  $("#endTitle").textContent = G.topTier >= 9 ? "Königlich!" : G.topTier >= 7 ? "Beeindruckend!" : "Kein Platz mehr!";
+  $("#endText").textContent = `Deine größte Katze war die Stufe ${G.topTier + 1}: ${TIERS[G.topTier].name}. ` + (G.topTier < 9 ? `Bis zum Katzenkönig fehlen noch ${9 - G.topTier} Stufen. Tipp: Große Katzen an den Rand, kleine in die Mitte.` : "Du hast den Katzenkönig geschafft!");
+  $("#stScore").textContent = G.score; $("#stBest").textContent = best;
+  $("#stTop").textContent = TIERS[G.topTier].name; $("#stMerges").textContent = G.mergesDone;
+  hud();
+  drawScene(performance.now()/1000);
+  setTimeout(() => { $("#endOv").hidden = false; $("#againBtn").focus(); }, 1200);
+}
+function pause(){ if (!G || !G.running || G.paused) return; G.paused = true; $("#pauseOv").hidden = false; }
+function resume(){ if (!G || !G.paused) return; G.paused = false; $("#pauseOv").hidden = true; last = performance.now(); SND.unlock(); }
+
+/* ---------- Eingabe ---------- */
+const toWorldX = cx => (cx - cv.getBoundingClientRect().left - OX)/SC;
+let aiming = false;
+cv.addEventListener("pointerdown", e => { if (!G || !G.running) return; SND.unlock(); aiming = true; G.aimX = toWorldX(e.clientX); try { cv.setPointerCapture(e.pointerId); } catch(err) {} });
+cv.addEventListener("pointermove", e => { if (!G || !G.running) return; if (aiming || e.pointerType === "mouse") G.aimX = toWorldX(e.clientX); });
+cv.addEventListener("pointerup", e => { if (!aiming) return; aiming = false; G.aimX = toWorldX(e.clientX); drop(); });
+cv.addEventListener("pointercancel", () => { aiming = false; });
+document.addEventListener("keydown", e => {
+  if (!G || !G.running) return;
+  if (e.key === "ArrowLeft") G.aimX -= 20;
+  else if (e.key === "ArrowRight") G.aimX += 20;
+  else if (e.key === " " || e.key === "ArrowDown" || e.key === "Enter"){ e.preventDefault(); drop(); }
+  else if (e.key === "Escape" || e.key === "p") G.paused ? resume() : pause();
+  G.aimX = clamp(G.aimX, 0, BW);
+});
+document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+$("#pauseBtn").addEventListener("click", pause);
+$("#resumeBtn").addEventListener("click", resume);
+$("#quitBtn").addEventListener("click", () => { G.paused = false; $("#pauseOv").hidden = true; gameOver(); });
+$("#startBtn").addEventListener("click", newGame);
+$("#againBtn").addEventListener("click", newGame);
+$("#menuBtn").addEventListener("click", () => { $("#endOv").hidden = true; $("#startOv").hidden = false; });
+
+if (!window.Matter) $("#physErr").hidden = false;
+resize(); drawScene(0);
+let bestInit = 0; try { bestInit = +localStorage.getItem("katzenkiste-best") || 0; } catch(e) {}
+$("#best").textContent = bestInit;
+iconCanvas($("#nextCv"), 0, .1);
+})();
+</script>
+
+</body>
+</html>

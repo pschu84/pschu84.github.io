@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html{touch-action:manipulation}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>Katzenhof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wall:#2F5F69; --wall-deep:#1B3B43; --frame:#EEE6D4;
+  --sky-top:#8ECBE0; --sky-bot:#F4D6A6;
+  --wood:#B97C4B; --wood-2:#A66B3E;
+  --mustard:#E5B440; --mustard-dark:#A67C1F; --pink:#E3587B; --sage:#8FB58C; --blue:#6FA3C7;
+  --ink:#15262B; --paper:#FBF6EA; --paper-2:#F0E7D3; --muted:#5B6B6E;
+  --good:#58A85A; --warn:#E5B440; --bad:#D9483B;
+  --catw:min(116px, 27vw, 14.5vh);
+  color-scheme:light;
+}
+[hidden]{display:none!important}
+html{box-sizing:border-box;height:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--wall-deep);color:var(--ink);
+  font-family:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;
+  -webkit-tap-highlight-color:transparent;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
+.display{font-family:"Grandstander","Nunito",ui-rounded,system-ui,sans-serif}
+
+#app{position:relative;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;
+  background:var(--wall);overflow:hidden;touch-action:manipulation}
+
+/* HUD */
+#hud{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:10px 16px;background:var(--wall-deep);color:var(--paper)}
+.score .lbl{display:block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.score b{font-family:"Grandstander",ui-rounded,system-ui,sans-serif;font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.timer{display:grid;gap:4px}
+.timer .bar{height:10px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden}
+.timer i{display:block;height:100%;width:100%;background:var(--mustard);border-radius:6px;transition:background .3s}
+.timer i.late{background:var(--pink)}
+#tleft{font-size:11px;font-weight:800;opacity:.8;font-variant-numeric:tabular-nums}
+.hud-right{display:flex;align-items:center;gap:8px}
+#lives{display:flex;gap:2px;color:var(--pink)}
+#lives svg{width:20px;height:20px;transition:opacity .3s,transform .3s}
+#lives svg.lost{opacity:.2;transform:scale(.8)}
+.iconbtn{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:var(--paper);display:grid;place-items:center;padding:0}
+.iconbtn svg{width:18px;height:18px}
+
+/* Raum */
+#room{position:relative;flex:1;min-height:0;overflow:hidden}
+.wall{position:absolute;left:0;right:0;top:0;height:34%;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 14px,transparent 14px 28px),var(--wall)}
+.wall::after{content:"";position:absolute;left:0;right:0;bottom:0;height:9px;background:#E9DFC9;box-shadow:0 -2px 0 rgba(0,0,0,.08) inset}
+.window{position:absolute;left:50%;top:11%;width:58%;height:74%;transform:translateX(-50%);
+  border:7px solid var(--frame);border-bottom-width:11px;border-radius:12px 12px 4px 4px;overflow:hidden;
+  box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.sky{position:absolute;inset:0;background:linear-gradient(var(--sky-top),var(--sky-bot))}
+.sun{position:absolute;right:14%;top:14%;width:22%;aspect-ratio:1;border-radius:50%;background:#FFE7A3;box-shadow:0 0 30px 10px rgba(255,231,163,.55)}
+.hill{position:absolute;left:-10%;right:-10%;bottom:-30%;height:70%;border-radius:50%;background:#7FAF7C}
+.tree{position:absolute;left:8%;bottom:18%;width:26%;aspect-ratio:1;border-radius:50%;background:#5E9460;box-shadow:18px 8px 0 -4px #6DA16B}
+.fence{position:absolute;left:0;right:0;bottom:0;height:30%;z-index:3;
+  background:
+    linear-gradient(transparent 38%,#F5EEDF 38% 50%,transparent 50% 72%,#F5EEDF 72% 84%,transparent 84%),
+    repeating-linear-gradient(90deg,#FBF6EA 0 9px,transparent 9px 17px)}
+.pane-v,.pane-h{position:absolute;background:var(--frame);z-index:4}
+.pane-v{left:50%;top:0;bottom:0;width:6px;transform:translateX(-50%)}
+.pane-h{top:48%;left:0;right:0;height:6px}
+.intruder{position:absolute;right:6%;bottom:22%;width:34%;z-index:2;transform:translateY(120%);transition:transform .45s cubic-bezier(.2,.9,.3,1.2);padding:6px;border:0;background:none}
+.intruder.show{transform:translateY(0)}
+.intruder.flinch .catsvg{animation:flinch .25s}
+.intruder .cat{position:relative;left:auto;bottom:auto;transform:none;width:100%}
+.intr-count{position:absolute;top:-4px;left:-6px;min-width:26px;height:26px;border-radius:13px;background:var(--pink);color:#fff;font:800 15px/26px "Grandstander",ui-rounded,system-ui,sans-serif;text-align:center;box-shadow:0 2px 0 rgba(0,0,0,.2);z-index:5}
+.bird{position:absolute;top:18%;left:-14%;width:9%;z-index:1;opacity:0}
+.bird.fly{animation:fly 3.4s linear forwards}
+.bird svg{width:100%;overflow:visible}
+.bird .wing{animation:flap .22s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+.pic{position:absolute;left:5%;top:20%;width:13%;aspect-ratio:3/4;background:#F7EFDC;border:4px solid #C89B5E;border-radius:3px;box-shadow:0 3px 0 rgba(0,0,0,.15);display:grid;place-items:center;color:#C4563E}
+.pic svg{width:70%}
+.plant{position:absolute;right:4%;bottom:9px;width:15%;}
+.plant svg{width:100%;display:block}
+
+.floor{position:absolute;left:0;right:0;top:34%;bottom:0;
+  background:repeating-linear-gradient(90deg,var(--wood) 0 46px,var(--wood-2) 46px 48px),var(--wood);
+  display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4px 10px;padding:18px 16px 20px}
+.floor::before{content:"";position:absolute;left:5%;right:5%;top:9%;bottom:5%;border-radius:50%;background:#4F7A68;
+  box-shadow:inset 0 0 0 7px #5E8C78,inset 0 0 0 10px #E9DFC9,0 6px 0 rgba(0,0,0,.12)}
+.floor::after{content:"";position:absolute;left:22%;right:18%;top:0;height:70%;pointer-events:none;
+  background:rgba(255,236,178,.14);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+
+.slot{position:relative;min-height:0;z-index:1}
+.cushion{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);width:calc(var(--catw) * 1.36);height:calc(var(--catw) * .38);
+  border-radius:50%;background:var(--c,var(--mustard));box-shadow:0 6px 0 rgba(0,0,0,.2),inset 0 -7px 0 rgba(0,0,0,.13)}
+.cushion::after{content:"";position:absolute;inset:6px 10px;border-radius:50%;border:2px dashed rgba(255,255,255,.4)}
+
+/* Katze */
+.cat{position:absolute;left:50%;bottom:calc(10% + var(--catw) * .15);width:var(--catw);transform:translateX(-50%);cursor:pointer;z-index:2}
+.catbody{transform-origin:50% 100%}
+.catsvg{display:block;width:100%;height:auto;overflow:visible}
+.cat.enter .catbody{animation:pop .5s cubic-bezier(.2,.9,.3,1.3)}
+.catsvg{animation:breathe 3.2s ease-in-out infinite;transform-origin:50% 100%}
+.cat.kitten .catbody{transform:scale(.72)}
+.cat.kitten.enter .catbody{animation:popk .5s cubic-bezier(.2,.9,.3,1.3)}
+.tail{transform-box:view-box;transform-origin:84px 120px;animation:sway 2.6s ease-in-out infinite alternate}
+.tail path{transition:stroke-width .15s}
+.cat.happy .tail{animation-duration:1.4s}
+.cat.angry .tail path{stroke-width:15}
+.cat.angry .tail{animation:swish .18s ease-in-out infinite alternate}
+.ear{transform-box:fill-box;transition:transform .15s}
+.ear-l{transform-origin:75% 100%}
+.ear-r{transform-origin:25% 100%}
+.cat.angry .ear-l,.cat.alert .ear-l{transform:rotate(-38deg) scaleY(.82)}
+.cat.angry .ear-r,.cat.alert .ear-r{transform:rotate(38deg) scaleY(.82)}
+.eyes-open{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite;animation-delay:var(--bd,0s)}
+.eyes-closed,.mouth-open,.round{display:none}
+.blush{opacity:0;transition:opacity .3s}
+.cat.happy .eyes-open{display:none}
+.cat.happy .eyes-closed{display:inline}
+.cat.happy .blush{opacity:.75}
+.cat.talk .mouth-closed,.cat.angry .mouth-closed{display:none}
+.cat.talk .mouth-open,.cat.angry .mouth-open{display:inline}
+.cat.angry .slit,.cat.alert .slit{display:none}
+.cat.angry .round,.cat.alert .round{display:inline}
+.cat.shake .catbody{animation:shake .45s}
+.cat.listen .catbody{animation:tilt .5s}
+.cat.exit-happy{animation:exitUp .6s ease-in forwards}
+.cat.exit-angry{animation:exitSide .7s ease-in forwards}
+.name{position:absolute;left:50%;bottom:calc(var(--catw) * -.2);transform:translateX(-50%);white-space:nowrap;
+  font-size:11px;font-weight:800;color:var(--paper);background:rgba(21,38,43,.6);padding:1px 8px;border-radius:10px;pointer-events:none}
+
+.bubble{position:absolute;top:-10%;right:-36%;width:50px;height:50px;border-radius:50%;background:var(--paper);
+  box-shadow:0 3px 0 rgba(0,0,0,.22);display:grid;place-items:center;color:var(--ink);z-index:4;animation:bob 1.6s ease-in-out infinite}
+.bubble::after{content:"";position:absolute;width:11px;height:11px;border-radius:50%;background:var(--paper);left:-3px;bottom:0}
+.bubble .ring{position:absolute;inset:-3px;width:56px;height:56px;transform:rotate(-90deg)}
+.bubble .ring circle{fill:none;stroke-width:4}
+.bubble .rb{stroke:rgba(21,38,43,.08)}
+.bubble .rf{stroke:var(--good);stroke-dasharray:157.08;stroke-dashoffset:0;stroke-linecap:round}
+.bubble .ico{position:relative;width:28px;height:28px}
+.bubble .ico svg{width:100%;height:100%}
+.bubble .q{position:absolute;right:-9px;top:-10px;font:800 15px "Grandstander",ui-rounded,system-ui,sans-serif;color:var(--pink)}
+.bubble.urgent{background:#FFE6DE;animation:bob .5s ease-in-out infinite}
+.cat.happy .bubble,.cat.gone .bubble{display:none}
+
+.prop{position:absolute;pointer-events:none;z-index:3}
+.prop svg{width:100%;display:block;overflow:visible}
+.prop-food{left:-38%;bottom:-6%;width:52%}
+.prop-pet{top:-20%;left:26%;width:46%;animation:stroke .5s ease-in-out infinite alternate}
+.prop-play{right:-44%;top:0;width:56%;transform-origin:10% 100%;animation:wiggle .3s ease-in-out infinite alternate}
+.prop-basket{left:-14%;width:128%;bottom:-10%}
+
+.pts{position:absolute;z-index:30;pointer-events:none;font:800 24px "Grandstander",ui-rounded,system-ui,sans-serif;color:var(--paper);
+  text-shadow:0 2px 0 rgba(0,0,0,.35);transform:translate(-50%,0);animation:rise 1s ease-out forwards}
+.pts.bad{color:#FFD2C8;font-size:18px}
+.heart{position:absolute;z-index:29;width:18px;pointer-events:none;color:var(--pink);animation:heart 1.1s ease-out forwards}
+
+#combo{position:absolute;left:12px;top:10px;z-index:6;background:var(--mustard);color:var(--ink);
+  font:800 14px "Grandstander",ui-rounded,system-ui,sans-serif;padding:4px 10px;border-radius:12px;box-shadow:0 3px 0 var(--mustard-dark)}
+#combo.pop{animation:popc .3s}
+
+#toast{position:absolute;left:16px;right:16px;top:10px;z-index:40;background:var(--paper);color:var(--ink);
+  border-radius:14px;padding:10px 14px;font-size:14px;font-weight:700;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:drop .3s ease-out}
+
+/* Werkzeuge */
+#tray{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px 12px;background:var(--wall-deep)}
+.tool{border:0;border-radius:16px;background:rgba(255,255,255,.08);color:var(--paper);padding:8px 2px 7px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;font-weight:800;transition:transform .12s,background .12s}
+.tool svg{width:30px;height:30px}
+.tool.sel{background:var(--mustard);color:var(--ink);transform:translateY(-4px);box-shadow:0 4px 0 var(--mustard-dark)}
+.tool.bad{animation:bad .4s}
+.tool kbd{display:none}
+
+/* Overlays */
+.overlay{position:absolute;inset:0;z-index:60;background:rgba(15,32,37,.84);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;padding-block:16px;padding-inline:16px}
+.sheet{width:100%;max-height:100%;overflow:auto;background:var(--paper);border-radius:22px;padding:22px 18px 0;box-shadow:0 20px 40px rgba(0,0,0,.35);user-select:text;-webkit-user-select:text}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--pink)}
+h1,h2{font-family:"Grandstander",ui-rounded,system-ui,sans-serif;font-weight:800;color:var(--wall-deep);margin:4px 0 0;line-height:1;text-wrap:balance}
+h1{font-size:44px;letter-spacing:-.01em}
+h2{font-size:34px}
+h3{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+.lead{font-size:15px;line-height:1.45;margin:10px 0 0;color:var(--ink)}
+.show{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center;margin-top:16px}
+.stage{position:relative;height:124px;border-radius:18px;background:var(--wall);overflow:hidden;--catw:78px}
+.stage .cushion{--c:var(--mustard)}
+.fact{font-size:14px;line-height:1.45;min-height:5.8em}
+.fact b{display:block;font-family:"Grandstander",ui-rounded,system-ui,sans-serif;font-size:18px;color:var(--wall-deep);margin-bottom:2px}
+.sounds{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.snd{border:0;border-radius:12px;background:var(--paper-2);padding:9px 10px;text-align:left;color:var(--ink);display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:center;font-size:14px;font-weight:800;line-height:1.2}
+.snd small{display:block;font-size:11.5px;font-weight:700;color:var(--muted)}
+.snd svg{width:22px;height:22px;color:var(--wall)}
+.snd.on{background:var(--mustard)}
+.snd .src{display:table;white-space:nowrap;margin-top:3px;font-style:normal;font-size:10px;font-weight:800;letter-spacing:.04em;padding:1px 6px;border-radius:6px;background:#DCEBD8;color:#2E5E36}
+.snd .src.synth{background:#E9E1F2;color:#5B4A78}
+details{margin-top:16px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+summary{font-weight:800;color:var(--wall-deep);cursor:pointer;font-size:13px}
+details ul{padding-left:18px;margin:8px 0}
+details a{color:var(--wall)}
+.snd.on svg{color:var(--ink)}
+.rules{display:grid;gap:10px}
+.rule{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;font-size:14px;line-height:1.35}
+.rule .ri{width:40px;height:40px;border-radius:12px;background:var(--wall);color:var(--paper);display:grid;place-items:center}
+.rule .ri svg{width:24px;height:24px}
+.rule q{font-weight:800;quotes:"„" "“"}
+.note{font-size:13px;line-height:1.45;color:var(--muted);margin:12px 0 0}
+.foot{position:sticky;bottom:0;padding:18px 0 18px;background:linear-gradient(rgba(251,246,234,0),var(--paper) 35%);display:grid;gap:8px}
+.btn{width:100%;border:0;border-radius:16px;background:var(--mustard);color:var(--ink);font:800 19px "Grandstander",ui-rounded,system-ui,sans-serif;padding:14px;box-shadow:0 5px 0 var(--mustard-dark)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--mustard-dark)}
+.btn.ghost{background:var(--paper-2);box-shadow:none;font-size:15px;padding:11px}
+.btn:focus-visible{outline:3px solid var(--wall)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stat{background:var(--paper-2);border-radius:14px;padding:10px 12px}
+.stat span{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat b{font:800 28px "Grandstander",ui-rounded,system-ui,sans-serif;color:var(--wall-deep);font-variant-numeric:tabular-nums}
+.stat.rec b{color:var(--pink)}
+
+@keyframes pop{0%{transform:translateY(30%) scale(.4);opacity:0}70%{transform:translateY(-4%) scale(1.05);opacity:1}100%{transform:none}}
+@keyframes popk{0%{transform:translateY(30%) scale(.3);opacity:0}70%{transform:scale(.76)}100%{transform:scale(.72)}}
+@keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02)}}
+@keyframes sway{from{transform:rotate(-6deg)}to{transform:rotate(8deg)}}
+@keyframes swish{from{transform:rotate(-14deg)}to{transform:rotate(14deg)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}95.5%{transform:scaleY(.08)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+@keyframes tilt{0%,100%{transform:rotate(0)}40%{transform:rotate(-7deg)}}
+@keyframes exitUp{to{transform:translate(-50%,-25%) scale(.85);opacity:0}}
+@keyframes exitSide{to{transform:translate(120%,0) rotate(12deg);opacity:0}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes stroke{from{transform:translate(-8px,0) rotate(-8deg)}to{transform:translate(8px,6px) rotate(6deg)}}
+@keyframes wiggle{from{transform:rotate(-16deg)}to{transform:rotate(18deg)}}
+@keyframes rise{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-60px)}}
+@keyframes heart{0%{opacity:0;transform:translateY(0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.1)}}
+@keyframes popc{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes drop{from{transform:translateY(-20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes bad{0%,100%{transform:none}25%{transform:translateX(-5px);background:var(--bad)}75%{transform:translateX(5px)}}
+@keyframes fly{0%{left:-14%;opacity:1;transform:translateY(0)}25%{transform:translateY(-8px)}50%{transform:translateY(6px)}75%{transform:translateY(-6px)}100%{left:112%;opacity:1;transform:translateY(0)}}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(-.6)}}
+@keyframes flinch{0%,100%{transform:none}50%{transform:translateY(8px) scale(.94)}}
+@media (prefers-reduced-motion:reduce){
+  .catsvg,.tail,.bubble,.eyes-open,.prop-pet,.prop-play{animation:none!important}
+}
+@media (hover:hover) and (pointer:fine){ .tool kbd{display:block;font:700 10px ui-monospace,monospace;opacity:.55} }
+
+.home{display:inline-flex;align-items:center;gap:4px;margin-bottom:10px;font-size:13px;font-weight:800;color:var(--muted);text-decoration:none;background:var(--paper-2);padding:5px 10px;border-radius:10px}
+a.btn{display:block;text-align:center;text-decoration:none}
+</style>
+
+<div id="app">
+  <header id="hud">
+    <div class="score"><span class="lbl">Punkte</span><b id="score">0</b></div>
+    <div class="timer"><div class="bar"><i id="tbar"></i></div><span id="tleft">75 s übrig</span></div>
+    <div class="hud-right">
+      <div id="lives" aria-label="Leben"></div>
+      <button class="iconbtn" id="muteBtn" aria-label="Ton aus"></button>
+      <button class="iconbtn" id="pauseBtn" aria-label="Pause"></button>
+    </div>
+  </header>
+
+  <main id="room">
+    <div class="wall">
+      <div class="pic" aria-hidden="true"></div>
+      <div class="window">
+        <div class="sky">
+          <div class="sun"></div>
+          <div class="hill"></div>
+          <div class="tree"></div>
+          <div class="bird" id="bird"></div>
+          <button class="intruder" id="intruder" aria-label="Fremden Kater verscheuchen"><span class="intr-count" id="intrCount">3</span></button>
+          <div class="fence"></div>
+        </div>
+        <div class="pane-v"></div><div class="pane-h"></div>
+      </div>
+      <div class="plant" aria-hidden="true"></div>
+    </div>
+    <div class="floor" id="floor">
+      <div class="slot" style="--c:var(--mustard)"><div class="cushion"></div></div>
+      <div class="slot" style="--c:var(--pink)"><div class="cushion"></div></div>
+      <div class="slot" style="--c:var(--sage)"><div class="cushion"></div></div>
+      <div class="slot" style="--c:var(--blue)"><div class="cushion"></div></div>
+    </div>
+    <div id="combo" hidden></div>
+    <div id="toast" hidden></div>
+  </main>
+
+  <nav id="tray" aria-label="Werkzeuge"></nav>
+
+  <section class="overlay" id="startOv">
+    <div class="sheet">
+      <a class="home" href="./">‹ Alle Spiele</a>
+      <div class="kicker">Spiel 1 von 3 · Demo</div>
+      <h1>Katzenhof</h1>
+      <p class="lead">Im Katzenhof warten hungrige, verschmuste und verspielte Katzen. Hör genau hin, was sie wollen, und gib ihnen das Richtige, bevor ihre Geduld reißt.</p>
+
+      <div class="show">
+        <div class="slot stage"><div class="cushion"></div><div class="cat" id="showCat"></div></div>
+        <div class="fact" id="fact"><b>Tippe ein Geräusch an</b>Die Katze macht es dir vor. Im Spiel verraten dir genau diese Laute, was eine Katze möchte.</div>
+      </div>
+      <div class="sounds" id="sounds"></div>
+
+      <h3>So verstehst du die Katzen</h3>
+      <div class="rules" id="rules"></div>
+      <p class="note">Wähle unten ein Werkzeug und tippe dann auf die Katze. Das Werkzeug bleibt ausgewählt. Zeigt eine Blase nur ein Fragezeichen, musst du den Wunsch am Geräusch erkennen: Tippe auf die Blase, um es nochmal zu hören. Falsches Werkzeug? Dann wird gefaucht.</p>
+
+      <details>
+        <summary>Aufnahmen und Lizenzen</summary>
+        <p>Alle Katzenstimmen sind echte Aufnahmen. Einige spiele ich etwas schneller oder langsamer ab, zum Beispiel das Kätzchen-Mauzen, ein echtes hohes Miauen.</p>
+        <ul>
+          <li>„cat meow“ von tuberatanka (<a href="https://freesound.org/people/tuberatanka/sounds/110011/" target="_blank" rel="noopener">Freesound 110011</a>), „Cat meow“ von philsapphire (<a href="https://freesound.org/people/philsapphire/sounds/256452/" target="_blank" rel="noopener">256452</a>), „Cat meowing x5“ von peridactyloptrix (<a href="https://freesound.org/people/peridactyloptrix/sounds/214759/" target="_blank" rel="noopener">214759</a>), alle CC0</li>
+          <li>„02 Cat Miauing“ von aminut (<a href="https://freesound.org/people/aminut/sounds/177614/" target="_blank" rel="noopener">Freesound 177614</a>), CC0</li>
+          <li>„Cat wants something“ von Jeanine2012 (<a href="https://freesound.org/people/Jeanine2012/sounds/149940/" target="_blank" rel="noopener">Freesound 149940</a>), CC0</li>
+          <li>„Cat Wants Food“ von Oneirophile (<a href="https://freesound.org/people/Oneirophile/sounds/120160/" target="_blank" rel="noopener">Freesound 120160</a>), CC0</li>
+          <li>„Hungry cats“ von missozzy (<a href="https://freesound.org/people/missozzy/sounds/169983/" target="_blank" rel="noopener">Freesound 169983</a>), CC0</li>
+          <li>„catHowling1“, „catHowling2“, „catAttack“ von Zabuhailo (<a href="https://freesound.org/people/Zabuhailo/sounds/146964/" target="_blank" rel="noopener">Freesound 146964</a>, <a href="https://freesound.org/people/Zabuhailo/sounds/146965/" target="_blank" rel="noopener">146965</a>, <a href="https://freesound.org/people/Zabuhailo/sounds/146972/" target="_blank" rel="noopener">146972</a>), CC0</li>
+          <li>„MAD CAT !“ von temawas (<a href="https://freesound.org/people/temawas/sounds/133047/" target="_blank" rel="noopener">Freesound 133047</a>), CC0</li>
+          <li>Schnurren: „Purring cat“ von Mysid (<a href="https://commons.wikimedia.org/wiki/File:Purring_cat.oga" target="_blank" rel="noopener">Wikimedia Commons</a>), gemeinfrei</li>
+          <li>Fauchen: „Cat hissing“ von Zabuhailo (<a href="https://commons.wikimedia.org/wiki/File:Cat_hissing_-_Zabuhailo.wav" target="_blank" rel="noopener">Wikimedia Commons</a>), <a href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank" rel="noopener">CC BY 3.0</a></li>
+        </ul>
+        <p>Gekürzt, gefiltert und in der Lautstärke angeglichen. Freesound-Ausschnitte über den Datensatz <a href="https://github.com/karolpiczak/ESC-50" target="_blank" rel="noopener">ESC-50</a>.</p>
+      </details>
+      <div class="foot"><button class="btn" id="startBtn">Spiel starten</button></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="endOv" hidden>
+    <div class="sheet">
+      <div class="kicker" id="endKicker">Runde vorbei</div>
+      <h2 id="endTitle">Feierabend!</h2>
+      <p class="lead" id="endText"></p>
+      <div class="stats">
+        <div class="stat"><span>Punkte</span><b id="stScore">0</b></div>
+        <div class="stat rec"><span>Rekord</span><b id="stBest">0</b></div>
+        <div class="stat"><span>Zufriedene Katzen</span><b id="stHappy">0</b></div>
+        <div class="stat"><span>Beste Serie</span><b id="stCombo">0</b></div>
+      </div>
+      <div class="foot">
+        <button class="btn" id="againBtn">Nochmal spielen</button>
+        <button class="btn ghost" id="menuBtn">Zu den Katzengeräuschen</button>
+        <a class="btn ghost" href="./">Zum Menü</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay" id="pauseOv" hidden>
+    <div class="sheet">
+      <div class="kicker">Pause</div>
+      <h2>Die Katzen dösen kurz</h2>
+      <div class="foot"><button class="btn" id="resumeBtn">Weiter</button><button class="btn ghost" id="quitBtn">Runde beenden</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const rand = (a,b) => a + Math.random()*(b-a);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const lerp = (a,b,t) => a + (b-a)*clamp(t,0,1);
+
+/* ---------- Icons ---------- */
+const ic = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const ICON = {
+  food: ic('<path d="M2.5 12c3-5 9-6.5 13.5-3L21 6v12l-5-3c-4.5 3.5-10.5 2-13.5-3z" fill="currentColor" fill-opacity=".22"/><circle cx="7.5" cy="11" r="1.1" fill="currentColor"/>'),
+  pet: ic('<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11"/><path d="M11 11V4a1.5 1.5 0 0 1 3 0v7"/><path d="M14 11V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M17 12V9a1.5 1.5 0 0 1 3 0v5c0 4-3 7-7 7h-1c-3 0-5-2-6.5-4.5L3.8 13.2a1.6 1.6 0 0 1 2.7-1.7L8 13" fill="currentColor" fill-opacity=".15"/>'),
+  play: ic('<path d="M3 21L13 11"/><path d="M13 11c.5-4.5 3.5-7.5 8-8-.5 4.5-3.5 7.5-8 8z" fill="currentColor" fill-opacity=".25"/><path d="M13 11c2.5 0 4 1.5 4.5 4"/><path d="M13 11c0 2.5-1 4-3 5"/>'),
+  basket: ic('<path d="M3 11h18l-2.2 9H5.2z" fill="currentColor" fill-opacity=".2"/><path d="M6 11c0-4 2.7-6.5 6-6.5S18 7 18 11"/><path d="M8.5 11l.8 9M12 11v9M15.5 11l-.8 9"/>'),
+  sound: ic('<path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.3 6.3a8 8 0 0 1 0 11.4"/>'),
+  paw: `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="12" cy="16.2" rx="5.2" ry="4.3"/><circle cx="5.8" cy="10.4" r="2.2"/><circle cx="9.6" cy="6.3" r="2.2"/><circle cx="14.4" cy="6.3" r="2.2"/><circle cx="18.2" cy="10.4" r="2.2"/></svg>`,
+  on: ic('<path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.3 6.3a8 8 0 0 1 0 11.4"/>'),
+  off: ic('<path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>'),
+  pause: ic('<path d="M8 5v14M16 5v14" stroke-width="3"/>'),
+  heart: `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.7 1.2 5.3 3.1 1.6-1.9 3.1-3.1 5.3-3.1 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg>`
+};
+const PROP = {
+  food: `<svg viewBox="0 0 60 32"><ellipse cx="30" cy="10" rx="26" ry="6" fill="#7B4E33"/><circle cx="20" cy="8" r="3" fill="#A56B3F"/><circle cx="29" cy="7" r="3" fill="#B97C4B"/><circle cx="38" cy="8.5" r="3" fill="#A56B3F"/><circle cx="33" cy="11" r="2.6" fill="#8C5A3C"/><path d="M3 10h54l-6 18H9z" fill="#6FA3C7"/><path d="M3 10h54" stroke="#4E7FA3" stroke-width="3"/><path d="M22 20c3-3 8-3 11 0l3-2v5l-3-2c-3 3-8 3-11-1z" fill="#FBF6EA"/></svg>`,
+  pet: `<svg viewBox="0 0 24 24" fill="#F4D2B5" stroke="#8A5A44" stroke-width="1.4" stroke-linejoin="round"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11V4a1.5 1.5 0 0 1 3 0v7V5.5a1.5 1.5 0 0 1 3 0V12V9a1.5 1.5 0 0 1 3 0v5c0 4-3 7-7 7h-1c-3 0-5-2-6.5-4.5L3.8 13.2a1.6 1.6 0 0 1 2.7-1.7L8 13z"/></svg>`,
+  play: `<svg viewBox="0 0 40 60"><path d="M4 58L24 16" stroke="#8C5A3C" stroke-width="3" stroke-linecap="round"/><path d="M24 16c-6-6-4-14 2-15 5 5 4 11-2 15z" fill="#E3587B"/><path d="M24 16c1-8 8-12 13-9-2 6-7 9-13 9z" fill="#E5B440"/><path d="M24 16c-8-1-12 4-11 9 6 1 10-3 11-9z" fill="#6FA3C7"/></svg>`,
+  basket: `<svg viewBox="0 0 100 44"><path d="M8 14c10-8 20 4 30-3s20 4 30-3 16 4 24 0v8H8z" fill="#F29AA6"/><path d="M3 14h94l-8 28H11z" fill="#C89B5E"/><g stroke="#A87B42" stroke-width="3"><path d="M5 22h90M7.5 31h85"/><path d="M26 14l2 28M50 14v28M74 14l-2 28"/></g><rect x="1" y="11" width="98" height="7" rx="3.5" fill="#A87B42"/></svg>`
+};
+
+/* ---------- Katzen-Grafik ---------- */
+const COATS = [
+  {fur:"#E3893A", dark:"#B35B1C", light:"#F7DDBB", eye:"#8DBA3C", pattern:"tabby"},
+  {fur:"#2B2A31", dark:"#18171C", light:"#44434C", eye:"#EBC43A", pattern:"plain", line:"#D6CDBD", whisk:"rgba(255,255,255,.7)"},
+  {fur:"#8E98A3", dark:"#646D77", light:"#D2D7DC", eye:"#E6A33C", pattern:"tabby"},
+  {fur:"#F5F1EA", dark:"#DCD4C8", light:"#FFFFFF", eye:"#5AA6E6", pattern:"plain"},
+  {fur:"#F4EEE4", dark:"#CFC5B6", light:"#FFFFFF", eye:"#C9A13A", pattern:"patch"},
+  {fur:"#EBDCC5", dark:"#5C4032", light:"#F8F0E3", eye:"#4E8FD8", pattern:"point"},
+  {fur:"#9A7852", dark:"#5A422C", light:"#DCC6A6", eye:"#A6C23F", pattern:"tabby"}
+];
+function catSVG(c){
+  const line = c.line || "#3A2A26", wh = c.whisk || "rgba(70,50,45,.5)", o = "rgba(0,0,0,.14)";
+  const pt = c.pattern === "point";
+  const earFill = pt ? c.dark : c.fur, pawFill = pt ? c.dark : c.light, tailCol = pt ? c.dark : c.fur;
+  let body = "", head = "";
+  if (c.pattern === "tabby") {
+    body = `<g stroke="${c.dark}" stroke-width="3.2" stroke-linecap="round" fill="none"><path d="M34 88q7 3 9 11"/><path d="M86 88q-7 3-9 11"/><path d="M32 103q6 2 8 9"/><path d="M88 103q-6 2-8 9"/></g>`;
+    head = `<g stroke="${c.dark}" stroke-width="3.2" stroke-linecap="round" fill="none"><path d="M53 29l2 9"/><path d="M60 26v11"/><path d="M67 29l-2 9"/><path d="M29 54l8 2"/><path d="M30 61h7"/><path d="M91 54l-8 2"/><path d="M90 61h-7"/></g>`;
+  } else if (c.pattern === "patch") {
+    body = `<ellipse cx="80" cy="92" rx="11" ry="14" fill="#E3893A"/><ellipse cx="38" cy="106" rx="9" ry="10" fill="#2B2A31"/>`;
+    head = `<path d="M30 45Q34 28 50 28Q52 40 44 50Q36 52 30 45Z" fill="#E3893A"/><path d="M90 45Q86 28 72 29Q70 38 76 46Q84 50 90 45Z" fill="#2B2A31"/>`;
+  } else if (pt) {
+    head = `<ellipse cx="60" cy="61" rx="18" ry="15" fill="${c.dark}" opacity=".85"/>`;
+  }
+  const eye = (x) => `<ellipse cx="${x}" cy="50" rx="7" ry="8" fill="${c.eye}" stroke="${line}" stroke-width="1.2"/><ellipse class="slit" cx="${x}" cy="50" rx="2.2" ry="6.4" fill="#111"/><circle class="round" cx="${x}" cy="50" r="5" fill="#111"/><circle cx="${x+2.5}" cy="46.8" r="1.7" fill="#fff"/>`;
+  return `<svg class="catsvg" viewBox="0 0 120 134" aria-hidden="true">
+  <g class="tail"><path d="M84 120C108 118 116 96 104 74" stroke="${tailCol}" stroke-width="9" stroke-linecap="round" fill="none"/></g>
+  <ellipse cx="60" cy="96" rx="33" ry="31" fill="${c.fur}" stroke="${o}" stroke-width="1.5"/>${body}
+  <ellipse cx="60" cy="102" rx="14" ry="21" fill="${c.light}"/>
+  <g fill="${pawFill}" stroke="${o}" stroke-width="1.2"><ellipse cx="47" cy="125" rx="10" ry="6.5"/><ellipse cx="73" cy="125" rx="10" ry="6.5"/></g>
+  <g class="ear ear-l"><path d="M29 44L33 9L57 30Z" fill="${earFill}" stroke="${o}" stroke-width="1.5" stroke-linejoin="round"/><path d="M35 37L37 17L50 31Z" fill="#EFA3AC"/></g>
+  <g class="ear ear-r"><path d="M91 44L87 9L63 30Z" fill="${earFill}" stroke="${o}" stroke-width="1.5" stroke-linejoin="round"/><path d="M85 37L83 17L70 31Z" fill="#EFA3AC"/></g>
+  <ellipse cx="60" cy="52" rx="34" ry="28" fill="${c.fur}" stroke="${o}" stroke-width="1.5"/>${head}
+  ${pt ? "" : `<ellipse cx="60" cy="65" rx="14" ry="9" fill="${c.light}"/>`}
+  <g class="blush" fill="#F29AA6"><ellipse cx="39" cy="64" rx="5.5" ry="3.2"/><ellipse cx="81" cy="64" rx="5.5" ry="3.2"/></g>
+  <g class="eyes-open">${eye(46)}${eye(74)}</g>
+  <g class="eyes-closed" stroke="${line}" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M39 51Q46 44 53 51"/><path d="M67 51Q74 44 81 51"/></g>
+  <path d="M55.5 59H64.5L60 64Z" fill="#E27C8A" stroke="#E27C8A" stroke-width="1" stroke-linejoin="round"/>
+  <g class="mouth-closed" stroke="${line}" stroke-width="1.7" fill="none" stroke-linecap="round"><path d="M60 64Q57 69 52 67"/><path d="M60 64Q63 69 68 67"/></g>
+  <g class="mouth-open"><ellipse cx="60" cy="69.5" rx="6" ry="6.5" fill="#5B1F2A"/><ellipse cx="60" cy="73" rx="3.8" ry="2.4" fill="#E27C8A"/><path d="M55.3 64.6l1.4 3.6 1.4-3.3zM64.7 64.6l-1.4 3.6-1.4-3.3z" fill="#fff"/></g>
+  <g stroke="${wh}" stroke-width="1.2" stroke-linecap="round"><path d="M47 66L20 61"/><path d="M47 68.5L21 70.5"/><path d="M73 66L100 61"/><path d="M73 68.5L99 70.5"/></g>
+</svg>`;
+}
+
+/* ---------- Klang: alle Katzenlaute werden im Browser erzeugt ---------- */
+const Snd = (() => {
+  let ctx = null, out = null, noise = null, muted = false;
+  function init(noResume){
+    if (!ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      ctx = new AC();
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -16; comp.knee.value = 12; comp.ratio.value = 5; comp.attack.value = .004; comp.release.value = .2;
+      out = ctx.createGain(); out.gain.value = muted ? 0 : .9;
+      out.connect(comp); comp.connect(ctx.destination);
+      const len = ctx.sampleRate * 2; noise = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = noise.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random()*2 - 1;
+    }
+    if (!noResume && ctx.state === "suspended") ctx.resume();
+    return true;
+  }
+  // Echte Aufnahmen (frei lizenziert), mit künstlichem Ersatz, falls sie fehlen
+  const real = {}, REAL = ["demand1","demand2","purr","hiss","growl","yowl1","yowl2","angry1","angry2","meowhigh","meowlong","meowlow","meow1","meow2","meow5","chirp","chorus"];
+  let realOk = 0, realDone = 0; const realSubs = [];
+  function preload(){
+    if (!init(true)) return;
+    REAL.forEach(async n => {
+      try {
+        const r = await fetch("sounds/" + n + ".mp3"); if (!r.ok) throw 0;
+        const ab = await r.arrayBuffer();
+        real[n] = await new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)); realOk++;
+      } catch(e) {}
+      realDone++; realSubs.forEach(f => f(realOk, realDone, REAL.length));
+    });
+  }
+  function rp(n, o = {}){
+    if (!ctx || !real[n]) return false;
+    const {vol = .5, rate = 1, when = 0, dur = 0} = o;
+    const s = ctx.createBufferSource(); s.buffer = real[n]; s.playbackRate.value = rate;
+    const g = ctx.createGain(), v = Math.min(1.3, vol*1.6); g.gain.value = v;
+    s.connect(g); g.connect(out);
+    const t = ctx.currentTime + .02 + when; s.start(t);
+    if (dur){ g.gain.setValueAtTime(v, t + Math.max(0, dur - .2)); g.gain.linearRampToValueAtTime(.0001, t + dur); s.stop(t + dur + .03); }
+    return true;
+  }
+  const T = (w=0) => ctx.currentTime + .03 + w;
+  const curve = (param, arr, t, dur) => param.setValueCurveAtTime(Float32Array.from(arr), t, Math.max(.02, dur));
+  const G = v => { const g = ctx.createGain(); g.gain.value = v; return g; };
+  const F = (type, f, Q=1, gain=0) => { const x = ctx.createBiquadFilter(); x.type = type; x.frequency.value = f; x.Q.value = Q; if (gain) x.gain.value = gain; return x; };
+  function noiseSrc(t, dur){ const s = ctx.createBufferSource(); s.buffer = noise; s.loop = true; s.start(t, Math.random()*1.5); s.stop(t + dur + .05); return s; }
+  function bufSrc(dur, fn){ const sr = ctx.sampleRate, n = Math.floor(dur*sr); const b = ctx.createBuffer(1, n, sr); fn(b.getChannelData(0), sr, n); const s = ctx.createBufferSource(); s.buffer = b; return s; }
+
+  // Miau: Sägezahn-Stimme, Formanten wandern von "i" über "a" nach "u", Lippen-Tiefpass öffnet und schließt ("m ... au")
+  function meow(o = {}){
+    if (!ctx) return;
+    const {f0=680, dur=.6, shape=[.82,1.06,1.12,.98,.74], vol=.5, fm=1, vib=.014, when=0,
+           open=[450,3000,3200,2600,1300], breath=.06} = o;
+    const t = T(when);
+    const osc = ctx.createOscillator(); osc.type = "sawtooth";
+    curve(osc.frequency, shape.map(k => k*f0), t, dur);
+    const lfo = ctx.createOscillator(); lfo.frequency.value = rand(5,7);
+    const lg = G(f0*vib); lfo.connect(lg); lg.connect(osc.frequency);
+    const src = G(1); osc.connect(src);
+    const ns = noiseSrc(t, dur), ng = G(breath); ns.connect(ng); ng.connect(src);
+    const f1 = F("bandpass", 800*fm, 4), f2 = F("bandpass", 1700*fm, 6), f3 = F("bandpass", 3300*fm, 5);
+    curve(f1.frequency, [650,1050,1150,950,600].map(v => v*fm), t, dur);
+    curve(f2.frequency, [2100,1750,1500,1250,1000].map(v => v*fm), t, dur);
+    const lip = F("lowpass", 1000, .7); curve(lip.frequency, open, t, dur);
+    const g1 = G(1), g2 = G(.7), g3 = G(.25);
+    src.connect(f1); f1.connect(g1); src.connect(f2); f2.connect(g2); src.connect(f3); f3.connect(g3);
+    g1.connect(lip); g2.connect(lip); g3.connect(lip);
+    const env = G(0);
+    env.gain.setValueAtTime(0, t); env.gain.linearRampToValueAtTime(vol*1.7, t+.05);
+    env.gain.linearRampToValueAtTime(vol*1.5, t+dur*.7); env.gain.linearRampToValueAtTime(.0001, t+dur);
+    lip.connect(env); env.connect(out);
+    osc.start(t); lfo.start(t); osc.stop(t+dur+.05); lfo.stop(t+dur+.05);
+  }
+  // Gurren / Trillern: kurzer Ton mit rollendem R (Amplitude flattert ~27 Mal pro Sekunde)
+  function trill(o = {}){
+    if (!ctx) return;
+    const {f0=520, dur=.36, vol=.5, when=0, rate=27} = o;
+    const t = T(when);
+    const osc = ctx.createOscillator(); osc.type = "sawtooth";
+    curve(osc.frequency, [.88,.95,1.15,1.3,1.25].map(k => k*f0), t, dur);
+    const am = G(.5), lfo = ctx.createOscillator(); lfo.type = "square"; lfo.frequency.value = rate;
+    const lg = G(.5); lfo.connect(lg); lg.connect(am.gain);
+    const lp = F("lowpass", 2000, .8), bp = F("bandpass", 950, 2.5);
+    const env = G(0);
+    env.gain.setValueAtTime(0, t); env.gain.linearRampToValueAtTime(vol*1.4, t+.04);
+    env.gain.setValueAtTime(vol*1.4, t+dur*.7); env.gain.linearRampToValueAtTime(.0001, t+dur);
+    osc.connect(am); am.connect(lp); lp.connect(env); am.connect(bp); bp.connect(env); env.connect(out);
+    osc.start(t); lfo.start(t); osc.stop(t+dur+.05); lfo.stop(t+dur+.05);
+  }
+  // Keckern: schnelle Folge kurzer "ek"-Laute mit Zahnklicken
+  function chatter(o = {}){
+    if (!ctx) return;
+    const {n=9, rate=12.5, f=1450, vol=.4, when=0} = o;
+    const t0 = T(when);
+    for (let i = 0; i < n; i++){
+      const tt = t0 + i/rate + rand(-.01,.01), fr = f*rand(.92,1.1);
+      const osc = ctx.createOscillator(); osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(fr*.5, tt); osc.frequency.exponentialRampToValueAtTime(fr*.68, tt+.045);
+      const bp = F("bandpass", fr*1.3, 2.5), g = G(0);
+      g.gain.setValueAtTime(0, tt); g.gain.linearRampToValueAtTime(vol*1.6, tt+.006); g.gain.exponentialRampToValueAtTime(.001, tt+.06);
+      osc.connect(bp); bp.connect(g); g.connect(out); osc.start(tt); osc.stop(tt+.08);
+      const ns = noiseSrc(tt, .03), hp = F("highpass", 3000, .7), ng = G(0);
+      ng.gain.setValueAtTime(0, tt); ng.gain.linearRampToValueAtTime(vol*.6, tt+.002); ng.gain.exponentialRampToValueAtTime(.001, tt+.025);
+      ns.connect(hp); hp.connect(ng); ng.connect(out);
+    }
+  }
+  // Fauchen: gefiltertes Rauschen mit kurzem "Spucken" am Anfang
+  function hiss(o = {}){
+    if (!ctx) return;
+    const {dur=.85, vol=.55, when=0, spit=true} = o;
+    const t = T(when);
+    const ns = noiseSrc(t, dur), hp = F("highpass", 2000, .7), pk = F("peaking", 4800, 1, 9), lp = F("lowpass", 9000, .7);
+    const env = G(0);
+    env.gain.setValueAtTime(0, t);
+    if (spit){ env.gain.linearRampToValueAtTime(vol*1.5, t+.012); env.gain.linearRampToValueAtTime(vol*.55, t+.08); env.gain.linearRampToValueAtTime(vol*.8, t+.2); }
+    else env.gain.linearRampToValueAtTime(vol*.8, t+.08);
+    env.gain.setValueAtTime(vol*.8, t+Math.max(.22, dur-.3)); env.gain.linearRampToValueAtTime(.0001, t+dur);
+    ns.connect(hp); hp.connect(pk); pk.connect(lp); lp.connect(env); env.connect(out);
+  }
+  // Knurren: tiefer, rauer Ton mit unregelmäßigem Flattern
+  function growl(o = {}){
+    if (!ctx) return;
+    const {dur=1.3, f0=95, vol=.55, when=0, rise=0} = o;
+    const t = T(when);
+    const s = bufSrc(dur, (d, sr, n) => {
+      let ph = 0, rp = 0, rw = 0;
+      for (let i = 0; i < n; i++){
+        const x = i/sr, env = Math.min(1, x/.12) * Math.min(1, (dur-x)/.3);
+        rw += (Math.random()-.5)*.004; rw *= .998;
+        const f = f0*(1 + .12*Math.sin(6.2832*.8*x) + rw + rise*(x/dur));
+        ph += f/sr; ph -= Math.floor(ph);
+        rp += (19 + 7*Math.sin(x*4))/sr; rp -= Math.floor(rp);
+        const rough = .5 + .5*Math.sin(6.2832*rp);
+        d[i] = ((2*ph-1)*.7*rough + (Math.random()*2-1)*.12) * env;
+      }
+    });
+    const lp = F("lowpass", 1200, .8), bp = F("bandpass", 520, 1.4), g = G(vol*1.6);
+    s.connect(lp); lp.connect(g); s.connect(bp); bp.connect(g); g.connect(out); s.start(t);
+  }
+  // Schnurren: ~25 Pulse pro Sekunde, beim Einatmen leiser und tiefer als beim Ausatmen
+  function purr(o = {}){
+    if (!ctx) return;
+    const {dur=1.9, vol=.6, when=0, rate=25, tone=160} = o;
+    const t = T(when);
+    const s = bufSrc(dur, (d, sr, n) => {
+      let pp = 0, l1 = 0, l2 = 0, tp = 0; const a = 1 - Math.exp(-2*Math.PI*420/sr), cyc = 1.0;
+      for (let i = 0; i < n; i++){
+        const x = i/sr, env = Math.min(1, x/.15) * Math.min(1, (dur-x)/.25);
+        const ph = (x % cyc)/cyc, inh = ph < .4, loc = inh ? ph/.4 : (ph-.4)/.6;
+        const be = Math.pow(Math.sin(Math.PI*loc), .5) * (inh ? .6 : 1);
+        pp += (inh ? rate*.86 : rate)/sr; pp -= Math.floor(pp);
+        const pulse = Math.pow(.5 + .5*Math.cos(6.2832*pp), 6);
+        const nz = Math.random()*2-1; l1 += a*(nz-l1); l2 += a*(l1-l2);
+        tp += (inh ? tone*.9 : tone)/sr; tp -= Math.floor(tp);
+        d[i] = (l2*5 + Math.sin(6.2832*tp)*.35) * pulse * be * env;
+      }
+    });
+    const pk = F("peaking", 220, 1, 5), lp = F("lowpass", 900, .7), g = G(vol*1.6);
+    s.connect(pk); pk.connect(lp); lp.connect(g); g.connect(out); s.start(t);
+  }
+  function crunch(o = {}){
+    if (!ctx) return;
+    const {n=5, vol=.35, when=0} = o; const t0 = T(when);
+    for (let i = 0; i < n; i++){
+      const tt = t0 + i*.16 + rand(0,.03), ns = noiseSrc(tt, .06), bp = F("bandpass", rand(1800,3200), 1.2), g = G(0);
+      g.gain.setValueAtTime(0, tt); g.gain.linearRampToValueAtTime(vol, tt+.003); g.gain.exponentialRampToValueAtTime(.001, tt+.05);
+      ns.connect(bp); bp.connect(g); g.connect(out);
+    }
+  }
+  function clap(o = {}){
+    if (!ctx) return;
+    const t = T(o.when||0), ns = noiseSrc(t, .1), bp = F("bandpass", 1400, .8), g = G(0);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.7, t+.003); g.gain.exponentialRampToValueAtTime(.001, t+.09);
+    ns.connect(bp); bp.connect(g); g.connect(out);
+  }
+  // Zusammengesetzte Laute
+  const demand = ({p=1, vol=.55, when=0, double=true} = {}) => {
+    if (rp("demand1", {vol, rate:p, when})){ if (double) rp("demand2", {vol, rate:p, when:when + .8}); return; }
+    meow({f0:760*p, dur:.48, shape:[.84,1.14,1.22,1.02,.78], vol, when});
+    if (double) meow({f0:800*p, dur:.42, shape:[.86,1.18,1.2,.98,.8], vol:vol*.95, when:when+.62});
+  };
+  const soft = ({p=1, vol=.35, when=0} = {}) => meow({f0:640*p, dur:.7, shape:[.9,1.02,1.04,.92,.72], vol, when, open:[400,2200,2400,1800,900]});
+  const mew = ({p=1, vol=.4, count=3, when=0} = {}) => {
+    if (real.meowhigh){ for (let i = 0; i < count; i++) rp("meowhigh", {vol:vol*1.1, rate:1.38*p*rand(.97,1.05), when:when + i*.5, dur:.55}); return; }
+    for (let i = 0; i < count; i++) meow({f0:1150*p*rand(.95,1.08), dur:rand(.22,.3), shape:[.9,1.12,1.15,.95], fm:1.45, vol, when:when+i*.36, open:[800,3600,3400,1800], vib:.02});
+  };
+  const yowl = ({p=1, vol=.55, when=0, dur=1.5} = {}) => rp(dur <= 1.2 ? "yowl2" : "yowl1", {vol, rate:p, when, dur:dur <= 1.2 ? dur : 0}) || meow({f0:520*p, dur, shape:[.7,.82,1,1.22,1.15,1.3,1.12,.85,.62], vib:.035, vol, when, fm:.9, open:[380,1400,2600,2800,2200,1600,900,500]});
+  const chirp = ({p=1, vol=.4, when=0} = {}) => trill({f0:640*p, dur:.15, rate:30, vol, when});
+  function setMuted(m){ muted = m; if (out) out.gain.setTargetAtTime(m ? 0 : .9, ctx.currentTime, .02); }
+  const hissR = (o = {}) => rp("hiss", {vol:o.vol || .55, when:o.when, dur:o.dur}) || hiss(o);
+  const growlR = (o = {}) => rp("growl", {vol:o.vol || .55, when:o.when, dur:o.dur || 1.3}) || growl(o);
+  const purrR = (o = {}) => rp("purr", {vol:(o.vol || .6)*1.1, when:o.when, dur:o.dur || 1.9, rate:(o.rate || 25)/25}) || purr(o);
+  const chorus = (o = {}) => rp("chorus", {vol:.45, dur:3, ...o});
+  const excited = ({p = 1, vol = .5, when = 0, n = 2} = {}) => { for (let i = 0; i < n; i++) rp("chirp", {vol, rate:p*rand(.98, 1.03), when:when + i*.55}); };
+  return {init, preload, real:rp, excited, onReal:f => realSubs.push(f), meow, trill, chatter, hiss:hissR, growl:growlR, purr:purrR, crunch, clap, demand, soft, mew, yowl, chirp, chorus, setMuted, get muted(){ return muted; }};
+})();
+
+Snd.preload();
+
+/* ---------- Werkzeuge und Wünsche ---------- */
+const TOOLS = {
+  food:   {label:"Futter",     key:"1"},
+  pet:    {label:"Streicheln", key:"2"},
+  play:   {label:"Federangel", key:"3"},
+  basket: {label:"Körbchen",   key:"4"}
+};
+const NAMES = ["Minka","Mieze","Felix","Luna","Tiger","Kasimir","Pünktchen","Mogli","Nala","Leo","Grisu","Socke","Frieda","Oskar","Lilli","Krümel","Momo","Balu"];
+
+const tray = $("#tray");
+Object.entries(TOOLS).forEach(([id, t]) => {
+  const b = document.createElement("button");
+  b.className = "tool"; b.dataset.tool = id; b.setAttribute("aria-pressed", "false");
+  b.innerHTML = `${ICON[id]}<span>${t.label}</span><kbd>${t.key}</kbd>`;
+  b.addEventListener("click", () => selectTool(G && G.tool === id ? null : id));
+  tray.appendChild(b);
+});
+$("#rules").innerHTML = [
+  ["food",   "„Miau! Miau!“", "laut und fordernd: Hunger. Gib Futter."],
+  ["pet",    "„Miiiauuu“",     "lang und weich gezogen: Die Katze will Aufmerksamkeit und gestreichelt werden."],
+  ["play",   "„Mi! Mi!“",       "kurz und hell: Die Katze ist aufgedreht und will spielen. Hol die Federangel."],
+  ["basket", "„Mi-mi-mi“",     "hohes Mauzen: Ein Kätzchen friert. Ab ins Körbchen."]
+].map(([t, s, d]) => `<div class="rule"><span class="ri">${ICON[t]}</span><span><b>${s}</b> ${d}</span></div>`).join("");
+
+/* ---------- Geräusche-Bibliothek (Startseite) ---------- */
+const LIB = [
+  {id:"miau", src:"echte Aufnahme",  name:"Miauen",   hint:"„Miau!“ für Menschen", expr:"talk",  ms:1200, play:() => Snd.demand(),
+   fact:"Erwachsene Katzen miauen fast nur, um mit Menschen zu reden. Untereinander nutzen sie das Miauen kaum. Laut und fordernd heißt es oft: Hunger!"},
+  {id:"purr", src:"echte Aufnahme",  name:"Schnurren", hint:"beim Ein- und Ausatmen", expr:"happy", ms:2000, play:() => Snd.purr(),
+   fact:"Schnurren entsteht beim Ein- und Ausatmen, etwa 25 Mal pro Sekunde. Meist heißt es: Mir geht es gut. Manche Katzen beruhigen sich damit aber auch selbst, wenn sie Stress haben."},
+  {id:"long", src:"echte Aufnahme", name:"Langes Miau", hint:"gedehnt und weich", expr:"talk", ms:800, play:() => Snd.real("meowlong", {vol:.55}),
+   fact:"Ein langgezogenes Miauen ist oft eine Bitte um Aufmerksamkeit: Kümmer dich um mich! Im Katzenhof heißt das: Diese Katze will gekrault werden."},
+  {id:"excited", src:"echte Aufnahme", name:"Kurz und hell", hint:"„Mi! Mi!“", expr:"talk", ms:1000, play:() => Snd.excited(),
+   fact:"Kurze, helle Laute sind oft ein freundliches, aufgeregtes Hallo. Viele Katzen werden so gesprächig, wenn sie spielen wollen. Im Katzenhof heißt das: Hol die Federangel."},
+  {id:"hiss", src:"echte Aufnahme",  name:"Fauchen",  hint:"Warnung: Abstand!", expr:"angry", ms:900, play:() => Snd.hiss(),
+   fact:"Fauchen ist eine Warnung: Komm nicht näher! Dabei liegen die Ohren flach, die Pupillen werden groß und der Schwanz wird buschig."},
+  {id:"growl", src:"echte Aufnahme", name:"Knurren",  hint:"tiefe Drohung", expr:"angry", ms:1400, play:() => Snd.growl(),
+   fact:"Tiefes Knurren ist eine ernste Drohung. Man hört es oft, wenn zwei Katzen um ihr Revier oder um Futter streiten."},
+  {id:"mew", src:"echt, höher abgespielt",   name:"Mauzen",   hint:"hoch, vom Kätzchen", expr:"talk",  ms:1100, play:() => Snd.mew(),
+   fact:"Kätzchen rufen mit hohen, dünnen Lauten nach ihrer Mutter, wenn ihnen kalt ist oder sie Hunger haben."},
+  {id:"yowl", src:"echte Aufnahme",  name:"Jaulen",   hint:"lang gezogenes Heulen", expr:"talk", ms:1600, play:() => Snd.yowl(),
+   fact:"Langes Jaulen hört man vor allem nachts, wenn Kater um ihr Revier streiten. Man nennt das auch Katzenkonzert."}
+];
+const showCat = $("#showCat");
+showCat.innerHTML = `<div class="catbody">${catSVG(COATS[0])}</div>`;
+let showTimer = 0;
+$("#sounds").innerHTML = LIB.map(s => `<button class="snd" data-id="${s.id}">${ICON.sound}<span>${s.name}<small>${s.hint}</small><em class="src${s.src === "nachgebaut" ? " synth" : ""}">${s.src}</em></span></button>`).join("");
+$("#sounds").addEventListener("click", e => {
+  const b = e.target.closest(".snd"); if (!b) return;
+  const s = LIB.find(x => x.id === b.dataset.id);
+  Snd.init(); s.play();
+  document.querySelectorAll(".snd").forEach(x => x.classList.toggle("on", x === b));
+  showCat.classList.remove("talk","happy","angry");
+  void showCat.offsetWidth;
+  showCat.classList.add(s.expr);
+  if (s.expr === "angry") showCat.classList.add("talk");
+  $("#fact").innerHTML = `<b>${s.name}</b>${s.fact}`;
+  clearTimeout(showTimer);
+  showTimer = setTimeout(() => { showCat.classList.remove("talk","happy","angry"); b.classList.remove("on"); }, s.ms);
+});
+
+/* ---------- Deko ---------- */
+document.querySelector(".pic").innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 12c3-5 9-6.5 13.5-3L21 6v12l-5-3c-4.5 3.5-10.5 2-13.5-3z"/></svg>`;
+document.querySelector(".plant").innerHTML = `<svg viewBox="0 0 40 60"><path d="M20 34C8 30 4 18 6 8c8 4 13 13 14 26z" fill="#6DA16B"/><path d="M20 34c12-4 16-16 14-26-8 4-13 13-14 26z" fill="#5E9460"/><path d="M20 34C16 22 18 10 20 2c3 8 4 20 0 32z" fill="#7FAF7C"/><path d="M8 34h24l-3 24H11z" fill="#D9774F"/><rect x="6" y="32" width="28" height="6" rx="2" fill="#C4633E"/></svg>`;
+$("#bird").innerHTML = `<svg viewBox="0 0 30 16"><path class="wing" d="M2 8Q8 0 15 8" stroke="#2B3A40" stroke-width="2.4" fill="none" stroke-linecap="round"/><path class="wing" d="M15 8Q22 0 28 8" stroke="#2B3A40" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>`;
+const intruderEl = $("#intruder");
+const intrCat = document.createElement("div");
+intrCat.className = "cat alert";
+intrCat.innerHTML = `<div class="catbody">${catSVG({fur:"#55545C", dark:"#34333A", light:"#77767E", eye:"#E9D84A", pattern:"tabby", line:"#D6CDBD", whisk:"rgba(255,255,255,.6)"})}</div>`;
+intruderEl.appendChild(intrCat);
+
+/* ---------- HUD ---------- */
+$("#lives").innerHTML = ICON.paw + ICON.paw + ICON.paw;
+const muteBtn = $("#muteBtn");
+function renderMute(){ muteBtn.innerHTML = Snd.muted ? ICON.off : ICON.on; muteBtn.setAttribute("aria-label", Snd.muted ? "Ton an" : "Ton aus"); }
+renderMute();
+muteBtn.addEventListener("click", () => { Snd.init(); Snd.setMuted(!Snd.muted); renderMute(); });
+$("#pauseBtn").innerHTML = ICON.pause;
+$("#pauseBtn").addEventListener("click", () => pause());
+
+function hud(){
+  $("#score").textContent = G.score;
+  const left = Math.max(0, G.dur - G.t);
+  $("#tbar").style.width = (100*left/G.dur) + "%";
+  $("#tbar").classList.toggle("late", left < 10);
+  $("#tleft").textContent = Math.ceil(left) + " s übrig";
+  [...$("#lives").children].forEach((s, i) => s.classList.toggle("lost", i >= G.lives));
+  const combo = $("#combo");
+  if (G.combo >= 3){ combo.hidden = false; combo.textContent = `Serie ${G.combo} · ×${String(mult()).replace(".", ",")}`; }
+  else combo.hidden = true;
+}
+const mult = () => 1 + Math.min(2, Math.floor(G.combo/3)*.5);
+
+let toastTimer = 0;
+function toast(msg, ms=3400){
+  const t = $("#toast"); t.textContent = msg; t.hidden = false;
+  t.style.animation = "none"; void t.offsetWidth; t.style.animation = "";
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, ms);
+}
+function roomPos(el){
+  const r = el.getBoundingClientRect(), R = $("#room").getBoundingClientRect();
+  return {x: r.left - R.left + r.width/2, y: r.top - R.top};
+}
+function floatText(el, text, bad=false){
+  const p = roomPos(el), d = document.createElement("div");
+  d.className = "pts" + (bad ? " bad" : ""); d.textContent = text;
+  d.style.left = p.x + "px"; d.style.top = (p.y - 10) + "px";
+  $("#room").appendChild(d); setTimeout(() => d.remove(), 1000);
+}
+function hearts(el){
+  const p = roomPos(el);
+  for (let i = 0; i < 3; i++){
+    const h = document.createElement("div"); h.className = "heart"; h.innerHTML = ICON.heart;
+    h.style.left = (p.x + rand(-40, 30)) + "px"; h.style.top = (p.y + rand(10, 40)) + "px"; h.style.animationDelay = (i*.15) + "s";
+    $("#room").appendChild(h); setTimeout(() => h.remove(), 1500);
+  }
+}
+
+/* ---------- Spielzustand ---------- */
+let G = null, raf = 0, last = 0;
+const tips = {};
+const slots = [...document.querySelectorAll("#floor .slot")];
+
+function selectTool(id){
+  if (!G) return;
+  G.tool = id;
+  document.querySelectorAll(".tool").forEach(b => { const on = b.dataset.tool === id; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on); });
+}
+
+function startGame(){
+  Snd.init();
+  if (G) G.cats.forEach(c => c && c.el.remove());
+  hideIntruder();
+  G = {t:0, dur:75, score:0, lives:3, combo:0, bestCombo:0, happy:0, cats:[null,null,null,null], next:.7, tool:null,
+       running:true, paused:false, over:false, intr:null, intrAt:[rand(22,28), rand(50,56)], bird:rand(4,7)};
+  selectTool(null);
+  ["#startOv","#endOv","#pauseOv"].forEach(s => $(s).hidden = true);
+  hud();
+  Snd.real("meow1", {vol:.45}); Snd.real("meow2", {vol:.35, rate:1.1, when:.45});
+  cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(loop);
+}
+
+function loop(ts){
+  const dt = Math.min(.05, (ts - last)/1000); last = ts;
+  if (G && G.running && !G.paused && !G.over) update(dt);
+  if (G && G.running) raf = requestAnimationFrame(loop);
+}
+
+function update(dt){
+  G.t += dt;
+  if (G.t >= G.dur){ endGame("time"); return; }
+  const prog = G.t/G.dur;
+
+  G.next -= dt;
+  if (G.next <= 0){
+    if (G.dur - G.t > 2.5 && spawnCat()) G.next = lerp(3.0, 1.35, prog) * rand(.8, 1.2);
+    else G.next = .5;
+  }
+
+  for (const c of G.cats){
+    if (!c || c.state !== "waiting") continue;
+    c.p -= dt;
+    const fr = clamp(c.p/c.max, 0, 1);
+    c.rf.style.strokeDashoffset = 157.08*(1 - fr);
+    c.rf.style.stroke = fr > .5 ? "var(--good)" : fr > .2 ? "var(--warn)" : "var(--bad)";
+    if (fr < .5 && !c.r1){ c.r1 = true; voice(c, false); }
+    if (fr < .22 && !c.r2){ c.r2 = true; c.bubble.classList.add("urgent"); voice(c, true); }
+    if (c.p <= 0) timeout(c);
+  }
+
+  if (!G.intr && G.intrAt.length && G.t >= G.intrAt[0]){ G.intrAt.shift(); startIntruder(); }
+  if (G.intr){ G.intr.left -= dt; if (G.intr.left <= 0) intruderWins(); }
+
+  G.bird -= dt;
+  if (G.bird <= 0){ G.bird = rand(7, 12); flyBird(); }
+  hud();
+}
+
+function spawnCat(){
+  const free = G.cats.map((c, i) => c ? -1 : i).filter(i => i >= 0);
+  if (!free.length) return false;
+  const slot = pick(free);
+  const kitten = Math.random() < .14;
+  const r = Math.random();
+  const need = kitten ? "basket" : r < .36 ? "food" : r < .7 ? "pet" : "play";
+  const hideP = G.t < 14 ? 0 : Math.min(.5, .18 + (G.t - 14)/90);
+  const hidden = !kitten && Math.random() < hideP;
+  const used = G.cats.filter(Boolean).map(c => c.name);
+  const name = pick(NAMES.filter(n => !used.includes(n)));
+  const c = {slot, kitten, need, hidden, name, coat:pick(COATS), voice:kitten ? rand(1,1.12) : rand(.88,1.14), state:"waiting"};
+  c.max = lerp(9, 5.5, G.t/G.dur) + (kitten ? 1 : 0) + (hidden ? 1.6 : 0);
+  c.p = c.max;
+
+  const el = document.createElement("div");
+  el.className = "cat enter" + (kitten ? " kitten" : "");
+  el.style.setProperty("--bd", (-Math.random()*5).toFixed(2) + "s");
+  el.innerHTML = `<div class="bubble${hidden ? " hidden-need" : ""}"><svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" class="rb"/><circle cx="28" cy="28" r="25" class="rf"/></svg><div class="ico">${hidden ? ICON.sound + '<span class="q">?</span>' : ICON[need]}</div></div><div class="catbody">${catSVG(c.coat)}</div><div class="prop"></div><span class="name">${name}</span>`;
+  el.addEventListener("pointerdown", e => { e.preventDefault(); tapCat(c, !!e.target.closest(".bubble")); });
+  slots[slot].appendChild(el);
+  c.el = el; c.bubble = el.querySelector(".bubble"); c.rf = el.querySelector(".rf");
+  setTimeout(() => el.classList.remove("enter"), 520);
+  G.cats[slot] = c;
+  voice(c, false, .15);
+
+  if (hidden && !tips.hidden){ tips.hidden = true; toast("Fragezeichen! Diese Katze verrät ihren Wunsch nur durch ihr Geräusch. Tippe auf die Blase, um es nochmal zu hören."); }
+  else if (kitten && !tips.kitten){ tips.kitten = true; toast("Ein Kätzchen mauzt. Es friert und möchte ins Körbchen."); }
+  return true;
+}
+
+function talk(c, ms){ c.el.classList.add("talk"); clearTimeout(c.tt); c.tt = setTimeout(() => c.el && c.el.classList.remove("talk"), ms); }
+
+function voice(c, urgent=false, when=0){
+  const p = c.voice, v = urgent ? .6 : .48;
+  let ms = 800;
+  switch (c.need){
+    case "food":   Snd.demand({p, vol:v, when}); ms = 1150; break;
+    case "pet":    Snd.real("meowlong", {vol:v, rate:p, when}); if (urgent) Snd.real("meowlong", {vol:v, rate:p*1.04, when:when + .85}); ms = urgent ? 1600 : 800; break;
+    case "play":   Snd.excited({p, vol:v, when, n:urgent ? 3 : 2}); ms = urgent ? 1600 : 1050; break;
+    case "basket": Snd.mew({p, vol:v*.85, count:urgent ? 4 : 3, when}); ms = 1300; break;
+  }
+  setTimeout(() => c.state === "waiting" && talk(c, ms), when*1000);
+}
+
+function tapCat(c, onBubble){
+  if (!G || !G.running || G.paused || G.over) return;
+  Snd.init();
+  if (c.state === "happy"){ Snd.real("meow2", {vol:.35, rate:1.1*c.voice}); return; }
+  if (c.state !== "waiting") return;
+  if (onBubble || !G.tool){
+    voice(c, false);
+    c.el.classList.remove("listen"); void c.el.offsetWidth; c.el.classList.add("listen");
+    if (!G.tool && !tips.tool){ tips.tool = true; toast("Wähle zuerst unten ein Werkzeug und tippe dann auf die Katze."); }
+    return;
+  }
+  if (G.tool === c.need) makeHappy(c); else wrong(c);
+}
+
+function makeHappy(c){
+  c.state = "happy";
+  const el = c.el, p = c.voice;
+  el.classList.remove("talk", "alert");
+  el.classList.add("happy");
+  const prop = el.querySelector(".prop");
+  prop.className = "prop prop-" + c.need; prop.innerHTML = PROP[c.need];
+  switch (c.need){
+    case "food":   Snd.real("meowlow", {vol:.45, rate:p}); Snd.purr({when:.7, dur:1.5}); break;
+    case "pet":    Snd.purr({dur:2.1}); break;
+    case "play":   Snd.real("meow2", {vol:.45, rate:1.12*p}); Snd.purr({when:.55, dur:1.6}); break;
+    case "basket": Snd.purr({rate:28, tone:230, vol:.45, dur:1.7}); Snd.mew({p, count:1, when:1.25, vol:.22}); break;
+  }
+  G.combo++; G.bestCombo = Math.max(G.bestCombo, G.combo); G.happy++;
+  const fr = clamp(c.p/c.max, 0, 1);
+  const pts = Math.round((10 + Math.ceil(fr*10) + (c.hidden ? 6 : 0)) * mult());
+  G.score += pts;
+  floatText(el, "+" + pts); hearts(el);
+  if (G.combo >= 3){ const cb = $("#combo"); cb.classList.remove("pop"); void cb.offsetWidth; cb.classList.add("pop"); }
+  if (G.combo > 0 && G.combo % 5 === 0){
+    G.cats.forEach(o => { if (o && o !== c && o.state === "waiting") Snd.real("meow2", {vol:.22, rate:o.voice*rand(1.05, 1.2), when:rand(.2, .7)}); });
+    toast(`${G.combo} zufriedene Katzen hintereinander! Der ganze Katzenhof gurrt.`, 2200);
+  }
+  hud();
+  setTimeout(() => leave(c, "happy"), 2300);
+}
+
+function wrong(c){
+  Snd.hiss({dur:.7});
+  const el = c.el;
+  el.classList.add("angry", "shake");
+  setTimeout(() => el.classList.remove("angry", "shake"), 800);
+  c.p = Math.max(.35, c.p - c.max*.25);
+  G.combo = 0;
+  floatText(el, "Pfff!", true);
+  const b = document.querySelector(`.tool[data-tool="${G.tool}"]`);
+  if (b){ b.classList.remove("bad"); void b.offsetWidth; b.classList.add("bad"); }
+  try { navigator.vibrate && navigator.vibrate(60); } catch(e) {}
+  hud();
+}
+
+function timeout(c){
+  c.state = "leaving";
+  c.el.classList.add("angry", "gone");
+  Snd.yowl({p:c.voice, dur:1.1, vol:.5}); talk(c, 1100);
+  G.lives--; G.combo = 0;
+  floatText(c.el, "Beleidigt", true);
+  hud();
+  setTimeout(() => leave(c, "angry"), 900);
+  if (G.lives <= 0){ G.over = true; setTimeout(() => endGame("lives"), 1300); }
+}
+
+function leave(c, how){
+  if (!c.el) return;
+  c.state = "gone";
+  c.el.classList.add("exit-" + how);
+  const el = c.el;
+  setTimeout(() => { el.remove(); if (G && G.cats[c.slot] === c) G.cats[c.slot] = null; }, 650);
+}
+
+/* ---------- Fremder Kater ---------- */
+function startIntruder(){
+  G.intr = {left:5, taps:0};
+  $("#intrCount").textContent = "3";
+  intruderEl.classList.add("show");
+  Snd.growl({dur:1.4, f0:88});
+  Snd.yowl({p:.78, when:1.5, dur:1.7, vol:.45});
+  const waiting = G.cats.filter(c => c && c.state === "waiting");
+  waiting.forEach(c => c.el.classList.add("alert"));
+  if (waiting.length){
+    const c = pick(waiting);
+    Snd.hiss({when:.55, dur:.6, vol:.45});
+    setTimeout(() => { if (c.state === "waiting"){ c.el.classList.add("angry"); setTimeout(() => c.el.classList.remove("angry"), 700); } }, 550);
+  }
+  if (!tips.intr){ tips.intr = true; toast("Ein fremder Kater knurrt am Zaun! Tippe ihn 3× an, bevor deine Katzen sich aufregen.", 3800); }
+}
+function hideIntruder(){ intruderEl.classList.remove("show"); }
+function calmCats(){ G.cats.forEach(c => c && c.el.classList.remove("alert")); }
+intruderEl.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (!G || !G.intr || G.paused) return;
+  Snd.init(); Snd.real("growl", {vol:.35, rate:1.15, dur:.35});
+  G.intr.taps++;
+  intruderEl.classList.remove("flinch"); void intruderEl.offsetWidth; intruderEl.classList.add("flinch");
+  $("#intrCount").textContent = Math.max(0, 3 - G.intr.taps);
+  if (G.intr.taps >= 3){
+    G.intr = null;
+    Snd.hiss({vol:.35, dur:.45, when:.05});
+    hideIntruder(); calmCats();
+    G.score += 25; floatText(intruderEl, "+25"); hud();
+  }
+});
+function intruderWins(){
+  G.intr = null;
+  hideIntruder(); calmCats();
+  Snd.growl({dur:.8, f0:90, vol:.4});
+  const waiting = G.cats.filter(c => c && c.state === "waiting");
+  waiting.forEach(c => { c.p *= .6; });
+  if (waiting.length){ const c = pick(waiting); Snd.hiss({when:.3, dur:.6}); c.el.classList.add("angry"); setTimeout(() => c.el.classList.remove("angry"), 700); }
+  toast("Der Kater ist weg, aber deine Katzen sind jetzt nervös und ungeduldiger.", 2600);
+}
+
+/* ---------- Vögel am Fenster ---------- */
+function flyBird(){
+  const b = $("#bird"); b.classList.remove("fly"); void b.offsetWidth; b.classList.add("fly");
+  const hunter = G.cats.find(c => c && c.state === "waiting" && c.need === "play");
+  if (hunter) setTimeout(() => { if (hunter.state === "waiting"){ Snd.excited({p:hunter.voice, vol:.35, n:1}); talk(hunter, 500); } }, 800);
+}
+
+/* ---------- Ende, Pause ---------- */
+function endGame(reason){
+  if (!G.running) return;
+  G.running = false;
+  cancelAnimationFrame(raf);
+  hideIntruder();
+  let best = 0;
+  try { best = +localStorage.getItem("schnurrzeit-best") || 0; } catch(e) {}
+  const rec = G.score > best;
+  if (rec){ best = G.score; try { localStorage.setItem("schnurrzeit-best", best); } catch(e) {} }
+  if (reason === "time"){
+    Snd.purr({dur:2.3}); Snd.real("meow2", {vol:.35, when:.4}); Snd.chorus({when:1.2});
+    $("#endKicker").textContent = rec ? "Neuer Rekord" : "Runde vorbei";
+    $("#endTitle").textContent = "Feierabend!";
+    $("#endText").textContent = G.happy ? `${G.happy} Katzen gehen satt, gekrault und zufrieden schlafen.` : "Heute ist keine Katze zufrieden eingeschlafen. Probier es gleich nochmal.";
+  } else {
+    Snd.yowl({p:.9, vol:.45}); Snd.hiss({when:1.3, dur:.6, vol:.4});
+    $("#endKicker").textContent = rec ? "Neuer Rekord" : "Runde vorbei";
+    $("#endTitle").textContent = "Beleidigt!";
+    $("#endText").textContent = "Drei Katzen sind fauchend abgezogen. Achte auf den Ring um die Sprechblase: Wird er rot, wird es knapp.";
+  }
+  $("#stScore").textContent = G.score; $("#stBest").textContent = best;
+  $("#stHappy").textContent = G.happy; $("#stCombo").textContent = G.bestCombo;
+  setTimeout(() => { $("#endOv").hidden = false; $("#againBtn").focus(); }, 700);
+}
+function pause(){
+  if (!G || !G.running || G.paused) return;
+  G.paused = true; $("#pauseOv").hidden = false;
+}
+function resume(){
+  if (!G || !G.paused) return;
+  G.paused = false; $("#pauseOv").hidden = true; last = performance.now(); Snd.init();
+}
+document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+$("#resumeBtn").addEventListener("click", resume);
+$("#quitBtn").addEventListener("click", () => { G.paused = false; $("#pauseOv").hidden = true; endGame("time"); });
+$("#startBtn").addEventListener("click", startGame);
+$("#againBtn").addEventListener("click", startGame);
+$("#menuBtn").addEventListener("click", () => { $("#endOv").hidden = true; $("#startOv").hidden = false; });
+document.addEventListener("keydown", e => {
+  if (!G || !G.running) return;
+  const t = Object.entries(TOOLS).find(([, v]) => v.key === e.key);
+  if (t) selectTool(G.tool === t[0] ? null : t[0]);
+  if (e.key === "Escape" || e.key === "p") G.paused ? resume() : pause();
+});
+})();
+</script>
+
+</body>
+</html>
