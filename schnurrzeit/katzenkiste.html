@@ -39,6 +39,8 @@ button:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
 
 #stage{position:relative;flex:1;min-height:0;overflow:hidden}
 #cv{position:absolute;inset:0;display:block;touch-action:none}
+/* iPhone: unsichtbarer Schalter für das Klopfen */
+.hapin{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:.011;z-index:5;touch-action:none;-webkit-tap-highlight-color:transparent}
 #toast{position:absolute;left:16px;right:16px;top:10px;z-index:20;background:var(--paper);border-radius:14px;padding:10px 14px;font-size:14px;font-weight:700;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:drop .3s ease-out}
 
 #ladder{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;align-items:end;padding:8px 12px 12px;background:var(--deep)}
@@ -341,6 +343,31 @@ const renderMute = () => { muteBtn.innerHTML = SND.muted ? ICON.off : ICON.on; m
 renderMute();
 muteBtn.addEventListener("click", () => { SND.unlock(); SND.setMuted(!SND.muted); renderMute(); });
 
+/* ---------- Vibration ----------
+   Android: Vibrations-Schnittstelle des Browsers.
+   iPhone: Seit iOS 26.5 darf eine Webseite das Klopfen nicht mehr selbst auslösen. Es klappt nur, wenn der Finger
+   direkt auf einem Schalter (input type=checkbox switch) landet. Deshalb legt attach() über die Tippflächen einen
+   unsichtbaren Schalter. Auf dem iPhone klopft es also nur bei echten Fingertipps, nicht bei Ereignissen im Spiel. */
+const HAPTIC = (() => {
+  const canVibrate = typeof navigator.vibrate === "function";
+  const PAT = {tick:8, light:12, good:[14, 50, 14], bad:[45, 35, 45], hit:[70, 40, 70], big:[20, 40, 20, 40, 70]};
+  let lastT = 0;
+  function tap(kind = "light"){
+    if (!canVibrate) return;
+    const now = performance.now();
+    if ((kind === "tick" || kind === "light") && now - lastT < 40) return;
+    lastT = now;
+    try { navigator.vibrate(PAT[kind] || 12); } catch(e) {}
+  }
+  function attach(el){
+    if (canVibrate || !el) return null;
+    const i = document.createElement("input");
+    i.type = "checkbox"; i.setAttribute("switch", ""); i.className = "hapin"; i.tabIndex = -1; i.setAttribute("aria-hidden", "true");
+    el.appendChild(i); return i;
+  }
+  return {tap, attach, useSwitches: !canVibrate};
+})();
+
 /* ---------- Startseite: Katzenleiter ---------- */
 const VOICE_TXT = ["empörtes Maunzen","freches Mecker-Miau","kurzes Miau","freches Miau","Miau","ruhiges Miau","langes Miau","tiefes Miau","fordernd, tief","Jaulen und Chor"];
 $("#tiers").innerHTML = TIERS.map((T, i) => `<button class="tier" data-i="${i}"><canvas width="80" height="80"></canvas><span>${i + 1}. ${T.name}<small>${VOICE_TXT[i]}</small></span></button>`).join("");
@@ -441,6 +468,7 @@ function drop(){
   const r = TIERS[G.cur].r;
   makeCat(G.cur, clamp(G.aimX, r + 1, BW - r - 1), HOLD_Y, 0, 1);
   G.cur = G.next; G.next = rollTier(); G.cooldown = .55;
+  HAPTIC.tap("tick");
   drawNext();
 }
 
@@ -452,6 +480,8 @@ function doMerges(){
     G.mergesDone++;
     G.combo = G.time - G.lastMerge < 1.2 ? G.combo + 1 : 1; G.lastMerge = G.time;
     sparks(x, y, TIERS[tier].r, TIERS[tier].fur);
+    // Vibration: kleine Katzen kurz, große deutlicher, Katzenkönig mit Muster
+    HAPTIC.tap(tier >= 7 ? "big" : tier >= 4 ? "good" : "light");
     if (tier === TIERS.length - 1){
       G.score += 1000; addText(x, y, "Katzenparty +1000", "#FFD447", true);
       SND.play("chorus", {vol:.8, dur:3.5}); SND.play("purr", {vol:.9, when:1.5, dur:3});
@@ -496,7 +526,7 @@ function step(dt){
     if (G.time - b.born > 1.4 && b.position.y - TIERS[b.tier].r < DANGER && Math.abs(b.velocity.y) < 2.5){ over = true; b.angry = true; }
   }
   if (over){
-    if (G.danger === 0){ SND.play("hiss", {vol:.7, gap:2.5}); all.forEach(b => { if (!b.angry && Math.random() < .5) b.angry = true; }); }
+    if (G.danger === 0){ SND.play("hiss", {vol:.7, gap:2.5}); HAPTIC.tap("bad"); all.forEach(b => { if (!b.angry && Math.random() < .5) b.angry = true; }); }
     G.danger += dt;
     if (G.danger > 3) gameOver();
   } else G.danger = 0;
@@ -578,6 +608,7 @@ function loop(ts){
 function gameOver(){
   if (G.over) return;
   G.over = true; G.running = false;
+  HAPTIC.tap("hit");
   SND.play("angry1", {vol:.8}); SND.play("yowl1", {vol:.85, when:.6});
   let best = 0; try { best = +localStorage.getItem("katzenkiste-best") || 0; } catch(e) {}
   const rec = G.score > best;
@@ -597,10 +628,14 @@ function resume(){ if (!G || !G.paused) return; G.paused = false; $("#pauseOv").
 /* ---------- Eingabe ---------- */
 const toWorldX = cx => (cx - cv.getBoundingClientRect().left - OX)/SC;
 let aiming = false;
-cv.addEventListener("pointerdown", e => { if (!G || !G.running) return; SND.unlock(); aiming = true; G.aimX = toWorldX(e.clientX); try { cv.setPointerCapture(e.pointerId); } catch(err) {} });
-cv.addEventListener("pointermove", e => { if (!G || !G.running) return; if (aiming || e.pointerType === "mouse") G.aimX = toWorldX(e.clientX); });
-cv.addEventListener("pointerup", e => { if (!aiming) return; aiming = false; G.aimX = toWorldX(e.clientX); drop(); });
-cv.addEventListener("pointercancel", () => { aiming = false; });
+// Eingaben an der Bühne abhören: Auf dem iPhone liegt dort der unsichtbare Schalter über dem Spielfeld.
+// Ein kurzer Tipp (Katze fallen lassen) klopft dann; nach Ziehen zum Zielen lässt iOS kein Klopfen zu.
+const stageEl = $("#stage");
+HAPTIC.attach(stageEl);
+stageEl.addEventListener("pointerdown", e => { if (!G || !G.running) return; SND.unlock(); aiming = true; G.aimX = toWorldX(e.clientX); if (!HAPTIC.useSwitches) try { cv.setPointerCapture(e.pointerId); } catch(err) {} });
+stageEl.addEventListener("pointermove", e => { if (!G || !G.running) return; if (aiming || e.pointerType === "mouse") G.aimX = toWorldX(e.clientX); });
+stageEl.addEventListener("pointerup", e => { if (!aiming) return; aiming = false; G.aimX = toWorldX(e.clientX); drop(); });
+stageEl.addEventListener("pointercancel", () => { aiming = false; });
 document.addEventListener("keydown", e => {
   if (!G || !G.running) return;
   if (e.key === "ArrowLeft") G.aimX -= 20;

@@ -171,6 +171,9 @@ button:focus-visible{outline:3px solid var(--paper);outline-offset:2px}
 .tool.sel{background:var(--mustard);color:var(--ink);transform:translateY(-4px);box-shadow:0 4px 0 var(--mustard-dark)}
 .tool.bad{animation:bad .4s}
 .tool kbd{display:none}
+.tool{position:relative;cursor:pointer;user-select:none;-webkit-user-select:none}
+/* iPhone: unsichtbarer Schalter für das Klopfen */
+.hapin{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:.011;z-index:5;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 /* Overlays */
 .overlay{position:absolute;inset:0;z-index:60;background:rgba(15,32,37,.84);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
@@ -266,7 +269,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
           <div class="hill"></div>
           <div class="tree"></div>
           <div class="bird" id="bird"></div>
-          <button class="intruder" id="intruder" aria-label="Fremden Kater verscheuchen"><span class="intr-count" id="intrCount">3</span></button>
+          <div class="intruder" id="intruder" role="button" aria-label="Fremden Kater verscheuchen"><span class="intr-count" id="intrCount">3</span></div>
           <div class="fence"></div>
         </div>
         <div class="pane-v"></div><div class="pane-h"></div>
@@ -302,6 +305,22 @@ a.btn{display:block;text-align:center;text-decoration:none}
       <div class="rules" id="rules"></div>
       <p class="note">Wähle unten ein Werkzeug und tippe dann auf die Katze. Das Werkzeug bleibt ausgewählt. Zeigt eine Blase nur ein Fragezeichen, musst du den Wunsch am Geräusch erkennen: Tippe auf die Blase, um es nochmal zu hören. Falsches Werkzeug? Dann wird gefaucht.</p>
 
+      <details>
+        <summary>Aufnahmen und Lizenzen</summary>
+        <p>Alle Katzenstimmen sind echte Aufnahmen. Einige spiele ich etwas schneller oder langsamer ab, zum Beispiel das Kätzchen-Mauzen, ein echtes hohes Miauen.</p>
+        <ul>
+          <li>„cat meow“ von tuberatanka (<a href="https://freesound.org/people/tuberatanka/sounds/110011/" target="_blank" rel="noopener">Freesound 110011</a>), „Cat meow“ von philsapphire (<a href="https://freesound.org/people/philsapphire/sounds/256452/" target="_blank" rel="noopener">256452</a>), „Cat meowing x5“ von peridactyloptrix (<a href="https://freesound.org/people/peridactyloptrix/sounds/214759/" target="_blank" rel="noopener">214759</a>), alle CC0</li>
+          <li>„02 Cat Miauing“ von aminut (<a href="https://freesound.org/people/aminut/sounds/177614/" target="_blank" rel="noopener">Freesound 177614</a>), CC0</li>
+          <li>„Cat wants something“ von Jeanine2012 (<a href="https://freesound.org/people/Jeanine2012/sounds/149940/" target="_blank" rel="noopener">Freesound 149940</a>), CC0</li>
+          <li>„Cat Wants Food“ von Oneirophile (<a href="https://freesound.org/people/Oneirophile/sounds/120160/" target="_blank" rel="noopener">Freesound 120160</a>), CC0</li>
+          <li>„Hungry cats“ von missozzy (<a href="https://freesound.org/people/missozzy/sounds/169983/" target="_blank" rel="noopener">Freesound 169983</a>), CC0</li>
+          <li>„catHowling1“, „catHowling2“, „catAttack“ von Zabuhailo (<a href="https://freesound.org/people/Zabuhailo/sounds/146964/" target="_blank" rel="noopener">Freesound 146964</a>, <a href="https://freesound.org/people/Zabuhailo/sounds/146965/" target="_blank" rel="noopener">146965</a>, <a href="https://freesound.org/people/Zabuhailo/sounds/146972/" target="_blank" rel="noopener">146972</a>), CC0</li>
+          <li>„MAD CAT !“ von temawas (<a href="https://freesound.org/people/temawas/sounds/133047/" target="_blank" rel="noopener">Freesound 133047</a>), CC0</li>
+          <li>Schnurren: „Purring cat“ von Mysid (<a href="https://commons.wikimedia.org/wiki/File:Purring_cat.oga" target="_blank" rel="noopener">Wikimedia Commons</a>), gemeinfrei</li>
+          <li>Fauchen: „Cat hissing“ von Zabuhailo (<a href="https://commons.wikimedia.org/wiki/File:Cat_hissing_-_Zabuhailo.wav" target="_blank" rel="noopener">Wikimedia Commons</a>), <a href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank" rel="noopener">CC BY 3.0</a></li>
+        </ul>
+        <p>Gekürzt, gefiltert und in der Lautstärke angeglichen. Freesound-Ausschnitte über den Datensatz <a href="https://github.com/karolpiczak/ESC-50" target="_blank" rel="noopener">ESC-50</a>.</p>
+      </details>
       <div class="foot"><button class="btn" id="startBtn">Spiel starten</button></div>
     </div>
   </section>
@@ -426,7 +445,7 @@ const Snd = (() => {
     if (!noResume && ctx.state === "suspended") ctx.resume();
     return true;
   }
-  // Katzenlaute als Dateien, mit künstlichem Ersatz, falls sie fehlen
+  // Echte Aufnahmen (frei lizenziert), mit künstlichem Ersatz, falls sie fehlen
   const real = {}, REAL = ["demand1","demand2","purr","hiss","growl","yowl1","yowl2","angry1","angry2","meowhigh","meowlong","meowlow","meow1","meow2","meow5","chirp","chorus"];
   let realOk = 0, realDone = 0; const realSubs = [];
   function preload(){
@@ -608,6 +627,31 @@ const Snd = (() => {
 
 Snd.preload();
 
+/* ---------- Vibration ----------
+   Android: Vibrations-Schnittstelle des Browsers.
+   iPhone: Seit iOS 26.5 darf eine Webseite das Klopfen nicht mehr selbst auslösen. Es klappt nur, wenn der Finger
+   direkt auf einem Schalter (input type=checkbox switch) landet. Deshalb legt attach() über die Tippflächen einen
+   unsichtbaren Schalter. Auf dem iPhone klopft es also nur bei echten Fingertipps, nicht bei Ereignissen im Spiel. */
+const HAPTIC = (() => {
+  const canVibrate = typeof navigator.vibrate === "function";
+  const PAT = {tick:8, light:12, good:[14, 50, 14], bad:[45, 35, 45], hit:[70, 40, 70], big:[20, 40, 20, 40, 70]};
+  let lastT = 0;
+  function tap(kind = "light"){
+    if (!canVibrate) return;
+    const now = performance.now();
+    if ((kind === "tick" || kind === "light") && now - lastT < 40) return;
+    lastT = now;
+    try { navigator.vibrate(PAT[kind] || 12); } catch(e) {}
+  }
+  function attach(el){
+    if (canVibrate || !el) return null;
+    const i = document.createElement("input");
+    i.type = "checkbox"; i.setAttribute("switch", ""); i.className = "hapin"; i.tabIndex = -1; i.setAttribute("aria-hidden", "true");
+    el.appendChild(i); return i;
+  }
+  return {tap, attach, useSwitches: !canVibrate};
+})();
+
 /* ---------- Werkzeuge und Wünsche ---------- */
 const TOOLS = {
   food:   {label:"Futter",     key:"1"},
@@ -619,10 +663,11 @@ const NAMES = ["Minka","Mieze","Felix","Luna","Tiger","Kasimir","Pünktchen","Mo
 
 const tray = $("#tray");
 Object.entries(TOOLS).forEach(([id, t]) => {
-  const b = document.createElement("button");
-  b.className = "tool"; b.dataset.tool = id; b.setAttribute("aria-pressed", "false");
+  const b = document.createElement("div");
+  b.className = "tool"; b.dataset.tool = id; b.setAttribute("role", "button"); b.setAttribute("aria-pressed", "false");
   b.innerHTML = `${ICON[id]}<span>${t.label}</span><kbd>${t.key}</kbd>`;
-  b.addEventListener("click", () => selectTool(G && G.tool === id ? null : id));
+  HAPTIC.attach(b);
+  b.addEventListener("click", () => { HAPTIC.tap("tick"); selectTool(G && G.tool === id ? null : id); });
   tray.appendChild(b);
 });
 $("#rules").innerHTML = [
@@ -634,27 +679,27 @@ $("#rules").innerHTML = [
 
 /* ---------- Geräusche-Bibliothek (Startseite) ---------- */
 const LIB = [
-  {id:"miau",  name:"Miauen",   hint:"„Miau!“ für Menschen", expr:"talk",  ms:1200, play:() => Snd.demand(),
+  {id:"miau", src:"echte Aufnahme",  name:"Miauen",   hint:"„Miau!“ für Menschen", expr:"talk",  ms:1200, play:() => Snd.demand(),
    fact:"Erwachsene Katzen miauen fast nur, um mit Menschen zu reden. Untereinander nutzen sie das Miauen kaum. Laut und fordernd heißt es oft: Hunger!"},
-  {id:"purr",  name:"Schnurren", hint:"beim Ein- und Ausatmen", expr:"happy", ms:2000, play:() => Snd.purr(),
+  {id:"purr", src:"echte Aufnahme",  name:"Schnurren", hint:"beim Ein- und Ausatmen", expr:"happy", ms:2000, play:() => Snd.purr(),
    fact:"Schnurren entsteht beim Ein- und Ausatmen, etwa 25 Mal pro Sekunde. Meist heißt es: Mir geht es gut. Manche Katzen beruhigen sich damit aber auch selbst, wenn sie Stress haben."},
-  {id:"long", name:"Langes Miau", hint:"gedehnt und weich", expr:"talk", ms:800, play:() => Snd.real("meowlong", {vol:.55}),
+  {id:"long", src:"echte Aufnahme", name:"Langes Miau", hint:"gedehnt und weich", expr:"talk", ms:800, play:() => Snd.real("meowlong", {vol:.55}),
    fact:"Ein langgezogenes Miauen ist oft eine Bitte um Aufmerksamkeit: Kümmer dich um mich! Im Katzenhof heißt das: Diese Katze will gekrault werden."},
-  {id:"excited", name:"Kurz und hell", hint:"„Mi! Mi!“", expr:"talk", ms:1000, play:() => Snd.excited(),
+  {id:"excited", src:"echte Aufnahme", name:"Kurz und hell", hint:"„Mi! Mi!“", expr:"talk", ms:1000, play:() => Snd.excited(),
    fact:"Kurze, helle Laute sind oft ein freundliches, aufgeregtes Hallo. Viele Katzen werden so gesprächig, wenn sie spielen wollen. Im Katzenhof heißt das: Hol die Federangel."},
-  {id:"hiss",  name:"Fauchen",  hint:"Warnung: Abstand!", expr:"angry", ms:900, play:() => Snd.hiss(),
+  {id:"hiss", src:"echte Aufnahme",  name:"Fauchen",  hint:"Warnung: Abstand!", expr:"angry", ms:900, play:() => Snd.hiss(),
    fact:"Fauchen ist eine Warnung: Komm nicht näher! Dabei liegen die Ohren flach, die Pupillen werden groß und der Schwanz wird buschig."},
-  {id:"growl", name:"Knurren",  hint:"tiefe Drohung", expr:"angry", ms:1400, play:() => Snd.growl(),
+  {id:"growl", src:"echte Aufnahme", name:"Knurren",  hint:"tiefe Drohung", expr:"angry", ms:1400, play:() => Snd.growl(),
    fact:"Tiefes Knurren ist eine ernste Drohung. Man hört es oft, wenn zwei Katzen um ihr Revier oder um Futter streiten."},
-  {id:"mew",   name:"Mauzen",   hint:"hoch, vom Kätzchen", expr:"talk",  ms:1100, play:() => Snd.mew(),
+  {id:"mew", src:"echt, höher abgespielt",   name:"Mauzen",   hint:"hoch, vom Kätzchen", expr:"talk",  ms:1100, play:() => Snd.mew(),
    fact:"Kätzchen rufen mit hohen, dünnen Lauten nach ihrer Mutter, wenn ihnen kalt ist oder sie Hunger haben."},
-  {id:"yowl",  name:"Jaulen",   hint:"lang gezogenes Heulen", expr:"talk", ms:1600, play:() => Snd.yowl(),
+  {id:"yowl", src:"echte Aufnahme",  name:"Jaulen",   hint:"lang gezogenes Heulen", expr:"talk", ms:1600, play:() => Snd.yowl(),
    fact:"Langes Jaulen hört man vor allem nachts, wenn Kater um ihr Revier streiten. Man nennt das auch Katzenkonzert."}
 ];
 const showCat = $("#showCat");
 showCat.innerHTML = `<div class="catbody">${catSVG(COATS[0])}</div>`;
 let showTimer = 0;
-$("#sounds").innerHTML = LIB.map(s => `<button class="snd" data-id="${s.id}">${ICON.sound}<span>${s.name}<small>${s.hint}</small></span></button>`).join("");
+$("#sounds").innerHTML = LIB.map(s => `<button class="snd" data-id="${s.id}">${ICON.sound}<span>${s.name}<small>${s.hint}</small><em class="src${s.src === "nachgebaut" ? " synth" : ""}">${s.src}</em></span></button>`).join("");
 $("#sounds").addEventListener("click", e => {
   const b = e.target.closest(".snd"); if (!b) return;
   const s = LIB.find(x => x.id === b.dataset.id);
@@ -805,7 +850,12 @@ function spawnCat(){
   el.className = "cat enter" + (kitten ? " kitten" : "");
   el.style.setProperty("--bd", (-Math.random()*5).toFixed(2) + "s");
   el.innerHTML = `<div class="bubble${hidden ? " hidden-need" : ""}"><svg class="ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" class="rb"/><circle cx="28" cy="28" r="25" class="rf"/></svg><div class="ico">${hidden ? ICON.sound + '<span class="q">?</span>' : ICON[need]}</div></div><div class="catbody">${catSVG(c.coat)}</div><div class="prop"></div><span class="name">${name}</span>`;
-  el.addEventListener("pointerdown", e => { e.preventDefault(); tapCat(c, !!e.target.closest(".bubble")); });
+  HAPTIC.attach(el);
+  el.addEventListener("pointerdown", e => {
+    if (!HAPTIC.useSwitches) e.preventDefault();   // iPhone: Tipp muss den Schalter erreichen
+    const br = c.bubble.getBoundingClientRect();
+    tapCat(c, e.clientX >= br.left && e.clientX <= br.right && e.clientY >= br.top && e.clientY <= br.bottom);
+  });
   slots[slot].appendChild(el);
   c.el = el; c.bubble = el.querySelector(".bubble"); c.rf = el.querySelector(".rf");
   setTimeout(() => el.classList.remove("enter"), 520);
@@ -859,6 +909,7 @@ function makeHappy(c){
     case "basket": Snd.purr({rate:28, tone:230, vol:.45, dur:1.7}); Snd.mew({p, count:1, when:1.25, vol:.22}); break;
   }
   G.combo++; G.bestCombo = Math.max(G.bestCombo, G.combo); G.happy++;
+  HAPTIC.tap("good");
   const fr = clamp(c.p/c.max, 0, 1);
   const pts = Math.round((10 + Math.ceil(fr*10) + (c.hidden ? 6 : 0)) * mult());
   G.score += pts;
@@ -882,7 +933,7 @@ function wrong(c){
   floatText(el, "Pfff!", true);
   const b = document.querySelector(`.tool[data-tool="${G.tool}"]`);
   if (b){ b.classList.remove("bad"); void b.offsetWidth; b.classList.add("bad"); }
-  try { navigator.vibrate && navigator.vibrate(60); } catch(e) {}
+  HAPTIC.tap("bad");
   hud();
 }
 
@@ -891,6 +942,7 @@ function timeout(c){
   c.el.classList.add("angry", "gone");
   Snd.yowl({p:c.voice, dur:1.1, vol:.5}); talk(c, 1100);
   G.lives--; G.combo = 0;
+  HAPTIC.tap("hit");
   floatText(c.el, "Beleidigt", true);
   hud();
   setTimeout(() => leave(c, "angry"), 900);
@@ -923,11 +975,12 @@ function startIntruder(){
 }
 function hideIntruder(){ intruderEl.classList.remove("show"); }
 function calmCats(){ G.cats.forEach(c => c && c.el.classList.remove("alert")); }
+HAPTIC.attach(intruderEl);
 intruderEl.addEventListener("pointerdown", e => {
-  e.preventDefault();
+  if (!HAPTIC.useSwitches) e.preventDefault();
   if (!G || !G.intr || G.paused) return;
   Snd.init(); Snd.real("growl", {vol:.35, rate:1.15, dur:.35});
-  G.intr.taps++;
+  G.intr.taps++; HAPTIC.tap(G.intr.taps >= 3 ? "good" : "light");
   intruderEl.classList.remove("flinch"); void intruderEl.offsetWidth; intruderEl.classList.add("flinch");
   $("#intrCount").textContent = Math.max(0, 3 - G.intr.taps);
   if (G.intr.taps >= 3){
@@ -960,6 +1013,7 @@ function endGame(reason){
   G.running = false;
   cancelAnimationFrame(raf);
   hideIntruder();
+  HAPTIC.tap(reason === "time" ? "big" : "hit");
   let best = 0;
   try { best = +localStorage.getItem("schnurrzeit-best") || 0; } catch(e) {}
   const rec = G.score > best;
