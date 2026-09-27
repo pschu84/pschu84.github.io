@@ -77,6 +77,10 @@ h3{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;c
 .snd small{display:block;font-size:11.5px;font-weight:700;color:var(--muted)}
 .snd svg{width:22px;height:22px;color:var(--wall)}
 .snd.on{background:var(--mustard)}
+.tog{display:flex;align-items:center;gap:8px;margin-top:10px;border:0;border-radius:12px;background:var(--paper-2);color:var(--ink);padding:8px 12px;font-size:14px;font-weight:800}
+.tog svg{width:20px;height:20px;color:var(--wall)}
+.tog[aria-pressed="true"]{background:#DCEBD8}
+.tog small{font-size:12px;font-weight:700;color:var(--muted)}
 .snd.on svg{color:var(--ink)}
 details{margin-top:16px;font-size:12.5px;line-height:1.5;color:var(--muted)}
 summary{font-weight:800;color:var(--deep);cursor:pointer;font-size:13px}
@@ -125,8 +129,9 @@ a.btn{display:block;text-align:center;text-decoration:none}
       <a class="home" href="./">‹ Alle Spiele</a>
       <div class="kicker">Spiel 2 von 3 · Demo</div>
       <h1>Mäusejagd</h1>
-      <p class="lead">Deine Katze jagt durch Küche, Keller und Garten. Schnapp dir die Mäuse, spring über Hindernisse und hör auf die Warnungen: Wer faucht, hat eine Gurke gesehen.</p>
+      <p class="lead">Deine Katze jagt durch Küche, Keller und Garten. Schnapp dir die Mäuse, spring über Hindernisse und weich den Gurken aus. Ein Knurren warnt dich vor fremden Katern.</p>
       <span class="real wait" id="loadState"><i></i><span>Lade echte Katzenaufnahmen …</span></span>
+      <button class="tog musicTog" aria-pressed="true"></button>
 
       <h3>So jagst du</h3>
       <div class="how" id="how"></div>
@@ -148,7 +153,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
           <li>Schnurren: „Purring cat“ von Mysid (<a href="https://commons.wikimedia.org/wiki/File:Purring_cat.oga" target="_blank" rel="noopener">Wikimedia Commons</a>), gemeinfrei</li>
           <li>Fauchen: „Cat hissing“ von Zabuhailo (<a href="https://commons.wikimedia.org/wiki/File:Cat_hissing_-_Zabuhailo.wav" target="_blank" rel="noopener">Wikimedia Commons</a>), <a href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank" rel="noopener">CC BY 3.0</a></li>
         </ul>
-        <p>Die Freesound-Ausschnitte stammen aus dem Datensatz <a href="https://github.com/karolpiczak/ESC-50" target="_blank" rel="noopener">ESC-50</a> von Karol J. Piczak. Schnurren und Fauchen in vorgeschnittener Form stammen aus dem Projekt <a href="https://github.com/hfgong/bark" target="_blank" rel="noopener">bark</a>.</p>
+        <p>Die Freesound-Ausschnitte stammen aus dem Datensatz <a href="https://github.com/karolpiczak/ESC-50" target="_blank" rel="noopener">ESC-50</a> von Karol J. Piczak. Schnurren und Fauchen in vorgeschnittener Form stammen aus dem Projekt <a href="https://github.com/hfgong/bark" target="_blank" rel="noopener">bark</a>. Musik und Einsammel-Klänge werden direkt im Browser erzeugt.</p>
       </details>
 
       <div class="foot"><button class="btn" id="startBtn">Jagd starten</button></div>
@@ -178,6 +183,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
     <div class="sheet">
       <div class="kicker">Pause</div>
       <h2>Die Katze putzt sich</h2>
+      <button class="tog musicTog" aria-pressed="true"></button>
       <div class="foot"><button class="btn" id="resumeBtn">Weiter</button><button class="btn ghost" id="quitBtn">Jagd beenden</button></div>
     </div>
   </section>
@@ -255,12 +261,164 @@ const SND = (() => {
     const t = now + when;
     s.start(t, offset);
     if (dur){ g.gain.setValueAtTime(vol, t + Math.max(0, dur - .15)); g.gain.linearRampToValueAtTime(0.0001, t + dur); s.stop(t + dur + .02); }
+    if (onPlay) onPlay(when);
     return buf[name].duration;
   }
+  let onPlay = null;
   const meow = (o = {}) => play(pick(["meow1","meow2","meow3","meow4","meow5"]), {rate:rand(.94,1.08), ...o});
   function setMuted(m){ muted = m; if (out) out.gain.value = m ? 0 : 1; }
-  return {load, unlock, play, meow, setMuted, onProgress:f => listeners.push(f), get muted(){ return muted; }};
+  return {load, unlock, play, meow, setMuted, onProgress:f => listeners.push(f), get muted(){ return muted; },
+          get ctx(){ return ctx; }, get out(){ return out; }, set onPlay(f){ onPlay = f; }};
 })();
+
+/* ---------- Vibration ----------
+   Android: Vibrations-Schnittstelle des Browsers.
+   iPhone: Safari kennt sie nicht. Ab iOS 18 klopft das Umschalten eines Schalter-Kästchens kurz, das nutzen wir unsichtbar. */
+const HAPTIC = (() => {
+  const canVibrate = typeof navigator.vibrate === "function";
+  let label = null, lastT = 0;
+  if (!canVibrate){
+    label = document.createElement("label"); label.setAttribute("aria-hidden", "true");
+    label.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none";
+    const inp = document.createElement("input"); inp.type = "checkbox"; inp.setAttribute("switch", ""); inp.tabIndex = -1;
+    label.appendChild(inp); document.body.appendChild(label);
+  }
+  function tap(kind = "light"){
+    const now = performance.now();
+    if (kind === "light" && now - lastT < 60) return;
+    lastT = now;
+    if (canVibrate){ try { navigator.vibrate(kind === "good" ? [14, 50, 14] : kind === "bad" ? [70, 40, 70] : 12); } catch(e) {} }
+    else if (label){ label.click(); if (kind !== "light") setTimeout(() => label.click(), 110); }
+  }
+  return {tap};
+})();
+
+/* ---------- Bestätigungs-Klang beim Einsammeln ----------
+   Weicher Glockenton, der bei einer Serie Stufe für Stufe höher klettert (Pentatonik, klingt immer harmonisch). */
+const FX = (() => {
+  const PENTA = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21];
+  const mtof = m => 440*Math.pow(2, (m - 69)/12);
+  function bell(f, t, vol, dec){
+    const ctx = SND.ctx, out = SND.out;
+    const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), g1 = ctx.createGain(), g2 = ctx.createGain();
+    o1.type = "sine"; o1.frequency.value = f;
+    o2.type = "sine"; o2.frequency.value = f*3.01;
+    g1.gain.setValueAtTime(0, t); g1.gain.linearRampToValueAtTime(vol, t + .004); g1.gain.exponentialRampToValueAtTime(.0008, t + dec);
+    g2.gain.setValueAtTime(0, t); g2.gain.linearRampToValueAtTime(vol*.28, t + .002); g2.gain.exponentialRampToValueAtTime(.0008, t + dec*.3);
+    o1.connect(g1); o2.connect(g2); g1.connect(out); g2.connect(out);
+    o1.start(t); o2.start(t); o1.stop(t + dec + .05); o2.stop(t + dec + .05);
+  }
+  function pickup(type, combo, pounce){
+    const ctx = SND.ctx; if (!ctx || SND.muted) return;
+    const t = ctx.currentTime + .005;
+    const base = 72 + PENTA[Math.min(Math.max(combo - 1, 0), PENTA.length - 1)];
+    if (type === "mouse"){
+      bell(mtof(base), t, .32, .28);
+      if (pounce) bell(mtof(base + 12), t + .07, .2, .3);
+    } else if (type === "yarn"){
+      bell(mtof(base), t, .3, .3); bell(mtof(base + 7), t + .08, .28, .4);
+    } else {
+      bell(mtof(base), t, .3, .3); bell(mtof(base + 4), t + .08, .28, .3); bell(mtof(base + 7), t + .16, .3, .5);
+    }
+  }
+  return {pickup};
+})();
+
+/* ---------- Hintergrundmusik ----------
+   Wird live im Browser erzeugt, keine Datei nötig. Jede Zone hat ihr eigenes Stück,
+   das Tempo zieht mit der Laufgeschwindigkeit leicht an. */
+const MUSIC = (() => {
+  let on = true; try { on = localStorage.getItem("maeusejagd-music") !== "0"; } catch(e) {}
+  const VOL = .25;
+  let bus = null, timer = 0, next = 0, step = 0, zone = 0, wantZone = 0, playing = false, tempo = 1, noise = null;
+  const mtof = m => 440*Math.pow(2, (m - 69)/12);
+  const _ = null;
+  const SONGS = [
+    { // Küche: verspieltes Pizzicato in C-Dur
+      bpm:132, lead:"pluck", cut:2600, roots:[48,45,41,43], chords:[[0,4,7],[0,3,7],[0,4,7],[0,4,7]],
+      mel:[[72,_,76,79,_,76,74,_],[72,_,69,72,76,_,_,_],[77,_,76,74,72,_,69,_],[71,74,_,79,_,77,74,71]],
+      bass:[0,_,7,_,12,_,7,_], stab:[_,_,1,_,_,_,1,_], perc:"shaker"
+    },
+    { // Keller: schleichend in a-Moll
+      bpm:116, lead:"pluck", cut:1500, roots:[45,45,41,40], chords:[[0,3,7],[0,3,7],[0,4,7],[0,4,7]],
+      mel:[[69,_,72,_,71,_,69,_],[_,64,_,69,72,76,_,_],[77,_,76,_,72,_,69,_],[68,_,71,_,74,_,76,_]],
+      bass:[0,_,_,0,_,_,7,_], stab:[_,_,1,_,_,_,1,_], perc:"click"
+    },
+    { // Garten bei Nacht: ruhige Glöckchen in F-Dur
+      bpm:104, lead:"bell", cut:3000, roots:[41,38,46,48], chords:[[0,4,7],[0,3,7],[0,4,7],[0,4,7]],
+      mel:[[81,_,_,77,_,72,_,_],[74,_,77,_,81,_,_,_],[82,_,81,_,77,_,74,_],[72,_,76,_,79,_,_,_]],
+      bass:[0,_,_,_,7,_,_,_], stab:[_,_,_,_,_,_,_,_], perc:"soft"
+    }
+  ];
+  function env(g, t, vol, dec, att = .005){ g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + att); g.gain.exponentialRampToValueAtTime(.0008, t + dec); }
+  function osc(type, f, t, dec, vol, filt){
+    const ctx = SND.ctx, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = f; env(g, t, vol, dec);
+    if (filt){ const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = filt; lp.Q.value = 1.5; o.connect(lp); lp.connect(g); } else o.connect(g);
+    g.connect(bus); o.start(t); o.stop(t + dec + .05);
+  }
+  function hit(t, hp, bp, vol, dec){
+    const ctx = SND.ctx;
+    if (!noise){ noise = ctx.createBuffer(1, ctx.sampleRate*.2, ctx.sampleRate); const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; }
+    const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = noise; f.type = bp ? "bandpass" : "highpass"; f.frequency.value = bp || hp; if (bp) f.Q.value = 4;
+    env(g, t, vol, dec, .002); s.connect(f); f.connect(g); g.connect(bus); s.start(t); s.stop(t + dec + .05);
+  }
+  function schedule(st, t, len){
+    const S = SONGS[zone], bar = Math.floor(st/8) % 4, e = st % 8, loop = Math.floor(st/32) % 4, root = S.roots[bar];
+    // Bass
+    if (S.bass[e] != null) osc("sawtooth", mtof(root + S.bass[e]), t, len*1.6, .42, 650);
+    // Begleitakkorde
+    if (S.stab[e]) for (const iv of S.chords[bar]) osc("triangle", mtof(root + 12 + iv), t, .14, .07, 1800);
+    // Melodie mit kleinen Variationen je Durchgang
+    const m = S.mel[bar][e];
+    const rest = loop === 2 && bar < 2;
+    if (m != null && !rest){
+      if (S.lead === "bell"){ osc("sine", mtof(m), t, 1.1, .28); osc("sine", mtof(m)*3.01, t, .25, .05); }
+      else osc("triangle", mtof(m), t, .26, .34, S.cut);
+      if (loop === 1) S.lead === "bell" ? osc("sine", mtof(m), t + len, .8, .1) : osc("triangle", mtof(m), t + len, .2, .12, S.cut);
+      if (loop === 3 && S.lead !== "bell") osc("triangle", mtof(m + 12), t, .18, .08, S.cut*1.5);
+    }
+    // Schlagwerk
+    if (S.perc === "shaker") hit(t, 7000, 0, e % 2 ? .07 : .035, .05);
+    else if (S.perc === "click"){ if (e === 2 || e === 6) hit(t, 0, 1900, .12, .035); if (e % 2) hit(t, 8000, 0, .025, .03); }
+    else if (e === 4) hit(t, 8000, 0, .03, .08);
+  }
+  function tick(){
+    const ctx = SND.ctx; if (!ctx || !playing) return;
+    while (next < ctx.currentTime + .15){
+      if (step % 8 === 0 && wantZone !== zone){ zone = wantZone; step = 0; }
+      const len = 60/(SONGS[zone].bpm*tempo)/2;
+      schedule(step, next, len);
+      next += len; step++;
+    }
+  }
+  function start(z, fresh = true){
+    const ctx = SND.ctx; if (!on || !ctx || playing) return;
+    if (!bus){ bus = ctx.createGain(); bus.gain.value = .0001; bus.connect(SND.out); }
+    if (fresh){ step = 0; tempo = 1; }
+    if (z != null){ zone = wantZone = z; }
+    const now = ctx.currentTime;
+    bus.gain.cancelScheduledValues(now); bus.gain.setValueAtTime(.0001, now); bus.gain.exponentialRampToValueAtTime(VOL, now + .6);
+    next = now + .08; playing = true;
+    clearInterval(timer); timer = setInterval(tick, 25); tick();
+  }
+  function stop(fade = .3){
+    const ctx = SND.ctx; clearInterval(timer); if (!playing || !ctx || !bus) { playing = false; return; }
+    playing = false;
+    const now = ctx.currentTime;
+    bus.gain.cancelScheduledValues(now); bus.gain.setValueAtTime(Math.max(.0001, bus.gain.value), now); bus.gain.exponentialRampToValueAtTime(.0001, now + fade);
+  }
+  // Wenn eine Katze etwas sagt, wird die Musik kurz leiser
+  function duck(when = 0){
+    const ctx = SND.ctx; if (!playing || !bus || !ctx) return;
+    const t = ctx.currentTime + when;
+    bus.gain.cancelScheduledValues(ctx.currentTime); bus.gain.setTargetAtTime(VOL*.4, t, .04); bus.gain.setTargetAtTime(VOL, t + .9, .3);
+  }
+  return {start, stop, duck, setZone:z => wantZone = z, setTempo:k => tempo = k,
+          get on(){ return on; }, set on(v){ on = v; try { localStorage.setItem("maeusejagd-music", v ? "1" : "0"); } catch(e) {} }};
+})();
+SND.onPlay = when => MUSIC.duck(when);
 SND.onProgress((ok, bad, all) => {
   const el = $("#loadState");
   if (ok + bad < all){ el.className = "real wait"; el.lastChild.textContent = `Lade echte Katzenaufnahmen … ${ok} von ${all}`; return; }
@@ -274,12 +432,16 @@ const muteBtn = $("#muteBtn");
 function renderMute(){ muteBtn.innerHTML = SND.muted ? ICON.off : ICON.on; muteBtn.setAttribute("aria-label", SND.muted ? "Ton an" : "Ton aus"); }
 renderMute();
 muteBtn.addEventListener("click", () => { SND.unlock(); SND.setMuted(!SND.muted); renderMute(); });
+const NOTE = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17.5a3 3 0 1 1-2-2.83V5l12-2v11.5a3 3 0 1 1-2-2.83V7.3L9 8.6z"/></svg>`;
+function renderMusic(){ document.querySelectorAll(".musicTog").forEach(b => { b.setAttribute("aria-pressed", MUSIC.on); b.innerHTML = NOTE + (MUSIC.on ? "Musik an <small>antippen zum Ausschalten</small>" : "Musik aus <small>antippen zum Einschalten</small>"); }); }
+renderMusic();
+document.querySelectorAll(".musicTog").forEach(b => b.addEventListener("click", () => { SND.unlock(); MUSIC.on = !MUSIC.on; if (!MUSIC.on) MUSIC.stop(.2); renderMusic(); }));
 
 const LIB = [
   {id:"meow1",   name:"Miauen",        where:"Maus geschnappt", o:{}},
   {id:"demand1", name:"Futter-Miau",   where:"Jagd startet",    o:{}},
   {id:"purr",    name:"Schnurren",     where:"Wollknäuel, Fisch", o:{dur:2.6}},
-  {id:"hiss",    name:"Fauchen",       where:"Gurke in Sicht",  o:{}},
+  {id:"hiss",    name:"Fauchen",       where:"Gurke berührt",   o:{}},
   {id:"growl",   name:"Knurren",       where:"fremder Kater",   o:{}},
   {id:"angry1",  name:"Wütend",        where:"Zusammenstoß",    o:{}},
   {id:"screech", name:"Kreischen",     where:"Treffer",         o:{}},
@@ -502,6 +664,7 @@ function startGame(){
   ["#startOv","#endOv","#pauseOv"].forEach(s => $(s).hidden = true);
   hud(); showBanner(0);
   SND.play("demand1", {vol:.9});
+  MUSIC.stop(.05); MUSIC.start(0, true);
   cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(loop);
 }
 function showBanner(z){
@@ -530,8 +693,6 @@ function spawnRow(){
     const q = Math.random();
     const type = q < .45 ? "cucumber" : q < .7 ? "puddle" : "block";
     G.ents.push({type, lane:l, x:laneX(l), y:-40*S, tx:laneX(l), zone:G.zone});
-    // Fauchen nur als Warnung, wenn die Gurke auf der eigenen Spur liegt
-    if (type === "cucumber" && l === G.cat.lane && SND.play("hiss", {vol:.5, gap:3.5, rate:rand(.95,1.05)})) G.cat.scared = .9;
   }
   if (free.length && Math.random() < .75){
     const l = pick(free), q = Math.random();
@@ -559,12 +720,16 @@ function hit(e, what){
   const c = G.cat;
   if (c.inv > 0) return;
   G.lives--; G.combo = 0; c.inv = 1.4; G.shake = .35;
-  SND.play("screech", {vol:.8, rate:rand(.95,1.05)});
-  if (what === "rival") SND.play("angry1", {vol:.9, when:.25});
-  else if (what === "puddle") SND.play("angry2", {vol:.9, when:.2});
-  else SND.play(pick(["angry1","angry2"]), {vol:.8, when:.25});
+  // Gurke: Fauchen, danach das wütende Miauen. Alles andere: Kreischen plus passender Laut.
+  if (what === "cucumber"){ c.scared = 1; SND.play("hiss", {vol:.85, rate:rand(.97,1.03)}); SND.play("angry1", {vol:.9, when:.5}); }
+  else {
+    SND.play("screech", {vol:.8, rate:rand(.95,1.05)});
+    if (what === "rival") SND.play("angry1", {vol:.9, when:.25});
+    else if (what === "puddle") SND.play("angry2", {vol:.9, when:.2});
+    else SND.play(pick(["angry1","angry2"]), {vol:.8, when:.25});
+  }
   addText(c.x, catY() - 60*S, what === "puddle" ? "Igitt, nass!" : what === "cucumber" ? "Eine Gurke!" : what === "rival" ? "Rauferei!" : "Autsch!", "#FFD2C8", true);
-  try { navigator.vibrate && navigator.vibrate(80); } catch(err) {}
+  HAPTIC.tap("bad");
   hud();
   if (G.lives <= 0){ G.over = true; setTimeout(gameOver, 900); }
 }
@@ -586,6 +751,7 @@ function collect(e){
     puff(e.x, e.y, "#C8E0EE");
   }
   G.combo++; G.bestCombo = Math.max(G.bestCombo, G.combo);
+  FX.pickup(e.type, G.combo, pounce); HAPTIC.tap(e.type === "mouse" ? "light" : "good");
   if (G.combo > 0 && G.combo % 15 === 0) SND.play("purr", {vol:.7, dur:1.8, when:.2, calm:3});
   pts = Math.round(pts*mult());
   G.score += pts;
@@ -602,7 +768,8 @@ function update(dt){
   G.score += dy/(40*S)*.5;
 
   const z = Math.floor(G.t/30) % 3;
-  if (z !== G.zone){ G.prevZone = G.zone; G.zone = z; G.fade = 1; showBanner(z); SND.play("yowl2", {vol:.55, dur:1.5, calm:2}); }
+  if (z !== G.zone){ G.prevZone = G.zone; G.zone = z; G.fade = 1; showBanner(z); MUSIC.setZone(z); SND.play("yowl2", {vol:.55, dur:1.5, calm:2}); }
+  MUSIC.setTempo(1 + Math.min(.14, G.t/450));
   if (G.fade > 0) G.fade = Math.max(0, G.fade - dt*1.2);
 
   G.nextRow -= dy;
@@ -682,7 +849,7 @@ function drawFrame(t){
 }
 
 function loop(ts){
-  const dt = Math.min(.04, (ts - last)/1000); last = ts;
+  const dt = clamp((ts - last)/1000, 0, .04); last = ts; // nie negativ: sonst Absturz beim ersten Bild
   if (G && G.running && !G.paused && !G.over) update(dt);
   drawFrame(ts/1000);
   if (G && G.running) raf = requestAnimationFrame(loop);
@@ -691,6 +858,7 @@ function loop(ts){
 function gameOver(){
   if (!G.running) return;
   G.running = false;
+  MUSIC.stop(1.2);
   SND.play("yowl1", {vol:.9});
   let best = 0;
   try { best = +localStorage.getItem("maeusejagd-best") || 0; } catch(e) {}
@@ -703,8 +871,8 @@ function gameOver(){
   $("#stMice").textContent = G.mice; $("#stDist").textContent = Math.floor(G.meters) + " m";
   setTimeout(() => { $("#endOv").hidden = false; $("#againBtn").focus(); }, 900);
 }
-function pause(){ if (!G || !G.running || G.paused || G.over) return; G.paused = true; $("#pauseOv").hidden = false; }
-function resume(){ if (!G || !G.paused) return; G.paused = false; $("#pauseOv").hidden = true; last = performance.now(); SND.unlock(); }
+function pause(){ if (!G || !G.running || G.paused || G.over) return; G.paused = true; MUSIC.stop(.25); $("#pauseOv").hidden = false; }
+function resume(){ if (!G || !G.paused) return; G.paused = false; $("#pauseOv").hidden = true; last = performance.now(); SND.unlock(); MUSIC.start(null, false); }
 
 /* ---------- Steuerung ---------- */
 function move(d){ if (!G || !G.running || G.paused || G.over) return; G.cat.lane = clamp(G.cat.lane + d, 0, 2); }
@@ -745,7 +913,7 @@ $("#menuBtn").addEventListener("click", () => { $("#endOv").hidden = true; $("#s
 /* ---------- Anleitung mit Mini-Zeichnungen ---------- */
 const HOW = [
   ["mouse",    "<b>Mäuse schnappen.</b> Wischen oder die Pfeile wechseln die Spur. Fängst du eine Maus im Sprung, zählt sie doppelt."],
-  ["cucumber", "<b>Gurken meiden.</b> Katzen erschrecken vor ihnen. Hörst du ein Fauchen, rollt gleich eine auf deine Spur zu."],
+  ["cucumber", "<b>Gurken meiden.</b> Katzen erschrecken vor ihnen. Berührst du eine, faucht deine Katze und du verlierst ein Leben."],
   ["rival",    "<b>Fremder Kater!</b> Ein Knurren warnt dich. Er läuft auf deine Spur zu: rechtzeitig ausweichen oder drüberspringen."],
   ["yarn",     "<b>Wollknäuel und Fisch</b> bringen Extrapunkte und Schnurren. Ein Fisch gibt ein verlorenes Leben zurück."]
 ];
