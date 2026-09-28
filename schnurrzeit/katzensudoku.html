@@ -314,9 +314,31 @@ const SND = (() => {
     s.buffer = noise; f.type = "bandpass"; f.frequency.value = freq; f.Q.value = 1.2;
     env(g, t, vol, dec, .001); s.connect(f); f.connect(g); g.connect(out); s.start(t); s.stop(t + dec + .02);
   }
+  // Wusch aus der Mäusejagd: gefiltertes Rauschen, dessen Bandpass von tief nach hoch gleitet
+  let wnoise = null;
+  function swoosh(t, f0, f1, dur, vol, pan){
+    if (!wnoise){ wnoise = ctx.createBuffer(1, Math.floor(ctx.sampleRate*.5), ctx.sampleRate); const d = wnoise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1; }
+    const src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = wnoise; bp.type = "bandpass"; bp.Q.value = 1.4;
+    bp.frequency.setValueAtTime(f0, t); bp.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + dur*.35); g.gain.exponentialRampToValueAtTime(.0008, t + dur);
+    src.connect(bp); bp.connect(g);
+    if (pan && ctx.createStereoPanner){ const p = ctx.createStereoPanner(); p.pan.value = pan; g.connect(p); p.connect(out); } else g.connect(out);
+    src.start(t, Math.random()*.2); src.stop(t + dur + .05);
+  }
   function tick(kind = "set", step = 0){
     if (muted || !ctx) return;
-    const now = ctx.currentTime; if (now - lastTick < .035) return; lastTick = now;
+    const now = ctx.currentTime; if (now - lastTick < (kind === "set" ? .06 : .035)) return; lastTick = now;
+    // Kreuz setzen: dasselbe weiche "Wusch" wie beim Spurwechsel in der Mäusejagd (plus leiser Pfotentapser)
+    if (kind === "set"){
+      const t = now + .005;
+      swoosh(t, 700, 1800, .16, .32, 0);
+      const o = ctx.createOscillator(), g = ctx.createGain(), tt = t + .1;
+      o.type = "sine"; o.frequency.setValueAtTime(220, tt); o.frequency.exponentialRampToValueAtTime(140, tt + .05);
+      g.gain.setValueAtTime(0, tt); g.gain.linearRampToValueAtTime(.12, tt + .006); g.gain.exponentialRampToValueAtTime(.0008, tt + .05);
+      o.connect(g); g.connect(out); o.start(tt); o.stop(tt + .08);
+      return;
+    }
     // Echte Klick-Aufnahme (sounds/kreuz.mp3), beim Wischen Stufe für Stufe etwas höher, beim Entfernen tiefer
     if (buf.kreuz){
       const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = buf.kreuz;
