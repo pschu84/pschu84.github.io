@@ -4,15 +4,285 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Italiano Vokabeltrainer</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-<style>* { box-sizing: border-box; margin: 0; padding: 0; } body { background: #FAF8F3; }</style>
+<script src="lib/react/react.production.min.js"></script>
+<script src="lib/react/react-dom.production.min.js"></script>
+<script src="lib/babel/babel.min.js"></script>
+<script src="italiano-vokabeln-a1.js"></script>
+<script src="italiano-vokabeln-a2.js"></script>
+<script src="italiano-vokabeln-b1.js"></script>
+<script src="italiano-vokabeln-b2.js"></script>
+<link rel="stylesheet" href="fonts/fonts.css">
+<script src="lib/confetti/confetti.browser.min.js"></script>
+<style>
+:root{
+  --bg:#FBF6EC; --paper:#FFFDF8; --ink:#2B2A26; --muted:#7A7366; --soft:#A79F90; --line:#EADFC9;
+  --verde:#2F7D4F; --verde-d:#1F5A38; --verde-l:#E1F1E6;
+  --rosso:#C2412D; --rosso-l:#FBE7E2;
+  --oro:#9A6F12; --oro-l:#FBF0D6; --oro-b:#E9CF8A;
+  --viola:#6B4BA0; --viola-l:#EFE8F9; --viola-b:#CDB8EC;
+  --rosa:#B04A72; --rosa-l:#FCEBF2; --rosa-b:#EBB6CB;
+  --shadow:0 1px 2px rgba(60,40,10,.06),0 8px 24px rgba(60,40,10,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;
+  background-image:radial-gradient(circle at 12% 0%,rgba(47,125,79,.08),transparent 40%),radial-gradient(circle at 92% 8%,rgba(194,65,45,.07),transparent 38%);
+  background-attachment:fixed;min-height:100vh}
+button{font:inherit;color:inherit}
+.wrap{max-width:540px;margin:0 auto;padding:16px 16px 8px}
+
+/* Kopf */
+.hero{position:relative;background:var(--paper);border-radius:22px;padding:22px 18px 18px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
+.flag{position:absolute;inset:0 0 auto 0;height:6px;display:flex}
+.flag i{flex:1}.flag i:nth-child(1){background:var(--verde)}.flag i:nth-child(2){background:#fff}.flag i:nth-child(3){background:var(--rosso)}
+.hero h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:26px;line-height:1.15;color:var(--verde-d);text-align:center;margin-bottom:14px;letter-spacing:-.01em}
+.hero h1 em{display:block;font-style:italic;font-weight:400;font-size:17px;color:var(--rosso)}
+.goal{display:flex;align-items:center;gap:16px}
+.hero.compact{padding:16px 16px 12px}.hero.compact .goal{display:none}.hero.compact h1{margin:0;font-size:21px}.hero.compact h1 em{display:inline;font-size:15px;margin-left:6px}
+.ring-wrap{position:relative;flex:none}
+.ring-fill{transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)}
+.ring-pct{position:absolute;inset:0;display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:700;font-size:21px;color:var(--verde-d)}
+.goal-text{font-size:14px;color:var(--muted);flex:1}
+.goal-text b{color:var(--ink);font-size:17px}
+.io{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.chip{font-size:12px;padding:6px 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--bg);cursor:pointer;transition:background .2s,transform .15s}
+.chip:hover{background:var(--verde-l)}.chip:active{transform:scale(.96)}
+.import-msg{font-size:12px;color:var(--verde);margin-top:6px}
+
+/* Modus-Auswahl */
+.sec-title{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 2px 8px}
+.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.mode{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:12px 6px;border-radius:16px;border:2px solid var(--line);background:var(--paper);cursor:pointer;transition:all .25s cubic-bezier(.2,.8,.2,1)}
+.mode:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.mode.active{border-color:var(--verde);background:var(--verde-l);box-shadow:0 0 0 3px rgba(47,125,79,.15)}
+.mode-icon{font-size:24px;transition:transform .3s}
+.mode.active .mode-icon{transform:scale(1.15) rotate(-6deg)}
+.mode-name{font-weight:800;font-size:12.5px;line-height:1.2}
+.mode-sub{font-size:10.5px;color:var(--muted);line-height:1.25}
+
+/* Lektionen */
+.level{display:flex;align-items:center;gap:10px;margin:20px 2px 8px;font-family:'Fraunces',serif;font-weight:700;color:var(--verde-d)}
+.level::after{content:"";flex:1;height:1.5px;background:linear-gradient(90deg,var(--line),transparent)}
+.level span{background:var(--verde);color:#fff;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px}
+.level.phrase span{background:var(--rosa)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lesson{position:relative;text-align:left;display:flex;flex-direction:column;gap:3px;padding:13px 13px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;
+  box-shadow:0 1px 2px rgba(60,40,10,.04);transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s,border-color .2s;
+  animation:pop .45s cubic-bezier(.2,.8,.2,1) both}
+.lesson:hover:not(:disabled){transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--verde)}
+.lesson:active:not(:disabled){transform:scale(.97)}
+.lesson.phrase{border-left:4px solid var(--rosa-b)}
+.lesson.comp{background:linear-gradient(160deg,var(--paper),var(--verde-l))}
+.lesson.sel{border-color:var(--verde);box-shadow:0 0 0 3px rgba(47,125,79,.15)}
+.lesson.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.4)}
+.lesson-name{font-weight:800;font-size:13.5px;padding-right:18px}
+.lesson-count{font-size:11.5px;color:var(--muted)}
+.bar{display:block;height:5px;background:var(--line);border-radius:9px;margin-top:6px;overflow:hidden}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--verde),#57a874);border-radius:9px;transition:width .8s}
+.lesson.phrase .bar span{background:linear-gradient(90deg,var(--rosa),#d97ea2)}
+.corner{position:absolute;top:9px;right:10px;font-size:13px}
+.corner.ok{color:var(--verde);font-weight:900}
+
+/* Belohnungen */
+.rw{margin-top:16px;border-top:1.5px dashed var(--line);padding-top:14px}
+.rw-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rw-stat{display:flex;flex-direction:column;align-items:center;gap:1px;padding:10px 4px;border-radius:16px;background:var(--bg);border:1.5px solid var(--line);font:inherit;color:inherit}
+.rw-stat b{font-family:'Fraunces',serif;font-size:22px;line-height:1.1;color:var(--ink)}
+.rw-stat b i{font-style:normal;font-size:13px;color:var(--soft)}
+.rw-stat small{font-size:10.5px;color:var(--muted);font-weight:700;text-align:center}
+.rw-ic{font-size:20px;filter:grayscale(.7);transition:filter .3s,transform .3s}
+.rw-stat.fire.on{background:linear-gradient(160deg,#FFF4E6,#FFE2C7);border-color:#F5C08A}
+.rw-stat.fire.on .rw-ic{filter:none;animation:flicker 1.6s ease-in-out infinite}
+.rw-stat.bolt .rw-ic,.rw-stat.medal .rw-ic{filter:none}
+.rw-stat.medal{cursor:pointer;transition:transform .2s,box-shadow .2s}
+.rw-stat.medal:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.daily{margin-top:12px}
+.daily-top{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:5px}
+.daily-bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.daily-bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#F5B041,#E8772E);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.daily-bar.done span{background:linear-gradient(90deg,var(--verde),#57a874)}
+.combo-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.combo{display:inline-flex;align-items:baseline;gap:5px;font-weight:900;font-size:16px;padding:5px 13px;border-radius:99px;background:var(--paper);border:1.5px solid var(--line);color:var(--muted);animation:bump .35s cubic-bezier(.3,1.6,.5,1)}
+.combo small{font-size:11px;font-weight:700}
+.combo.hot{background:linear-gradient(135deg,#FFF4D6,#FFE19A);border-color:#E9C46A;color:#8A5A00}
+.combo.rec{background:linear-gradient(135deg,#E3B04B,#F5D782);border-color:#C9962E;color:#5C3D00;box-shadow:0 0 0 3px rgba(227,176,75,.25)}
+.combo-best{font-size:12px;font-weight:700;color:var(--soft)}
+.toast{position:fixed;left:50%;top:18px;z-index:60;display:flex;align-items:center;gap:14px;min-width:260px;max-width:calc(100vw - 32px);padding:16px 22px;border-radius:22px;
+  background:var(--paper);box-shadow:0 18px 50px rgba(40,25,0,.28);transform:translateX(-50%);animation:toastIn .55s cubic-bezier(.2,1.5,.4,1) both, toastOut .4s ease-in 2.6s forwards}
+.toast.t-combo{padding:10px 18px;min-width:0;animation:toastIn .45s cubic-bezier(.2,1.5,.4,1) both, toastOut .35s ease-in 1.25s forwards;background:var(--verde-l);color:var(--verde-d)}
+.toast.t-record{background:linear-gradient(135deg,#FFF6D8,#F5D782);border:2px solid #E3B04B}
+.toast.t-goal{background:linear-gradient(135deg,#FFF1E2,#FFD3A8);border:2px solid #F0A060}
+.toast.t-badge{background:linear-gradient(135deg,#F6F0FF,#E3D4FA);border:2px solid var(--viola-b)}
+.toast-ic{font-size:26px}
+.toast-ic.big{font-size:46px;animation:spinPop .8s cubic-bezier(.2,1.5,.4,1) both}
+.toast-t{font-family:'Fraunces',serif;font-weight:700;font-size:20px;line-height:1.15}
+.toast.t-combo .toast-t{font-size:16px}
+.toast-s{font-size:14px;color:var(--muted);margin-top:2px}
+.toast-s b{color:var(--ink)}
+.end-events{margin:6px auto 16px;max-width:380px;text-align:left}
+.end-events-title{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:8px}
+.end-ev{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;margin-bottom:7px;font-size:14px;animation:pop .5s cubic-bezier(.2,1.4,.4,1) both}
+.end-ev small{display:block;color:var(--muted);font-size:12px}
+.end-ev-ic{font-size:26px}
+.end-ev.ev-record{background:linear-gradient(135deg,#FFF6D8,#F8E3A3)}
+.end-ev.ev-goal{background:linear-gradient(135deg,#FFF1E2,#FFDDBC)}
+.end-ev.ev-badge{background:linear-gradient(135deg,#F6F0FF,#E8DCFA)}
+.badges-h{font-family:'Fraunces',serif;color:var(--verde-d);font-size:24px;margin:4px 0 12px;display:flex;align-items:baseline;gap:10px}
+.badges-h span{font-family:'Nunito',sans-serif;font-size:14px;color:var(--muted)}
+.rw-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.rw-summary div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;font-size:10.5px;color:var(--muted)}
+.rw-summary b{display:block;font-family:'Fraunces',serif;font-size:19px;color:var(--ink)}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.badge-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:12px 6px 10px;border-radius:16px;background:var(--paper);border:1.5px solid var(--line);opacity:.75;animation:pop .4s both}
+.badge-card.got{opacity:1;border-color:var(--oro-b);background:linear-gradient(170deg,var(--paper),var(--oro-l));box-shadow:0 4px 14px rgba(154,111,18,.12)}
+.badge-ic{font-size:30px;filter:grayscale(1);opacity:.6}
+.badge-card.got .badge-ic{filter:none;opacity:1}
+.badge-name{font-weight:800;font-size:12px;line-height:1.2}
+.badge-desc{font-size:10.5px;color:var(--muted);line-height:1.25}
+.badge-date{font-size:10px;font-weight:800;color:var(--oro);margin-top:2px}
+.badge-prog{width:80%;height:5px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:4px}
+.badge-prog span{display:block;height:100%;background:var(--soft);border-radius:99px}
+@keyframes flicker{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.15) rotate(3deg)}}
+@keyframes bump{0%{transform:scale(.8)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-40px) scale(.7)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes toastOut{to{opacity:0;transform:translate(-50%,-30px) scale(.9)}}
+@keyframes spinPop{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
+@media (max-width:420px){.badges{grid-template-columns:repeat(2,1fr)}.rw-summary{grid-template-columns:repeat(2,1fr)}}
+
+/* Lernansicht */
+.study-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.back{background:none;border:none;color:var(--verde);font-weight:800;font-size:14px;cursor:pointer;padding:6px 0}
+.mode-pill{font-size:11.5px;font-weight:700;background:var(--paper);border:1.5px solid var(--line);padding:4px 10px;border-radius:99px;color:var(--muted)}
+.study-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.study-name{font-family:'Fraunces',serif;font-weight:700;color:var(--verde-d);font-size:16px}
+.study-prog{font-size:13px;color:var(--muted);font-weight:700}
+.progress{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:12px}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--verde),#E3B04B,var(--rosso));background-size:540px 100%;border-radius:9px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.stats div{background:var(--paper);border-radius:12px;padding:7px 4px;text-align:center;font-size:10.5px;color:var(--muted);border:1px solid var(--line)}
+.stats b{display:block;font-size:16px;color:var(--verde-d)}
+.phases{display:flex;gap:6px;margin-bottom:14px}
+.ph{flex:1;text-align:center;padding:4px;border-radius:99px;font-size:10.5px;font-weight:700;border:1px solid var(--line);color:var(--soft);background:transparent;transition:all .35s}
+.ph.on{transform:scale(1.06)}
+.ph0.on{background:var(--paper);color:var(--ink);border-color:var(--soft)}
+.ph1.on{background:var(--oro-l);color:var(--oro);border-color:var(--oro-b)}
+.ph2.on{background:var(--verde-l);color:var(--verde-d);border-color:#b9dcc4}
+.ph3.on{background:var(--verde);color:#fff;border-color:var(--verde)}
+
+.auto-toggle{display:flex;align-items:center;justify-content:flex-end;gap:8px;font-size:12.5px;font-weight:700;color:var(--muted);margin:-4px 0 10px;cursor:pointer;user-select:none}
+.auto-toggle input{position:absolute;opacity:0;pointer-events:none}
+.auto-toggle .sw{width:36px;height:20px;border-radius:99px;background:var(--line);position:relative;transition:background .25s}
+.auto-toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.auto-toggle input:checked+.sw{background:var(--verde)}
+.auto-toggle input:checked+.sw::after{transform:translateX(16px)}
+.auto-toggle input:focus-visible+.sw{box-shadow:0 0 0 3px rgba(47,125,79,.3)}
+.dir-tag{display:table;margin:0 auto 10px;font-size:12.5px;font-weight:800;padding:5px 12px;border-radius:99px;animation:pop .4s both}
+.dir-tag.sayIT{background:var(--rosso-l);color:var(--rosso)}
+.dir-tag.sayDE{background:var(--verde-l);color:var(--verde-d)}
+
+/* 3D-Karteikarte */
+.scene{perspective:1400px;margin-bottom:16px;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) both}
+.shaker.go{animation:shake .45s}
+.flip{display:grid;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,1.4,.5,1);-webkit-tap-highlight-color:transparent;outline:none}
+.flip.flipped{transform:rotateY(180deg)}
+.flip:focus-visible .face{box-shadow:0 0 0 3px rgba(47,125,79,.35),var(--shadow)}
+.face{grid-area:1/1;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;
+  padding:34px 18px 26px;border-radius:22px;background:var(--paper);border:1.5px solid var(--line);box-shadow:var(--shadow);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;overflow:hidden}
+.face::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:linear-gradient(90deg,var(--verde) 0 33%,#fff 33% 66%,var(--rosso) 66%)}
+.face.back{transform:rotateY(180deg);background:linear-gradient(170deg,var(--paper),#F6F0E2)}
+.flip.phrase .face::before{background:linear-gradient(90deg,var(--rosa-b),var(--rosa))}
+.flip.good .face.back{border-color:var(--verde);box-shadow:0 0 0 4px rgba(47,125,79,.18),var(--shadow);background:linear-gradient(170deg,var(--paper),var(--verde-l))}
+.flip.bad .face.front{border-color:var(--rosso);box-shadow:0 0 0 4px rgba(194,65,45,.15),var(--shadow)}
+.face-label{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:6px}
+.art{font-size:14px;color:var(--muted);font-style:italic}
+.word{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:34px;line-height:1.2;color:var(--verde-d);word-break:break-word}
+.word.de-big{color:var(--ink);font-size:28px}
+.hint{font-size:13px;color:var(--muted);font-style:italic;margin-top:6px}
+.tap{font-size:12px;color:var(--soft);margin-top:12px;animation:pulse 2s ease-in-out infinite}
+.ex{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--muted);margin-top:10px;max-width:420px}
+.small-de{font-size:12.5px;color:var(--soft);margin-top:8px;font-weight:700}
+.badge{position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:99px}
+.b0{background:var(--bg);color:var(--muted)}.b1{background:var(--oro-l);color:var(--oro)}.b2{background:var(--verde-l);color:var(--verde-d)}.b3{background:var(--verde);color:#fff}.b4{background:var(--viola-l);color:var(--viola)}
+.tts{position:absolute;bottom:12px;right:12px;border:none;background:var(--bg);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;transition:transform .15s}
+.tts:active{transform:scale(.9)}
+.stamp{position:absolute;top:16px;left:16px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--verde);border:2.5px solid var(--verde);border-radius:10px;padding:2px 10px;transform:rotate(-10deg);animation:stamp .5s .3s cubic-bezier(.2,1.6,.4,1) both}
+
+/* Knöpfe */
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.btn{padding:12px 20px;border-radius:99px;font-size:14px;font-weight:800;cursor:pointer;border:2px solid transparent;min-width:100px;-webkit-tap-highlight-color:transparent;
+  transition:transform .15s,box-shadow .2s,filter .2s;animation:pop .35s cubic-bezier(.2,.8,.2,1) both}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(60,40,10,.12)}
+.btn:active{transform:scale(.95)}
+.btn.show{background:var(--paper);border-color:var(--line)}
+.btn.wrong{background:var(--rosso-l);border-color:#EDB3A6;color:var(--rosso)}
+.btn.right{background:var(--verde-l);border-color:#b9dcc4;color:var(--verde-d)}
+.btn.known{background:var(--viola-l);border-color:var(--viola-b);color:var(--viola)}
+.btn.next{background:var(--verde);border-color:var(--verde);color:#fff}
+.btn.small{padding:9px 14px;min-width:0;font-size:13px;background:var(--verde);color:#fff;animation:none}
+.note{font-size:11.5px;color:var(--soft);text-align:center;margin:4px 0 10px}
+.note.warn{background:var(--oro-l);border:1px solid var(--oro-b);color:var(--oro);padding:9px 12px;border-radius:12px;text-align:left}
+
+/* Sprechen */
+.speak{display:flex;flex-direction:column;align-items:center;gap:10px}
+.mic{position:relative;width:84px;height:84px;border-radius:50%;border:none;cursor:pointer;color:#fff;background:radial-gradient(circle at 35% 30%,#45a06b,var(--verde-d));
+  box-shadow:0 8px 22px rgba(31,90,56,.35);display:grid;place-items:center;transition:transform .2s,background .3s;-webkit-tap-highlight-color:transparent}
+.mic:hover{transform:scale(1.05)}.mic:active{transform:scale(.95)}
+.mic svg{position:relative;z-index:1}
+.mic.live{background:radial-gradient(circle at 35% 30%,#e0644f,var(--rosso))}
+.mic-ring{position:absolute;inset:0;border-radius:50%;border:3px solid var(--rosso);opacity:0}
+.mic.live .mic-ring{animation:ripple 1.4s ease-out infinite}
+.mic.live .mic-ring.r2{animation-delay:.7s}
+.mic-label{font-size:13px;font-weight:700;color:var(--muted);text-align:center}
+.heard{font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);padding:8px 14px;border-radius:14px;animation:pop .3s both;max-width:100%;text-align:center}
+.heard.ok{border-color:var(--verde);color:var(--verde-d)}
+.heard.no{border-color:#EDB3A6;color:var(--rosso)}
+.feedback{font-size:14px;font-weight:800;text-align:center;animation:pop .35s both}
+.feedback.ok{color:var(--verde)}.feedback.no{color:var(--rosso)}
+.typed{display:flex;gap:6px;width:100%;max-width:380px}
+.typed input{flex:1;min-width:0;padding:10px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--paper);font:inherit;font-size:14px;outline:none;transition:border-color .2s}
+.typed input:focus{border-color:var(--verde)}
+
+/* Ende */
+.end{background:var(--paper);border-radius:22px;box-shadow:var(--shadow);padding:30px 20px;text-align:center;animation:pop .5s cubic-bezier(.2,.8,.2,1) both}
+.end-emoji{font-size:46px;animation:bounce 1.2s ease-in-out infinite}
+.end h2{font-family:'Fraunces',serif;font-size:26px;color:var(--verde-d);margin:6px 0}
+.end p{color:var(--muted);font-size:14px;margin-bottom:12px}
+.end-round .g{color:var(--verde);font-weight:800}.end-round .r{color:var(--rosso);font-weight:800}
+
+/* Dialog */
+.modal-bg{position:fixed;inset:0;background:rgba(30,25,15,.45);display:grid;place-items:center;padding:16px;z-index:50;animation:fade .25s both}
+.modal{background:var(--paper);border-radius:22px;padding:22px 20px 14px;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:pop .35s cubic-bezier(.2,.8,.2,1) both}
+.modal h3{font-family:'Fraunces',serif;color:var(--verde-d);font-size:20px;margin-bottom:10px}
+.modal p{font-size:14px;line-height:1.5;margin-bottom:10px}
+.modal p.small{font-size:12.5px;color:var(--muted)}
+.modal a{color:var(--verde)}
+
+.fade-in{animation:fade .35s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes cardIn{from{opacity:0;transform:translateX(60px) rotate(4deg)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-10px) rotate(-1deg)}40%{transform:translateX(9px) rotate(1deg)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+@keyframes ripple{from{opacity:.7;transform:scale(1)}to{opacity:0;transform:scale(1.8)}}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes stamp{from{opacity:0;transform:rotate(-10deg) scale(2)}to{opacity:1;transform:rotate(-10deg) scale(1)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+@media (max-width:420px){
+  .modes{grid-template-columns:1fr}
+  .mode{flex-direction:row;text-align:left;gap:10px;padding:10px 12px}
+  .mode-sub{margin-left:auto;text-align:right}
+  .word{font-size:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useCallback, useRef } = React;
+const { useState, useCallback, useRef, useEffect } = React;
 
 const RAW = {
   /* ═══════════════ A1 ═══════════════ */
@@ -1739,9 +2009,31 @@ const LESSON_ORDER = [
   "Phrasen – Alltag","Phrasen – Reisen","Phrasen – Gefühle","Phrasen – Höflichkeit & Diskussion"
 ];
 
-const LESSON_DEFS = LESSON_ORDER.map(name => ({
+/* Zusätzliche Lektionen aus italiano-vokabeln-*.js: kommen ans Ende ihres Niveaus,
+   Wörter, die es schon in einer früheren Lektion gibt, werden übersprungen. */
+const EXTRA = window.IT_EXTRA || {};
+const lvOf = n => n.split(" ")[0];
+const EXTRA_NAMES = Object.keys(EXTRA).filter(k=>!LESSON_ORDER.includes(k));
+const FULL_ORDER = [];
+LESSON_ORDER.forEach((n,i)=>{
+  FULL_ORDER.push(n);
+  const next = LESSON_ORDER[i+1];
+  if (!next || lvOf(next)!==lvOf(n)) EXTRA_NAMES.filter(e=>lvOf(e)===lvOf(n)).forEach(e=>FULL_ORDER.push(e));
+});
+EXTRA_NAMES.forEach(e=>{ if(!FULL_ORDER.includes(e)) FULL_ORDER.push(e); });
+(function(){
+  const seen = new Set();
+  LESSON_ORDER.forEach(n=>{ if(!n.startsWith("Phrasen")) (RAW[n]||[]).forEach(w=>seen.add(w.it.toLowerCase())); });
+  FULL_ORDER.forEach(n=>{
+    if (!EXTRA_NAMES.includes(n)) return;
+    RAW[n] = EXTRA[n].filter(w=>{ const k=w.it.toLowerCase(); if(seen.has(k)) return false; seen.add(k); return true; });
+  });
+})();
+
+const LESSON_DEFS = FULL_ORDER.map(name => ({
   name,
   words: RAW[name] || [],
+  extra: EXTRA_NAMES.includes(name),
   isPhrase: name.startsWith("Phrasen"),
   level: name.startsWith("A1")?"A1":name.startsWith("A2")?"A2":name.startsWith("B1")?"B1":name.startsWith("B2")?"B2":name.startsWith("C1")?"C1":"Phrasen"
 }));
@@ -1750,17 +2042,21 @@ const TOTAL_GOAL = LESSON_DEFS.reduce((s,ld)=>s+ld.words.length,0);
 const SESSION_SIZE = 20;
 const PHASE_LBL = {0:"neu",1:"1. Wdh.",2:"2. Wdh.",3:"gelernt",4:"bereits bekannt"};
 
-const colors = {
-  bg:"#FAF8F3", bg2:"#F2EDE0", bg3:"#E5DDC8",
-  sage1:"#DCE8DC", sage2:"#BDCFBC", sage4:"#7A9E7A", sage6:"#4E7550", sage8:"#2E4D30",
-  tx:"#2E3A2E", txm:"#6B7B6B", txl:"#9EAB9E",
-  gold:"#7a5f10", goldbg:"#fff8e6", goldbr:"#e8d48a",
-  redbg:"#fdf0ee", redbr:"#e8a89a", red:"#8b3a2a",
-  rosebg:"#fdf0f5", rosebr:"#e8b0c8", rose:"#7a3050",
-  purplebg:"#f5f0fd", purplebr:"#c8a0e0", purple:"#5a3070",
-};
-
 const STORAGE_KEY = "itpro_v4";
+const MODE_KEY = "itpro_mode";
+const AUTO_KEY = "itpro_autolisten";
+const SPEECH_OK_KEY = "itpro_speech_ok";
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
+const MODES = [
+  {id:"card",  icon:"🃏", name:"Karteikarten", sub:"Selbst überlegen, aufdecken"},
+  {id:"sayDE", icon:"🎙️", name:"Sprechen: IT → DE", sub:"Italienisch lesen, Deutsch sagen"},
+  {id:"sayIT", icon:"🗣️", name:"Sprechen: DE → IT", sub:"Deutsch lesen, Italienisch sagen"},
+  {id:"mix",   icon:"🔀", name:"Sprechen: gemischt", sub:"Richtung wechselt zufällig"},
+];
+
+function lsGet(k, d){ try { const v = localStorage.getItem(k); return v===null ? d : v; } catch { return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); } catch {} }
 
 function loadState() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}"); } catch { return {}; }
@@ -1774,33 +2070,245 @@ function getCard(st, ln, word) {
   return st[k];
 }
 function lessonMastered(st, ld) {
-  // phase 3 = gelernt, phase 4 = bereits bekannt — both count
-  return ld.words.filter(w=>{ const c=getCard(st,ld.name,w.it); return c.phase>=3; }).length;
+  return ld.words.filter(w=>getCard(st,ld.name,w.it).phase>=3).length;
 }
-function isUnlocked(st, ld, idx) {
-  if (idx===0) return true;
-  if (ld.isPhrase) return true; // Phrasen immer freigeschaltet
-  const prev = LESSON_DEFS[idx-1];
+// Zwei getrennte Ketten: die ursprünglichen Lektionen (Verhalten unverändert) und
+// die neuen Lektionen je Niveau, die frei sind, sobald die erste Lektion des Niveaus frei ist.
+const ORIG_DEFS = LESSON_DEFS.filter(l=>!l.extra);
+function mastered60(st, l){ return lessonMastered(st,l) >= Math.floor(l.words.length*0.6); }
+function isUnlocked(st, ld) {
+  if (ld.isPhrase) return true;
+  if (ld.extra) {
+    const extras = LESSON_DEFS.filter(l=>l.extra && l.level===ld.level);
+    const i = extras.indexOf(ld);
+    if (i>0) return mastered60(st, extras[i-1]);
+    const firstOrig = ORIG_DEFS.find(l=>l.level===ld.level);
+    return !firstOrig || isUnlocked(st, firstOrig);
+  }
+  const i = ORIG_DEFS.indexOf(ld);
+  if (i<=0) return true;
+  const prev = ORIG_DEFS[i-1];
   if (prev.isPhrase) return true;
-  return lessonMastered(st,prev) >= Math.floor(prev.words.length*0.6);
+  return mastered60(st, prev);
 }
 function totalDone(st) {
   let n=0;
-  LESSON_DEFS.forEach(ld=>ld.words.forEach(w=>{
-    if(getCard(st,ld.name,w.it).phase>=3) n++;
-  }));
+  LESSON_DEFS.forEach(ld=>ld.words.forEach(w=>{ if(getCard(st,ld.name,w.it).phase>=3) n++; }));
   return n;
 }
-function shuffle(a) { return [...a].sort(()=>Math.random()-.5); }
+function shuffle(a) {
+  const r=[...a];
+  for (let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
+  return r;
+}
+/* ───────── Belohnungen ───────── */
+const RW_KEY = "itpro_rewards";
+const DAILY_GOAL = 20;
+function dayStr(d){ d=d||new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1); return dayStr(d); }
+function defaultRw(){ return {combo:0,bestCombo:0,totalCorrect:0,speechCorrect:0,mixCorrect:0,rounds:0,perfectRounds:0,owl:0,early:0,dayCount:{},goalStreak:0,bestGoalStreak:0,lastGoalDay:"",badges:{}}; }
+function loadRw(){ try { return Object.assign(defaultRw(), JSON.parse(localStorage.getItem(RW_KEY)||"{}")); } catch { return defaultRw(); } }
+function saveRw(r){ try { localStorage.setItem(RW_KEY, JSON.stringify(r)); } catch {} }
+function currentStreak(r){ return (r.lastGoalDay===dayStr()||r.lastGoalDay===yesterdayStr()) ? r.goalStreak : 0; }
+function levelPct(st, lv){ let n=0,d=0; LESSON_DEFS.forEach(l=>{ if(l.level!==lv) return; l.words.forEach(w=>{ n++; if(getCard(st,l.name,w.it).phase>=3) d++; }); }); return n?d/n*100:0; }
+
+const BADGES = [
+  {id:"first", icon:"🌱", name:"Primo passo",     desc:"Die erste Vokabel gewusst",         val:r=>r.totalCorrect, goal:1},
+  {id:"c10",   icon:"⚡", name:"Dieci di fila",    desc:"10 richtig in Folge",               val:r=>r.bestCombo, goal:10},
+  {id:"c25",   icon:"💫", name:"Inarrestabile",    desc:"25 richtig in Folge",               val:r=>r.bestCombo, goal:25},
+  {id:"c50",   icon:"🌩️", name:"Fulmine",          desc:"50 richtig in Folge",               val:r=>r.bestCombo, goal:50},
+  {id:"c100",  icon:"👑", name:"Leggenda",         desc:"100 richtig in Folge",              val:r=>r.bestCombo, goal:100},
+  {id:"d3",    icon:"🔥", name:"Tre giorni",       desc:"3 Tage in Folge das Tagesziel",     val:r=>r.bestGoalStreak, goal:3},
+  {id:"d7",    icon:"📅", name:"Una settimana",    desc:"7 Tage in Folge das Tagesziel",     val:r=>r.bestGoalStreak, goal:7},
+  {id:"d14",   icon:"🗓️", name:"Due settimane",    desc:"14 Tage in Folge das Tagesziel",    val:r=>r.bestGoalStreak, goal:14},
+  {id:"d30",   icon:"🏆", name:"Un mese intero",   desc:"30 Tage in Folge das Tagesziel",    val:r=>r.bestGoalStreak, goal:30},
+  {id:"l50",   icon:"📗", name:"Cinquanta parole", desc:"50 Vokabeln gelernt",               val:(r,st)=>totalDone(st), goal:50},
+  {id:"l100",  icon:"📘", name:"Cento parole",     desc:"100 Vokabeln gelernt",              val:(r,st)=>totalDone(st), goal:100},
+  {id:"l250",  icon:"📙", name:"Duecentocinquanta",desc:"250 Vokabeln gelernt",              val:(r,st)=>totalDone(st), goal:250},
+  {id:"l500",  icon:"📚", name:"Cinquecento",      desc:"500 Vokabeln gelernt",              val:(r,st)=>totalDone(st), goal:500},
+  {id:"l1000", icon:"🎓", name:"Mille parole",     desc:"1000 Vokabeln gelernt",             val:(r,st)=>totalDone(st), goal:1000},
+  {id:"a1",    icon:"🇮🇹", name:"A1 conquistato",  desc:"80 % aller A1-Vokabeln gelernt",    val:(r,st)=>Math.floor(levelPct(st,"A1")), goal:80},
+  {id:"a2",    icon:"🏛️", name:"A2 conquistato",   desc:"80 % aller A2-Vokabeln gelernt",    val:(r,st)=>Math.floor(levelPct(st,"A2")), goal:80},
+  {id:"b1",    icon:"🍝", name:"B1 conquistato",   desc:"80 % aller B1-Vokabeln gelernt",    val:(r,st)=>Math.floor(levelPct(st,"B1")), goal:80},
+  {id:"b2",    icon:"🎭", name:"B2 conquistato",   desc:"80 % aller B2-Vokabeln gelernt",    val:(r,st)=>Math.floor(levelPct(st,"B2")), goal:80},
+  {id:"l2000", icon:"🌟", name:"Duemila parole",   desc:"2000 Vokabeln gelernt",             val:(r,st)=>totalDone(st), goal:2000},
+  {id:"s25",   icon:"🎙️", name:"Prima voce",       desc:"25 Vokabeln richtig gesprochen",    val:r=>r.speechCorrect, goal:25},
+  {id:"s100",  icon:"🗣️", name:"Chiacchierone",    desc:"100 Vokabeln richtig gesprochen",   val:r=>r.speechCorrect, goal:100},
+  {id:"s500",  icon:"🎤", name:"Quasi madrelingua",desc:"500 Vokabeln richtig gesprochen",   val:r=>r.speechCorrect, goal:500},
+  {id:"mix50", icon:"🔀", name:"Mescolatore",      desc:"50 richtig im gemischten Modus",    val:r=>r.mixCorrect, goal:50},
+  {id:"r10",   icon:"🎯", name:"Dieci round",      desc:"10 Runden abgeschlossen",           val:r=>r.rounds, goal:10},
+  {id:"r50",   icon:"🥇", name:"Cinquanta round",  desc:"50 Runden abgeschlossen",           val:r=>r.rounds, goal:50},
+  {id:"p1",    icon:"✨", name:"Perfetto!",        desc:"Eine Runde ohne Fehler",            val:r=>r.perfectRounds, goal:1},
+  {id:"p10",   icon:"💎", name:"Perfezionista",    desc:"10 Runden ohne Fehler",             val:r=>r.perfectRounds, goal:10},
+  {id:"owl",   icon:"🦉", name:"Gufo notturno",    desc:"Nach 21 Uhr gelernt",               val:r=>r.owl, goal:1},
+  {id:"early", icon:"🐓", name:"Mattiniero",       desc:"Vor 7 Uhr gelernt",                 val:r=>r.early, goal:1},
+];
+
+// Wertet eine Antwort aus und liefert neuen Stand + Ereignisse (Rekord, Abzeichen, Tagesziel)
+function applyAnswer(rw, st, info){
+  const r = Object.assign({}, rw, {dayCount:Object.assign({}, rw.dayCount), badges:Object.assign({}, rw.badges)});
+  const ev = [];
+  const today = dayStr();
+  if (info.correct) {
+    r.combo++; r.totalCorrect++;
+    if (info.speech) r.speechCorrect++;
+    if (info.speech && info.mix) r.mixCorrect++;
+    if (r.combo > r.bestCombo) {
+      const prev = r.bestCombo; r.bestCombo = r.combo;
+      if (prev >= 3 && !info.recordShown) ev.push({type:"record", value:r.combo, prev});
+    }
+    if (r.combo>0 && r.combo%10===0 && !ev.length) ev.push({type:"combo", value:r.combo});
+  } else if (!info.known) {
+    r.combo = 0;
+  }
+  r.dayCount[today] = (r.dayCount[today]||0) + 1;
+  Object.keys(r.dayCount).sort().slice(0,-60).forEach(k=>delete r.dayCount[k]);
+  if (r.dayCount[today] === DAILY_GOAL) {
+    r.goalStreak = (r.lastGoalDay===yesterdayStr()) ? r.goalStreak+1 : (r.lastGoalDay===today ? r.goalStreak : 1);
+    r.lastGoalDay = today;
+    const rec = r.goalStreak > r.bestGoalStreak;
+    if (rec) r.bestGoalStreak = r.goalStreak;
+    ev.push({type:"goal", streak:r.goalStreak, record:rec && r.goalStreak>1});
+  }
+  const hr = new Date().getHours();
+  if (hr>=21) r.owl = 1;
+  if (hr<7) r.early = 1;
+  if (info.roundEnd) { r.rounds++; if (info.perfect) r.perfectRounds++; }
+  BADGES.forEach(b=>{
+    if (!r.badges[b.id] && b.val(r, st) >= b.goal) { r.badges[b.id] = today; ev.push({type:"badge", badge:b}); }
+  });
+  // kein zusätzlicher „x in Folge“-Hinweis, wenn gleichzeitig ein Serien-Abzeichen kommt
+  if (ev.some(e=>e.type==="badge" && /^c\d/.test(e.badge.id))) return {r, ev:ev.filter(e=>e.type!=="combo")};
+  return {r, ev};
+}
 
 function exportProgress(st) {
-  const blob = new Blob([JSON.stringify({version:4,data:st},null,2)],{type:"application/json"});
+  const blob = new Blob([JSON.stringify({version:5,data:st,rewards:loadRw()},null,2)],{type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = "italiano_fortschritt.json";
-  a.click();
+  a.href = url; a.download = "italiano_fortschritt.json"; a.click();
   URL.revokeObjectURL(url);
+}
+function boom(opts){
+  if (window.confetti) {
+    try { window.confetti(Object.assign({particleCount:60,spread:70,origin:{y:.6},colors:["#2F7D4F","#ffffff","#C2412D","#E3B04B"],disableForReducedMotion:true},opts||{})); } catch {}
+  }
+}
+
+/* ───────── Antwortprüfung ───────── */
+function norm(s){
+  return (s||"").toLowerCase()
+    .replace(/[’`´]/g,"'").replace(/ß/g,"ss")
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/[.,!?¡¿;:"«»„“”()\[\]…—–]/g," ")
+    .replace(/-/g," ")
+    .replace(/\s+/g," ").trim();
+}
+const ART = {
+  it: /^(?:(?:il|lo|la|i|gli|le|un|uno|una|dei|degli|delle|del|della|dello)\s+|(?:l|un|dell|dall|nell|all)'\s*)/,
+  de: /^(?:der|die|das|den|dem|des|ein|eine|einen|einem|einer|eines)\s+/
+};
+function stripArt(s, lang){ return s.replace(ART[lang], "").trim(); }
+
+function answerVariants(target, lang, isPhrase){
+  const raw = new Set([target, target.replace(/[()]/g,""), target.replace(/\([^)]*\)/g,"")]);
+  const parts = new Set();
+  raw.forEach(x=>{
+    parts.add(x);
+    const splitter = isPhrase ? /\s\/\s|\// : /\/|,|;|\soder\s|\so\s/;
+    x.split(splitter).forEach(p=>parts.add(p));
+  });
+  const out = new Set();
+  parts.forEach(p=>{ const n = norm(p); if (n) { out.add(n); const s = stripArt(n, lang); if (s) out.add(s); } });
+  return [...out];
+}
+function lev(a,b){
+  if (a===b) return 0;
+  const m=a.length, n=b.length;
+  if (!m) return n; if (!n) return m;
+  let prev = Array.from({length:n+1},(_,i)=>i);
+  for (let i=1;i<=m;i++){
+    const cur=[i];
+    for (let j=1;j<=n;j++){
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    }
+    prev=cur;
+  }
+  return prev[n];
+}
+const NUM = {
+  it: {0:"zero",1:"uno",2:"due",3:"tre",4:"quattro",5:"cinque",6:"sei",7:"sette",8:"otto",9:"nove",10:"dieci",11:"undici",12:"dodici",13:"tredici",14:"quattordici",15:"quindici",16:"sedici",17:"diciassette",18:"diciotto",19:"diciannove",20:"venti",30:"trenta",40:"quaranta",50:"cinquanta",60:"sessanta",70:"settanta",80:"ottanta",90:"novanta",100:"cento",1000:"mille"},
+  de: {0:"null",1:"eins",2:"zwei",3:"drei",4:"vier",5:"funf",6:"sechs",7:"sieben",8:"acht",9:"neun",10:"zehn",11:"elf",12:"zwolf",13:"dreizehn",14:"vierzehn",15:"funfzehn",16:"sechzehn",17:"siebzehn",18:"achtzehn",19:"neunzehn",20:"zwanzig",30:"dreissig",40:"vierzig",50:"funfzig",60:"sechzig",70:"siebzig",80:"achtzig",90:"neunzig",100:"hundert",1000:"tausend"}
+};
+function digitsToWords(s, lang){ return s.replace(/\b\d+\b/g, d => NUM[lang][+d] || d); }
+// Klang-Schlüssel: gleich klingende Schreibweisen gelten als gleich (anno/hanno, Meer/mehr, Stadt/statt)
+function phonKey(s, lang){
+  let k = " "+s+" ";
+  if (lang==="it") {
+    k = k.replace(/([^cg])h/g, "$1");          // h ist stumm (außer in ch, gh)
+    k = k.replace(/'/g, "");
+  } else {
+    k = k.replace(/ph/g,"f").replace(/th/g,"t").replace(/dt/g,"t").replace(/v/g,"f")
+         .replace(/ä/g,"e").replace(/ae/g,"e").replace(/ai/g,"ei").replace(/ay/g,"ei")
+         .replace(/ie/g,"i").replace(/([aeiouy])h(?![aeiouy])/g,"$1")
+         .replace(/d(?=[\s])/g,"t").replace(/b(?=[\s])/g,"p").replace(/g(?=[\s])/g,"k");
+  }
+  k = k.replace(/([a-z])\1+/g, "$1");          // doppelte Buchstaben zusammenfassen
+  return k.replace(/\s+/g," ").trim();
+}
+function checkSpoken(alts, target, lang, isPhrase){
+  const vars = answerVariants(target, lang, isPhrase);
+  alts = alts.concat(alts.map(a=>digitsToWords(norm(a), lang)));
+  let best = 0, bestHeard = alts[0]||"";
+  for (const alt of alts){
+    const ns = norm(alt);
+    if (!ns) continue;
+    const cands = [ns, stripArt(ns, lang)];
+    for (const c of cands){
+      for (const v of vars){
+        if (c===v) return {ok:true, heard:alt, sim:1};
+        if (phonKey(c,lang)===phonKey(v,lang)) return {ok:true, heard:alt, sim:.98};
+        const d = lev(c,v), L = Math.max(c.length,v.length);
+        const sim = 1 - d/L;
+        const tol = isPhrase ? Math.floor(L*0.2) : (v.length>=10 ? 2 : v.length>=6 ? 1 : 0);
+        if (d<=tol) return {ok:true, heard:alt, sim};
+        if (v.length>=3 && (" "+c+" ").includes(" "+v+" ") && (!isPhrase || v.length>=6)) return {ok:true, heard:alt, sim:.95};
+        if (sim>best){ best=sim; bestHeard=alt; }
+      }
+    }
+  }
+  return {ok:false, heard:bestHeard, sim:best};
+}
+
+/* ───────── Vorlesen (nur Stimmen auf dem Gerät) ───────── */
+function useItalianVoice(){
+  const [voice, setVoice] = useState(null);
+  useEffect(()=>{
+    if (!window.speechSynthesis) return;
+    const pick = ()=>{
+      const v = speechSynthesis.getVoices().filter(v=>/^it/i.test(v.lang) && v.localService);
+      setVoice(v[0]||null);
+    };
+    pick();
+    speechSynthesis.addEventListener && speechSynthesis.addEventListener("voiceschanged", pick);
+    return ()=>{ speechSynthesis.removeEventListener && speechSynthesis.removeEventListener("voiceschanged", pick); };
+  },[]);
+  const speak = useCallback((text)=>{
+    if (!voice) return;
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice=voice; u.lang=voice.lang; u.rate=.9; speechSynthesis.speak(u); } catch {}
+  },[voice]);
+  return [!!voice, speak];
+}
+
+function Ring({pct, size=92, stroke=9}){
+  const r=(size-stroke)/2, C=2*Math.PI*r;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="ring" aria-hidden="true">
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--line)" strokeWidth={stroke}/>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--verde)" strokeWidth={stroke} strokeLinecap="round"
+        strokeDasharray={C} strokeDashoffset={C*(1-pct/100)} transform={`rotate(-90 ${size/2} ${size/2})`} className="ring-fill"/>
+    </svg>
+  );
 }
 
 function App() {
@@ -1808,25 +2316,43 @@ function App() {
   const [curLesson, setCurLesson] = useState(null);
   const [session, setSession] = useState([]);
   const [sidx, setSidx] = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [flipped, setFlipped] = useState(false);
+  const [seen, setSeen] = useState(false);
   const [view, setView] = useState("lessons");
   const [importMsg, setImportMsg] = useState(null);
+  const [mode, setModeState] = useState(()=>{ const m=lsGet(MODE_KEY,"card"); return MODES.some(x=>x.id===m)?m:"card"; });
+  const [speechOk, setSpeechOk] = useState(()=>lsGet(SPEECH_OK_KEY,"")==="1");
+  const [consentOpen, setConsentOpen] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [heard, setHeard] = useState("");
+  const [result, setResult] = useState(null);   // null | "ok" | "wrong"
+  const [tries, setTries] = useState(0);
+  const [speechMsg, setSpeechMsg] = useState(null);
+  const [typed, setTyped] = useState("");
+  const [shake, setShake] = useState(0);
+  const [roundStats, setRoundStats] = useState({ok:0,no:0});
+  const [rw, setRw] = useState(()=>loadRw());
+  const [toasts, setToasts] = useState([]);
+  const [roundEvents, setRoundEvents] = useState([]);
+  const recordShownRef = useRef(false);
+  const [dirs, setDirs] = useState([]);
+  const [autoListen, setAutoListenState] = useState(()=>lsGet(AUTO_KEY,"1")==="1");
+  const autoTimer = useRef(null);
+  const [hasVoice, speak] = useItalianVoice();
   const fileRef = useRef(null);
+  const recRef = useRef(null);
 
   const persist = useCallback((newSt)=>{ setSt(newSt); saveState(newSt); }, []);
+  const setMode = (m)=>{ setModeState(m); lsSet(MODE_KEY, m); };
+  const isSpeak = mode!=="card";
+  const eff = mode==="mix" ? (dirs[sidx]||"sayDE") : mode;   // tatsächliche Richtung dieser Karte
+  const speakLang = eff==="sayIT" ? "it" : "de";
+  const setAutoListen = (v)=>{ setAutoListenState(v); lsSet(AUTO_KEY, v?"1":"0"); if(!v) clearAuto(); };
+  function clearAuto(){ if (autoTimer.current) { clearTimeout(autoTimer.current); autoTimer.current=null; } }
 
   function buildSession(ld, stRef) {
-    const active = ld.words.filter(w=>{
-      const c = getCard(stRef, ld.name, w.it);
-      return c.phase < 3; // phase 3 = gelernt (still practise), phase 4 = bekannt (skip)
-    });
-    // phase 3 = "gelernt" → can repeat; phase 0,1,2 = priority
-    const needRepeat = active.filter(w=>getCard(stRef,ld.name,w.it).phase===3);
-    const needLearn = active.filter(w=>getCard(stRef,ld.name,w.it).phase<3);
-    let picked = [...needLearn.slice(0,SESSION_SIZE)];
-    if (picked.length < SESSION_SIZE) picked = picked.concat(needRepeat.slice(0, SESSION_SIZE-picked.length));
-    if (picked.length === 0) picked = needLearn.concat(needRepeat);
-    if (picked.length === 0) return [];
+    const active = ld.words.filter(w=>getCard(stRef, ld.name, w.it).phase < 3);
+    const picked = active.slice(0, SESSION_SIZE);
     return shuffle(picked).slice(0, SESSION_SIZE);
   }
 
@@ -1834,27 +2360,160 @@ function App() {
     setCurLesson(ld);
     const sess = buildSession(ld, st);
     setSession(sess);
+    setDirs(sess.map(()=>Math.random()<.5?"sayIT":"sayDE"));
     setSidx(0);
-    setRevealed(false);
+    setRoundStats({ok:0,no:0});
+    setRoundEvents([]);
     setView(sess.length===0?"end":"study");
+    window.scrollTo({top:0,behavior:"smooth"});
   }
+
+  function stopRec(){
+    try { recRef.current && recRef.current.abort(); } catch {}
+    recRef.current = null;
+    setListening(false);
+  }
+
+  // Zustand pro Karte zurücksetzen
+  useEffect(()=>{
+    clearAuto();
+    stopRec();
+    setFlipped(false); setSeen(false); setResult(null); setHeard("");
+    setTries(0); setSpeechMsg(null); setTyped("");
+  },[sidx, session, mode, view]);
+
+  useEffect(()=>()=>{ clearAuto(); stopRec(); },[]);
+
+  // Neue Karte im Sprechmodus: automatisch zuhören
+  useEffect(()=>{
+    if (view!=="study" || !isSpeak || !autoListen || !speechOk || !SR || !session[sidx]) return;
+    autoTimer.current = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 700);
+    return ()=>clearAuto();
+  },[sidx, session, mode, view, autoListen, speechOk]);
+
+  function celebrate(ev){
+    setToasts(t=>t.concat(ev.map((e,i)=>Object.assign({key:Date.now()+"-"+i+"-"+Math.random()}, e))));
+  }
+  // Toasts nacheinander anzeigen
+  useEffect(()=>{
+    if (!toasts.length) return;
+    const e = toasts[0];
+    if (e.type==="record") boom({particleCount:120,spread:90,origin:{y:.25},colors:["#E3B04B","#fff3c4","#C2412D","#2F7D4F"]});
+    else if (e.type==="goal") boom({particleCount:90,spread:80,origin:{y:.25},colors:["#E8772E","#F5B041","#C2412D"]});
+    else if (e.type==="badge") boom({particleCount:70,spread:70,origin:{y:.25},colors:["#6B4BA0","#CDB8EC","#E3B04B"]});
+    const t = setTimeout(()=>setToasts(x=>x.slice(1)), e.type==="combo" ? 1600 : 3000);
+    return ()=>clearTimeout(t);
+  },[toasts]);
 
   function doAnswer(correct, known) {
     const w = session[sidx];
+    if (!w) return;
     const newSt = {...st};
     const c = getCard(newSt, curLesson.name, w.it);
-    if (known) {
-      c.phase = 4; // bereits bekannt — für immer raus
-    } else if (correct) {
-      if (c.phase < 3) c.phase++;
-      // phase 3 = "Gewusst" abgeschlossen, bleibt wiederhol­bar
-    } else {
-      if (c.phase > 1) c.phase = 1; else c.phase = Math.max(0, c.phase);
-    }
+    if (known) c.phase = 4;
+    else if (correct) { if (c.phase < 3) c.phase++; }
+    else { if (c.phase > 1) c.phase = 1; }
     persist(newSt);
+    setRoundStats(r=>({ok:r.ok+(correct||known?1:0), no:r.no+(correct||known?0:1)}));
     const next = sidx+1;
-    if (next >= session.length) { setView("end"); } else { setSidx(next); setRevealed(false); }
+    const roundEnd = next >= session.length;
+    const perfect = roundEnd && session.length>=5 && roundStats.no===0 && (correct||known);
+    const {r:nr, ev} = applyAnswer(rw, newSt, {correct, known, speech: isSpeak && result==="ok", mix: mode==="mix", roundEnd, perfect, recordShown: recordShownRef.current});
+    if (ev.some(e=>e.type==="record")) recordShownRef.current = true;
+    if (!correct && !known) recordShownRef.current = false;
+    setRw(nr); saveRw(nr);
+    if (ev.length) {
+      setRoundEvents(x=>x.concat(ev.filter(e=>e.type!=="combo")));
+      if (!roundEnd) celebrate(ev);
+    }
+    if (roundEnd) { setView("end"); setTimeout(()=>boom({particleCount:160,spread:110}),250); }
+    else setSidx(next);
   }
+
+  // Richtig gesprochen → automatisch als gewusst werten
+  useEffect(()=>{
+    if (result!=="ok") return;
+    const t = setTimeout(()=>doAnswer(true,false), 750);
+    return ()=>clearTimeout(t);
+  },[result]);
+
+  const w = session[sidx];
+  const c = w ? getCard(st, curLesson?.name, w.it) : null;
+  const target = w ? (eff==="sayIT" ? w.it : w.de) : "";
+
+  function evaluate(alts){
+    if (!w || result==="ok") return;
+    const r = checkSpoken(alts, target, speakLang, !!w.phrase);
+    setHeard(r.heard);
+    if (r.ok) {
+      setResult("ok"); setFlipped(true); setSeen(true); setSpeechMsg(null);
+      clearAuto(); stopRec();
+    } else {
+      setResult("wrong"); setTries(t=>t+1); setShake(s=>s+1);
+      // bei Fehler automatisch noch einmal zuhören (höchstens 2-mal)
+      if (autoListen && tries<2) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
+      setSpeechMsg(r.sim>=.6 ? "Fast! Versuch es noch einmal deutlicher." : "Das war leider nicht richtig.");
+    }
+  }
+
+  function startListen(auto){
+    if (!SR) { setSpeechMsg("Dein Browser unterstützt keine Spracheingabe. Nutze Chrome, Edge oder Safari oder tippe die Antwort unten ein."); return; }
+    if (!speechOk) { if (!auto) setConsentOpen(true); return; }
+    if (listening) { if (!auto) { clearAuto(); stopRec(); } return; }
+    clearAuto();
+    stopRec();
+    const r = new SR();
+    r.lang = speakLang==="it" ? "it-IT" : "de-DE";
+    r.interimResults = true;
+    r.maxAlternatives = 5;
+    r.continuous = false;
+    let decided = false;
+    r.onresult = (e)=>{
+      if (decided) return;
+      let txt = "";
+      for (let i=0;i<e.results.length;i++) txt += e.results[i][0].transcript;
+      setHeard(txt);
+      const last = e.results[e.results.length-1];
+      // schon das Zwischenergebnis prüfen: passt es, sofort werten (nicht auf die Sprechpause warten)
+      if (!last.isFinal && w && checkSpoken([txt], target, speakLang, !!w.phrase).ok) {
+        decided = true; evaluate([txt]); return;
+      }
+      if (last.isFinal) {
+        decided = true;
+        const alts = [txt];
+        for (let j=0;j<last.length;j++) alts.push(last[j].transcript);
+        evaluate(alts);
+      }
+    };
+    r.onerror = (e)=>{
+      setListening(false);
+      if (e.error==="no-speech") setSpeechMsg("Ich habe nichts gehört. Tippe aufs Mikrofon und sprich direkt los.");
+      else if (auto && (e.error==="not-allowed" || e.error==="service-not-allowed")) setSpeechMsg("Tippe aufs Mikrofon, um zu sprechen.");
+      else if (e.error==="not-allowed" || e.error==="service-not-allowed") setSpeechMsg("Das Mikrofon ist blockiert. Erlaube den Zugriff in den Browser-Einstellungen oder tippe die Antwort ein.");
+      else if (e.error==="network") setSpeechMsg("Keine Verbindung zum Spracherkennungsdienst. Prüfe das Internet oder tippe die Antwort ein.");
+      else if (e.error==="language-not-supported") setSpeechMsg("Diese Sprache wird von deinem Browser nicht erkannt. Tippe die Antwort ein.");
+    };
+    r.onend = ()=>setListening(false);
+    recRef.current = r;
+    setHeard(""); setSpeechMsg(null);
+    try { r.start(); setListening(true); } catch { setListening(false); }
+  }
+
+  function acceptConsent(){
+    lsSet(SPEECH_OK_KEY,"1"); setSpeechOk(true); setConsentOpen(false);
+    setTimeout(()=>startListenRef.current && startListenRef.current(), 50);
+  }
+  const startListenRef = useRef(null);
+  startListenRef.current = startListen;
+
+  function submitTyped(e){
+    e.preventDefault();
+    if (!typed.trim()) return;
+    evaluate([typed]);
+    setTyped("");
+  }
+
+  function revealSolution(){ stopRec(); setFlipped(true); setSeen(true); if(result!=="ok") setResult("shown"); }
 
   function handleImport(e) {
     const file = e.target.files[0];
@@ -1863,18 +2522,34 @@ function App() {
     reader.onload = (ev) => {
       try {
         const parsed = JSON.parse(ev.target.result);
-        const data = parsed.data || parsed;
-        persist(data);
+        persist(parsed.data || parsed);
+        if (parsed.rewards) { const nr = Object.assign(defaultRw(), parsed.rewards); setRw(nr); saveRw(nr); }
         setImportMsg("✓ Fortschritt geladen!");
-        setTimeout(()=>setImportMsg(null),3000);
-      } catch {
-        setImportMsg("⚠ Fehler beim Laden.");
-        setTimeout(()=>setImportMsg(null),3000);
-      }
+      } catch { setImportMsg("⚠ Fehler beim Laden."); }
+      setTimeout(()=>setImportMsg(null),3000);
     };
     reader.readAsText(file);
     e.target.value = "";
   }
+
+  // Tastatur: Leertaste = umdrehen / Mikrofon
+  useEffect(()=>{
+    function onKey(e){
+      if (view!=="study" || consentOpen) return;
+      if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+      if (e.code==="Space") {
+        e.preventDefault();
+        if (isSpeak && result!=="ok" && !flipped) startListenRef.current();
+        else { setFlipped(f=>!f); setSeen(true); }
+      }
+      if (!isSpeak && seen) {
+        if (e.key==="1") doAnswer(false,false);
+        if (e.key==="2") doAnswer(true,false);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return ()=>window.removeEventListener("keydown", onKey);
+  });
 
   const done = totalDone(st);
   const pct = Math.min(100, Math.round(done/TOTAL_GOAL*100));
@@ -1883,96 +2558,15 @@ function App() {
     let neu=0, lernen=0, gelernt=0, bekannt=0;
     ld.words.forEach(w=>{
       const c = getCard(st,ld.name,w.it);
-      if (c.phase===4) bekannt++;
-      else if (c.phase===3) gelernt++;
-      else if (c.phase===0) neu++;
-      else lernen++;
+      if (c.phase===4) bekannt++; else if (c.phase===3) gelernt++; else if (c.phase===0) neu++; else lernen++;
     });
     return {neu,lernen,gelernt,bekannt};
   }
-
-  const curStats = curLesson ? lessonStats(curLesson) : {neu:0,lernen:0,gelernt:0,bekannt:0};
+  const curStats = curLesson ? lessonStats(curLesson) : null;
   const vocabLessons = LESSON_DEFS.filter(l=>!l.isPhrase);
   const phraseLessons = LESSON_DEFS.filter(l=>l.isPhrase);
-
-  // Group vocab by level
   const levels = ["A1","A2","B1","B2","C1"];
-  const levelGroups = levels.map(lv=>({
-    lv, lessons: vocabLessons.filter(l=>l.level===lv)
-  }));
-
-  const w = session[sidx];
-  const c = w ? getCard(st, curLesson?.name, w?.it) : null;
-
-  const s = {
-    wrap:{maxWidth:480,margin:"0 auto",padding:"12px 14px",fontFamily:"Georgia, serif",color:colors.tx,background:colors.bg,minHeight:"100vh"},
-    title:{fontSize:18,fontWeight:500,color:colors.sage8,textAlign:"center",marginBottom:14},
-    goalBox:{background:colors.bg2,borderRadius:12,padding:"12px 14px",marginBottom:14},
-    goalTop:{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6},
-    goalLabel:{fontSize:12,color:colors.txm},
-    goalPct:{fontSize:20,fontWeight:500,color:colors.sage8},
-    track:{background:colors.bg3,borderRadius:6,height:10,overflow:"hidden"},
-    fill:{height:"100%",background:colors.sage6,borderRadius:6,transition:"width .5s",width:pct+"%"},
-    goalSub:{fontSize:11,color:colors.txm,marginTop:5},
-    statsRow:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,marginBottom:14},
-    stat:{background:colors.bg2,borderRadius:10,padding:8,textAlign:"center"},
-    statN:{fontSize:16,fontWeight:500,color:colors.sage8},
-    statL:{fontSize:10,color:colors.txm,marginTop:2},
-    ioRow:{display:"flex",gap:8,marginBottom:10,justifyContent:"flex-end",alignItems:"center"},
-    ioBtn:{fontSize:11,padding:"5px 12px",borderRadius:16,border:`1.5px solid ${colors.sage2}`,background:colors.bg2,color:colors.txm,cursor:"pointer"},
-    importMsg:{fontSize:11,color:colors.sage6},
-    secLabel:{fontSize:11,fontWeight:500,color:colors.txm,margin:"10px 0 4px",letterSpacing:".04em"},
-    levelLabel:{fontSize:12,fontWeight:600,color:colors.sage8,margin:"14px 0 5px",borderBottom:`1px solid ${colors.sage2}`,paddingBottom:4},
-    grid:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:4},
-    card:(unlocked,isSel,isComp,isPhrase)=>({borderRadius:12,padding:12,cursor:unlocked?"pointer":"not-allowed",border:isSel?`2px solid ${colors.sage6}`:`1.5px solid ${isPhrase?colors.rosebr:colors.sage2}`,background:isSel?(isPhrase?colors.rosebg:colors.sage1):isComp?"#f0f7f0":colors.bg,opacity:unlocked?1:0.6,position:"relative",transition:"all .15s",borderLeft:isPhrase?`3px solid ${colors.rosebr}`:undefined}),
-    lcName:{fontSize:13,fontWeight:500,color:colors.tx},
-    lcCount:{fontSize:11,color:colors.txm,marginTop:3},
-    lcBar:{height:4,background:colors.bg3,borderRadius:3,marginTop:8,overflow:"hidden"},
-    lcFill:(p)=>({height:"100%",background:colors.sage4,borderRadius:3,width:p+"%"}),
-    lcTag:{fontSize:10,padding:"2px 7px",borderRadius:8,display:"inline-block",marginTop:5,background:colors.rosebg,color:colors.rose},
-    lockIcon:{position:"absolute",top:8,right:10,fontSize:13,color:colors.txl},
-    doneIcon:{position:"absolute",top:8,right:10,fontSize:13,color:colors.sage6},
-    panel:{background:colors.bg,border:`1.5px solid ${colors.sage2}`,borderRadius:14,padding:"16px 14px",marginBottom:12},
-    studyTop:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12},
-    studyName:{fontSize:13,fontWeight:500,color:colors.sage8},
-    studyProg:{fontSize:12,color:colors.txm},
-    phases:{display:"flex",gap:6,marginBottom:14},
-    ph:(active,type)=>{
-      const bg=active?(type===1?colors.goldbg:type===2?colors.sage1:type===3?colors.sage6:type===4?colors.purplebg:colors.bg2):colors.bg2;
-      const cl=active?(type===1?colors.gold:type===2?colors.sage8:type===3?"#fff":type===4?colors.purple:colors.txm):colors.txm;
-      return {flex:1,textAlign:"center",padding:"4px 4px",borderRadius:16,fontSize:10,border:`1px solid ${active&&type===1?colors.goldbr:active&&type>=2?colors.sage2:colors.bg3}`,background:bg,color:cl};
-    },
-    flashcard:(isPhrase)=>({border:`1.5px solid ${isPhrase?colors.rosebr:colors.sage2}`,borderLeft:isPhrase?`3px solid ${colors.rosebr}`:undefined,borderRadius:14,padding:"28px 16px",textAlign:"center",cursor:"pointer",minHeight:180,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",marginBottom:14,background:colors.bg,position:"relative",WebkitTapHighlightColor:"transparent"}),
-    badge:(phase)=>{
-      const bg=phase===0?colors.bg2:phase===1?colors.goldbg:phase===2?colors.sage1:phase===3?colors.sage6:colors.purplebg;
-      const cl=phase===0?colors.txm:phase===1?colors.gold:phase===2?colors.sage8:phase===3?"#fff":colors.purple;
-      return {position:"absolute",top:10,right:12,fontSize:11,padding:"3px 9px",borderRadius:10,fontWeight:500,background:bg,color:cl};
-    },
-    fcArt:{fontSize:13,color:colors.txm,marginBottom:4},
-    fcIt:{fontSize:28,fontWeight:500,color:colors.sage8,lineHeight:1.3},
-    fcTap:{fontSize:12,color:colors.txl,marginTop:10},
-    fcHint:{fontSize:12,color:colors.txm,marginTop:6,fontStyle:"italic"},
-    fcReveal:{marginTop:14,borderTop:`1px solid ${colors.sage1}`,paddingTop:14,width:"100%"},
-    fcDe:{fontSize:20,color:colors.tx,fontWeight:500},
-    fcEx:{fontSize:12,color:colors.txm,marginTop:8,fontStyle:"italic"},
-    btnRow:{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:8},
-    btn:(type)=>{
-      const styles={
-        show:{bg:colors.bg2,border:colors.sage2,cl:colors.tx},
-        wrong:{bg:colors.redbg,border:colors.redbr,cl:colors.red},
-        right:{bg:colors.sage1,border:colors.sage2,cl:colors.sage8},
-        next:{bg:colors.sage6,border:colors.sage6,cl:"#fff"},
-        known:{bg:colors.purplebg,border:colors.purplebr,cl:colors.purple}
-      };
-      const t=styles[type];
-      return {padding:"11px 20px",borderRadius:22,fontSize:13,cursor:"pointer",border:`1.5px solid ${t.border}`,background:t.bg,color:t.cl,fontWeight:500,WebkitTapHighlightColor:"transparent",minWidth:90};
-    },
-    knownNote:{fontSize:11,color:colors.txl,textAlign:"center",marginBottom:8},
-    endBox:{background:colors.sage1,border:`1.5px solid ${colors.sage2}`,borderRadius:14,padding:"1.5rem",textAlign:"center"},
-    endH:{color:colors.sage8,fontSize:18,marginBottom:6,fontWeight:500},
-    endP:{color:colors.txm,fontSize:13,marginBottom:14},
-    backBtn:{fontSize:13,color:colors.sage6,background:"none",border:"none",cursor:"pointer",marginBottom:10,padding:"4px 0"},
-  };
+  let cardDelay = 0;
 
   function LessonCard({ld}) {
     const idx = LESSON_DEFS.indexOf(ld);
@@ -1980,115 +2574,296 @@ function App() {
     const doneCnt = lessonMastered(st,ld);
     const p = Math.round(doneCnt/ld.words.length*100);
     const isSel = curLesson&&curLesson.name===ld.name;
-    const isComp = p>=70;
+    const delay = (cardDelay++)*0.025;
     return (
-      <div style={s.card(unlocked,isSel,isComp,ld.isPhrase)} onClick={()=>unlocked&&selectLesson(ld)}>
-        <div style={s.lcName}>{ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,"")}</div>
-        <div style={s.lcCount}>{ld.words.length} Wörter · {p}%</div>
-        <div style={s.lcBar}><div style={s.lcFill(p)}/></div>
-        {ld.isPhrase&&<span style={s.lcTag}>Phrasen</span>}
-        {!unlocked&&<span style={s.lockIcon}>🔒</span>}
-        {isComp&&unlocked&&<span style={s.doneIcon}>✓</span>}
-      </div>
+      <button type="button"
+        className={"lesson"+(ld.isPhrase?" phrase":"")+(unlocked?"":" locked")+(isSel?" sel":"")+(p>=70?" comp":"")}
+        style={{animationDelay:delay+"s"}}
+        onClick={()=>unlocked&&selectLesson(ld)} disabled={!unlocked}>
+        <span className="lesson-name">{ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,"")}</span>
+        <span className="lesson-count">{ld.words.length} {ld.isPhrase?"Phrasen":"Wörter"} · {p}%</span>
+        <span className="bar"><span style={{width:p+"%"}}/></span>
+        {!unlocked&&<span className="corner">🔒</span>}
+        {p>=70&&unlocked&&<span className="corner ok">✓</span>}
+      </button>
     );
   }
 
+  /* Kartenseiten je nach Modus */
+  const front = w && (eff==="sayIT" ? (
+    <>
+      <div className="face-label">Deutsch</div>
+      <div className="word de-big">{w.de}</div>
+      <div className="hint">Sag es auf Italienisch{w.phrase?"":" (mit oder ohne Artikel)"}</div>
+    </>
+  ) : (
+    <>
+      <div className="face-label">Italiano</div>
+      {!w.phrase&&w.art&&<div className="art">{w.art}</div>}
+      <div className="word">{w.it}</div>
+      {w.phrase&&<div className="hint">Phrasen-Karte: Was bedeutet das?</div>}
+      {mode==="card"
+        ? <div className="tap">Tippen zum Umdrehen</div>
+        : <div className="hint">Sag die deutsche Bedeutung</div>}
+    </>
+  ));
+  const back = w && (eff==="sayIT" ? (
+    <>
+      <div className="face-label">Italiano</div>
+      {!w.phrase&&w.art&&<div className="art">{w.art}</div>}
+      <div className="word">{w.it}</div>
+      <div className="ex">„{w.ex}“</div>
+      <div className="small-de">{w.de}</div>
+    </>
+  ) : (
+    <>
+      <div className="face-label">Deutsch</div>
+      <div className="word de-big">{w.de}</div>
+      <div className="ex">„{w.ex}“</div>
+      <div className="small-de">{(w.art&&!w.phrase?w.art+(w.art.endsWith("'")?"":" "):"")+w.it}</div>
+    </>
+  ));
+
+  const cardState = result==="ok" ? " good" : (result==="wrong"&&!flipped) ? " bad" : "";
+
   return (
-    <div style={s.wrap}>
-      <div style={s.title}>🇮🇹 Italiano Vokabeltrainer</div>
-
-      <div style={s.goalBox}>
-        <div style={s.goalTop}>
-          <span style={s.goalLabel}>Gesamtfortschritt ({TOTAL_GOAL} Wörter)</span>
-          <span style={s.goalPct}>{pct}%</span>
+    <div className="wrap">
+      <header className={"hero"+(view==="lessons"?"":" compact")}>
+        <div className="flag" aria-hidden="true"><i/><i/><i/></div>
+        <h1>Italiano <em>Vokabeltrainer</em></h1>
+        <div className="goal">
+          <div className="ring-wrap"><Ring pct={pct}/><span className="ring-pct">{pct}%</span></div>
+          <div className="goal-text">
+            <b>{done}</b> von {TOTAL_GOAL} Wörtern gelernt
+            <div className="io">
+              <button className="chip" onClick={()=>exportProgress(st)}>⬇ Export</button>
+              <button className="chip" onClick={()=>fileRef.current&&fileRef.current.click()}>⬆ Import</button>
+              <input ref={fileRef} type="file" accept=".json" hidden onChange={handleImport}/>
+            </div>
+            {importMsg&&<div className="import-msg">{importMsg}</div>}
+          </div>
         </div>
-        <div style={s.track}><div style={s.fill}/></div>
-        <div style={s.goalSub}>{done} von {TOTAL_GOAL} Wörtern gelernt</div>
-      </div>
+        {view==="lessons"&&(()=>{ const today=rw.dayCount[dayStr()]||0; const gp=Math.min(100,today/DAILY_GOAL*100); const nb=Object.keys(rw.badges).length; return (
+          <div className="rw">
+            <div className="rw-stats">
+              <div className={"rw-stat fire"+(currentStreak(rw)?" on":"")}><span className="rw-ic">🔥</span><b>{currentStreak(rw)}</b><small>{currentStreak(rw)===1?"Tag":"Tage"} Serie</small></div>
+              <div className="rw-stat bolt"><span className="rw-ic">⚡</span><b>{rw.bestCombo}</b><small>Rekord am Stück</small></div>
+              <button className="rw-stat medal" onClick={()=>setView("badges")}><span className="rw-ic">🏅</span><b>{nb}<i>/{BADGES.length}</i></b><small>Abzeichen</small></button>
+            </div>
+            <div className="daily">
+              <div className="daily-top"><span>Tagesziel</span><span>{today>=DAILY_GOAL?"✓ geschafft!":today+" / "+DAILY_GOAL+" Karten"}</span></div>
+              <div className={"daily-bar"+(today>=DAILY_GOAL?" done":"")}><span style={{width:gp+"%"}}/></div>
+            </div>
+          </div>); })()}
+      </header>
 
-      {/* Export / Import */}
-      <div style={s.ioRow}>
-        {importMsg&&<span style={s.importMsg}>{importMsg}</span>}
-        <button style={s.ioBtn} onClick={()=>exportProgress(st)}>⬇ Fortschritt exportieren</button>
-        <button style={s.ioBtn} onClick={()=>fileRef.current&&fileRef.current.click()}>⬆ Importieren</button>
-        <input ref={fileRef} type="file" accept=".json" style={{display:"none"}} onChange={handleImport}/>
-      </div>
+      {view==="lessons"&&(
+        <section className="fade-in">
+          <div className="sec-title">Lernmodus</div>
+          <div className="modes">
+            {MODES.map(m=>(
+              <button key={m.id} type="button" className={"mode"+(mode===m.id?" active":"")} onClick={()=>setMode(m.id)} aria-pressed={mode===m.id}>
+                <span className="mode-icon">{m.icon}</span>
+                <span className="mode-name">{m.name}</span>
+                <span className="mode-sub">{m.sub}</span>
+              </button>
+            ))}
+          </div>
+          {isSpeak&&!SR&&<div className="note warn">Dein Browser unterstützt keine Spracheingabe (z. B. Firefox). Du kannst die Antwort im Sprechmodus eintippen oder Chrome, Edge bzw. Safari nutzen.</div>}
 
-      {curLesson&&(
-        <div style={s.statsRow}>
-          <div style={s.stat}><div style={s.statN}>{curStats.neu}</div><div style={s.statL}>Neu</div></div>
-          <div style={s.stat}><div style={s.statN}>{curStats.lernen}</div><div style={s.statL}>In Übung</div></div>
-          <div style={s.stat}><div style={s.statN}>{curStats.gelernt}</div><div style={s.statL}>Gelernt</div></div>
-          <div style={s.stat}><div style={s.statN}>{curStats.bekannt}</div><div style={s.statL}>Bekannt</div></div>
-        </div>
+          {levels.map(lv=>(
+            <div key={lv}>
+              <div className="level"><span>{lv}</span></div>
+              <div className="grid">{vocabLessons.filter(l=>l.level===lv).map(ld=><LessonCard key={ld.name} ld={ld}/>)}</div>
+            </div>
+          ))}
+          <div className="level phrase"><span>Phrasen</span></div>
+          <div className="grid">{phraseLessons.map(ld=><LessonCard key={ld.name} ld={ld}/>)}</div>
+        </section>
       )}
 
       {view==="study"&&w&&(
-        <div>
-          <button style={s.backBtn} onClick={()=>setView("lessons")}>← Lektionen</button>
-          <div style={s.panel}>
-            <div style={s.studyTop}>
-              <span style={s.studyName}>{curLesson.name}</span>
-              <span style={s.studyProg}>{sidx+1} / {session.length}</span>
-            </div>
-            <div style={s.phases}>
-              {[0,1,2,3].map(i=>(
-                <div key={i} style={s.ph(c&&c.phase===i,i)}>
-                  {i===0?"Neu":i===1?"1. Wdh.":i===2?"2. Wdh.":"Gelernt"}
-                </div>
-              ))}
-            </div>
-            <div style={s.flashcard(!!w.phrase)} onClick={()=>!revealed&&setRevealed(true)}>
-              <span style={s.badge(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
-              {!w.phrase&&<div style={s.fcArt}>{w.art||""}</div>}
-              <div style={s.fcIt}>{w.it}</div>
-              {w.phrase&&<div style={s.fcHint}>Phrasen-Karte — was bedeutet das?</div>}
-              {!revealed&&<div style={s.fcTap}>Tippen zum Aufdecken</div>}
-              {revealed&&(
-                <div style={s.fcReveal}>
-                  <div style={s.fcDe}>{w.de}</div>
-                  <div style={s.fcEx}>{w.ex}</div>
-                </div>
-              )}
-            </div>
-            <div style={s.btnRow}>
-              {!revealed
-                ?<button style={s.btn("show")} onClick={()=>setRevealed(true)}>Aufdecken</button>
-                :<>
-                  <button style={s.btn("wrong")} onClick={()=>doAnswer(false,false)}>Noch nicht</button>
-                  <button style={s.btn("right")} onClick={()=>doAnswer(true,false)}>Gewusst!</button>
-                  <button style={s.btn("known")} onClick={()=>doAnswer(false,true)}>Bereits bekannt</button>
-                </>
-              }
-            </div>
-            {revealed&&<div style={s.knownNote}>„Bereits bekannt" entfernt die Karte dauerhaft aus allen Übungen.</div>}
+        <section className="fade-in">
+          <div className="study-top">
+            <button className="back" onClick={()=>setView("lessons")}>← Lektionen</button>
+            <span className="mode-pill">{MODES.find(m=>m.id===mode).icon} {MODES.find(m=>m.id===mode).name}</span>
           </div>
-        </div>
+          {isSpeak&&SR&&(
+            <label className="auto-toggle">
+              <input type="checkbox" checked={autoListen} onChange={e=>setAutoListen(e.target.checked)}/>
+              <span className="sw" aria-hidden="true"/> Automatisch zuhören
+            </label>
+          )}
+          <div className="combo-row">
+            <span className={"combo"+(rw.combo>=5?" hot":"")+(rw.combo>=rw.bestCombo&&rw.combo>=3?" rec":"")} key={rw.combo}>⚡ {rw.combo} <small>in Folge</small></span>
+            <span className="combo-best">Rekord: {rw.bestCombo}</span>
+          </div>
+          <div className="study-head">
+            <span className="study-name">{curLesson.name}</span>
+            <span className="study-prog">{sidx+1} / {session.length}</span>
+          </div>
+          <div className="progress"><span style={{width:((sidx)/session.length*100)+"%"}}/></div>
+
+          {curStats&&(
+            <div className="stats">
+              <div><b>{curStats.neu}</b>Neu</div>
+              <div><b>{curStats.lernen}</b>In Übung</div>
+              <div><b>{curStats.gelernt}</b>Gelernt</div>
+              <div><b>{curStats.bekannt}</b>Bekannt</div>
+            </div>
+          )}
+
+          <div className="phases">
+            {[0,1,2,3].map(i=>(
+              <span key={i} className={"ph ph"+i+(c&&c.phase===i?" on":"")}>{i===0?"Neu":i===1?"1. Wdh.":i===2?"2. Wdh.":"Gelernt"}</span>
+            ))}
+          </div>
+
+          <div className="scene" key={sidx+"-"+mode}>
+            {mode==="mix"&&<div className={"dir-tag "+eff}>{eff==="sayIT"?"🇩🇪 → 🇮🇹 Auf Italienisch sagen":"🇮🇹 → 🇩🇪 Auf Deutsch sagen"}</div>}
+            <div className={"shaker"+(shake%2?" s1":" s2")+(result==="wrong"&&!flipped?" go":"")} key={shake}>
+              <div className={"flip"+(flipped?" flipped":"")+cardState+(w.phrase?" phrase":"")}
+                onClick={()=>{ if(!isSpeak || result || seen){ setFlipped(f=>!f); setSeen(true);} }}
+                role="button" tabIndex={0} aria-label="Karteikarte">
+                <div className="face front">
+                  <span className={"badge b"+(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
+                  {front}
+                  {hasVoice&&eff!=="sayIT"&&<button className="tts" onClick={(e)=>{e.stopPropagation();speak(w.it);}} aria-label="Vorlesen">🔊</button>}
+                </div>
+                <div className="face back">
+                  <span className={"badge b"+(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
+                  {result==="ok"&&<div className="stamp">Giusto!</div>}
+                  {back}
+                  {hasVoice&&<button className="tts" onClick={(e)=>{e.stopPropagation();speak(w.it);}} aria-label="Vorlesen">🔊</button>}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Karteikarten-Modus */}
+          {!isSpeak&&(
+            <div className="actions">
+              {!seen
+                ? <button className="btn show" onClick={()=>{setFlipped(true);setSeen(true);}}>Aufdecken</button>
+                : <>
+                    <button className="btn wrong" onClick={()=>doAnswer(false,false)}>Noch nicht</button>
+                    <button className="btn right" onClick={()=>doAnswer(true,false)}>Gewusst!</button>
+                    <button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button>
+                  </>}
+            </div>
+          )}
+
+          {/* Sprech-Modus */}
+          {isSpeak&&(
+            <div className="speak">
+              {result!=="ok"&&result!=="shown"&&(
+                <>
+                  <button className={"mic"+(listening?" live":"")} onClick={startListen} aria-label={listening?"Aufnahme stoppen":"Antwort einsprechen"}>
+                    <span className="mic-ring"/><span className="mic-ring r2"/>
+                    <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+                  </button>
+                  <div className="mic-label">{listening ? (speakLang==="it"?"Ascolto … sprich jetzt Italienisch":"Ich höre zu … sprich jetzt Deutsch") : tries ? "Nochmal versuchen" : "Tippen und "+(speakLang==="it"?"auf Italienisch":"auf Deutsch")+" sprechen"}</div>
+                </>
+              )}
+              {heard&&<div className={"heard"+(result==="ok"?" ok":result==="wrong"?" no":"")}>Erkannt: <b>„{heard}“</b></div>}
+              {result==="ok"&&<div className="feedback ok">✓ Richtig! Die Karte zählt als gewusst.</div>}
+              {speechMsg&&result!=="ok"&&<div className="feedback no">{speechMsg}</div>}
+
+              {result!=="ok"&&result!=="shown"&&(
+                <form className="typed" onSubmit={submitTyped}>
+                  <input value={typed} onChange={e=>setTyped(e.target.value)} placeholder={"oder eintippen ("+(speakLang==="it"?"Italienisch":"Deutsch")+")"} autoComplete="off" autoCapitalize="off" spellCheck="false" lang={speakLang}/>
+                  <button className="btn small" type="submit">Prüfen</button>
+                </form>
+              )}
+
+              <div className="actions">
+                {result==="ok" && <button className="btn next" onClick={()=>doAnswer(true,false)}>Weiter →</button>}
+                {result!=="ok" && result!=="shown" && (
+                  <button className="btn show" onClick={revealSolution}>Lösung zeigen</button>
+                )}
+                {result==="shown" && <>
+                  <button className="btn wrong" onClick={()=>doAnswer(false,false)}>Noch nicht</button>
+                  {tries>0&&<button className="btn right" onClick={()=>doAnswer(true,false)} title="Falls die Spracherkennung dich falsch verstanden hat">Doch gewusst</button>}
+                  <button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button>
+                </>}
+              </div>
+            </div>
+          )}
+          {seen&&result!=="ok"&&<div className="note">„Bereits bekannt“ entfernt die Karte dauerhaft aus allen Übungen.</div>}
+        </section>
       )}
 
       {view==="end"&&curLesson&&(
-        <div>
-          <button style={s.backBtn} onClick={()=>setView("lessons")}>← Lektionen</button>
-          <div style={s.endBox}>
-            <div style={s.endH}>Super gemacht! 🎉</div>
-            <div style={s.endP}>
-              {session.length} Karten · {lessonMastered(st,curLesson)} von {curLesson.words.length} gelernt ({Math.round(lessonMastered(st,curLesson)/curLesson.words.length*100)}%)
-            </div>
-            <button style={s.btn("next")} onClick={()=>selectLesson(curLesson)}>Neue Runde</button>
+        <section className="fade-in">
+          <button className="back" onClick={()=>setView("lessons")}>← Lektionen</button>
+          <div className="end">
+            <div className="end-emoji">🎉</div>
+            <h2>{session.length ? "Bravissimo!" : "Alles gelernt!"}</h2>
+            {session.length>0&&<p className="end-round"><span className="g">{roundStats.ok} gewusst</span> · <span className="r">{roundStats.no} noch nicht</span></p>}
+            <p>{lessonMastered(st,curLesson)} von {curLesson.words.length} gelernt ({Math.round(lessonMastered(st,curLesson)/curLesson.words.length*100)}%)</p>
+            {roundEvents.length>0&&(
+              <div className="end-events">
+                <div className="end-events-title">Neu in dieser Runde</div>
+                {roundEvents.map((e,i)=>(
+                  <div key={i} className={"end-ev ev-"+e.type} style={{animationDelay:(0.4+i*0.15)+"s"}}>
+                    <span className="end-ev-ic">{e.type==="record"?"⚡":e.type==="goal"?"🔥":e.badge.icon}</span>
+                    <span>{e.type==="record"?<>Neuer Rekord: <b>{Math.max(e.value, rw.bestCombo)} in Folge</b></>
+                      : e.type==="goal"?<>Tagesziel erreicht{e.streak>1?<> · <b>{e.streak} Tage Serie</b></>:null}</>
+                      : <>Abzeichen <b>{e.badge.name}</b> <small>{e.badge.desc}</small></>}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {session.length>0 || lessonMastered(st,curLesson)<curLesson.words.length
+              ? <button className="btn next" onClick={()=>selectLesson(curLesson)}>Neue Runde</button>
+              : <button className="btn next" onClick={()=>setView("lessons")}>Nächste Lektion wählen</button>}
           </div>
-        </div>
+        </section>
       )}
 
-      {view==="lessons"&&(
-        <div>
-          {levelGroups.map(({lv,lessons})=>(
-            <div key={lv}>
-              <div style={s.levelLabel}>── {lv} ──</div>
-              <div style={s.grid}>{lessons.map(ld=><LessonCard key={ld.name} ld={ld}/>)}</div>
+      {view==="badges"&&(
+        <section className="fade-in">
+          <button className="back" onClick={()=>setView("lessons")}>← Lektionen</button>
+          <h2 className="badges-h">Abzeichen <span>{Object.keys(rw.badges).length} / {BADGES.length}</span></h2>
+          <div className="rw-summary">
+            <div><b>{rw.totalCorrect}</b>richtige Antworten</div>
+            <div><b>{rw.bestCombo}</b>Rekord am Stück</div>
+            <div><b>{rw.bestGoalStreak}</b>längste Tagesserie</div>
+            <div><b>{rw.rounds}</b>Runden</div>
+          </div>
+          <div className="badges">
+            {BADGES.map((b,i)=>{ const got=rw.badges[b.id]; const v=Math.min(b.goal, b.val(rw,st)); return (
+              <div key={b.id} className={"badge-card"+(got?" got":"")} style={{animationDelay:(i*0.03)+"s"}}>
+                <div className="badge-ic">{got?b.icon:"🔒"}</div>
+                <div className="badge-name">{b.name}</div>
+                <div className="badge-desc">{b.desc}</div>
+                {got ? <div className="badge-date">{got.split("-").reverse().join(".")}</div>
+                     : <div className="badge-prog"><span style={{width:(v/b.goal*100)+"%"}}/></div>}
+              </div>); })}
+          </div>
+        </section>
+      )}
+
+      {toasts[0]&&(()=>{ const e=toasts[0]; return (
+        <div className={"toast t-"+e.type} key={e.key} role="status" aria-live="polite">
+          {e.type==="record"&&<><div className="toast-ic big">⚡</div><div><div className="toast-t">Neuer Rekord!</div><div className="toast-s"><b>{e.value}</b> richtig am Stück</div></div></>}
+          {e.type==="goal"&&<><div className="toast-ic big">🔥</div><div><div className="toast-t">Tagesziel geschafft!</div><div className="toast-s">{e.streak>1?<><b>{e.streak} Tage</b> in Folge{e.record?" · neuer Rekord":""}</>:"Morgen geht die Serie weiter"}</div></div></>}
+          {e.type==="badge"&&<><div className="toast-ic big">{e.badge.icon}</div><div><div className="toast-t">Abzeichen: {e.badge.name}</div><div className="toast-s">{e.badge.desc}</div></div></>}
+          {e.type==="combo"&&<><div className="toast-ic">⚡</div><div className="toast-t">{e.value} in Folge!</div></>}
+        </div>); })()}
+
+      {consentOpen&&(
+        <div className="modal-bg" onClick={()=>setConsentOpen(false)}>
+          <div className="modal" onClick={e=>e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="cons-h">
+            <h3 id="cons-h">🎙️ Spracheingabe einschalten?</h3>
+            <p>Die Spracherkennung macht nicht diese Seite, sondern dein Browser. Dafür schickt er deine Aufnahme meist an einen Dienst des Browser-Herstellers: bei <b>Chrome</b> an Google, bei <b>Edge</b> an Microsoft, bei <b>Safari</b> an Apple (teilweise wird direkt auf dem Gerät erkannt).</p>
+            <p>Diese Seite speichert und versendet keine Aufnahmen. Sprich nur die Vokabel, keine Namen oder persönlichen Dinge.</p>
+            <p className="small">Mehr dazu in der <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>. Ohne Zustimmung kannst du die Antwort einfach eintippen.</p>
+            <div className="actions">
+              <button className="btn show" onClick={()=>setConsentOpen(false)}>Lieber tippen</button>
+              <button className="btn next" onClick={acceptConsent}>Einverstanden</button>
             </div>
-          ))}
-          <div style={s.levelLabel}>── Phrasen ──</div>
-          <div style={s.grid}>{phraseLessons.map(ld=><LessonCard key={ld.name} ld={ld}/>)}</div>
+          </div>
         </div>
       )}
     </div>
@@ -2097,5 +2872,6 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
+
 </body>
 </html>
