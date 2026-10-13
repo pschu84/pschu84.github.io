@@ -2409,6 +2409,7 @@ function App() {
   const [hasVoice, speak] = useItalianVoice();
   const fileRef = useRef(null);
   const recRef = useRef(null);
+  const shownLoops = useRef(0);   // wie oft nach dem Aufdecken schon neu zugehört wurde
 
   const persist = useCallback((newSt)=>{ setSt(newSt); saveState(newSt); }, []);
   const setMode = (m)=>{ setModeState(m); lsSet(MODE_KEY, m); };
@@ -2456,6 +2457,7 @@ function App() {
   // Nach „weiß ich nicht“: automatisch auf „weiter“ hören
   useEffect(()=>{
     if (result!=="shown" || view!=="study" || !isSpeak || !autoListen || !speechOk || !SR) return;
+    shownLoops.current = 0;
     const t = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 900);
     return ()=>clearTimeout(t);
   },[result]);
@@ -2560,6 +2562,7 @@ function App() {
         decided = true;
         const alts = [txt]; for (let j=0;j<last.length;j++) alts.push(last[j].transcript);
         if (isCommand(alts, CMD_NEXT) || isCommand(alts, CMD_SKIP) || (w && checkSpoken(alts, target, speakLang, !!w.phrase).ok)) doAnswer(false,false);
+        else relistenShown();
         return;
       }
       if (last.isFinal) {
@@ -2569,19 +2572,26 @@ function App() {
         evaluate(alts);
       }
     };
+    // nach dem Aufdecken weiter zuhören, bis „weiter“ oder das Wort kommt (höchstens 10-mal am Stück)
+    function relistenShown(){
+      if (!autoListen || shownLoops.current >= 10) return;
+      shownLoops.current++;
+      clearAuto();
+      autoTimer.current = setTimeout(()=>startListenRef.current(true), 350);
+    }
     const retry = ()=>{ if (auto && attempt<3) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true, attempt+1), 400); return true; } return false; };
     r.onerror = (e)=>{
       if (recRef.current!==r) return;
       recRef.current = null;
       setListening(false);
       if (e.error==="aborted" || e.error==="audio-capture") { retry(); return; }
-      if (e.error==="no-speech") { if (result!=="shown") setSpeechMsg("Ich habe nichts gehört. Tippe aufs Mikrofon und sprich direkt los."); }
+      if (e.error==="no-speech") { if (result==="shown") relistenShown(); else setSpeechMsg("Ich habe nichts gehört. Tippe aufs Mikrofon und sprich direkt los."); }
       else if (auto && (e.error==="not-allowed" || e.error==="service-not-allowed")) setSpeechMsg("Tippe aufs Mikrofon, um zu sprechen.");
       else if (e.error==="not-allowed" || e.error==="service-not-allowed") setSpeechMsg("Das Mikrofon ist blockiert. Erlaube den Zugriff in den Browser-Einstellungen oder tippe die Antwort ein.");
       else if (e.error==="network") setSpeechMsg("Keine Verbindung zum Spracherkennungsdienst. Prüfe das Internet oder tippe die Antwort ein.");
       else if (e.error==="language-not-supported") setSpeechMsg("Diese Sprache wird von deinem Browser nicht erkannt. Tippe die Antwort ein.");
     };
-    r.onend = ()=>{ if (recRef.current===r) { recRef.current = null; setListening(false); } };
+    r.onend = ()=>{ if (recRef.current===r) { recRef.current = null; setListening(false); if (!decided && result==="shown") relistenShown(); } };
     recRef.current = r;
     setHeard(""); setSpeechMsg(null);
     try { r.start(); setListening(true); } catch { recRef.current = null; setListening(false); retry(); }
