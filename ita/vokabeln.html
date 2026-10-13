@@ -11,6 +11,8 @@
 <script src="italiano-vokabeln-a2.js"></script>
 <script src="italiano-vokabeln-b1.js"></script>
 <script src="italiano-vokabeln-b2.js"></script>
+<script src="italiano-vokabeln-c1.js"></script>
+<script src="italiano-phrasen.js"></script>
 <link rel="stylesheet" href="fonts/fonts.css">
 <script src="lib/confetti/confetti.browser.min.js"></script>
 <style>
@@ -2065,7 +2067,7 @@ LESSON_ORDER.forEach((n,i)=>{
 EXTRA_NAMES.forEach(e=>{ if(!FULL_ORDER.includes(e)) FULL_ORDER.push(e); });
 (function(){
   const seen = new Set();
-  LESSON_ORDER.forEach(n=>{ if(!n.startsWith("Phrasen")) (RAW[n]||[]).forEach(w=>seen.add(w.it.toLowerCase())); });
+  LESSON_ORDER.forEach(n=>{ (RAW[n]||[]).forEach(w=>seen.add(w.it.toLowerCase())); });
   FULL_ORDER.forEach(n=>{
     if (!EXTRA_NAMES.includes(n)) return;
     RAW[n] = EXTRA[n].filter(w=>{ const k=w.it.toLowerCase(); if(seen.has(k)) return false; seen.add(k); return true; });
@@ -2174,6 +2176,8 @@ const BADGES = [
   {id:"b1",    icon:"🍝", name:"B1 conquistato",   desc:"80 % aller B1-Vokabeln gelernt",    val:(r,st)=>Math.floor(levelPct(st,"B1")), goal:80},
   {id:"b2",    icon:"🎭", name:"B2 conquistato",   desc:"80 % aller B2-Vokabeln gelernt",    val:(r,st)=>Math.floor(levelPct(st,"B2")), goal:80},
   {id:"l2000", icon:"🌟", name:"Duemila parole",   desc:"2000 Vokabeln gelernt",             val:(r,st)=>totalDone(st), goal:2000},
+  {id:"c1",    icon:"🏅", name:"C1 conquistato",   desc:"80 % aller C1-Vokabeln gelernt",    val:(r,st)=>Math.floor(levelPct(st,"C1")), goal:80},
+  {id:"ph",    icon:"💬", name:"Parli come un italiano", desc:"200 Phrasen gelernt",     val:(r,st)=>{let n=0;LESSON_DEFS.forEach(l=>{if(l.isPhrase)l.words.forEach(w=>{if(getCard(st,l.name,w.it).phase>=3)n++;});});return n;}, goal:200},
   {id:"s25",   icon:"🎙️", name:"Prima voce",       desc:"25 Vokabeln richtig gesprochen",    val:r=>r.speechCorrect, goal:25},
   {id:"s100",  icon:"🗣️", name:"Chiacchierone",    desc:"100 Vokabeln richtig gesprochen",   val:r=>r.speechCorrect, goal:100},
   {id:"s500",  icon:"🎤", name:"Quasi madrelingua",desc:"500 Vokabeln richtig gesprochen",   val:r=>r.speechCorrect, goal:500},
@@ -2253,11 +2257,13 @@ const ART = {
 function stripArt(s, lang){ return s.replace(ART[lang], "").trim(); }
 
 function answerVariants(target, lang, isPhrase){
+  // „perso/a“, „vegetariano/a“: beide Endungen erlauben statt am Schrägstrich zu trennen
+  if (/[oe]\/[ai]\b/.test(target)) target = target.replace(/o\/a\b/g,"o").replace(/e\/i\b/g,"e") + " / " + target.replace(/o\/a\b/g,"a").replace(/e\/i\b/g,"i");
   const raw = new Set([target, target.replace(/[()]/g,""), target.replace(/\([^)]*\)/g,"")]);
   const parts = new Set();
   raw.forEach(x=>{
     parts.add(x);
-    const splitter = isPhrase ? /\s\/\s|\// : /\/|,|;|\soder\s|\so\s/;
+    const splitter = isPhrase ? /\s\/\s/ : /\/|,|;|\soder\s|\so\s/;
     x.split(splitter).forEach(p=>parts.add(p));
   });
   const out = new Set();
