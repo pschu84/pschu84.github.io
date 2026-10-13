@@ -288,6 +288,37 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Kompakte Lernansicht */
+.stats-line{font-size:11.5px;color:var(--muted);text-align:center;margin:-4px 0 10px}
+.stats-line b{color:var(--verde-d)}
+.study-top{gap:8px}
+.study-top .combo{font-size:14px;padding:4px 11px}
+.auto-toggle{margin:0;gap:6px;font-size:10.5px;line-height:1.1}
+.at-txt{text-align:left}
+@media (max-width:520px){
+  .hero.compact{display:none}
+  .wrap{padding-top:10px}
+  .study-top{margin-bottom:4px}
+  .study-name{font-size:14px}
+  .progress{margin-bottom:8px}
+  .scene{margin-bottom:10px}
+  .face{min-height:170px;padding:24px 14px 16px}
+  .word{font-size:28px}
+  .word.de-big{font-size:24px}
+  .ex{margin-top:6px;font-size:13px}
+  .dir-tag{margin-bottom:6px;padding:3px 10px;font-size:11.5px}
+  .speak{gap:7px}
+  .mic{width:70px;height:70px}
+  .mic svg{width:28px;height:28px}
+  .mic-side{width:70px}
+  .idk{width:70px;height:58px;font-size:10.5px}
+  .mic-label{font-size:12px}
+  .heard{padding:5px 12px;font-size:13px}
+  .feedback{font-size:13px}
+  .typed input{padding:8px 12px}
+  .note{display:none}
+}
 </style>
 </head>
 <body>
@@ -2717,38 +2748,20 @@ function App() {
         <section className="fade-in">
           <div className="study-top">
             <button className="back" onClick={()=>setView("lessons")}>← Lektionen</button>
-            <span className="mode-pill">{MODES.find(m=>m.id===mode).icon} {MODES.find(m=>m.id===mode).name}</span>
-          </div>
-          {isSpeak&&SR&&(
-            <label className="auto-toggle">
-              <input type="checkbox" checked={autoListen} onChange={e=>setAutoListen(e.target.checked)}/>
-              <span className="sw" aria-hidden="true"/> Automatisch zuhören
-            </label>
-          )}
-          <div className="combo-row">
-            <span className={"combo"+(rw.combo>=5?" hot":"")+(rw.combo>=rw.bestCombo&&rw.combo>=3?" rec":"")} key={rw.combo}>⚡ {rw.combo} <small>in Folge</small></span>
-            <span className="combo-best">Rekord: {rw.bestCombo}</span>
+            <span className={"combo"+(rw.combo>=5?" hot":"")+(rw.combo>=rw.bestCombo&&rw.combo>=3?" rec":"")} key={rw.combo} title="Richtig in Folge">⚡ {rw.combo} <small>· Rekord {rw.bestCombo}</small></span>
+            {isSpeak&&SR
+              ? <label className="auto-toggle" title="Automatisch zuhören">
+                  <input type="checkbox" checked={autoListen} onChange={e=>setAutoListen(e.target.checked)}/>
+                  <span className="sw" aria-hidden="true"/><span className="at-txt">Auto-<br/>Mikro</span>
+                </label>
+              : <span className="mode-pill">{MODES.find(m=>m.id===mode).icon}</span>}
           </div>
           <div className="study-head">
-            <span className="study-name">{curLesson.name}</span>
+            <span className="study-name">{MODES.find(m=>m.id===mode).icon} {curLesson.name}</span>
             <span className="study-prog">{sidx+1} / {session.length}</span>
           </div>
           <div className="progress"><span style={{width:((sidx)/session.length*100)+"%"}}/></div>
-
-          {curStats&&(
-            <div className="stats">
-              <div><b>{curStats.neu}</b>Neu</div>
-              <div><b>{curStats.lernen}</b>In Übung</div>
-              <div><b>{curStats.gelernt}</b>Gelernt</div>
-              <div><b>{curStats.bekannt}</b>Bekannt</div>
-            </div>
-          )}
-
-          <div className="phases">
-            {[0,1,2,3].map(i=>(
-              <span key={i} className={"ph ph"+i+(c&&c.phase===i?" on":"")}>{i===0?"Neu":i===1?"1. Wdh.":i===2?"2. Wdh.":"Gelernt"}</span>
-            ))}
-          </div>
+          {curStats&&<div className="stats-line"><b>{curStats.neu}</b> neu · <b>{curStats.lernen}</b> in Übung · <b>{curStats.gelernt}</b> gelernt · <b>{curStats.bekannt}</b> bekannt</div>}
 
           <div className="scene" key={sidx+"-"+mode}>
             {mode==="mix"&&<div className={"dir-tag "+eff}>{eff==="sayIT"?"🇩🇪 → 🇮🇹 Auf Italienisch sagen":"🇮🇹 → 🇩🇪 Auf Deutsch sagen"}</div>}
