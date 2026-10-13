@@ -49,6 +49,7 @@ button{font:inherit;color:inherit}
 .io{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .chip{font-size:12px;padding:6px 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--bg);cursor:pointer;transition:background .2s,transform .15s}
 .chip:hover{background:var(--verde-l)}.chip:active{transform:scale(.96)}
+.chip.off{opacity:.6}
 .import-msg{font-size:12px;color:var(--verde);margin-top:6px}
 
 /* Modus-Auswahl */
@@ -2237,6 +2238,50 @@ function exportProgress(st) {
   a.href = url; a.download = "italiano_fortschritt.json"; a.click();
   URL.revokeObjectURL(url);
 }
+/* ───────── Vibration (Haptik) ─────────
+   Android/Chrome: Vibration API mit Mustern.
+   iPhone (Safari ab iOS 18): kennt keine Vibration API; ersatzweise kurze
+   Haptik-Ticks über einen versteckten Schalter, nur nach Antippen möglich. */
+const HAPTIC_KEY = "itpro_haptic";
+let hapticOn = (function(){ try { return localStorage.getItem(HAPTIC_KEY)!=="0"; } catch { return true; } })();
+const canVibrate = typeof navigator!=="undefined" && typeof navigator.vibrate==="function";
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+let iosSwitch = null;
+function iosTick(){
+  try {
+    if (!iosSwitch) {
+      const lab = document.createElement("label");
+      lab.setAttribute("aria-hidden","true");
+      lab.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none";
+      const inp = document.createElement("input"); inp.type="checkbox"; inp.setAttribute("switch",""); inp.tabIndex=-1;
+      lab.appendChild(inp); document.body.appendChild(lab); iosSwitch = lab;
+    }
+    iosSwitch.click();
+  } catch {}
+}
+// Muster in ms: [vibrieren, Pause, vibrieren, ...]
+const HAPTIC = {
+  flip:    [14],                                   // Karte dreht sich: kurzer, weicher Tick
+  correct: [18, 60, 32],                           // richtig: zwei aufsteigende Impulse
+  wrong:   [45, 45, 45],                           // falsch: zwei harte Stöße (passend zum Wackeln)
+  combo:   [12, 40, 12, 40, 24],                   // 10 in Folge: kurzes Trommeln
+  badge:   [20, 50, 20, 50, 60],                   // Abzeichen: zwei Klopfer und ein Ausklang
+  goal:    [30, 40, 30, 40, 30, 80, 90],           // Tagesziel: Trommelwirbel mit Schlussakzent
+  record:  [25, 35, 25, 35, 25, 35, 25, 90, 140],  // Rekord: schneller Wirbel, langer Schluss
+  round:   [40, 70, 40, 70, 40, 70, 60, 120, 60, 120, 220] // Rundenende: Fanfare
+};
+function haptic(name){
+  if (!hapticOn) return;
+  const pat = HAPTIC[name] || [15];
+  if (canVibrate) { try { navigator.vibrate(pat); } catch {} return; }
+  if (isIOS) {
+    // jeder Impuls ein Tick, im Rhythmus des Musters (iOS lässt nur kurze Ticks zu)
+    let t = 0;
+    for (let i=0;i<pat.length;i+=2){ setTimeout(iosTick, t); t += pat[i] + (pat[i+1]||0); }
+  }
+}
+function setHaptic(on){ hapticOn = on; try { localStorage.setItem(HAPTIC_KEY, on?"1":"0"); } catch {} if (on) haptic("correct"); }
+
 function boom(opts){
   if (window.confetti) {
     try { window.confetti(Object.assign({particleCount:60,spread:70,origin:{y:.6},colors:["#2F7D4F","#ffffff","#C2412D","#E3B04B"],disableForReducedMotion:true},opts||{})); } catch {}
@@ -2385,6 +2430,8 @@ function App() {
   const [session, setSession] = useState([]);
   const [sidx, setSidx] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const firstFlip = useRef(true);
+  useEffect(()=>{ if (firstFlip.current) { firstFlip.current=false; return; } if (flipped) haptic("flip"); },[flipped]);
   const [seen, setSeen] = useState(false);
   const [view, setView] = useState("lessons");
   const [importMsg, setImportMsg] = useState(null);
@@ -2400,6 +2447,7 @@ function App() {
   const [shake, setShake] = useState(0);
   const [roundStats, setRoundStats] = useState({ok:0,no:0});
   const [rw, setRw] = useState(()=>loadRw());
+  const [hapticUi, setHapticUi] = useState(hapticOn);
   const [toasts, setToasts] = useState([]);
   const [roundEvents, setRoundEvents] = useState([]);
   const recordShownRef = useRef(false);
@@ -2476,6 +2524,7 @@ function App() {
   useEffect(()=>{
     if (!toasts.length) return;
     const e = toasts[0];
+    haptic(e.type);
     if (e.type==="record") boom({particleCount:120,spread:90,origin:{y:.25},colors:["#E3B04B","#fff3c4","#C2412D","#2F7D4F"]});
     else if (e.type==="goal") boom({particleCount:90,spread:80,origin:{y:.25},colors:["#E8772E","#F5B041","#C2412D"]});
     else if (e.type==="badge") boom({particleCount:70,spread:70,origin:{y:.25},colors:["#6B4BA0","#CDB8EC","#E3B04B"]});
@@ -2504,7 +2553,7 @@ function App() {
       setRoundEvents(x=>x.concat(ev.filter(e=>e.type!=="combo")));
       if (!roundEnd) celebrate(ev);
     }
-    if (roundEnd) { setView("end"); setTimeout(()=>boom({particleCount:160,spread:110}),250); }
+    if (roundEnd) { setView("end"); setTimeout(()=>{ boom({particleCount:160,spread:110}); haptic("round"); },250); }
     else setSidx(next);
   }
 
@@ -2525,10 +2574,11 @@ function App() {
     setHeard(r.heard);
     if (r.ok) {
       setResult("ok"); setFlipped(true); setSeen(true); setSpeechMsg(null);
+      setTimeout(()=>haptic("correct"), 120);
       clearAuto(); stopRec();
     } else {
       if (isCommand(alts, CMD_SKIP) || isCommand(alts, CMD_NEXT)) { revealSolution(); setSpeechMsg(null); return; }
-      setResult("wrong"); setTries(t=>t+1); setShake(s=>s+1);
+      setResult("wrong"); setTries(t=>t+1); setShake(s=>s+1); haptic("wrong");
       // bei Fehler automatisch noch einmal zuhören (höchstens 2-mal)
       if (autoListen && tries<2) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
       setSpeechMsg(r.sim>=.6 ? "Fast! Versuch es noch einmal deutlicher." : "Das war leider nicht richtig.");
@@ -2736,6 +2786,7 @@ function App() {
             <div className="io">
               <button className="chip" onClick={()=>exportProgress(st)}>⬇ Export</button>
               <button className="chip" onClick={()=>fileRef.current&&fileRef.current.click()}>⬆ Import</button>
+              {(canVibrate||isIOS)&&<button className={"chip"+(hapticUi?"":" off")} onClick={()=>{ const v=!hapticUi; setHaptic(v); setHapticUi(v); }} aria-pressed={hapticUi}>{hapticUi?"📳 Vibration an":"📴 Vibration aus"}</button>}
               <input ref={fileRef} type="file" accept=".json" hidden onChange={handleImport}/>
             </div>
             {importMsg&&<div className="import-msg">{importMsg}</div>}
@@ -2827,7 +2878,7 @@ function App() {
                 ? <button className="btn show" onClick={()=>{setFlipped(true);setSeen(true);}}>Aufdecken</button>
                 : <>
                     <button className="btn wrong" onClick={()=>doAnswer(false,false)}>Noch nicht</button>
-                    <button className="btn right" onClick={()=>doAnswer(true,false)}>Gewusst!</button>
+                    <button className="btn right" onClick={()=>{ haptic("correct"); doAnswer(true,false); }}>Gewusst!</button>
                     <button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button>
                   </>}
             </div>
