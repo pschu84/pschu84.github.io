@@ -50,6 +50,12 @@ button{font:inherit;color:inherit}
 .chip{font-size:12px;padding:6px 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--bg);cursor:pointer;transition:background .2s,transform .15s}
 .chip:hover{background:var(--verde-l)}.chip:active{transform:scale(.96)}
 .chip.off{opacity:.6}
+.hapwrap{position:relative;display:inline-flex}
+.hapwrap.block{display:flex}
+.hapwrap.block>button{flex:1}
+.hapin{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:.011;z-index:5;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.scene{position:relative}
+.card-hap{z-index:8;clip-path:polygon(0 0,100% 0,100% calc(100% - 56px),calc(100% - 56px) calc(100% - 56px),calc(100% - 56px) 100%,0 100%)}
 .import-msg{font-size:12px;color:var(--verde);margin-top:6px}
 
 /* Modus-Auswahl */
@@ -2239,26 +2245,15 @@ function exportProgress(st) {
   URL.revokeObjectURL(url);
 }
 /* ───────── Vibration (Haptik) ─────────
-   Android/Chrome: Vibration API mit Mustern.
-   iPhone (Safari ab iOS 18): kennt keine Vibration API; ersatzweise kurze
-   Haptik-Ticks über einen versteckten Schalter, nur nach Antippen möglich. */
+   Android/Chrome: Vibrations-Schnittstelle mit Mustern.
+   iPhone: Safari lässt eine Seite nicht selbst vibrieren. Es klopft nur, wenn der Finger
+   direkt auf einem Schalter (input type=checkbox switch) landet. Deshalb liegt über jeder
+   Tippfläche ein unsichtbarer Schalter (Komponente Hap). Ereignisse ohne Fingertipp
+   (Rekord nach Spracheingabe, Konfetti) können auf dem iPhone nicht klopfen. */
 const HAPTIC_KEY = "itpro_haptic";
 let hapticOn = (function(){ try { return localStorage.getItem(HAPTIC_KEY)!=="0"; } catch { return true; } })();
 const canVibrate = typeof navigator!=="undefined" && typeof navigator.vibrate==="function";
-const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
-let iosSwitch = null;
-function iosTick(){
-  try {
-    if (!iosSwitch) {
-      const lab = document.createElement("label");
-      lab.setAttribute("aria-hidden","true");
-      lab.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none";
-      const inp = document.createElement("input"); inp.type="checkbox"; inp.setAttribute("switch",""); inp.tabIndex=-1;
-      lab.appendChild(inp); document.body.appendChild(lab); iosSwitch = lab;
-    }
-    iosSwitch.click();
-  } catch {}
-}
+const USE_SWITCH = !canVibrate && (navigator.maxTouchPoints||0) > 0;
 // Muster in ms: [vibrieren, Pause, vibrieren, ...]
 const HAPTIC = {
   flip:    [14],                                   // Karte dreht sich: kurzer, weicher Tick
@@ -2273,12 +2268,20 @@ const HAPTIC = {
 function haptic(name){
   if (!hapticOn) return;
   const pat = HAPTIC[name] || [15];
-  if (canVibrate) { try { navigator.vibrate(pat); } catch {} return; }
-  if (isIOS) {
-    // jeder Impuls ein Tick, im Rhythmus des Musters (iOS lässt nur kurze Ticks zu)
-    let t = 0;
-    for (let i=0;i<pat.length;i+=2){ setTimeout(iosTick, t); t += pat[i] + (pat[i+1]||0); }
-  }
+  if (canVibrate) { try { navigator.vibrate(pat); } catch {} }
+}
+// Unsichtbarer Schalter über einer Tippfläche (nur iPhone/iPad ohne Vibrations-Schnittstelle)
+function Hap({children, block, on}){
+  const c = React.Children.only(children);
+  const handler = on || c.props.onClick;
+  const show = USE_SWITCH && hapticOn && !c.props.disabled && handler;
+  return (
+    <span className={"hapwrap"+(block?" block":"")}>
+      {c}
+      {show && <input type="checkbox" switch="" className="hapin" tabIndex={-1} aria-hidden="true"
+                 onClick={e=>{ e.stopPropagation(); handler(e); }}/>}
+    </span>
+  );
 }
 function setHaptic(on){ hapticOn = on; try { localStorage.setItem(HAPTIC_KEY, on?"1":"0"); } catch {} if (on) haptic("correct"); }
 
@@ -2724,7 +2727,7 @@ function App() {
     const isSel = curLesson&&curLesson.name===ld.name;
     const delay = (cardDelay++)*0.025;
     return (
-      <button type="button"
+      <Hap block><button type="button"
         className={"lesson"+(ld.isPhrase?" phrase":"")+(unlocked?"":" locked")+(isSel?" sel":"")+(p>=70?" comp":"")}
         style={{animationDelay:delay+"s"}}
         onClick={()=>unlocked&&selectLesson(ld)} disabled={!unlocked}>
@@ -2733,7 +2736,7 @@ function App() {
         <span className="bar"><span style={{width:p+"%"}}/></span>
         {!unlocked&&<span className="corner">🔒</span>}
         {p>=70&&unlocked&&<span className="corner ok">✓</span>}
-      </button>
+      </button></Hap>
     );
   }
 
@@ -2786,7 +2789,7 @@ function App() {
             <div className="io">
               <button className="chip" onClick={()=>exportProgress(st)}>⬇ Export</button>
               <button className="chip" onClick={()=>fileRef.current&&fileRef.current.click()}>⬆ Import</button>
-              {(canVibrate||isIOS)&&<button className={"chip"+(hapticUi?"":" off")} onClick={()=>{ const v=!hapticUi; setHaptic(v); setHapticUi(v); }} aria-pressed={hapticUi}>{hapticUi?"📳 Vibration an":"📴 Vibration aus"}</button>}
+              {(canVibrate||USE_SWITCH)&&<Hap><button className={"chip"+(hapticUi?"":" off")} onClick={()=>{ const v=!hapticUi; setHaptic(v); setHapticUi(v); }} aria-pressed={hapticUi}>{hapticUi?"📳 Vibration an":"📴 Vibration aus"}</button></Hap>}
               <input ref={fileRef} type="file" accept=".json" hidden onChange={handleImport}/>
             </div>
             {importMsg&&<div className="import-msg">{importMsg}</div>}
@@ -2811,11 +2814,11 @@ function App() {
           <div className="sec-title">Lernmodus</div>
           <div className="modes">
             {MODES.map(m=>(
-              <button key={m.id} type="button" className={"mode"+(mode===m.id?" active":"")} onClick={()=>setMode(m.id)} aria-pressed={mode===m.id}>
+              <Hap key={m.id}><button type="button" className={"mode"+(mode===m.id?" active":"")} onClick={()=>setMode(m.id)} aria-pressed={mode===m.id}>
                 <span className="mode-icon">{m.icon}</span>
                 <span className="mode-name">{m.name}</span>
                 <span className="mode-sub">{m.sub}</span>
-              </button>
+              </button></Hap>
             ))}
           </div>
           {isSpeak&&!SR&&<div className="note warn">Dein Browser unterstützt keine Spracheingabe (z. B. Firefox). Du kannst die Antwort im Sprechmodus eintippen oder Chrome, Edge bzw. Safari nutzen.</div>}
@@ -2851,6 +2854,8 @@ function App() {
           {curStats&&<div className="stats-line"><b>{curStats.neu}</b> neu · <b>{curStats.lernen}</b> in Übung · <b>{curStats.gelernt}</b> gelernt · <b>{curStats.bekannt}</b> bekannt</div>}
 
           <div className="scene" key={sidx+"-"+mode}>
+            {USE_SWITCH&&hapticUi&&(!isSpeak || result || seen)&&<input type="checkbox" switch="" className="hapin card-hap" tabIndex={-1} aria-hidden="true"
+               onClick={()=>{ setFlipped(f=>!f); setSeen(true); }}/>}
             {mode==="mix"&&<div className={"dir-tag "+eff}>{eff==="sayIT"?"🇩🇪 → 🇮🇹 Auf Italienisch sagen":"🇮🇹 → 🇩🇪 Auf Deutsch sagen"}</div>}
             <div className={"shaker"+(shake%2?" s1":" s2")+(result==="wrong"&&!flipped?" go":"")} key={shake}>
               <div className={"flip"+(flipped?" flipped":"")+cardState+(w.phrase?" phrase":"")}
@@ -2875,11 +2880,11 @@ function App() {
           {!isSpeak&&(
             <div className="actions">
               {!seen
-                ? <button className="btn show" onClick={()=>{setFlipped(true);setSeen(true);}}>Aufdecken</button>
+                ? <Hap><button className="btn show" onClick={()=>{setFlipped(true);setSeen(true);}}>Aufdecken</button></Hap>
                 : <>
-                    <button className="btn wrong" onClick={()=>doAnswer(false,false)}>Noch nicht</button>
-                    <button className="btn right" onClick={()=>{ haptic("correct"); doAnswer(true,false); }}>Gewusst!</button>
-                    <button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button>
+                    <Hap><button className="btn wrong" onClick={()=>doAnswer(false,false)}>Noch nicht</button></Hap>
+                    <Hap><button className="btn right" onClick={()=>{ haptic("correct"); doAnswer(true,false); }}>Gewusst!</button></Hap>
+                    <Hap><button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button></Hap>
                   </>}
             </div>
           )}
@@ -2891,11 +2896,11 @@ function App() {
                 <>
                   <div className="mic-row">
                     <span className="mic-side"/>
-                    <button className={"mic"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label={listening?"Aufnahme stoppen":"Antwort einsprechen"}>
+                    <Hap><button className={"mic"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label={listening?"Aufnahme stoppen":"Antwort einsprechen"}>
                       <span className="mic-ring"/><span className="mic-ring r2"/>
                       <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
-                    </button>
-                    <button className="idk" onClick={revealSolution}><span>🤷</span>Weiß ich<br/>nicht</button>
+                    </button></Hap>
+                    <Hap><button className="idk" onClick={revealSolution}><span>🤷</span>Weiß ich<br/>nicht</button></Hap>
                   </div>
                   <div className="mic-label">{listening ? (speakLang==="it"?"Ascolto … sprich jetzt Italienisch":"Ich höre zu … sprich jetzt Deutsch") : tries ? "Nochmal versuchen" : "Tippen und "+(speakLang==="it"?"auf Italienisch":"auf Deutsch")+" sprechen"}</div>
                   <div className="mic-hint">Nicht gewusst? Sag „{speakLang==="it"?"non lo so":"weiß ich nicht"}“</div>
@@ -2905,11 +2910,11 @@ function App() {
                 <>
                   <div className="mic-row">
                     <span className="mic-side sm"/>
-                    <button className="btn next big-next" onClick={()=>doAnswer(false,false)}>Weiter →</button>
-                    {SR&&speechOk ? <button className={"mic small"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label="„Weiter“ sagen">
+                    <Hap><button className="btn next big-next" onClick={()=>doAnswer(false,false)}>Weiter →</button></Hap>
+                    {SR&&speechOk ? <Hap><button className={"mic small"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label="„Weiter“ sagen">
                       <span className="mic-ring"/><span className="mic-ring r2"/>
                       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
-                    </button> : <span className="mic-side sm"/>}
+                    </button></Hap> : <span className="mic-side sm"/>}
                   </div>
                   <div className="mic-label">{listening ? "Sag „"+(speakLang==="it"?"avanti":"weiter")+"“ oder wiederhole das Wort" : "Tippe auf Weiter oder sag „"+(speakLang==="it"?"avanti":"weiter")+"“"}</div>
                 </>
@@ -2926,10 +2931,10 @@ function App() {
               )}
 
               <div className="actions">
-                {result==="ok" && <button className="btn next" onClick={()=>doAnswer(true,false)}>Weiter →</button>}
+                {result==="ok" && <Hap><button className="btn next" onClick={()=>doAnswer(true,false)}>Weiter →</button></Hap>}
                 {result==="shown" && <>
-                  {tries>0&&<button className="btn right" onClick={()=>doAnswer(true,false)} title="Falls die Spracherkennung dich falsch verstanden hat">Doch gewusst</button>}
-                  <button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button>
+                  {tries>0&&<Hap><button className="btn right" onClick={()=>doAnswer(true,false)} title="Falls die Spracherkennung dich falsch verstanden hat">Doch gewusst</button></Hap>}
+                  <Hap><button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button></Hap>
                 </>}
               </div>
             </div>
@@ -2960,8 +2965,8 @@ function App() {
               </div>
             )}
             {session.length>0 || lessonMastered(st,curLesson)<curLesson.words.length
-              ? <button className="btn next" onClick={()=>selectLesson(curLesson)}>Neue Runde</button>
-              : <button className="btn next" onClick={()=>setView("lessons")}>Nächste Lektion wählen</button>}
+              ? <Hap><button className="btn next" onClick={()=>selectLesson(curLesson)}>Neue Runde</button></Hap>
+              : <Hap><button className="btn next" onClick={()=>setView("lessons")}>Nächste Lektion wählen</button></Hap>}
           </div>
         </section>
       )}
