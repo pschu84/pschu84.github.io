@@ -233,6 +233,17 @@ button{font:inherit;color:inherit}
 .mic-ring{position:absolute;inset:0;border-radius:50%;border:3px solid var(--rosso);opacity:0}
 .mic.live .mic-ring{animation:ripple 1.4s ease-out infinite}
 .mic.live .mic-ring.r2{animation-delay:.7s}
+.mic-row{display:flex;align-items:center;justify-content:center;gap:14px}
+.mic-side{width:84px;flex:none}
+.mic-side.sm{width:56px}
+.idk{width:84px;height:64px;flex:none;border-radius:18px;border:2px solid var(--line);background:var(--paper);font:inherit;font-size:11.5px;font-weight:800;line-height:1.15;color:var(--muted);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .15s,background .2s,border-color .2s;-webkit-tap-highlight-color:transparent}
+.idk span{font-size:20px}
+.idk:hover{background:var(--oro-l);border-color:var(--oro-b);color:var(--oro)}
+.idk:active{transform:scale(.94)}
+.mic.small{width:56px;height:56px;flex:none}
+.big-next{padding:16px 30px;font-size:17px;min-width:160px}
+.mic-hint{font-size:11.5px;color:var(--soft);text-align:center;margin-top:-4px}
 .mic-label{font-size:13px;font-weight:700;color:var(--muted);text-align:center}
 .heard{font-size:14px;color:var(--muted);background:var(--paper);border:1.5px solid var(--line);padding:8px 14px;border-radius:14px;animation:pop .3s both;max-width:100%;text-align:center}
 .heard.ok{border-color:var(--verde);color:var(--verde-d)}
@@ -2256,6 +2267,12 @@ function phonKey(s, lang){
   k = k.replace(/([a-z])\1+/g, "$1");          // doppelte Buchstaben zusammenfassen
   return k.replace(/\s+/g," ").trim();
 }
+// Sprachbefehle: „weiß ich nicht“ deckt auf, „weiter“ geht zur nächsten Karte
+const CMD_SKIP = ["weiss ich nicht","weiss nicht","ich weiss es nicht","ich weiss nicht","keine ahnung","losung","losung zeigen","aufdecken","non lo so","non so","non lo","non me lo ricordo","non ricordo","boh","aiuto","soluzione"];
+const CMD_NEXT = ["weiter","nachste","nachstes","nachste karte","okay weiter","ok weiter","avanti","prossimo","prossima","vai avanti","andiamo"];
+function isCommand(alts, list){
+  return alts.some(a=>{ const t=" "+norm(a)+" "; return list.some(c=>t.includes(" "+c+" ")); });
+}
 function checkSpoken(alts, target, lang, isPhrase){
   const vars = answerVariants(target, lang, isPhrase);
   alts = alts.concat(alts.map(a=>digitsToWords(norm(a), lang)));
@@ -2384,6 +2401,13 @@ function App() {
 
   useEffect(()=>()=>{ clearAuto(); stopRec(); },[]);
 
+  // Nach „weiß ich nicht“: automatisch auf „weiter“ hören
+  useEffect(()=>{
+    if (result!=="shown" || view!=="study" || !isSpeak || !autoListen || !speechOk || !SR) return;
+    autoTimer.current = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 900);
+    return ()=>clearAuto();
+  },[result]);
+
   // Neue Karte im Sprechmodus: automatisch zuhören
   useEffect(()=>{
     if (view!=="study" || !isSpeak || !autoListen || !speechOk || !SR || !session[sidx]) return;
@@ -2449,6 +2473,7 @@ function App() {
       setResult("ok"); setFlipped(true); setSeen(true); setSpeechMsg(null);
       clearAuto(); stopRec();
     } else {
+      if (isCommand(alts, CMD_SKIP) || isCommand(alts, CMD_NEXT)) { revealSolution(); setSpeechMsg(null); return; }
       setResult("wrong"); setTries(t=>t+1); setShake(s=>s+1);
       // bei Fehler automatisch noch einmal zuhören (höchstens 2-mal)
       if (autoListen && tries<2) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
@@ -2475,8 +2500,14 @@ function App() {
       setHeard(txt);
       const last = e.results[e.results.length-1];
       // schon das Zwischenergebnis prüfen: passt es, sofort werten (nicht auf die Sprechpause warten)
-      if (!last.isFinal && w && checkSpoken([txt], target, speakLang, !!w.phrase).ok) {
+      if (!last.isFinal && result!=="shown" && w && checkSpoken([txt], target, speakLang, !!w.phrase).ok) {
         decided = true; evaluate([txt]); return;
+      }
+      if (last.isFinal && result==="shown") {
+        decided = true;
+        const alts = [txt]; for (let j=0;j<last.length;j++) alts.push(last[j].transcript);
+        if (isCommand(alts, CMD_NEXT) || isCommand(alts, CMD_SKIP) || (w && checkSpoken(alts, target, speakLang, !!w.phrase).ok)) doAnswer(false,false);
+        return;
       }
       if (last.isFinal) {
         decided = true;
@@ -2487,7 +2518,7 @@ function App() {
     };
     r.onerror = (e)=>{
       setListening(false);
-      if (e.error==="no-speech") setSpeechMsg("Ich habe nichts gehört. Tippe aufs Mikrofon und sprich direkt los.");
+      if (e.error==="no-speech") { if (result!=="shown") setSpeechMsg("Ich habe nichts gehört. Tippe aufs Mikrofon und sprich direkt los."); }
       else if (auto && (e.error==="not-allowed" || e.error==="service-not-allowed")) setSpeechMsg("Tippe aufs Mikrofon, um zu sprechen.");
       else if (e.error==="not-allowed" || e.error==="service-not-allowed") setSpeechMsg("Das Mikrofon ist blockiert. Erlaube den Zugriff in den Browser-Einstellungen oder tippe die Antwort ein.");
       else if (e.error==="network") setSpeechMsg("Keine Verbindung zum Spracherkennungsdienst. Prüfe das Internet oder tippe die Antwort ein.");
@@ -2758,11 +2789,29 @@ function App() {
             <div className="speak">
               {result!=="ok"&&result!=="shown"&&(
                 <>
-                  <button className={"mic"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label={listening?"Aufnahme stoppen":"Antwort einsprechen"}>
-                    <span className="mic-ring"/><span className="mic-ring r2"/>
-                    <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
-                  </button>
+                  <div className="mic-row">
+                    <span className="mic-side"/>
+                    <button className={"mic"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label={listening?"Aufnahme stoppen":"Antwort einsprechen"}>
+                      <span className="mic-ring"/><span className="mic-ring r2"/>
+                      <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+                    </button>
+                    <button className="idk" onClick={revealSolution}><span>🤷</span>Weiß ich<br/>nicht</button>
+                  </div>
                   <div className="mic-label">{listening ? (speakLang==="it"?"Ascolto … sprich jetzt Italienisch":"Ich höre zu … sprich jetzt Deutsch") : tries ? "Nochmal versuchen" : "Tippen und "+(speakLang==="it"?"auf Italienisch":"auf Deutsch")+" sprechen"}</div>
+                  <div className="mic-hint">Nicht gewusst? Sag „{speakLang==="it"?"non lo so":"weiß ich nicht"}“</div>
+                </>
+              )}
+              {result==="shown"&&(
+                <>
+                  <div className="mic-row">
+                    <span className="mic-side sm"/>
+                    <button className="btn next big-next" onClick={()=>doAnswer(false,false)}>Weiter →</button>
+                    {SR&&speechOk ? <button className={"mic small"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label="„Weiter“ sagen">
+                      <span className="mic-ring"/><span className="mic-ring r2"/>
+                      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+                    </button> : <span className="mic-side sm"/>}
+                  </div>
+                  <div className="mic-label">{listening ? "Sag „"+(speakLang==="it"?"avanti":"weiter")+"“ oder wiederhole das Wort" : "Tippe auf Weiter oder sag „"+(speakLang==="it"?"avanti":"weiter")+"“"}</div>
                 </>
               )}
               {heard&&<div className={"heard"+(result==="ok"?" ok":result==="wrong"?" no":"")}>Erkannt: <b>„{heard}“</b></div>}
@@ -2778,11 +2827,7 @@ function App() {
 
               <div className="actions">
                 {result==="ok" && <button className="btn next" onClick={()=>doAnswer(true,false)}>Weiter →</button>}
-                {result!=="ok" && result!=="shown" && (
-                  <button className="btn show" onClick={revealSolution}>Lösung zeigen</button>
-                )}
                 {result==="shown" && <>
-                  <button className="btn wrong" onClick={()=>doAnswer(false,false)}>Noch nicht</button>
                   {tries>0&&<button className="btn right" onClick={()=>doAnswer(true,false)} title="Falls die Spracherkennung dich falsch verstanden hat">Doch gewusst</button>}
                   <button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button>
                 </>}
@@ -2858,7 +2903,7 @@ function App() {
             <h3 id="cons-h">🎙️ Spracheingabe einschalten?</h3>
             <p>Die Spracherkennung macht nicht diese Seite, sondern dein Browser. Dafür schickt er deine Aufnahme meist an einen Dienst des Browser-Herstellers: bei <b>Chrome</b> an Google, bei <b>Edge</b> an Microsoft, bei <b>Safari</b> an Apple (teilweise wird direkt auf dem Gerät erkannt).</p>
             <p>Diese Seite speichert und versendet keine Aufnahmen. Sprich nur die Vokabel, keine Namen oder persönlichen Dinge.</p>
-            <p className="small">Mehr dazu in der <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>. Ohne Zustimmung kannst du die Antwort einfach eintippen.</p>
+            <p className="small">Mehr dazu in der <a href="/datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>. Ohne Zustimmung kannst du die Antwort einfach eintippen.</p>
             <div className="actions">
               <button className="btn show" onClick={()=>setConsentOpen(false)}>Lieber tippen</button>
               <button className="btn next" onClick={acceptConsent}>Einverstanden</button>
