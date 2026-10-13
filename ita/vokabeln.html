@@ -299,22 +299,24 @@ button{font:inherit;color:inherit}
 .auto-toggle{margin:0;gap:6px;font-size:10.5px;line-height:1.1}
 .at-txt{text-align:left}
 @media (max-width:520px){
-  .hero.compact{display:none}
+  .hero.compact{padding:13px 14px 10px;margin-bottom:12px}
+  .hero.compact h1{font-size:19px}
+  .hero.compact h1 em{font-size:14px}
   .wrap{padding-top:10px}
   .study-top{margin-bottom:4px}
   .study-name{font-size:14px}
   .progress{margin-bottom:8px}
-  .scene{margin-bottom:10px}
-  .face{min-height:170px;padding:24px 14px 16px}
+  .scene{margin-bottom:16px}
+  .face{min-height:235px;padding:32px 14px 22px}
   .word{font-size:28px}
   .word.de-big{font-size:24px}
   .ex{margin-top:6px;font-size:13px}
   .dir-tag{margin-bottom:6px;padding:3px 10px;font-size:11.5px}
   .speak{gap:7px}
-  .mic{width:70px;height:70px}
-  .mic svg{width:28px;height:28px}
-  .mic-side{width:70px}
-  .idk{width:70px;height:58px;font-size:10.5px}
+  .mic{width:76px;height:76px}
+  .mic svg{width:30px;height:30px}
+  .mic-side{width:76px}
+  .idk{width:76px;height:62px;font-size:11px}
   .mic-label{font-size:12px}
   .heard{padding:5px 12px;font-size:13px}
   .feedback{font-size:13px}
@@ -2310,8 +2312,20 @@ const CMD_NEXT = ["weiter","nachste","nachstes","nachste karte","okay weiter","o
 function isCommand(alts, list){
   return alts.some(a=>{ const t=" "+norm(a)+" "; return list.some(c=>t.includes(" "+c+" ")); });
 }
+// Spracherkennung schreibt manche Wörter als Zeichen („Punkt“ → „.“, „più“ → „+“)
+const SYMBOLS = {
+  de: {".":"punkt",",":"komma","?":"fragezeichen","!":"ausrufezeichen",":":"doppelpunkt",";":"semikolon","-":"minus","+":"plus","%":"prozent","&":"und","@":"at","/":"schrägstrich","=":"gleich","€":"euro"},
+  it: {".":"punto",",":"virgola","?":"punto interrogativo","!":"punto esclamativo",":":"due punti",";":"punto e virgola","-":"meno","+":"più","%":"per cento","&":"e","@":"chiocciola","/":"barra","=":"uguale","€":"euro"}
+};
+function symbolsToWords(s, lang){
+  const map = SYMBOLS[lang]; let out = (s||"").trim();
+  if (!out) return out;
+  if (map[out]) return map[out];                       // nur ein Zeichen erkannt
+  return out.replace(/[.,?!:;\-+%&@\/=€]/g, ch => " "+map[ch]+" ");
+}
 function checkSpoken(alts, target, lang, isPhrase){
   const vars = answerVariants(target, lang, isPhrase);
+  alts = alts.concat(alts.map(a=>symbolsToWords(a, lang)));
   alts = alts.concat(alts.map(a=>digitsToWords(norm(a), lang)));
   let best = 0, bestHeard = alts[0]||"";
   for (const alt of alts){
@@ -2423,8 +2437,9 @@ function App() {
   }
 
   function stopRec(){
-    try { recRef.current && recRef.current.abort(); } catch {}
+    const old = recRef.current;
     recRef.current = null;
+    if (old) { old.onresult = old.onerror = old.onend = null; try { old.abort(); } catch {} }
     setListening(false);
   }
 
@@ -2441,15 +2456,15 @@ function App() {
   // Nach „weiß ich nicht“: automatisch auf „weiter“ hören
   useEffect(()=>{
     if (result!=="shown" || view!=="study" || !isSpeak || !autoListen || !speechOk || !SR) return;
-    autoTimer.current = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 900);
-    return ()=>clearAuto();
+    const t = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 900);
+    return ()=>clearTimeout(t);
   },[result]);
 
   // Neue Karte im Sprechmodus: automatisch zuhören
   useEffect(()=>{
     if (view!=="study" || !isSpeak || !autoListen || !speechOk || !SR || !session[sidx]) return;
-    autoTimer.current = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 700);
-    return ()=>clearAuto();
+    const t = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 700);
+    return ()=>clearTimeout(t);
   },[sidx, session, mode, view, autoListen, speechOk]);
 
   function celebrate(ev){
@@ -2518,10 +2533,11 @@ function App() {
     }
   }
 
-  function startListen(auto){
+  function startListen(auto, attempt){
+    attempt = attempt || 0;
     if (!SR) { setSpeechMsg("Dein Browser unterstützt keine Spracheingabe. Nutze Chrome, Edge oder Safari oder tippe die Antwort unten ein."); return; }
     if (!speechOk) { if (!auto) setConsentOpen(true); return; }
-    if (listening) { if (!auto) { clearAuto(); stopRec(); } return; }
+    if (listening && !auto) { clearAuto(); stopRec(); return; }
     clearAuto();
     stopRec();
     const r = new SR();
@@ -2553,18 +2569,22 @@ function App() {
         evaluate(alts);
       }
     };
+    const retry = ()=>{ if (auto && attempt<3) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true, attempt+1), 400); return true; } return false; };
     r.onerror = (e)=>{
+      if (recRef.current!==r) return;
+      recRef.current = null;
       setListening(false);
+      if (e.error==="aborted" || e.error==="audio-capture") { retry(); return; }
       if (e.error==="no-speech") { if (result!=="shown") setSpeechMsg("Ich habe nichts gehört. Tippe aufs Mikrofon und sprich direkt los."); }
       else if (auto && (e.error==="not-allowed" || e.error==="service-not-allowed")) setSpeechMsg("Tippe aufs Mikrofon, um zu sprechen.");
       else if (e.error==="not-allowed" || e.error==="service-not-allowed") setSpeechMsg("Das Mikrofon ist blockiert. Erlaube den Zugriff in den Browser-Einstellungen oder tippe die Antwort ein.");
       else if (e.error==="network") setSpeechMsg("Keine Verbindung zum Spracherkennungsdienst. Prüfe das Internet oder tippe die Antwort ein.");
       else if (e.error==="language-not-supported") setSpeechMsg("Diese Sprache wird von deinem Browser nicht erkannt. Tippe die Antwort ein.");
     };
-    r.onend = ()=>setListening(false);
+    r.onend = ()=>{ if (recRef.current===r) { recRef.current = null; setListening(false); } };
     recRef.current = r;
     setHeard(""); setSpeechMsg(null);
-    try { r.start(); setListening(true); } catch { setListening(false); }
+    try { r.start(); setListening(true); } catch { recRef.current = null; setListening(false); retry(); }
   }
 
   function acceptConsent(){
