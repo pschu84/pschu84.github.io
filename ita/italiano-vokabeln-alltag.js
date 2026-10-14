@@ -653,4 +653,639 @@ corazziere|il|Kürassier (Präsidentengarde)|I corazzieri sono le guardie del Pr
 canaglia|la|Schurke / Gesindel|Quella canaglia mi ha imbrogliato!
 `
 });
+
+/* ---------- Teil 2 (e bis p) ---------- */
+add({
+"A2 – Essen & Küche 4": `
+focaccia|la|Focaccia (Fladenbrot)|La focaccia genovese è unta e salata.
+filetto|il|Filet|Prendo un filetto al pepe verde.
+finocchio|il|Fenchel|L'insalata di finocchi e arance è fresca.
+formaggino|il|Schmelzkäse|Il bambino mangia un formaggino.
+frittata|la|Omelett|Facciamo una frittata con le zucchine.
+fritto|il|Frittiertes / frittiert|Prendiamo un fritto misto di pesce.
+galletta|la|Zwieback / Reiswaffel|Mangio una galletta di riso.
+gassosa|la|Zitronenlimonade|Nonno beve il vino con la gassosa.
+gelatina|la|Gelee / Gelatine|La gelatina di frutta piace ai bambini.
+ghiacciolo|il|Wassereis|D'estate compro un ghiacciolo al limone.
+giardiniera|la|eingelegtes Gemüse|Serviamo il bollito con la giardiniera.
+gorgonzola|il|Gorgonzola|Gli gnocchi al gorgonzola sono cremosi.
+grana|il|Grana (Hartkäse)|Grattugia un po' di grana sulla pasta.
+grappa|la|Grappa|Dopo cena beviamo una grappa.
+grattugiato||gerieben|Vuoi il formaggio grattugiato?
+granturco|il|Mais|Il granturco serve per la polenta.
+guanciale|il|Backenspeck / Kopfkissen|La carbonara si fa con il guanciale.
+gustoso||schmackhaft|È un piatto semplice ma gustoso.
+infuso|l'|Aufguss / Kräutertee|Bevo un infuso di menta.
+lardo|il|Speck (fett)|Il lardo di Colonnata è famoso.
+legume|il|Hülsenfrucht|Ceci e lenticchie sono legumi.
+lessare||kochen (in Wasser)|Lessa le patate per venti minuti.
+limonata|la|Zitronenlimonade|Una limonata fresca, per favore.
+liquore|il|Likör|Il limoncello è un liquore al limone.
+lonza|la|Lende (Schwein)|Cuociamo la lonza al forno.
+maccherone|il|Makkaroni|I maccheroni al ragù sono un classico.
+macedonia|la|Obstsalat|Per dessert c'è la macedonia.
+macinare||mahlen|Macina il caffè fresco.
+maionese|la|Mayonnaise|Le patatine con la maionese.
+mandarino|il|Mandarine|A Natale mangiamo i mandarini.
+mascarpone|il|Mascarpone|Il tiramisù si fa con il mascarpone.
+melagrana|la|Granatapfel|La melagrana ha tanti chicchi rossi.
+merendina|la|Snack (Gebäck)|A scuola porto una merendina.
+merluzzo|il|Kabeljau|Il merluzzo fritto è buono.
+minestrone|il|Gemüsesuppe|D'inverno mangio il minestrone.
+mortadella|la|Mortadella|Un panino con la mortadella!
+mostarda|la|Senffrüchte|La mostarda di Cremona è piccante e dolce.
+nocciolina|la|Erdnuss|Al bar ci danno le noccioline.
+oliera|l'|Öl- und Essigständer|Passami l'oliera, per favore.
+origano|l'|Oregano|Metti l'origano sulla pizza.
+`,
+"A2 – Essen & Küche 5": `
+ortaggio|l'|Gemüse(sorte)|Al mercato compro ortaggi freschi.
+orzo|l'|Gerste / Malzkaffee|Bevo un caffè d'orzo.
+ostrica|l'|Auster|Le ostriche si mangiano crude.
+pancarrè|il|Toastbrot|Il toast si fa con il pancarrè.
+pancetta|la|Bauchspeck|Rosolo la pancetta in padella.
+pandoro|il|Pandoro (Weihnachtskuchen)|A Natale mangiamo il pandoro.
+panettone|il|Panettone|Il panettone milanese ha l'uvetta.
+panzerotto|il|frittierte Teigtasche|In Puglia si mangiano i panzerotti.
+pappa|la|Brei|La pappa del bambino è pronta.
+passata|la|passierte Tomaten|Compra una bottiglia di passata.
+pasticcino|il|Törtchen|La domenica compriamo i pasticcini.
+pastina|la|kleine Suppennudeln|Quando sono malato mangio la pastina in brodo.
+patè|il|Pastete|Il patè di olive è buono sul pane.
+pecorino|il|Schafskäse|Il pecorino romano è salato.
+pelato|il|geschälte Tomate / kahl|Usa i pelati per il sugo.
+pesto|il|Pesto|Il pesto alla genovese ha basilico e pinoli.
+piadina|la|Piadina (Fladenbrot)|La piadina romagnola con prosciutto.
+pinolo|il|Pinienkern|Aggiungi i pinoli all'insalata.
+pistacchio|il|Pistazie|Il gelato al pistacchio è verde.
+pizzetta|la|kleine Pizza|Alla festa ci sono le pizzette.
+polenta|la|Polenta|La polenta con i funghi è buonissima.
+polpo|il|Krake|L'insalata di polpo è un antipasto.
+polipo|il|Krake / Polyp|Il polipo ha otto tentacoli.
+polpa|la|Fruchtfleisch / Fleisch|La polpa della pesca è succosa.
+polpetta|la|Frikadelle / Hackbällchen|Le polpette al sugo sono della nonna.
+pollame|il|Geflügel|Il macellaio vende pollame.
+pompelmo|il|Grapefruit|Il succo di pompelmo è amaro.
+posata|la|Besteck(teil)|Metti le posate sul tavolo.
+primizia|la|Frühgemüse / Frühobst|Le fragole di aprile sono una primizia.
+impastare||kneten|Impasta la farina con l'acqua.
+imbottigliare||abfüllen|Il vino viene imbottigliato in cantina.
+inzuppare||eintunken / durchnässen|Inzuppo il biscotto nel latte.
+latteria|la|Milchgeschäft / Molkerei|Compro il burro in latteria.
+fornaio|il|Bäcker|Il fornaio inizia a lavorare alle tre.
+panettiere|il|Bäcker|Il panettiere vende pane caldo.
+pasticcere|il|Konditor|Il pasticcere prepara la torta nuziale.
+pescheria|la|Fischgeschäft|Compro il pesce in pescheria.
+filante||Fäden ziehend (Käse)|La mozzarella è filante.
+melograno|il|Granatapfel(baum)|Nel giardino c'è un melograno.
+`,
+"A2 – Tiere 3": `
+fagiano|il|Fasan|Il cacciatore ha preso un fagiano.
+falco|il|Falke|Il falco vola alto.
+felino|il|Katzentier / katzenhaft|Il leone è un felino.
+foca|la|Robbe|Le foche vivono nei mari freddi.
+fringuello|il|Fink|Il fringuello canta in primavera.
+gazza|la|Elster|La gazza ruba gli oggetti lucidi.
+ghiro|il|Siebenschläfer|Dormo come un ghiro.
+giaguaro|il|Jaguar|Il giaguaro vive nella foresta.
+gorilla|il|Gorilla|Il gorilla è molto forte.
+granchio|il|Krebs / Krabbe|Sulla spiaggia c'è un granchio.
+gufo|il|Eule / Uhu|Il gufo esce di notte.
+gru|la|Kranich / Kran|La gru solleva i mattoni.
+guaire||jaulen|Il cane guaisce dietro la porta.
+guinzaglio|il|Hundeleine|Tieni il cane al guinzaglio!
+ippopotamo|l'|Nilpferd|L'ippopotamo sta nel fiume.
+lepre|la|Hase|La lepre corre velocissima.
+leonessa|la|Löwin|La leonessa caccia per il branco.
+leopardo|il|Leopard|Il leopardo ha la pelle a macchie.
+lucciola|la|Glühwürmchen|D'estate si vedono le lucciole.
+lucertola|la|Eidechse|Una lucertola prende il sole sul muro.
+lumaca|la|Schnecke|Sei lento come una lumaca!
+mammifero|il|Säugetier|La balena è un mammifero.
+merlo|il|Amsel|Il merlo canta sul ramo.
+micio|il|Mieze / Kätzchen|Vieni qui, micio!
+mollusco|il|Weichtier|La cozza è un mollusco.
+muggire||muhen|La mucca muggisce nella stalla.
+muggito|il|Muhen|Si sente il muggito delle mucche.
+mugolare||winseln|Il cane mugola di notte.
+mungere||melken|Il contadino munge le mucche.
+ovile|l'|Schafstall|Le pecore tornano all'ovile.
+ovino||Schaf-|La carne ovina è tipica della Sardegna.
+panda|il|Panda|Il panda mangia bambù.
+pantera|la|Panther|La pantera nera è elegante.
+papera|la|junge Ente / Versprecher|Il giornalista ha fatto una papera in diretta.
+passero|il|Spatz|Un passero mangia le briciole.
+pavone|il|Pfau|Il pavone apre la coda.
+pettirosso|il|Rotkehlchen|Il pettirosso ha il petto arancione.
+pidocchio|il|Laus|In classe ci sono i pidocchi.
+pinguino|il|Pinguin|I pinguini non sanno volare.
+pinna|la|Flosse|Al mare metto le pinne.
+pipistrello|il|Fledermaus|Il pipistrello vola di notte.
+pollaio|il|Hühnerstall|Le galline sono nel pollaio.
+mangime|il|Futter|Compro il mangime per i pesci.
+morso|il|Biss|Il morso del cane fa male.
+morsicare||beißen|Il cane ha morsicato il postino.
+pascolare||weiden|Le mucche pascolano nel prato.
+muta|la|Meute / Neoprenanzug / Häutung|Il sub indossa la muta.
+fiuto|il|Spürsinn / Nase|Il cane ha un ottimo fiuto.
+fauna|la|Tierwelt|La fauna delle Alpi è ricca.
+`,
+"B1 – Pflanzen & Natur 2": `
+fieno|il|Heu|Le mucche mangiano il fieno.
+flora|la|Pflanzenwelt|La flora mediterranea è varia.
+frumento|il|Weizen|Il frumento serve per il pane.
+garofano|il|Nelke|Il garofano rosso è un simbolo.
+gelsomino|il|Jasmin|Il gelsomino profuma di sera.
+ghianda|la|Eichel|Lo scoiattolo raccoglie le ghiande.
+giungla|la|Dschungel|Nella giungla vivono le scimmie.
+glicine|il|Glyzinie|Il glicine copre il muro di viola.
+lavanda|la|Lavendel|I campi di lavanda sono viola.
+leccio|il|Steineiche|Il leccio è sempreverde.
+legna|la|Brennholz|Metti la legna nel camino.
+malva|la|Malve|La tisana alla malva fa bene alla gola.
+mimosa|la|Mimose|L'8 marzo si regala la mimosa.
+muschio|il|Moos|Il muschio cresce sulle pietre.
+ortica|l'|Brennnessel|Non toccare le ortiche!
+ortensia|l'|Hortensie|Le ortensie sono blu e rosa.
+palma|la|Palme|Sulla spiaggia ci sono le palme.
+papavero|il|Mohn|Nel campo ci sono papaveri rossi.
+pannocchia|la|Maiskolben|Arrostiamo le pannocchie.
+petalo|il|Blütenblatt|La rosa perde i petali.
+pigna|la|Tannenzapfen|Raccogliamo le pigne nel bosco.
+pineta|la|Pinienwald|Passeggiamo nella pineta vicino al mare.
+pioppo|il|Pappel|I pioppi crescono lungo il fiume.
+platano|il|Platane|Il viale è pieno di platani.
+primula|la|Primel|La primula fiorisce a marzo.
+potare||beschneiden (Pflanzen)|In inverno potiamo gli alberi.
+mietere||mähen / ernten|A luglio si miete il grano.
+fecondare||befruchten|Le api fecondano i fiori.
+fertilizzante|il|Dünger|Usa un fertilizzante naturale.
+granaio|il|Kornspeicher|Il grano è nel granaio.
+pagliaio|il|Heuhaufen|Cercare un ago in un pagliaio.
+podere|il|Gut / Bauernhof|Hanno un podere in Toscana.
+palude|la|Sumpf|La palude è piena di zanzare.
+penisola|la|Halbinsel|L'Italia è una penisola.
+lava|la|Lava|La lava scende dal vulcano.
+lido|il|Strand / Strandbad|Andiamo al lido.
+molo|il|Mole / Pier|Le barche sono legate al molo.
+pozzanghera|la|Pfütze|Il bambino salta nelle pozzanghere.
+gelo|il|Frost|Il gelo ha rovinato le piante.
+maltempo|il|Unwetter / schlechtes Wetter|Per il maltempo il traghetto non parte.
+piovoso||regnerisch|Novembre è un mese piovoso.
+polveroso||staubig|La strada è polverosa.
+fangoso||schlammig|Il sentiero è fangoso.
+pianeggiante||flach / eben|La zona è pianeggiante.
+fiorito||blühend|Il balcone è fiorito.
+piena|la|Hochwasser|Il fiume è in piena.
+pergola|la|Pergola / Laube|Mangiamo sotto la pergola.
+messe|la|Ernte|La messe è abbondante quest'anno.
+ozono|l'|Ozon|Il buco nell'ozono preoccupa gli scienziati.
+orma|l'|Fußspur|Ci sono orme di animali nella neve.
+`
+});
+
+add({
+"A2 – Haushalt & Bad 3": `
+federa|la|Kissenbezug|Cambia la federa del cuscino.
+fermaglio|il|Spange / Klammer|Ha un fermaglio nei capelli.
+fiammifero|il|Streichholz|Accendi il fornello con un fiammifero.
+fodera|la|Futter (Kleidung) / Bezug|La giacca ha la fodera di seta.
+fogna|la|Kanalisation|L'acqua va nella fogna.
+fontanella|la|Trinkbrunnen|A Roma ci sono tante fontanelle.
+forcina|la|Haarnadel|Ferma i capelli con una forcina.
+giravite|il|Schraubenzieher|Mi serve un giravite piccolo.
+gancio|il|Haken|Appendi lo strofinaccio al gancio.
+griglia|la|Grill / Gitter|Cuociamo le verdure sulla griglia.
+guardaroba|il|Kleiderschrank / Garderobe|Lascia il cappotto al guardaroba.
+lampadario|il|Kronleuchter / Deckenlampe|Il lampadario è di vetro di Murano.
+lavabo|il|Waschbecken|Il lavabo del bagno è nuovo.
+lavandino|il|Spülbecken / Waschbecken|I piatti sono nel lavandino.
+lavapiatti|la|Spülmaschine|Metti i bicchieri nella lavapiatti.
+lavello|il|Spüle|Il lavello è pieno di piatti.
+lucidare||polieren|Lucida le scarpe prima della festa.
+mobilio|il|Möbel (Gesamtheit)|Il mobilio è antico.
+molla|la|Feder (Metall)|La molla del materasso è rotta.
+multipresa|la|Mehrfachsteckdose|Collega tutto alla multipresa.
+oliare||ölen|Olia la catena della bici.
+paletta|la|Kehrschaufel / Kelle|Prendi scopa e paletta.
+panca|la|Bank|Ci sediamo sulla panca.
+paralume|il|Lampenschirm|Il paralume è giallo.
+paravento|il|Paravent / Wandschirm|Si cambia dietro il paravento.
+pattumiera|la|Mülleimer|Butta la carta nella pattumiera.
+persiana|la|Fensterladen|Chiudi le persiane, c'è troppo sole.
+pianoterra|il|Erdgeschoss|Abito al pianoterra.
+piastra|la|Herdplatte / Glätteisen|Accendi la piastra a induzione.
+piumino|il|Daunendecke / Daunenjacke|D'inverno dormo con il piumino.
+poggiapiedi|il|Fußstütze|Metti i piedi sul poggiapiedi.
+pomello|il|Knauf|Il pomello della porta è d'ottone.
+portacenere|il|Aschenbecher|Il portacenere è pieno.
+portachiavi|il|Schlüsselanhänger|Mi hanno regalato un portachiavi.
+portafinestra|la|Fenstertür|La portafinestra dà sul balcone.
+portaombrelli|il|Schirmständer|Metti l'ombrello nel portaombrelli.
+portamonete|il|Geldbörse (für Münzen)|Il portamonete è nella borsa.
+portineria|la|Pförtnerloge|Il pacco è in portineria.
+prolunga|la|Verlängerungskabel|Serve una prolunga per la lampada.
+palazzina|la|kleines Wohnhaus|Abitano in una palazzina di tre piani.
+imbuto|l'|Trichter|Versa l'olio con l'imbuto.
+insetticida|l'|Insektenspray|Spruzza l'insetticida contro le zanzare.
+guarnizione|la|Dichtung / Garnierung|La guarnizione del rubinetto perde.
+fasciatoio|il|Wickeltisch|Il fasciatoio è in bagno.
+posacenere|il|Aschenbecher|C'è un posacenere sul tavolo?
+`,
+"A2 – Kleidung & Spiel 2": `
+fibbia|la|Schnalle|La cintura ha una fibbia d'argento.
+fiocco|il|Schleife / Flocke|Il regalo ha un fiocco rosso.
+frangia|la|Pony (Frisur) / Fransen|Si è tagliata la frangia.
+giubba|la|Jacke / Uniformjacke|Il soldato indossa la giubba.
+grembiule|il|Schürze / Kittel|I bambini portano il grembiule a scuola.
+impermeabile|l'|Regenmantel / wasserdicht|Prendi l'impermeabile, piove.
+indumento|l'|Kleidungsstück|Porta indumenti caldi.
+infradito|l'|Flip-Flop|Al mare metto le infradito.
+minigonna|la|Minirock|Indossa una minigonna nera.
+mocassino|il|Mokassin|Porta mocassini marroni.
+mutandina|la|Slip / Höschen|Ha comprato mutandine di cotone.
+orecchino|l'|Ohrring|Ha perso un orecchino.
+occhiello|l'|Knopfloch|Metti un fiore all'occhiello.
+panciotto|il|Weste|Lo sposo indossa il panciotto.
+pantofola|la|Hausschuh|Metto le pantofole a casa.
+parrucca|la|Perücke|A Carnevale porta una parrucca blu.
+polsino|il|Manschette|La camicia ha i polsini bianchi.
+pettinatura|la|Frisur|Che bella pettinatura!
+figurina|la|Sammelbild|I bambini scambiano le figurine dei calciatori.
+filastrocca|la|Kinderreim|La maestra insegna una filastrocca.
+fionda|la|Steinschleuder|Il bambino gioca con la fionda.
+girotondo|il|Ringelreihen|I bambini fanno il girotondo.
+gomitolo|il|Wollknäuel|Il gatto gioca con il gomitolo.
+indovinello|l'|Rätsel|Ti faccio un indovinello.
+labirinto|il|Labyrinth|Ci siamo persi nel labirinto.
+marionetta|la|Marionette|Lo spettacolo di marionette piace ai bambini.
+nascondino|il|Versteckspiel|Giochiamo a nascondino!
+pallanuoto|la|Wasserball|L'Italia è forte nella pallanuoto.
+palloncino|il|Luftballon|Il palloncino vola via.
+pattinaggio|il|Eislaufen / Rollschuhlaufen|Facciamo pattinaggio sul ghiaccio.
+pattino|il|Schlittschuh / Rollschuh|Ho comprato pattini nuovi.
+petardo|il|Böller|A Capodanno si sparano i petardi.
+giornalino|il|Comicheft / Schülerzeitung|Leggo un giornalino di fumetti.
+gnomo|lo|Gnom / Zwerg|Nel giardino c'è uno gnomo di ceramica.
+fantoccio|il|Puppe / Strohmann|Bruciano un fantoccio a fine Carnevale.
+mummia|la|Mumie|Al museo egizio ci sono le mummie.
+pallottoliere|il|Rechenschieber (Kugel)|Il bambino conta con il pallottoliere.
+copertina|la|Decke (klein)|Il neonato dorme sotto una copertina.
+`,
+"B1 – Berufe & Rollen 2": `
+fabbro|il|Schmied / Schlosser|Il fabbro ripara il cancello.
+falegname|il|Tischler|Il falegname fa un tavolo di legno.
+ferroviere|il|Bahnangestellter|Mio nonno era ferroviere.
+fantino|il|Jockey|Il fantino vince il Palio.
+geometra|il|Bautechniker / Vermesser|Il geometra misura il terreno.
+geografo|il|Geograf|Il geografo studia le montagne.
+grossista|il|Großhändler|Compriamo dal grossista.
+guidatore|il|Fahrer|Il guidatore ha bevuto troppo.
+imbianchino|l'|Maler (Anstreicher)|L'imbianchino dipinge le pareti.
+istruttore|l'|Ausbilder / Trainer|L'istruttore di nuoto è paziente.
+libraio|il|Buchhändler|Il libraio mi consiglia un romanzo.
+macchinista|il|Lokführer|Il macchinista guida il treno.
+manovale|il|Hilfsarbeiter|Il manovale porta i mattoni.
+massaia|la|Hausfrau|La massaia fa la spesa al mercato.
+metalmeccanico|il|Metallarbeiter|I metalmeccanici sono in sciopero.
+mugnaio|il|Müller|Il mugnaio macina il grano.
+muratore|il|Maurer|Il muratore costruisce il muro.
+negoziante|il|Ladenbesitzer|Il negoziante abbassa la saracinesca.
+oculista|l'|Augenarzt|Vado dall'oculista per gli occhiali.
+orefice|l'|Goldschmied|L'orefice ripara la collana.
+orologiaio|l'|Uhrmacher|Porto l'orologio dall'orologiaio.
+ortolano|l'|Gemüsehändler|L'ortolano vende verdura fresca.
+oste|l'|Wirt|L'oste ci porta il vino della casa.
+palombaro|il|Taucher|Il palombaro scende in fondo al mare.
+paracadutista|il|Fallschirmspringer|Il paracadutista atterra nel prato.
+parroco|il|Pfarrer|Il parroco celebra la messa.
+posteggiatore|il|Parkwächter|Il posteggiatore ci trova un posto.
+madrina|la|Patin|La madrina regala una collanina.
+mendicante|il|Bettler|Un mendicante chiede qualche moneta.
+lattante|il|Säugling|Il lattante dorme tutto il giorno.
+maggiorenne||volljährig|In Italia si diventa maggiorenni a diciotto anni.
+pellegrino|il|Pilger|I pellegrini camminano verso Santiago.
+peccatore|il|Sünder|Siamo tutti peccatori.
+monaca|la|Nonne|La monaca vive in convento.
+monello|il|Lausbub|Quel monello ha rotto il vetro.
+furfante|il|Gauner|Quel furfante mi ha imbrogliato.
+galeotto|il|Sträfling|Il galeotto è scappato.
+ostaggio|l'|Geisel|I rapinatori prendono un ostaggio.
+mutilato|il|Versehrter / verstümmelt|È un mutilato di guerra.
+oppressore|l'|Unterdrücker|Il popolo si ribella all'oppressore.
+maniaco|il|Wahnsinniger / besessen|È un maniaco della pulizia.
+pettegolo||tratschsüchtig / Klatschbase|La vicina è pettegola.
+prepotente||herrschsüchtig / Tyrann|Non fare il prepotente!
+mancino||Linkshänder|Mio figlio è mancino.
+pellerossa|il|Indianer (veraltet)|Nei vecchi film ci sono i pellerossa.
+`,
+"B1 – Verkehr & Technik 3": `
+fanale|il|Scheinwerfer / Laterne|Il fanale posteriore è rotto.
+gasolio|il|Diesel|Questa macchina va a gasolio.
+locomotiva|la|Lokomotive|La vecchia locomotiva è a vapore.
+missile|il|Rakete|Il missile parte nello spazio.
+mitragliatrice|la|Maschinengewehr|Nel film si sente una mitragliatrice.
+motociclismo|il|Motorradsport|Il motociclismo è popolare in Italia.
+motociclista|il|Motorradfahrer|Il motociclista indossa il casco.
+motoscafo|il|Motorboot|Andiamo a Capri in motoscafo.
+navicella|la|Raumkapsel / Gondel|La navicella torna sulla Terra.
+oblò|l'|Bullauge|Dall'oblò si vede il mare.
+paracadute|il|Fallschirm|Si è lanciato con il paracadute.
+parafulmine|il|Blitzableiter|Il campanile ha un parafulmine.
+parabrezza|il|Windschutzscheibe|Il parabrezza è sporco.
+paraurti|il|Stoßstange|Ho ammaccato il paraurti.
+pedale|il|Pedal|Il pedale del freno è duro.
+pedalare||Rad fahren / treten|Pedalo fino al lago.
+pneumatico|lo|Reifen|Cambiamo gli pneumatici invernali.
+portabagagli|il|Gepäckträger / Kofferraum|Metti la valigia nel portabagagli.
+portaerei|la|Flugzeugträger|La portaerei è enorme.
+petroliera|la|Öltanker|Una petroliera è affondata.
+peschereccio|il|Fischerboot|Il peschereccio torna in porto.
+lamiera|la|Blech|Il tetto è di lamiera.
+lancetta|la|Zeiger (Uhr)|La lancetta segna le tre.
+lanterna|la|Laterne|La lanterna illumina il sentiero.
+ottone|l'|Messing|La maniglia è d'ottone.
+platino|il|Platin|L'anello è di platino.
+pendolo|il|Pendel|L'orologio a pendolo è antico.
+fornace|la|Brennofen|I mattoni cuociono nella fornace.
+fluoro|il|Fluor|Il dentifricio contiene fluoro.
+gettone|il|Spielmarke / Chip|Ci vuole un gettone per il carrello.
+evidenziatore|l'|Textmarker|Sottolinea con l'evidenziatore giallo.
+lapis|il|Bleistift (veraltet)|Scrive a lapis.
+pennarello|il|Filzstift|Colora con i pennarelli.
+manganello|il|Schlagstock|Il poliziotto ha un manganello.
+pallottola|la|Kugel (Waffe)|La pallottola ha colpito il muro.
+piccone|il|Spitzhacke|Il minatore usa il piccone.
+pialla|la|Hobel|Il falegname usa la pialla.
+pinza|la|Zange|Passami le pinze.
+pinzetta|la|Pinzette|Tolgo la spina con la pinzetta.
+lima|la|Feile|Si lima le unghie con la lima.
+limare||feilen|Lima le unghie.
+murare||zumauern|Hanno murato la vecchia porta.
+intonaco|l'|Putz|L'intonaco si stacca dal muro.
+fune|la|Seil|La funivia è appesa a una fune.
+frusta|la|Peitsche / Schneebesen|Monta le uova con la frusta.
+naufragio|il|Schiffbruch|Il naufragio del Titanic è famoso.
+navale||Schiffs- / Marine-|È un ingegnere navale.
+`,
+"B1 – Körper & Gesundheit 4": `
+fiala|la|Ampulle|Prendi una fiala al giorno.
+forfora|la|Schuppen (Haar)|Uso uno shampoo contro la forfora.
+fossetta|la|Grübchen|Ha le fossette quando ride.
+ganascia|la|Kiefer / Backe|Mi fa male la ganascia.
+gargarismo|il|Gurgeln|Fai i gargarismi con acqua e sale.
+gengiva|la|Zahnfleisch|Mi sanguinano le gengive.
+indigestione|l'|Magenverstimmung|Ho fatto indigestione di dolci.
+ingessare||eingipsen|Gli hanno ingessato il braccio.
+intestino|l'|Darm|L'intestino è lungo diversi metri.
+lebbra|la|Lepra|La lebbra oggi si può curare.
+lentiggine|la|Sommersprosse|Ha il viso pieno di lentiggini.
+mammella|la|Brust / Euter|Il cancro alla mammella si può prevenire.
+mestruazione|la|Menstruation|Ha mal di pancia per le mestruazioni.
+mignolo|il|kleiner Finger / kleiner Zeh|Ho sbattuto il mignolo del piede.
+occhiaia|l'|Augenring|Ho le occhiaie perché ho dormito poco.
+ombelico|l'|Bauchnabel|Ha un piercing all'ombelico.
+palato|il|Gaumen|Il vino è morbido al palato.
+palpebra|la|Augenlid|Ho la palpebra gonfia.
+paralisi|la|Lähmung|Dopo l'ictus ha una paralisi.
+paralizzato||gelähmt|È rimasto paralizzato dalla paura.
+peste|la|Pest / Plage|La peste del 1630 colpì Milano.
+piaga|la|Wunde / Plage|La disoccupazione è una piaga sociale.
+pipì|la|Pipi|Il bambino deve fare la pipì.
+pisolino|il|Nickerchen|Dopo pranzo faccio un pisolino.
+polpastrello|il|Fingerkuppe|Mi sono tagliato il polpastrello.
+massaggio|il|Massage|Ho bisogno di un massaggio.
+medicare||verarzten|L'infermiere medica la ferita.
+incurabile||unheilbar|È una malattia incurabile.
+omogeneizzato|l'|Babygläschen|Il bambino mangia l'omogeneizzato alla mela.
+pomata|la|Salbe|Metti la pomata sul livido.
+pastiglia|la|Tablette|Prendi una pastiglia per la gola.
+pasticca|la|Pastille / Tablette|Ho preso una pasticca per il mal di testa.
+lozione|la|Lotion|Uso una lozione dopo il sole.
+lacca|la|Haarspray / Lack|Si mette la lacca sui capelli.
+lametta|la|Rasierklinge|Cambia la lametta del rasoio.
+ovatta|l'|Watte|Pulisci con un po' d'ovatta.
+garza|la|Mullbinde|Copri la ferita con una garza.
+profilattico|il|Kondom / vorbeugend|Il profilattico protegge dalle malattie.
+pannolino|il|Windel|Cambia il pannolino al bambino.
+pannolone|il|Erwachsenenwindel|La nonna usa il pannolone.
+`
+});
+
+add({
+"B1 – Charakter & Eigenschaften 2": `
+fiducioso||zuversichtlich|Sono fiducioso, andrà bene.
+freddezza|la|Kälte / Kühle|Mi ha salutato con freddezza.
+garbo|il|Anstand / Takt|Parla sempre con garbo.
+genuino||echt / natürlich|Sono prodotti genuini della campagna.
+gioioso||fröhlich|È un bambino gioioso.
+grazioso||hübsch / niedlich|Che casetta graziosa!
+immaturo||unreif|È ancora immaturo per la sua età.
+impaziente||ungeduldig|Sono impaziente di partire.
+impreciso||ungenau|La traduzione è imprecisa.
+imprudente||unvorsichtig|È stato imprudente guidare con la neve.
+incivile||unzivilisiert / rücksichtslos|Buttare la carta per terra è incivile.
+incompleto||unvollständig|Il modulo è incompleto.
+inconsolabile||untröstlich|La bambina è inconsolabile.
+incontentabile||nie zufrieden|Il mio capo è incontentabile.
+incorreggibile||unverbesserlich|Sei incorreggibile!
+indescrivibile||unbeschreiblich|La vista è indescrivibile.
+indifeso||wehrlos|Il cucciolo è indifeso.
+indisciplinato||undiszipliniert|La classe è indisciplinata.
+inefficace||unwirksam|La medicina è inefficace.
+inerte||reglos / träge|Il corpo giaceva inerte.
+inesperto||unerfahren|È un guidatore inesperto.
+infame||niederträchtig / Verräter|È un'accusa infame.
+infedele||untreu|Il marito è infedele.
+inseparabile||unzertrennlich|Sono amici inseparabili.
+invidioso||neidisch|Non essere invidioso.
+invincibile||unbesiegbar|Si sente invincibile.
+irriconoscibile||nicht wiederzuerkennen|Con la barba sei irriconoscibile!
+istintivo||instinktiv|È stata una reazione istintiva.
+istruttivo||lehrreich|È un documentario istruttivo.
+laborioso||fleißig / mühsam|È un popolo laborioso.
+logoro||abgenutzt|Il cappotto è logoro.
+lucente||glänzend|Ha i capelli lucenti.
+mascherato||maskiert / verkleidet|Andiamo alla festa mascherati.
+nocivo||schädlich|Il fumo è nocivo alla salute.
+osceno||obszön|Ha fatto un gesto osceno.
+ostinato||stur / hartnäckig|È ostinato come un mulo.
+ovale||oval|Il tavolo è ovale.
+pauroso||ängstlich / furchterregend|Il mio cane è pauroso.
+peloso||haarig|Il cane è molto peloso.
+piccino||klein / Kleiner|Il piccino dorme.
+pieghevole||faltbar|Ho una bici pieghevole.
+pregiato||wertvoll / edel|È un vino pregiato.
+profumato||duftend|Il bucato è profumato.
+progressista||fortschrittlich|Ha idee progressiste.
+malizia|la|Bosheit / List|Lo ha detto senza malizia.
+modestia|la|Bescheidenheit|Parla con modestia dei suoi successi.
+pigrizia|la|Faulheit|La pigrizia è il suo difetto.
+maleducazione|la|Unhöflichkeit|Parlare con la bocca piena è maleducazione.
+nervosismo|il|Nervosität|C'è nervosismo prima della partita.
+inesperienza|l'|Unerfahrenheit|Ha sbagliato per inesperienza.
+popolarità|la|Beliebtheit|La sua popolarità è in crescita.
+ospitalità|l'|Gastfreundschaft|Grazie per l'ospitalità.
+`,
+"B1 – Verben 14": `
+evaporare||verdunsten|L'acqua evapora al sole.
+fiatare||atmen / einen Mucks machen|Non ha fiatato per tutta la sera.
+foderare||füttern / einschlagen (Buch)|Fodero i libri di scuola.
+galleggiare||schwimmen (an der Oberfläche)|Il legno galleggia.
+gironzolare||herumschlendern|Gironzoliamo per il centro.
+graffiare||kratzen|Il gatto mi ha graffiato.
+imballare||verpacken|Imballiamo i piatti per il trasloco.
+imbiancare||weißen / streichen|Imbianchiamo la cucina.
+imbrogliare||betrügen|Il venditore ci ha imbrogliato.
+imprigionare||einsperren|Lo hanno imprigionato per dieci anni.
+incamminarsi||sich auf den Weg machen|Ci incamminiamo verso il rifugio.
+incantare||verzaubern|La musica incanta il pubblico.
+incartare||einpacken|Può incartarlo? È un regalo.
+incatenare||anketten|Incatena la bici al palo.
+inchiodare||festnageln / scharf bremsen|Ha inchiodato davanti al semaforo.
+incitare||anfeuern|I tifosi incitano la squadra.
+incoronare||krönen|Il papa incoronò Carlo Magno.
+incrinare||einen Sprung bekommen / trüben|Il bicchiere si è incrinato.
+indietreggiare||zurückweichen|Il cane indietreggia spaventato.
+ingelosire||eifersüchtig machen|Vuole ingelosire la fidanzata.
+ingrandire||vergrößern|Ingrandisci la foto.
+innervosire||nervös machen|Il traffico mi innervosisce.
+inquinare||verschmutzen|Le macchine inquinano l'aria.
+insospettire||misstrauisch machen|Il suo silenzio mi insospettisce.
+intasare||verstopfen|Il traffico intasa le strade.
+intimidire||einschüchtern|Non farti intimidire!
+impallidire||erblassen|Quando ha sentito la notizia è impallidito.
+luccicare||glitzern|Il mare luccica al sole.
+maltrattare||misshandeln|Non maltrattare gli animali!
+marcire||verfaulen|La frutta marcisce al caldo.
+modellare||formen / modellieren|Modella l'argilla con le mani.
+multare||Bußgeld verhängen|Il vigile mi ha multato.
+odorare||riechen|Il cane odora la mia mano.
+ondeggiare||schwanken / wogen|Il grano ondeggia al vento.
+padroneggiare||beherrschen|Padroneggia tre lingue.
+parteggiare||Partei ergreifen|Parteggio per la squadra di casa.
+pestare||zerstampfen / treten auf|Mi hai pestato il piede!
+pitturare||streichen / malen|Pitturiamo la camera di azzurro.
+pizzicare||kneifen / jucken|Il maglione di lana pizzica.
+poggiare||stützen / liegen auf|Poggia la testa sul cuscino.
+propagandare||Propaganda machen für|Il partito propaganda le sue idee.
+prosciugare||trockenlegen|Il sole ha prosciugato il lago.
+`,
+"B1 – Alltag & Welt 4": `
+ettaro|l'|Hektar|Il podere è di cinque ettari.
+facilitazione|la|Erleichterung / Vergünstigung|Ci sono facilitazioni per gli studenti.
+fanteria|la|Infanterie|Il nonno era in fanteria.
+fessura|la|Spalt / Ritze|Entra aria dalla fessura.
+fidanzamento|il|Verlobung|Festeggiamo il fidanzamento.
+finimondo|il|Weltuntergang / Chaos|È successo il finimondo!
+fracasso|il|Krach|Che fracasso fanno i vicini!
+fruscio|il|Rascheln|Sento un fruscio tra le foglie.
+geometria|la|Geometrie|La geometria non è il mio forte.
+giretto|il|kleiner Rundgang|Facciamo un giretto in centro?
+giuria|la|Jury|La giuria assegna il premio.
+graffio|il|Kratzer|La macchina ha un graffio.
+grinza|la|Falte|La camicia è piena di grinze.
+imbroglio|l'|Betrug / Schwindel|È tutto un imbroglio!
+incasso|l'|Einnahme|L'incasso della serata è buono.
+insuccesso|l'|Misserfolg|Il film è stato un insuccesso.
+larghezza|la|Breite|Qual è la larghezza della porta?
+laccio|il|Schnürsenkel|Allaccia il laccio della scarpa.
+malaugurio|il|böses Omen|Non dirlo, porta malaugurio!
+malavita|la|Unterwelt|La malavita controlla il porto.
+maltrattamento|il|Misshandlung|Il maltrattamento degli animali è reato.
+massacro|il|Massaker|Il massacro è stato terribile.
+merceria|la|Kurzwarenladen|Compro i bottoni in merceria.
+meridione|il|Süden (Italiens)|Il meridione ha un clima caldo.
+meridiano|il|Meridian / Längengrad|Il meridiano di Greenwich passa per Londra.
+miscuglio|il|Gemisch|È un miscuglio di colori.
+nascondiglio|il|Versteck|Il gatto ha un nascondiglio sotto il letto.
+negazione|la|Verneinung|"Non" è una negazione.
+novella|la|Novelle|Il Decameron contiene cento novelle.
+obbiettivo|l'|Ziel / Objektiv|Il mio obbiettivo è imparare l'italiano.
+ospizio|l'|Altersheim|La nonna vive in un ospizio.
+padronato|il|Arbeitgeberschaft|Il padronato e i sindacati trattano.
+parabola|la|Gleichnis / Parabel / Satellitenschüssel|Gesù racconta una parabola.
+paraocchi|il|Scheuklappen|Ha i paraocchi, non vede altro.
+pareggio|il|Unentschieden|La partita finisce in pareggio.
+passeggio|il|Spaziergang / Promenade|La gente va a passeggio sul corso.
+pasticcio|il|Durcheinander / Auflauf|Che pasticcio hai combinato!
+peggioramento|il|Verschlechterung|C'è un peggioramento del tempo.
+pelletteria|la|Lederwarengeschäft|In questa pelletteria vendono borse.
+pentagono|il|Fünfeck|Disegna un pentagono.
+parallelepipedo|il|Quader|La scatola è un parallelepipedo.
+porcheria|la|Schweinerei / Mist|Non mangiare quella porcheria!
+porcellana|la|Porzellan|Il servizio è di porcellana.
+portafortuna|il|Glücksbringer|Il quadrifoglio è un portafortuna.
+locanda|la|Gasthaus|Dormiamo in una vecchia locanda.
+maiuscola|la|Großbuchstabe|I nomi si scrivono con la maiuscola.
+'ndrangheta|la|'Ndrangheta (Mafia in Kalabrien)|La 'ndrangheta è un'organizzazione criminale.
+feriale||Werktags-|L'orario feriale è diverso da quello festivo.
+forestale||Forst-|La guardia forestale controlla il bosco.
+fosforescente||phosphoreszierend|Le stelle fosforescenti brillano al buio.
+illegittimo||unrechtmäßig / unehelich|È un figlio illegittimo.
+letterale||wörtlich|È una traduzione letterale.
+oppresso||unterdrückt|Il popolo oppresso chiede libertà.
+oppressivo||drückend / unterdrückerisch|È un regime oppressivo.
+perpendicolare||senkrecht|Le due linee sono perpendicolari.
+penultimo||vorletzter|È il penultimo giorno di vacanza.
+plurale|il|Plural|Qual è il plurale di "uovo"?
+geometrico||geometrisch|È un disegno geometrico.
+ionico||ionisch|La costa ionica della Calabria è bellissima.
+numerazione|la|Nummerierung|Controlla la numerazione delle pagine.
+`,
+"B1 – Länder & Regionen 3": `
+friulano||friaulisch|Il frico è un piatto friulano.
+laziale||aus Latium|Roma è la città laziale più grande.
+ligure||ligurisch|Il pesto è una salsa ligure.
+lucano||aus der Basilikata|Matera è una città lucana.
+marchigiano||aus den Marken|Le olive all'ascolana sono marchigiane.
+molisano||aus Molise|Il Molise è piccolo, ma i molisani sono ospitali.
+gallese||walisisch|Il drago è il simbolo gallese.
+finlandese||finnisch / Finne|La sauna finlandese è caldissima.
+islandese||isländisch / Isländer|I cavalli islandesi sono piccoli.
+israeliano||israelisch / Israeli|Ha un collega israeliano.
+lettone||lettisch / Lette|Riga è la capitale lettone.
+libico||libysch / Libyer|Il deserto libico è immenso.
+lituano||litauisch / Litauer|Vilnius è la capitale lituana.
+lussemburghese||luxemburgisch|Il mio collega è lussemburghese.
+macedone||mazedonisch|Il lago di Ocrida è macedone.
+maltese||maltesisch / Malteser|Il maltese è una lingua particolare.
+marocchino||marokkanisch / Marokkaner|Il tè marocchino è alla menta.
+messicano||mexikanisch / Mexikaner|Il cibo messicano è piccante.
+montenegrino||montenegrinisch|La costa montenegrina è bella.
+norvegese||norwegisch / Norweger|I fiordi norvegesi sono spettacolari.
+palestinese||palästinensisch / Palästinenser|Ha un amico palestinese.
+peruviano||peruanisch / Peruaner|Machu Picchu è un sito peruviano.
+nordamericano||nordamerikanisch|Il mercato nordamericano è grande.
+giordano||jordanisch / Jordanier|Petra è una città giordana.
+`
+});
+/* Nachträge Teil 2 */
+add({
+"B1 – Alltag & Welt 4": `
+flauto|il|Flöte|Mia figlia suona il flauto.
+gemma|la|Edelstein / Knospe|L'anello ha una gemma verde.
+lenza|la|Angelschnur|Il pescatore lancia la lenza.
+mulino|il|Mühle|Il mulino a vento gira.
+nettare|il|Nektar / Saft|Le api raccolgono il nettare.
+paniere|il|Korb / Warenkorb|Il paniere è pieno di frutta.
+pergolato|il|Laubengang|Pranziamo sotto il pergolato.
+pezza|la|Flicken / Lappen|Metti una pezza sui pantaloni.
+pezzuola|la|Tüchlein|Pulisci gli occhiali con la pezzuola.
+pigione|la|Miete (veraltet)|Paga la pigione ogni mese.
+polverina|la|Pulver|Sciogli la polverina nell'acqua.
+portacipria|il|Puderdose|Ha un portacipria d'argento.
+manodopera|la|Arbeitskräfte|Manca manodopera in agricoltura.
+maestranza|la|Belegschaft / Handwerker|Le maestranze lavorano al restauro.
+`,
+"B1 – Berufe & Rollen 2": `
+figliastro|il|Stiefsohn|Ha un buon rapporto con il figliastro.
+finanziatore|il|Geldgeber|Il progetto cerca nuovi finanziatori.
+gobbo|il|Buckliger / bucklig|Non stare gobbo, raddrizza la schiena!
+`,
+"B1 – Verben 14": `
+oltrepassare||überschreiten|Non oltrepassare la linea gialla.
+piallare||hobeln|Il falegname pialla la tavola.
+`
+});
 })();
