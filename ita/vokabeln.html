@@ -2134,13 +2134,13 @@ function BildToggle({w}){
   return <button className={"vb-toggle"+(an?"":" off")} aria-label={an?"Bilder ausblenden":"Bilder einblenden"} title={an?"Bilder ausblenden":"Bilder einblenden"}
     onClick={(e)=>{ e.stopPropagation(); lsSet(BILD_KEY, an?"0":"1"); window.dispatchEvent(new Event("vb-toggle")); }}>🖼️</button>;
 }
-function Bild({w}){
+function Bild({w, front}){
   const an = useBilderAn();
   const [stufe,setStufe] = useState(0);
   useEffect(()=>setStufe(0),[w&&w.it]);
   if (!an || !w || w.phrase || !window.IT_BILD) return null;
   const b = window.IT_BILD(w.it,w.de);
-  if (!b) return null;
+  if (!b || (front && b.backOnly)) return null;
   if (b.type==="anim") return <div className="vbild" dangerouslySetInnerHTML={{__html:b.svg}}/>;
   if (stufe>1) return null;
   return (
@@ -2931,7 +2931,7 @@ function App() {
     <>
       <div className="face-label">Deutsch</div>
       <div className="word de-big">{w.de}</div>
-      <Bild w={w}/>
+      <Bild w={w} front/>
       <div className="hint">Sag es auf Italienisch{w.phrase?"":" (mit oder ohne Artikel)"}</div>
     </>
   ) : (
@@ -2939,7 +2939,7 @@ function App() {
       <div className="face-label">Italiano</div>
       {!w.phrase&&w.art&&<div className="art">{w.art}</div>}
       <div className="word">{w.it}</div>
-      <Bild w={w}/>
+      <Bild w={w} front/>
       {w.phrase&&<div className="hint">Phrasen-Karte: Was bedeutet das?</div>}
       {mode==="card"
         ? <div className="tap">Tippen zum Umdrehen</div>
