@@ -103,11 +103,11 @@ var S = {
 };
 
 var CSS = "\
-.vbild{display:flex;flex-direction:column;align-items:center;margin:2px 0 6px}\
-.vbild svg{width:168px;height:105px;overflow:visible}\
-.vbild img{width:104px;height:104px;object-fit:contain;border-radius:14px;background:#fff;padding:4px;box-shadow:0 1px 4px rgba(60,40,10,.12)}\
-.vbild .vb-cr{font-size:9px;color:var(--soft,#A79F90);margin-top:4px;line-height:1.3}\
-.vbild .vb-cr a{color:inherit}\
+.vbild{display:flex;flex-direction:column;align-items:center;margin:6px 0 0}\
+.vbild svg{width:116px;height:73px;overflow:visible}\
+.vbild img{width:72px;height:72px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;box-shadow:0 1px 3px rgba(60,40,10,.12)}\
+.vb-credit{max-width:640px;margin:18px auto 28px;padding:0 16px;font-size:11px;line-height:1.5;color:var(--soft,#A79F90);text-align:center}\
+.vb-credit a{color:inherit}\
 .vb-toggle{position:absolute;bottom:12px;left:12px;border:none;background:var(--bg,#FBF6EC);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer}\
 .vb-toggle.off{opacity:.45;filter:grayscale(1)}\
 .vbild g{transform-box:view-box}\

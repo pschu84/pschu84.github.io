@@ -346,6 +346,7 @@ button{font:inherit;color:inherit}
 </head>
 <body>
 <div id="root"></div>
+<footer class="vb-credit">Piktogramme auf den Karteikarten: Sergio Palao. Herkunft: <a href="https://arasaac.org" target="_blank" rel="noopener">ARASAAC</a>. Eigentümer: Regierung von Aragón (Spanien). Lizenz: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>. Die Piktogramme werden beim Anzeigen direkt von arasaac.org geladen. Animationen: eigene Grafiken.</footer>
 <script type="text/babel">
 const { useState, useCallback, useRef, useEffect } = React;
 
@@ -2144,8 +2145,7 @@ function Bild({w}){
   if (stufe>1) return null;
   return (
     <div className="vbild">
-      <img src={stufe===0?b.src:b.alt} alt="" loading="lazy" onError={()=>setStufe(s=>s+1)}/>
-      <div className="vb-cr">Piktogramm: Sergio Palao · <a href="https://arasaac.org" target="_blank" rel="noopener" onClick={e=>e.stopPropagation()}>ARASAAC</a> · Gobierno de Aragón · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener" onClick={e=>e.stopPropagation()}>CC BY-NC-SA 4.0</a></div>
+      <img src={stufe===0?b.src:b.alt} alt="" title="Piktogramm: Sergio Palao, ARASAAC, CC BY-NC-SA 4.0" loading="lazy" onError={()=>setStufe(s=>s+1)}/>
     </div>
   );
 }
@@ -2907,8 +2907,8 @@ function App() {
   const front = w && (eff==="sayIT" ? (
     <>
       <div className="face-label">Deutsch</div>
-      <Bild w={w}/>
       <div className="word de-big">{w.de}</div>
+      <Bild w={w}/>
       <div className="hint">Sag es auf Italienisch{w.phrase?"":" (mit oder ohne Artikel)"}</div>
     </>
   ) : (
@@ -2916,6 +2916,7 @@ function App() {
       <div className="face-label">Italiano</div>
       {!w.phrase&&w.art&&<div className="art">{w.art}</div>}
       <div className="word">{w.it}</div>
+      <Bild w={w}/>
       {w.phrase&&<div className="hint">Phrasen-Karte: Was bedeutet das?</div>}
       {mode==="card"
         ? <div className="tap">Tippen zum Umdrehen</div>
@@ -2926,16 +2927,16 @@ function App() {
     <>
       <div className="face-label">Italiano</div>
       {!w.phrase&&w.art&&<div className="art">{w.art}</div>}
-      <Bild w={w}/>
       <div className="word">{w.it}</div>
+      <Bild w={w}/>
       <div className="ex">„{w.ex}“</div>
       <div className="small-de">{w.de}</div>
     </>
   ) : (
     <>
       <div className="face-label">Deutsch</div>
-      <Bild w={w}/>
       <div className="word de-big">{w.de}</div>
+      <Bild w={w}/>
       <div className="ex">„{w.ex}“</div>
       <div className="small-de">{(w.art&&!w.phrase?w.art+(w.art.endsWith("'")?"":" "):"")+w.it}</div>
     </>
@@ -3031,7 +3032,7 @@ function App() {
                 <div className="face front">
                   <span className={"badge b"+(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
                   {front}
-                  {eff==="sayIT"&&<BildToggle w={w}/>}
+                  <BildToggle w={w}/>
                   {hasVoice&&eff!=="sayIT"&&<button className="tts" onClick={(e)=>{e.stopPropagation();sayAloud(w.it);}} aria-label="Vorlesen">🔊</button>}
                 </div>
                 <div className="face back">
