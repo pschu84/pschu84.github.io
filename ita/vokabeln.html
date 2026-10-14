@@ -2490,7 +2490,9 @@ function App() {
   const [hasVoice, speak] = useItalianVoice();
   const fileRef = useRef(null);
   const recRef = useRef(null);
-  const shownLoops = useRef(0);   // wie oft nach dem Aufdecken schon neu zugehört wurde
+  const shownLoops = useRef(0);
+  const [reading, setReading] = useState(false);   // liest gerade das italienische Wort vor
+  const doAnswerRef = useRef(null);   // wie oft nach dem Aufdecken schon neu zugehört wurde
 
   const persist = useCallback((newSt)=>{ setSt(newSt); saveState(newSt); }, []);
   const setMode = (m)=>{ setModeState(m); lsSet(MODE_KEY, m); };
@@ -2529,14 +2531,39 @@ function App() {
   useEffect(()=>{
     clearAuto();
     stopRec();
+    try { if (window.speechSynthesis && speechSynthesis.speaking) speechSynthesis.cancel(); } catch {}
     setFlipped(false); setSeen(false); setResult(null); setHeard("");
     setTries(0); setSpeechMsg(null); setTyped("");
   },[sidx, session, mode, view]);
 
   useEffect(()=>()=>{ clearAuto(); stopRec(); },[]);
 
-  // Nach „weiß ich nicht“: automatisch auf „weiter“ hören
+  // Nach „weiß ich nicht“ beim Übersetzen ins Italienische: italienisches Wort vorlesen,
+  // danach automatisch zur nächsten Karte (ohne selbst sprechen zu müssen)
+  const readAloudMode = result==="shown" && view==="study" && isSpeak && eff==="sayIT" && hasVoice;
   useEffect(()=>{
+    if (!readAloudMode) return;
+    const word = session[sidx]; if (!word) return;
+    clearAuto(); stopRec();
+    setReading(true);
+    const t0 = setTimeout(()=>{
+      speak(word.it);
+      let waited = 0;
+      const after = ()=>{
+        waited += 250;
+        if (window.speechSynthesis && speechSynthesis.speaking && waited < 10000) { autoTimer.current = setTimeout(after, 250); return; }
+        setReading(false);
+        if (!autoListen) { autoTimer.current = null; return; }
+        autoTimer.current = setTimeout(()=>{ autoTimer.current = null; doAnswerRef.current(false,false); }, 1500);
+      };
+      autoTimer.current = setTimeout(after, 500);
+    }, 500);
+    return ()=>{ clearTimeout(t0); setReading(false); };
+  },[result]);
+
+  // Nach „weiß ich nicht“ in den anderen Fällen: automatisch auf „weiter“ hören
+  useEffect(()=>{
+    if (readAloudMode) return;
     if (result!=="shown" || view!=="study" || !isSpeak || !autoListen || !speechOk || !SR) return;
     shownLoops.current = 0;
     const t = setTimeout(()=>{ if (!document.hidden) startListenRef.current(true); }, 900);
@@ -2590,6 +2617,7 @@ function App() {
     else setSidx(next);
   }
 
+  doAnswerRef.current = doAnswer;
   // Richtig gesprochen → automatisch als gewusst werten
   useEffect(()=>{
     if (result!=="ok") return;
@@ -2613,7 +2641,7 @@ function App() {
       if (isCommand(alts, CMD_SKIP) || isCommand(alts, CMD_NEXT)) { revealSolution(); setSpeechMsg(null); return; }
       setTries(t=>t+1); setShake(s=>s+1); haptic("wrong");
       // nach dem dritten Fehlversuch automatisch aufdecken, damit der Fluss nicht abreißt
-      if (autoListen && tries>=2) { clearAuto(); revealSolution(); setSpeechMsg("Hier ist die Lösung. Sag sie einfach nach oder sag „weiter“."); return; }
+      if (autoListen && tries>=2) { clearAuto(); revealSolution(); setSpeechMsg(eff==="sayIT"&&hasVoice ? "Hier ist die Lösung." : "Hier ist die Lösung. Sag sie einfach nach oder sag „weiter“."); return; }
       setResult("wrong");
       // bei Fehler automatisch noch einmal zuhören (höchstens 2-mal)
       if (autoListen) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
@@ -2678,7 +2706,7 @@ function App() {
     // Sprache gehört, aber nicht verschriftet: vor dem Aufdecken wie „weiß ich nicht“ behandeln
     function unclearSpeech(){
       clearAuto(); revealSolution();
-      setSpeechMsg("Das habe ich nicht verstanden, hier ist die Lösung. Sprich das Wort nach oder sag „weiter“.");
+      setSpeechMsg(eff==="sayIT"&&hasVoice ? "Das habe ich nicht verstanden, hier ist die Lösung." : "Das habe ich nicht verstanden, hier ist die Lösung. Sprich das Wort nach oder sag „weiter“.");
     }
     const retry = ()=>{ if (auto && attempt<3) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true, attempt+1), 400); return true; } return false; };
     r.onerror = (e)=>{
@@ -2980,12 +3008,12 @@ function App() {
                   <div className="mic-row">
                     <span className="mic-side sm"/>
                     <Hap><button className="btn next big-next" onClick={()=>doAnswer(false,false)}>Weiter →</button></Hap>
-                    {SR&&speechOk ? <Hap><button className={"mic small"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label="„Weiter“ sagen">
+                    {readAloudMode ? <span className="mic-side sm"/> : SR&&speechOk ? <Hap><button className={"mic small"+(listening?" live":"")} onClick={()=>startListen(false)} aria-label="„Weiter“ sagen">
                       <span className="mic-ring"/><span className="mic-ring r2"/>
                       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
                     </button></Hap> : <span className="mic-side sm"/>}
                   </div>
-                  <div className="mic-label">{listening ? "Sprich das Wort nach (am besten auf Italienisch) oder sag „weiter“: Alles zählt" : "Tippe auf Weiter oder sprich das Wort nach"}</div>
+                  <div className="mic-label">{readAloudMode ? (reading ? "🔊 Hör gut zu …" : autoListen ? "Gleich geht es weiter …" : "Tippe auf Weiter") : listening ? "Sprich das Wort nach (am besten auf Italienisch) oder sag „weiter“: Alles zählt" : "Tippe auf Weiter oder sprich das Wort nach"}</div>
                 </>
               )}
               {heard&&<div className={"heard"+(result==="ok"?" ok":result==="wrong"?" no":"")}>Erkannt: <b>„{heard}“</b></div>}
