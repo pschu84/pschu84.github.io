@@ -17,6 +17,7 @@
 <script src="italiano-vokabeln-alltag.js"></script>
 <script src="italiano-vokabeln-c1-ausbau.js"></script>
 <script src="italiano-phrasen.js"></script>
+<script src="italiano-bilder.js"></script>
 <link rel="stylesheet" href="fonts/fonts.css">
 <script src="lib/confetti/confetti.browser.min.js"></script>
 <style>
@@ -2119,6 +2120,36 @@ const MODES = [
   {id:"mix",   icon:"🔀", name:"Sprechen: gemischt", sub:"Richtung wechselt zufällig"},
 ];
 
+/* Bildhilfe auf der Karteikarte (Daten und Szenen in italiano-bilder.js) */
+const BILD_KEY = "itpro_bilder";
+function useBilderAn(){
+  const [an,setAn] = useState(()=>lsGet(BILD_KEY,"1")!=="0");
+  useEffect(()=>{ const f=()=>setAn(lsGet(BILD_KEY,"1")!=="0"); window.addEventListener("vb-toggle",f); return ()=>window.removeEventListener("vb-toggle",f); },[]);
+  return an;
+}
+function BildToggle({w}){
+  const an = useBilderAn();
+  if (!w || !window.IT_BILD || !window.IT_BILD(w.it)) return null;
+  return <button className={"vb-toggle"+(an?"":" off")} aria-label={an?"Bilder ausblenden":"Bilder einblenden"} title={an?"Bilder ausblenden":"Bilder einblenden"}
+    onClick={(e)=>{ e.stopPropagation(); lsSet(BILD_KEY, an?"0":"1"); window.dispatchEvent(new Event("vb-toggle")); }}>🖼️</button>;
+}
+function Bild({w}){
+  const an = useBilderAn();
+  const [stufe,setStufe] = useState(0);
+  useEffect(()=>setStufe(0),[w&&w.it]);
+  if (!an || !w || w.phrase || !window.IT_BILD) return null;
+  const b = window.IT_BILD(w.it);
+  if (!b) return null;
+  if (b.type==="anim") return <div className="vbild" dangerouslySetInnerHTML={{__html:b.svg}}/>;
+  if (stufe>1) return null;
+  return (
+    <div className="vbild">
+      <img src={stufe===0?b.src:b.alt} alt="" loading="lazy" onError={()=>setStufe(s=>s+1)}/>
+      <div className="vb-cr">Piktogramm: Sergio Palao · <a href="https://arasaac.org" target="_blank" rel="noopener" onClick={e=>e.stopPropagation()}>ARASAAC</a> · Gobierno de Aragón · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener" onClick={e=>e.stopPropagation()}>CC BY-NC-SA 4.0</a></div>
+    </div>
+  );
+}
+
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v===null ? d : v; } catch { return d; } }
 function lsSet(k, v){ try { localStorage.setItem(k, v); } catch {} }
 
@@ -2876,6 +2907,7 @@ function App() {
   const front = w && (eff==="sayIT" ? (
     <>
       <div className="face-label">Deutsch</div>
+      <Bild w={w}/>
       <div className="word de-big">{w.de}</div>
       <div className="hint">Sag es auf Italienisch{w.phrase?"":" (mit oder ohne Artikel)"}</div>
     </>
@@ -2894,6 +2926,7 @@ function App() {
     <>
       <div className="face-label">Italiano</div>
       {!w.phrase&&w.art&&<div className="art">{w.art}</div>}
+      <Bild w={w}/>
       <div className="word">{w.it}</div>
       <div className="ex">„{w.ex}“</div>
       <div className="small-de">{w.de}</div>
@@ -2901,6 +2934,7 @@ function App() {
   ) : (
     <>
       <div className="face-label">Deutsch</div>
+      <Bild w={w}/>
       <div className="word de-big">{w.de}</div>
       <div className="ex">„{w.ex}“</div>
       <div className="small-de">{(w.art&&!w.phrase?w.art+(w.art.endsWith("'")?"":" "):"")+w.it}</div>
@@ -2997,12 +3031,14 @@ function App() {
                 <div className="face front">
                   <span className={"badge b"+(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
                   {front}
+                  {eff==="sayIT"&&<BildToggle w={w}/>}
                   {hasVoice&&eff!=="sayIT"&&<button className="tts" onClick={(e)=>{e.stopPropagation();sayAloud(w.it);}} aria-label="Vorlesen">🔊</button>}
                 </div>
                 <div className="face back">
                   <span className={"badge b"+(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
                   {result==="ok"&&<div className="stamp">Giusto!</div>}
                   {back}
+                  <BildToggle w={w}/>
                   {hasVoice&&<button className="tts" onClick={(e)=>{e.stopPropagation();sayAloud(w.it);}} aria-label="Vorlesen">🔊</button>}
                 </div>
               </div>
