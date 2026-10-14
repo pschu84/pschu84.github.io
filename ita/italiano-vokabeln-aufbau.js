@@ -1320,4 +1320,644 @@ interrogativo|l'|Frage / fragend|Resta un grande interrogativo.
 portale|il|Portal|Prenota sul portale del comune.
 `
 });
+
+/* ---------- Teil 3 (p bis z), B1 ---------- */
+add({
+"B1 – Menschen & Rollen 4": `
+prigioniero|il|Gefangener|Il prigioniero è riuscito a fuggire.
+principessa|la|Prinzessin|La principessa vive nella torre.
+produttore|il|Produzent / Hersteller|È un produttore di vino.
+prof|il|Lehrer (Schülersprache)|Il prof di matematica è severo.
+professoressa|la|Lehrerin / Professorin|La professoressa corregge i compiti.
+profeta|il|Prophet|Nessuno è profeta in patria.
+psichiatra|lo|Psychiater|Lo psichiatra lavora in ospedale.
+ragioniere|il|Buchhalter|Il ragioniere controlla i conti.
+residente|il|Einwohner / ansässig|Il parcheggio è riservato ai residenti.
+rivale|il|Rivale / Gegner|La squadra batte la sua rivale storica.
+sacerdote|il|Priester|Il sacerdote benedice gli sposi.
+salvatore|il|Retter|Sei il mio salvatore!
+schiavo|lo|Sklave|Non sono il tuo schiavo!
+secchione|il|Streber|In classe lo chiamano il secchione.
+senatore|il|Senator|Il senatore ha votato contro.
+sergente|il|Feldwebel|Il sergente grida gli ordini.
+socio|il|Mitglied / Teilhaber|È socio di un club sportivo.
+sostenitore|il|Unterstützer / Anhänger|I sostenitori applaudono il candidato.
+spia|la|Spion / Kontrollleuchte|Si è accesa la spia della benzina.
+studioso|lo|Gelehrter / fleißig|È uno studioso di Dante.
+suddito|il|Untertan|Il re parla ai suoi sudditi.
+tenente|il|Leutnant|Il tenente guida la pattuglia.
+teologo|il|Theologe|Il teologo spiega il testo biblico.
+terrorista|il|Terrorist|Hanno arrestato un terrorista.
+titolare|il|Inhaber / Stammspieler|Il titolare del bar è gentile.
+tizio|il|Typ / Kerl|Un tizio mi ha chiesto l'ora.
+vedova|la|Witwe|La vedova vive da sola.
+venditore|il|Verkäufer|Il venditore mi ha fatto uno sconto.
+vincitore|il|Sieger|Il vincitore riceve una coppa.
+visitatore|il|Besucher|Il museo ha molti visitatori.
+volontario|il|Freiwilliger / freiwillig|Fa il volontario alla Croce Rossa.
+vampiro|il|Vampir|Ha paura dei vampiri.
+sovrano|il|Herrscher / souverän|Il sovrano governa da trent'anni.
+procuratore|il|Staatsanwalt / Bevollmächtigter|Il procuratore chiede la condanna.
+premier|il|Premierminister|Il premier parla in TV stasera.
+prostituta|la|Prostituierte|Il film racconta la vita di una prostituta.
+`,
+"B1 – Verben 10": `
+praticare||ausüben / betreiben|Pratico sport tre volte a settimana.
+premere||drücken|Premi il tasto verde.
+profumare||duften|Il pane appena fatto profuma.
+proibire||verbieten|È proibito fumare qui.
+raddoppiare||verdoppeln|Il prezzo è raddoppiato.
+rallentare||verlangsamen / bremsen|Rallenta, c'è una scuola!
+rapire||entführen|Nel film rapiscono una bambina.
+rassicurare||beruhigen|Il medico ci rassicura.
+riaprire||wieder öffnen|Il museo riapre domani.
+ricambiare||erwidern|Ricambio volentieri gli auguri.
+richiudere||wieder schließen|Richiudi il barattolo!
+rileggere||nochmals lesen|Rileggi il testo prima di consegnarlo.
+rimproverare||tadeln / schimpfen|La mamma rimprovera il figlio.
+ripartire||wieder abfahren / aufteilen|Il treno riparte tra cinque minuti.
+ripensare||nochmals überlegen|Ci ho ripensato: vengo anch'io.
+riprovare||es nochmal versuchen|Non ci sono riuscito, riprovo.
+ripulire||sauber machen|Ripulisci la cucina, per favore.
+risvegliare||aufwecken|Il rumore mi ha risvegliato.
+ritagliare||ausschneiden|Ritaglia le figure dal giornale.
+rovesciare||umkippen / verschütten|Ho rovesciato il caffè sul tavolo.
+ruotare||drehen / rotieren|La Terra ruota intorno al Sole.
+scaldare||wärmen / aufwärmen|Scaldo il latte per la colazione.
+scalare||besteigen / klettern|Vogliono scalare il Monte Rosa.
+scavare||graben|Il cane scava una buca.
+schiacciare||zerdrücken / drücken|Schiaccia l'aglio con la forchetta.
+scivolare||ausrutschen / gleiten|Sono scivolato sul ghiaccio.
+scommettere||wetten|Scommetto che arriva in ritardo.
+scordare||vergessen|Ho scordato il portafoglio a casa.
+scuotere||schütteln|Scuote la testa.
+sdraiarsi||sich hinlegen|Mi sdraio sul divano.
+seccare||trocknen / nerven|Mi secca aspettare.
+seminare||säen|Il contadino semina il grano.
+sfogliare||durchblättern|Sfoglio una rivista dal parrucchiere.
+soffiare||blasen / pusten|Soffia sulle candeline!
+somigliare||ähneln|Somigli molto a tua madre.
+sommare||addieren|Somma tutti i numeri.
+sospirare||seufzen|Sospira e guarda fuori dalla finestra.
+sporcare||schmutzig machen|Non sporcare il tappeto!
+sputare||spucken|È vietato sputare per terra.
+squillare||klingeln|Il telefono squilla.
+stancare||ermüden|Il viaggio mi ha stancato.
+`,
+"B1 – Verben 11": `
+strappare||zerreißen / herausreißen|Ha strappato la lettera.
+strillare||kreischen|I bambini strillano in cortile.
+succhiare||lutschen / saugen|Il bambino succhia il pollice.
+svuotare||ausleeren|Svuota la lavastoviglie, per favore.
+tifare||(Fan sein) halten zu|Per che squadra tifi?
+tremare||zittern|Tremo dal freddo.
+urtare||anstoßen|Ho urtato il tavolo con il ginocchio.
+tappare||verstopfen / zustöpseln|Tappa la bottiglia.
+puzzare||stinken|Il pesce puzza.
+spalancare||weit aufreißen|Spalanca la finestra, fa caldo!
+spazzare||fegen|Spazza il pavimento.
+spezzare||zerbrechen|Ha spezzato il pane in due.
+splendere||scheinen / strahlen|Oggi splende il sole.
+sfiorare||streifen / leicht berühren|La palla sfiora il palo.
+sbarcare||an Land gehen|I turisti sbarcano a Capri.
+sfilare||vorbeiziehen / herausziehen|I modelli sfilano in passerella.
+smontare||abbauen / zerlegen|Smontiamo la tenda.
+sforzarsi||sich anstrengen|Mi sforzo di parlare solo italiano.
+spuntare||auftauchen / sprießen|Sono spuntati i primi fiori.
+scatenare||auslösen / entfesseln|La notizia ha scatenato una polemica.
+sprofondare||versinken|Volevo sprofondare dalla vergogna.
+strisciare||kriechen|Il serpente striscia nell'erba.
+torcere||verdrehen / auswringen|Torci bene l'asciugamano.
+vagare||umherirren|Vaghiamo per le strade di Venezia.
+vibrare||vibrieren|Il telefono vibra in tasca.
+testare||testen|Testiamo il nuovo programma.
+tracciare||ziehen / nachverfolgen|Traccia una linea dritta.
+trasportare||transportieren|Il camion trasporta frutta.
+sfidare||herausfordern|Ti sfido a una partita a scacchi.
+spaventare||erschrecken|Il tuono spaventa il cane.
+spassarsela||sich amüsieren|Al mare ce la spassiamo.
+scontrarsi||zusammenstoßen|Due macchine si sono scontrate.
+sorgere||aufgehen (Sonne) / entstehen|Il sole sorge alle sei.
+spiare||ausspionieren|Il vicino ci spia dalla finestra.
+`,
+"B1 – Adjektive 6": `
+prevedibile||vorhersehbar|Il finale del film è prevedibile.
+privo||ohne / frei von|La bevanda è priva di zucchero.
+raffinato||raffiniert / fein|Ha un gusto raffinato.
+ragionevole||vernünftig|È un prezzo ragionevole.
+realistico||realistisch|Il tuo piano non è realistico.
+resistente||widerstandsfähig / robust|Questo zaino è molto resistente.
+ridicolo||lächerlich|Che cappello ridicolo!
+rigido||starr / streng|L'inverno è stato rigido.
+rischioso||riskant|È un investimento rischioso.
+robusto||kräftig / robust|È un ragazzo robusto.
+rotto||kaputt / gebrochen|Il telefono è rotto.
+scarso||gering / schlecht|La visibilità è scarsa.
+sciocco||dumm / albern|Che domanda sciocca!
+selvaggio||wild|È una spiaggia selvaggia.
+sentimentale||sentimental|È un film sentimentale.
+sentito||herzlich / gehört|Sentite condoglianze.
+solido||fest / solide|È una casa solida.
+sordo||taub|Il nonno è un po' sordo.
+spaventato||erschrocken|Il gatto è spaventato dai fuochi d'artificio.
+spaventoso||furchtbar|C'è un traffico spaventoso.
+spento||ausgeschaltet / erloschen|Il telefono è spento.
+spettacolare||spektakulär|Il panorama è spettacolare.
+splendido||herrlich|È una giornata splendida.
+stabile||stabil / fest|Il tempo è stabile.
+stampato||gedruckt / Ausdruck|Porta il biglietto stampato.
+stupendo||wunderschön|Il tramonto è stupendo.
+stupito||erstaunt|Sono stupito dal risultato.
+tondo||rund|Il tavolo è tondo.
+tragico||tragisch|È stato un incidente tragico.
+trasparente||durchsichtig / transparent|Il sacchetto è trasparente.
+tremendo||furchtbar|Ho un mal di testa tremendo.
+ubriaco||betrunken|È tornato a casa ubriaco.
+vago||vage / ungenau|Ho un ricordo vago.
+vano||vergeblich / Raum|Tutti i tentativi sono stati vani.
+verticale||senkrecht|Disegna una linea verticale.
+visibile||sichtbar|La montagna è visibile da qui.
+vivente||lebend|È il più grande artista vivente.
+volgare||vulgär / ordinär|Non usare parole volgari.
+quadrato||quadratisch / Quadrat|La stanza è quadrata.
+regolare||regelmäßig / regulär|Fa sport in modo regolare.
+`,
+"B1 – Adjektive 7": `
+sparso||verstreut|I vestiti sono sparsi per la stanza.
+ristretto||eng / eingeschränkt|Un caffè ristretto, per favore.
+sospeso||aufgehoben / hängend / ausgesetzt|Il volo è sospeso per sciopero.
+sotterraneo||unterirdisch|C'è un parcheggio sotterraneo.
+spietato||erbarmungslos|È un killer spietato.
+tossico||giftig|Questo prodotto è tossico.
+toscano||toskanisch|Mangiamo pane toscano senza sale.
+sardo||sardisch / Sarde|Il pecorino sardo è buonissimo.
+siciliano||sizilianisch / Sizilianer|I cannoli siciliani sono famosi.
+veneto||venezianisch (Region Venetien)|Il prosecco è un vino veneto.
+provinciale||Provinz- / provinziell|Prendiamo la strada provinciale.
+regionale||regional|Prendo il treno regionale.
+statunitense||US-amerikanisch|Il presidente statunitense visita Roma.
+sovietico||sowjetisch|L'Unione Sovietica finì nel 1991.
+vincente||siegreich / Gewinn-|Ha comprato il biglietto vincente.
+sesto||sechster|È arrivato sesto nella gara.
+pubblicitario||Werbe-|Ho visto un cartellone pubblicitario.
+settimanale||wöchentlich / Wochenzeitschrift|Compro un settimanale di cucina.
+stradale||Straßen-|È stato un incidente stradale.
+terrestre||irdisch / Land-|La crosta terrestre è sottile.
+vegetale||pflanzlich|Uso il latte vegetale.
+virtuale||virtuell|Facciamo una visita virtuale del museo.
+`,
+"B1 – Nomen 6": `
+preda|la|Beute|Il leone insegue la preda.
+proiettile|il|Geschoss / Kugel|Hanno trovato un proiettile.
+pulsante|il|Knopf / Taste|Premi il pulsante rosso.
+puntata|la|Folge (Serie)|Stasera c'è l'ultima puntata.
+puzza|la|Gestank|Che puzza di fumo!
+rame|il|Kupfer|Le pentole di rame sono belle.
+reggiseno|il|BH|Ha comprato un reggiseno nuovo.
+rene|il|Niere|Ha un problema ai reni.
+retro|il|Rückseite|Scrivi il nome sul retro.
+risata|la|Gelächter / Lachen|Che risate ieri sera!
+rissa|la|Schlägerei|C'è stata una rissa davanti al bar.
+rubrica|la|Adressbuch / Rubrik|Salva il numero in rubrica.
+ruota|la|Rad|Bisogna cambiare la ruota.
+salita|la|Anstieg / Steigung|La salita è faticosa.
+salone|il|Salon / Halle / Messe|Il salone del mobile è a Milano.
+salsa|la|Soße|Mi piace la salsa di pomodoro.
+salto|il|Sprung|Faccio un salto in panetteria.
+sasso|il|Stein|Lancia un sasso nel fiume.
+scheda|la|Karte / Formular / Datenblatt|Inserisci la scheda nel telefono.
+scherzo|lo|Scherz|Era solo uno scherzo!
+schiaffo|lo|Ohrfeige|Gli ha dato uno schiaffo.
+scritta|la|Aufschrift|Sul muro c'è una scritta.
+secchio|il|Eimer|Riempi il secchio d'acqua.
+sedile|il|Sitz|Il sedile posteriore è libero.
+sfondo|lo|Hintergrund|Cambia lo sfondo del computer.
+sigla|la|Abkürzung / Titelmelodie|Qual è la sigla della provincia?
+solco|il|Furche / Rille|Il trattore lascia solchi nel campo.
+sorgente|la|Quelle|L'acqua di sorgente è fresca.
+sosta|la|Halt / Rast / Parken|Divieto di sosta!
+spada|la|Schwert|Il cavaliere estrae la spada.
+spina|la|Dorn / Gräte / Stecker|Attento alle spine del pesce!
+sponda|la|Ufer|Ci sediamo sulla sponda del lago.
+stalla|la|Stall|Le mucche dormono nella stalla.
+statua|la|Statue|La statua del David è a Firenze.
+stoffa|la|Stoff|La tenda è di stoffa leggera.
+straccio|lo|Lappen|Pulisci con uno straccio umido.
+striscia|la|Streifen|La maglia ha strisce blu.
+sudore|il|Schweiß|Dopo la corsa sono pieno di sudore.
+tabella|la|Tabelle|Guarda la tabella degli orari.
+tacco|il|Absatz (Schuh)|Porta scarpe con il tacco alto.
+`,
+"B1 – Nomen 7": `
+tasto|il|Taste|Premi un tasto qualsiasi.
+tatuaggio|il|Tattoo|Ha un tatuaggio sul braccio.
+tavolino|il|Tischchen|Ci sediamo a un tavolino all'aperto.
+tela|la|Leinwand / Leinen|Il quadro è dipinto su tela.
+telecamera|la|Kamera|C'è una telecamera all'ingresso.
+telefonino|il|Handy|Spegni il telefonino in classe!
+televisore|il|Fernseher|Abbiamo un televisore nuovo.
+teschio|il|Totenkopf / Schädel|La bandiera dei pirati ha un teschio.
+tessuto|il|Gewebe / Stoff|È un tessuto morbido.
+tomba|la|Grab|Portiamo fiori sulla tomba dei nonni.
+toro|il|Stier|Il toro corre nel campo.
+trappola|la|Falle|Il topo è finito in trappola.
+triangolo|il|Dreieck|Disegna un triangolo.
+tronco|il|Baumstamm / Rumpf|Ci sediamo su un tronco.
+trono|il|Thron|Il re siede sul trono.
+trucco|il|Trick / Schminke|Si toglie il trucco prima di dormire.
+tubo|il|Rohr / Schlauch|Il tubo dell'acqua perde.
+urlo|l'|Schrei|Ho sentito un urlo.
+vacca|la|Kuh|La vacca dà il latte.
+vaso|il|Vase / Topf|Metti i fiori nel vaso.
+vapore|il|Dampf|Cuocio le verdure al vapore.
+veicolo|il|Fahrzeug|Il veicolo è parcheggiato male.
+veleno|il|Gift|Il serpente ha un veleno pericoloso.
+vena|la|Vene / Ader|L'infermiera cerca la vena.
+ventre|il|Bauch / Leib|Ha un dolore al basso ventre.
+verme|il|Wurm|Nella mela c'è un verme.
+vernice|la|Farbe / Lack|Attenzione, vernice fresca!
+vettura|la|Wagen / Fahrzeug|La vettura numero cinque è in testa.
+viale|il|Allee|Passeggiamo lungo il viale.
+vicolo|il|Gasse|Il ristorante è in un vicolo.
+virgola|la|Komma|Metti una virgola dopo "ciao".
+vocabolario|il|Wörterbuch / Wortschatz|Cerca la parola sul vocabolario.
+scintilla|la|Funke|Tra loro è scoccata la scintilla.
+scia|la|Spur / Kielwasser|L'aereo lascia una scia bianca.
+scudo|lo|Schild|Il guerriero porta uno scudo.
+sfera|la|Kugel / Sphäre|La Terra è quasi una sfera.
+schizzo|lo|Skizze / Spritzer|Fai uno schizzo della casa.
+satellite|il|Satellit|La Luna è un satellite della Terra.
+sottofondo|il|Hintergrund (Musik)|C'è musica di sottofondo.
+scommessa|la|Wette|Ho vinto la scommessa!
+sciocchezza|la|Dummheit / Kleinigkeit|Non dire sciocchezze!
+ventina|la|etwa zwanzig|C'erano una ventina di invitati.
+tonnellata|la|Tonne|Il camion pesa dieci tonnellate.
+sfilata|la|Modenschau / Umzug|Andiamo a vedere la sfilata di Carnevale.
+`,
+"B1 – Adverbien 3": `
+precisamente||genau|Che cosa vuoi dire, precisamente?
+rapidamente||schnell|Il tempo passa rapidamente.
+realmente||wirklich|È realmente successo.
+regolarmente||regelmäßig|Vado regolarmente dal dentista.
+seriamente||ernsthaft|Parliamo seriamente.
+semmai||falls überhaupt / eher|Semmai ti chiamo io.
+sennò||sonst (umgangssprachlich)|Sbrigati, sennò perdiamo il treno!
+solitamente||gewöhnlich|Solitamente pranzo a casa.
+specialmente||besonders|Mi piace l'Italia, specialmente il sud.
+stanotte||heute Nacht / letzte Nacht|Stanotte ho dormito male.
+stavolta||diesmal|Stavolta pago io.
+strettamente||streng / eng|È strettamente vietato.
+successivamente||anschließend|Successivamente siamo andati a cena.
+talvolta||manchmal|Talvolta prendo l'autobus.
+tranquillamente||ruhig / ohne weiteres|Puoi tranquillamente arrivare dopo.
+ufficialmente||offiziell|Il museo apre ufficialmente domani.
+ugualmente||trotzdem / gleichermaßen|Piove, ma usciamo ugualmente.
+ulteriormente||weiter / zusätzlich|Il prezzo è sceso ulteriormente.
+ultimamente||in letzter Zeit|Ultimamente dormo poco.
+prevalentemente||überwiegend|Il clima è prevalentemente secco.
+`,
+"B1 – Umgangssprache derb": `
+puttana||(vulgär) Hure / Nutte|È un insulto molto pesante: puttana.
+stronzata|la|(vulgär) Bullshit / Mist|Che stronzata di film!
+scopare||fegen / (vulgär) vögeln|Scopa la cucina, per favore. (Achtung: auch vulgär!)
+tetta|la|(umgangssprachlich) Titte|È una parola volgare per "seno".
+pupa|la|(umgangssprachlich) Puppe / Mädchen|Ciao, pupa!
+`
+});
+
+/* ---------- Teil 3 (p bis z), B2 ---------- */
+add({
+"B2 – Verben 6": `
+precedere||vorausgehen|Una cena precede il concerto.
+precipitare||abstürzen / überstürzen|L'aereo è precipitato in mare.
+prescrivere||verschreiben / vorschreiben|Il medico prescrive un antibiotico.
+prevalere||überwiegen|Alla fine prevale il buon senso.
+privare||berauben / entziehen|Lo hanno privato della patente.
+proclamare||verkünden / ausrufen|Hanno proclamato lo stato di emergenza.
+procurare||beschaffen / verursachen|Mi puoi procurare due biglietti?
+progettare||planen / entwerfen|Progettano una nuova scuola.
+promuovere||fördern / versetzen|Lo hanno promosso a direttore.
+provvedere||sorgen für|Provvedo io alla cena.
+qualificare||qualifizieren|La squadra si è qualificata per la finale.
+racchiudere||umschließen / enthalten|Questa frase racchiude tutto.
+raccomandare||empfehlen / ans Herz legen|Ti raccomando questo ristorante.
+raffigurare||darstellen|Il quadro raffigura una battaglia.
+rafforzare||verstärken|Lo sport rafforza i muscoli.
+rassegnarsi||sich abfinden|Mi sono rassegnato a lavorare sabato.
+regnare||herrschen / regieren|Il silenzio regna nella casa.
+respingere||zurückweisen|Hanno respinto la proposta.
+restringere||verengen / einlaufen|Il maglione si è ristretto in lavatrice.
+rialzare||wieder aufheben / erhöhen|Rialzati, non è niente!
+ribadire||bekräftigen|Il ministro ribadisce la sua posizione.
+ribellarsi||sich auflehnen|Gli studenti si ribellano alle regole.
+ricadere||zurückfallen / fallen auf|La responsabilità ricade su di lui.
+ricercare||suchen / erforschen|La polizia ricerca il fuggitivo.
+ricoprire||bedecken / bekleiden (Amt)|La neve ricopre i tetti.
+ricorrere||zurückgreifen / sich wiederholen|Ricorriamo a un avvocato.
+ricostruire||wieder aufbauen / rekonstruieren|Hanno ricostruito il ponte.
+ridare||zurückgeben|Ridammi il mio libro!
+rifugiarsi||Zuflucht suchen|Ci rifugiamo sotto un portico.
+rilasciare||ausstellen / freilassen|Il comune rilascia la carta d'identità.
+rilevare||feststellen / übernehmen|Il sensore rileva la temperatura.
+rimpiangere||nachtrauern / bereuen|Rimpiango i tempi della scuola.
+`,
+"B2 – Verben 7": `
+rimuovere||entfernen|Rimuovi la macchia con l'aceto.
+rinascere||wiedergeboren werden / aufblühen|Dopo la vacanza mi sento rinato.
+rinchiudere||einsperren|Hanno rinchiuso il cane in cantina.
+rintracciare||ausfindig machen|Non riesco a rintracciare il pacco.
+rinvenire||auffinden / zu sich kommen|Hanno rinvenuto un'auto rubata.
+riprodurre||wiedergeben / nachbilden|Il disegno riproduce il Colosseo.
+riproporre||erneut vorschlagen|Ripropongo la mia idea.
+riscuotere||einziehen / ernten (Erfolg)|Il film riscuote un grande successo.
+risentire||wieder hören / spüren|La pianta risente del freddo.
+risiedere||wohnen / ansässig sein|Risiede a Dortmund da dieci anni.
+ritrarre||porträtieren / zurückziehen|Il pittore ritrae la moglie.
+rivendicare||beanspruchen / sich bekennen zu|I lavoratori rivendicano i loro diritti.
+rivestire||verkleiden / bekleiden (Amt)|Riveste un ruolo importante.
+sacrificare||opfern|Ha sacrificato tutto per i figli.
+scandire||betonen / deutlich aussprechen|Scandisci bene le parole.
+scartare||auspacken / verwerfen|Scartiamo i regali!
+schierare||aufstellen|L'allenatore schiera tre attaccanti.
+schizzare||spritzen / flitzen|L'olio schizza dalla padella.
+sconfiggere||besiegen|Hanno sconfitto la squadra favorita.
+sconvolgere||erschüttern / durcheinanderbringen|La notizia mi ha sconvolto.
+scorgere||erblicken|Scorgo una luce in lontananza.
+sedurre||verführen|La città seduce i visitatori.
+selezionare||auswählen|Seleziona il file e clicca su "apri".
+seppellire||begraben|Il cane seppellisce l'osso.
+sequestrare||beschlagnahmen / entführen|La polizia ha sequestrato la droga.
+simulare||vortäuschen / simulieren|Il calciatore simula un fallo.
+situare||ansiedeln / gelegen sein|L'hotel è situato in centro.
+soffocare||ersticken|Fa così caldo che si soffoca.
+sorvegliare||überwachen|Le telecamere sorvegliano il parcheggio.
+sospendere||aussetzen / suspendieren|Hanno sospeso la partita per pioggia.
+sospettare||verdächtigen / ahnen|Sospetto che stia mentendo.
+`,
+"B2 – Verben 8": `
+sottrarre||abziehen / entziehen|Sottrai cinque da venti.
+sovrapporre||übereinanderlegen|Non sovrapporre gli appuntamenti!
+spacciare||dealen / ausgeben als|Si spaccia per medico.
+spargere||verstreuen / verbreiten|Spargi il sale sulla strada.
+spettare||zustehen|Questa decisione spetta a te.
+spiccare||hervorstechen|Il campanile spicca sopra i tetti.
+stregare||verzaubern|La Sicilia mi ha stregato.
+suddividere||unterteilen|Suddividiamo il lavoro in tre parti.
+supporre||annehmen / vermuten|Suppongo che sia stanco.
+supportare||unterstützen|Il programma supporta molte lingue.
+suscitare||hervorrufen|Il film ha suscitato polemiche.
+svanire||verschwinden|Il dolore è svanito.
+svelare||enthüllen|Il mago non svela i suoi trucchi.
+tollerare||dulden / vertragen|Non tollero le bugie.
+tormentare||quälen|Il mal di denti mi tormenta.
+terrorizzare||in Schrecken versetzen|Il film horror mi ha terrorizzato.
+travolgere||mitreißen / überrollen|L'onda ha travolto la barca.
+turbare||beunruhigen / stören|La notizia mi ha turbato.
+tutelare||schützen|La legge tutela i consumatori.
+udire||hören (gehoben)|Ho udito dei passi.
+umiliare||demütigen|Non umiliare i tuoi compagni.
+valorizzare||aufwerten / zur Geltung bringen|Bisogna valorizzare il territorio.
+vantare||sich rühmen / aufweisen|La città vanta un museo famoso.
+variare||variieren / sich ändern|I prezzi variano a seconda della stagione.
+vendicare||rächen|Vuole vendicare il fratello.
+spiacere||leidtun|Mi spiace, non posso venire.
+segnalare||melden / hinweisen|Segnala il problema all'assistenza.
+`,
+"B2 – Adjektive 6": `
+preliminare||vorläufig / Vor-|È solo una fase preliminare.
+prestigioso||angesehen|Ha studiato in un'università prestigiosa.
+presunto||mutmaßlich|Il presunto colpevole è stato arrestato.
+preventivo||vorbeugend / Kostenvoranschlag|Chiedi un preventivo all'idraulico.
+primario||primär / Chefarzt|È una questione di primaria importanza.
+problematico||problematisch|È una situazione problematica.
+produttivo||produktiv|È stata una giornata produttiva.
+progressivo||fortschreitend|C'è un aumento progressivo dei prezzi.
+provvisorio||vorläufig|È una soluzione provvisoria.
+psichico||psychisch|Lo stress causa problemi psichici.
+quantitativo||mengenmäßig / Menge|È un'analisi quantitativa.
+razionale||rational / vernünftig|È una scelta razionale.
+reciproco||gegenseitig|C'è un rispetto reciproco.
+regale||königlich|Ha un portamento regale.
+repubblicano||republikanisch|Il partito repubblicano ha vinto le elezioni.
+residuo||restlich / Rückstand|Paga il debito residuo.
+retto||gerade / rechtschaffen|Disegna una linea retta.
+rispettivo||jeweilig|Tornano alle rispettive case.
+rivoluzionario||revolutionär|È un'invenzione rivoluzionaria.
+sacro||heilig|È un luogo sacro.
+saggio||weise / Essay|Il nonno è un uomo saggio.
+secondario||sekundär / Neben-|Prendiamo una strada secondaria.
+semantico||semantisch|È una differenza semantica.
+sensuale||sinnlich|Ha una voce sensuale.
+simbolico||symbolisch|Il prezzo è simbolico.
+sindacale||gewerkschaftlich|È una riunione sindacale.
+singolare||einzigartig / Singular|È un caso singolare.
+sintetico||synthetisch / kurz gefasst|Il maglione è di fibra sintetica.
+socialista||sozialistisch / Sozialist|È un partito socialista.
+sofisticato||raffiniert / ausgeklügelt|È un sistema molto sofisticato.
+`,
+"B2 – Adjektive 7": `
+solenne||feierlich|È una cerimonia solenne.
+spaziale||Raum- / Weltraum-|La stazione spaziale orbita intorno alla Terra.
+spirituale||geistig / spirituell|È una persona molto spirituale.
+statale||staatlich|Frequenta una scuola statale.
+stellare||Stern- / astronomisch|I prezzi sono stellari!
+strategico||strategisch|È una posizione strategica.
+strutturale||strukturell|È un problema strutturale.
+stupefacente||erstaunlich / Rauschmittel|È un risultato stupefacente.
+suggestivo||eindrucksvoll / stimmungsvoll|È un paesaggio suggestivo.
+supremo||oberster|La Corte Suprema ha deciso.
+territoriale||territorial / Gebiets-|È un problema territoriale.
+uniforme||einheitlich / gleichmäßig|Il colore è uniforme.
+universale||universell / allgemein|È un linguaggio universale.
+visivo||visuell / Seh-|Ha una buona memoria visiva.
+vitale||lebenswichtig / vital|L'acqua è vitale.
+terminale||End- / Terminal|È un malato terminale.
+`,
+"B2 – Abstrakte Nomen 6": `
+prassi|la|Praxis / übliches Verfahren|È la prassi in questi casi.
+precedenza|la|Vorfahrt / Vorrang|Dai la precedenza a destra.
+precisione|la|Genauigkeit|Lavora con grande precisione.
+preferenza|la|Vorliebe|Hai una preferenza?
+preoccupazione|la|Sorge|Non è una grande preoccupazione.
+prescrizione|la|Verschreibung / Verjährung|Il farmaco è venduto su prescrizione.
+presentazione|la|Präsentation / Vorstellung|Domani ho una presentazione.
+presidenza|la|Vorsitz / Präsidentschaft|La presidenza del consiglio è a Roma.
+prestazione|la|Leistung|È stata un'ottima prestazione.
+prestigio|il|Ansehen / Prestige|Questo lavoro dà prestigio.
+pretesa|la|Anspruch / Forderung|Ha troppe pretese.
+pretesto|il|Vorwand|Era solo un pretesto per uscire.
+privilegio|il|Privileg|È un privilegio lavorare con voi.
+probabilità|la|Wahrscheinlichkeit|Ci sono poche probabilità di pioggia.
+procedimento|il|Verfahren|È un procedimento complicato.
+procura|la|Staatsanwaltschaft / Vollmacht|La procura ha aperto un'indagine.
+profondità|la|Tiefe|La profondità del lago è di trenta metri.
+progettazione|la|Planung|La progettazione del ponte dura un anno.
+programmazione|la|Programmierung / Programm|Studio programmazione informatica.
+promessa|la|Versprechen|Mantieni la promessa!
+proporzione|la|Verhältnis / Proportion|Le proporzioni del disegno sono giuste.
+prosa|la|Prosa|Scrive in prosa, non in versi.
+protesta|la|Protest|C'è una protesta davanti al municipio.
+protezione|la|Schutz|Usa una crema di protezione solare.
+protocollo|il|Protokoll|Seguiamo il protocollo.
+provenienza|la|Herkunft|Qual è la provenienza di questo vino?
+provvedimento|il|Maßnahme|Il governo prende nuovi provvedimenti.
+ragionamento|il|Überlegung / Gedankengang|Il tuo ragionamento è corretto.
+rappresentazione|la|Darstellung / Aufführung|La rappresentazione teatrale è alle nove.
+rassegna|la|Übersicht / Festival|Leggo la rassegna stampa.
+razza|la|Rasse / Art|Di che razza è il tuo cane?
+realizzazione|la|Umsetzung / Verwirklichung|La realizzazione del progetto è lenta.
+redazione|la|Redaktion|La redazione del giornale è a Milano.
+repertorio|il|Repertoire|Il cantante ha un vasto repertorio.
+replica|la|Wiederholung / Erwiderung|Stasera c'è la replica del film.
+resa|la|Kapitulation / Ertrag|La resa del nemico arrivò dopo mesi.
+residenza|la|Wohnsitz / Residenz|Ha la residenza in Italia.
+resistenza|la|Widerstand / Ausdauer|La Resistenza combatté contro il fascismo.
+`,
+"B2 – Abstrakte Nomen 7": `
+riconoscimento|il|Anerkennung / Erkennung|Ha ricevuto un riconoscimento per il suo lavoro.
+ricorso|il|Einspruch / Rückgriff|Faccio ricorso contro la multa.
+ricostruzione|la|Wiederaufbau / Rekonstruktion|La ricostruzione dopo il terremoto è lenta.
+riduzione|la|Ermäßigung / Reduzierung|C'è una riduzione per studenti.
+rientro|il|Rückkehr|Il rientro dalle vacanze è difficile.
+riflesso|il|Spiegelbild / Reflex|Vedo il mio riflesso nel vetro.
+rigore|il|Strenge / Elfmeter|L'arbitro fischia un rigore.
+rilievo|il|Bedeutung / Relief|È un dettaglio di poco rilievo.
+rima|la|Reim|La poesia è in rima.
+Rinascimento|il|Renaissance|Firenze è la culla del Rinascimento.
+riparo|il|Schutz / Unterschlupf|Cerchiamo riparo dalla pioggia.
+ripresa|la|Wiederaufnahme / Aufschwung / Halbzeit|C'è una ripresa dell'economia.
+risarcimento|il|Schadensersatz|Ha chiesto un risarcimento.
+risoluzione|la|Auflösung / Beschluss|Lo schermo ha un'alta risoluzione.
+risonanza|la|Resonanz / Kernspin|Devo fare una risonanza magnetica.
+risveglio|il|Erwachen|Il risveglio è stato difficile.
+ritiro|il|Rückzug / Abholung|Il ritiro dei pacchi è al piano terra.
+rito|il|Ritus / Ritual|Il caffè del mattino è un rito.
+ritratto|il|Porträt|Il pittore fa il ritratto della regina.
+rituale|il|Ritual / rituell|È un rituale antico.
+rivelazione|la|Enthüllung / Offenbarung|Il nuovo cantante è la rivelazione dell'anno.
+rivolta|la|Aufstand|Il popolo è in rivolta.
+rottura|la|Bruch|C'è stata una rottura tra i due.
+rotta|la|Kurs / Route|La nave cambia rotta.
+rovescio|il|Rückseite / Platzregen / Rückhand|Ha un ottimo rovescio a tennis.
+rovina|la|Ruine / Ruin|Il gioco d'azzardo è la sua rovina.
+sacrificio|il|Opfer|Ha fatto molti sacrifici per studiare.
+saga|la|Saga|Ho letto tutta la saga.
+saggezza|la|Weisheit|La saggezza viene con l'età.
+salario|il|Lohn|Il salario minimo è aumentato.
+salvezza|la|Rettung / Heil|Il bagnino è stata la nostra salvezza.
+sanità|la|Gesundheitswesen|La sanità pubblica è gratuita.
+sanzione|la|Sanktion / Strafe|Ha ricevuto una sanzione.
+sapore|il|Geschmack|Questo gelato ha un sapore di fragola.
+scandalo|lo|Skandal|È scoppiato uno scandalo.
+scatto|lo|Ruck / Aufnahme / Sprint|Ha fatto uno scatto improvviso.
+scenario|lo|Szenario / Kulisse|È uno scenario preoccupante.
+scomparsa|la|Verschwinden / Tod|La scomparsa del cantante ha colpito tutti.
+scontro|lo|Zusammenstoß|C'è stato uno scontro tra due auto.
+scorta|la|Vorrat / Eskorte|Teniamo una scorta d'acqua.
+`,
+"B2 – Abstrakte Nomen 8": `
+segmento|il|Segment / Abschnitt|Disegna un segmento di cinque centimetri.
+segnalazione|la|Meldung / Hinweis|Grazie per la segnalazione.
+segreteria|la|Sekretariat / Anrufbeantworter|Lascia un messaggio in segreteria.
+semplicità|la|Einfachheit|Mi piace la semplicità di questa casa.
+sensibilità|la|Empfindlichkeit / Feingefühl|Ha una grande sensibilità.
+separazione|la|Trennung|La separazione è stata dolorosa.
+sequenza|la|Abfolge / Sequenz|Metti le immagini nella giusta sequenza.
+sequestro|il|Beschlagnahme / Entführung|Il sequestro è durato un mese.
+serenità|la|Gelassenheit / Heiterkeit|Vive con serenità.
+simpatia|la|Sympathie|Ho molta simpatia per lui.
+sindrome|la|Syndrom|Soffre di una sindrome rara.
+sopravvivenza|la|Überleben|È una questione di sopravvivenza.
+sospensione|la|Aussetzung / Federung / Suspendierung|Hanno dato tre giorni di sospensione allo studente.
+sospiro|il|Seufzer|Ha tirato un sospiro di sollievo.
+sostituzione|la|Ersatz / Auswechslung|L'allenatore fa una sostituzione.
+spessore|lo|Dicke / Tiefgang|Il muro ha uno spessore di trenta centimetri.
+spettro|lo|Gespenst / Spektrum|Lo spettro della crisi preoccupa tutti.
+spinta|la|Stoß / Antrieb|Mi serve una spinta per cominciare.
+splendore|lo|Glanz|Roma nel suo splendore.
+spostamento|lo|Verschiebung / Fahrt|Lo spostamento dell'appuntamento è confermato.
+stabilità|la|Stabilität|Cerchiamo stabilità economica.
+stima|la|Wertschätzung / Schätzung|Ho grande stima di te.
+stimolo|lo|Anreiz / Reiz|Ho bisogno di nuovi stimoli.
+strage|la|Massaker / Blutbad|La strage ha sconvolto il paese.
+strato|lo|Schicht|C'è uno strato di polvere sul tavolo.
+stretta|la|Händedruck / Verschärfung|Una stretta di mano e l'accordo è fatto.
+successione|la|Nachfolge / Abfolge|La successione al trono è complicata.
+suggerimento|il|Vorschlag / Tipp|Hai qualche suggerimento?
+suicidio|il|Suizid / Selbstmord|È un film sul tema del suicidio.
+suolo|il|Boden|Il pacco è caduto al suolo.
+svolta|la|Wende / Abzweigung|È stata una svolta nella mia vita.
+talento|il|Talent|Ha un grande talento per la musica.
+tangente|la|Schmiergeld / Tangente|Il politico ha preso una tangente.
+tariffa|la|Tarif / Gebühr|Qual è la tariffa per una notte?
+tentazione|la|Versuchung|Non resisto alla tentazione.
+tenuta|la|Landgut / Kleidung / Ausdauer|Hanno una tenuta in Toscana.
+`,
+"B2 – Abstrakte Nomen 9": `
+teologia|la|Theologie|Studia teologia a Roma.
+terrore|il|Schrecken / Terror|Ha il terrore dei ragni.
+terrorismo|il|Terrorismus|La lotta al terrorismo è internazionale.
+testamento|il|Testament|Ha lasciato tutto nel testamento.
+testimonianza|la|Zeugenaussage / Zeugnis|La sua testimonianza è decisiva.
+timore|il|Furcht|Ho il timore di disturbare.
+tipologia|la|Typ / Typologie|Che tipologia di camera desidera?
+tiro|il|Schuss / Wurf|Un tiro in porta!
+tradimento|il|Verrat / Untreue|Il tradimento è difficile da perdonare.
+trascrizione|la|Abschrift|Leggi la trascrizione del dialogo.
+trasferimento|il|Umzug / Versetzung / Überweisung|Il trasferimento a Roma è previsto a settembre.
+trasformazione|la|Umwandlung|La città è in piena trasformazione.
+trauma|il|Trauma|L'incidente gli ha causato un trauma.
+trionfo|il|Triumph|La squadra torna in trionfo.
+truppa|la|Truppe|Le truppe entrano in città.
+turismo|il|Tourismus|Il turismo è importante per Venezia.
+udienza|l'|Anhörung / Audienz|L'udienza in tribunale è rinviata.
+urgenza|l'|Dringlichkeit|In caso di urgenza chiama questo numero.
+utilità|l'|Nutzen|Qual è l'utilità di questo attrezzo?
+utilizzo|l'|Nutzung|L'utilizzo del telefono è vietato in classe.
+variante|la|Variante|È una variante della ricetta.
+variazione|la|Änderung / Abweichung|C'è una variazione dell'orario.
+varietà|la|Vielfalt / Sorte|C'è una grande varietà di formaggi.
+vendetta|la|Rache|Vuole vendetta.
+vertice|il|Gipfel / Spitze|C'è un vertice dei ministri a Bruxelles.
+vicinanza|la|Nähe|Grazie per la vostra vicinanza.
+vigore|il|Kraft / Geltung|La legge entra in vigore domani.
+violazione|la|Verletzung / Verstoß|È una violazione della privacy.
+vizio|il|Laster / Angewohnheit|Il fumo è il suo unico vizio.
+vocazione|la|Berufung|Insegnare è la sua vocazione.
+radiazione|la|Strahlung|Le radiazioni sono pericolose.
+proteina|la|Protein / Eiweiß|Le uova sono ricche di proteine.
+tumore|il|Tumor|Il tumore è stato operato in tempo.
+sfogo|lo|Ventil / Ausschlag|Lo sport è il mio sfogo.
+seduta|la|Sitzung|La seduta del consiglio è alle cinque.
+psicologia|la|Psychologie|Studia psicologia a Padova.
+vangelo|il|Evangelium|Il prete legge il Vangelo.
+vergine||Jungfrau / unberührt|Uso olio extravergine d'oliva.
+vescovo|il|Bischof|Il vescovo visita la parrocchia.
+verbo|il|Verb|"Mangiare" è un verbo regolare.
+`
+});
+/* Nachträge Teil 3 */
+add({
+"B1 – Nomen 7": `
+pulizia|la|Sauberkeit / Putzen|Sabato facciamo le pulizie di casa.
+torneo|il|Turnier|Partecipiamo a un torneo di calcetto.
+sparo|lo|Schuss|Ho sentito uno sparo nella notte.
+sterlina|la|Pfund (Währung)|A Londra si paga in sterline.
+soglia|la|Schwelle|Il gatto aspetta sulla soglia.
+veste|la|Gewand / Eigenschaft|Parla in veste di presidente.
+`,
+"B1 – Menschen & Rollen 4": `
+ribelle|il|Rebell / rebellisch|È sempre stato un ribelle.
+vice|il|Stellvertreter|Parla con il vice, il capo non c'è.
+`,
+"B1 – Verben 11": `
+sfondare||einschlagen / durchbrechen|I ladri hanno sfondato la porta.
+`,
+"B2 – Abstrakte Nomen 9": `
+preghiera|la|Gebet / Bitte|Recita una preghiera prima di dormire.
+proiezione|la|Vorführung / Projektion|La proiezione del film inizia alle nove.
+pseudonimo|lo|Pseudonym|Lo scrittore pubblica con uno pseudonimo.
+retta|la|Gerade / Gebühr|Disegna una retta sul foglio.
+`
+});
 })();
