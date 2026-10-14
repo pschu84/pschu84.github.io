@@ -88,7 +88,7 @@ button{font:inherit;color:inherit}
 .lesson.phrase{border-left:4px solid var(--rosa-b)}
 .lesson.comp{background:linear-gradient(160deg,var(--paper),var(--verde-l))}
 .lesson.sel{border-color:var(--verde);box-shadow:0 0 0 3px rgba(47,125,79,.15)}
-.lesson.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.4)}
+.lesson.locked{opacity:.5;cursor:pointer;filter:grayscale(.4)}
 .lesson-name{font-weight:800;font-size:13.5px;padding-right:18px}
 .lesson-count{font-size:11.5px;color:var(--muted)}
 .bar{display:block;height:5px;background:var(--line);border-radius:9px;margin-top:6px;overflow:hidden}
@@ -2130,7 +2130,7 @@ function useBilderAn(){
 }
 function BildToggle({w}){
   const an = useBilderAn();
-  if (!w || !window.IT_BILD || !window.IT_BILD(w.it)) return null;
+  if (!w || !window.IT_BILD || !window.IT_BILD(w.it,w.de)) return null;
   return <button className={"vb-toggle"+(an?"":" off")} aria-label={an?"Bilder ausblenden":"Bilder einblenden"} title={an?"Bilder ausblenden":"Bilder einblenden"}
     onClick={(e)=>{ e.stopPropagation(); lsSet(BILD_KEY, an?"0":"1"); window.dispatchEvent(new Event("vb-toggle")); }}>🖼️</button>;
 }
@@ -2139,7 +2139,7 @@ function Bild({w}){
   const [stufe,setStufe] = useState(0);
   useEffect(()=>setStufe(0),[w&&w.it]);
   if (!an || !w || w.phrase || !window.IT_BILD) return null;
-  const b = window.IT_BILD(w.it);
+  const b = window.IT_BILD(w.it,w.de);
   if (!b) return null;
   if (b.type==="anim") return <div className="vbild" dangerouslySetInnerHTML={{__html:b.svg}}/>;
   if (stufe>1) return null;
@@ -2173,6 +2173,7 @@ const ORIG_DEFS = LESSON_DEFS.filter(l=>!l.extra);
 function mastered60(st, l){ return lessonMastered(st,l) >= Math.floor(l.words.length*0.6); }
 function isUnlocked(st, ld) {
   if (ld.isPhrase) return true;
+  if (st.__frei && st.__frei[ld.name]) return true;   // von Hand vorzeitig freigeschaltet
   if (ld.extra) {
     const extras = LESSON_DEFS.filter(l=>l.extra && l.level===ld.level);
     const i = extras.indexOf(ld);
@@ -2907,7 +2908,14 @@ function App() {
       <Hap block><button type="button"
         className={"lesson"+(ld.isPhrase?" phrase":"")+(unlocked?"":" locked")+(isSel?" sel":"")+(p>=70?" comp":"")}
         style={{animationDelay:delay+"s"}}
-        onClick={()=>unlocked&&selectLesson(ld)} disabled={!unlocked}>
+        title={unlocked?undefined:"Tippen, um die Lektion vorzeitig freizuschalten"}
+        onClick={()=>{
+          if (unlocked) { selectLesson(ld); return; }
+          const kurz = ld.name.replace(/^[A-Z0-9]+ – /,"");
+          if (!window.confirm("„"+kurz+"“ ist noch gesperrt.\n\nNormalerweise wird eine Lektion frei, wenn du 60 % der vorherigen Lektion gelernt hast.\n\nTrotzdem jetzt freischalten?")) return;
+          const nst = {...st, __frei:{...(st.__frei||{}), [ld.name]:true}};
+          persist(nst); selectLesson(ld);
+        }}>
         <span className="lesson-name">{ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,"")}</span>
         <span className="lesson-count">{ld.words.length} {ld.isPhrase?"Phrasen":"Wörter"} · {p}%</span>
         <span className="bar"><span className="b-done" style={{width:(doneCnt/ld.words.length*100)+"%"}}/><span className="b-work" style={{width:wp+"%"}}/><span className="b-seen" style={{width:sp+"%"}}/></span>

@@ -3,12 +3,12 @@
    2) Piktogramme von ARASAAC, live geladen von arasaac.org
       Piktogramm-Urheber: Sergio Palao. Herkunft: ARASAAC (https://arasaac.org).
       Eigentümer: Regierung von Aragón (Spanien). Lizenz: CC BY-NC-SA 4.0.
-   Testumfang: A1 Lektion 1 bis 4 (Grundwörter 1/2, Verben 1/2).
+   Umfang: A1 Lektion 1 bis 8 (Grundwörter, Verben, Zahlen & Zeit, Familie, Farben & Eigenschaften, Begrüßung).
    Abstrakte Wörter (caso, fatto, modo ...) bekommen bewusst kein Bild. */
 (function(){
 
 /* ── ARASAAC: Vokabel → Piktogramm-ID (von Hand geprüft) ── */
-var PIC = {"casa":2317,"acqua":2248,"pane":2494,"uomo":4665,"donna":4703,"bambino":2485,"giorno":26799,"notte":26997,"anno":6903,"ora":7129,"nome":27357,"città":2704,"strada":2302,"scuola":3082,"libro":2450,"tavolo":3129,"porta":2535,"finestra":2611,"mano":2928,"testa":2673,"cibo":4610,"vino":2614,"caffè":2296,"latte":2445,"carne":2316,"pesce":2520,"verdura":28343,"paese":38586,"sedia":3155,"occhio":6573,"orecchio":2871,"bocca":2663,"naso":2887,"piede":2841,"gamba":8666,"braccio":2669,"cuore":2715,"stomaco":3309,"schiena":2748,"dente":10267,"capelli":2851,"cosa":11318,"parte":5436,"punto":3218,"mondo":30015,"mare":2925,"montagna":2909,"fiume":2811,"lago":6022,"cielo":38270,"sole":2798,"luna":2933,"stella":2752,"fuoco":4654,"terra":3160,"luce":8619,"buio":8643,"colore":5968,"suono":27073,"parola":9837,"lettera":2688,"numero":2879,"prezzo":9874,"soldi":4630,"conto":38971,"negozio":9117,"mercato":32942,"supermercato":3389,"farmacia":3313,"ospedale":3116,"medico":2467,"polizia":2824,"banca":6055,"ufficio":27533,"chiesa":3118,"piazza":6184,"parco":2859,"giardino":2434,"cucina":5965,"bagno":5921,"letto":2304,"divano":2571,"armadio":2258,"specchio":2385,"chiave":8153,"telefono":2791,"computer":7190,"televisione":25498,"radio":24336,"camera":5988,"salotto":39108,"immagine":2360,"essere":5465,"avere":7271,"fare":11749,"stare":5466,"sapere":9034,"potere":11750,"volere":5441,"dovere":15523,"vedere":2474,"sentire":6572,"parlare":3345,"mangiare":2349,"bere":2276,"dormire":2369,"lavorare":2599,"studiare":2387,"comprare":6457,"leggere":2447,"scrivere":2380,"dire":9693,"chiedere":9844,"chiamare":6552,"rispondere":9031,"lavare":34826,"pulire":3351,"cucinare":2342,"giocare":2439,"vestirsi":2781,"aiutare":4570,"capire":6019,"pensare":8661,"ricordare":11357,"dimenticare":26258,"imparare":8029,"insegnare":26809,"mostrare":11308,"guardare":6564,"ascoltare":2381,"toccare":3293,"tenere":39414,"lasciare":11748,"vincere":7218,"pagare":29070,"costare":9874,"vendere":6652,"ricevere":17042,"spedire":21828,"mandare":25062,"usare":15485,"cambiare":8053,"cominciare":5431,"finire":5358,"continuare":17050,"smettere":28429,"provare":26144,"decidere":37861,"scegliere":11694,"preferire":30510,"piacere":21917,"amare":6600,"odiare":38936,"avere fame":7272,"avere sete":7273,"avere freddo":28653,"avere caldo":28655,"avere paura":35571,"avere ragione":21381,"avere torto":22198,"avere bisogno di":37160,"stare bene":5397,"stare male":7040};
+var PIC = {"casa":2317,"acqua":2248,"pane":2494,"uomo":4665,"donna":4703,"bambino":2485,"giorno":26799,"notte":26997,"anno":6903,"ora":7129,"nome":27357,"città":2704,"strada":2302,"scuola":3082,"libro":2450,"tavolo":3129,"porta":2535,"finestra":2611,"mano":2928,"testa":2673,"cibo":4610,"vino":2614,"caffè":2296,"latte":2445,"carne":2316,"pesce":2520,"verdura":28343,"paese":38586,"sedia":3155,"occhio":6573,"orecchio":2871,"bocca":2663,"naso":2887,"piede":2841,"gamba":8666,"braccio":2669,"cuore":2715,"stomaco":3309,"schiena":2748,"dente":10267,"capelli":2851,"cosa":11318,"parte":5436,"punto":3218,"mondo":30015,"mare":2925,"montagna":2909,"fiume":2811,"lago":6022,"cielo":38270,"sole":2798,"luna":2933,"stella":2752,"fuoco":4654,"terra":3160,"luce":8619,"buio":8643,"colore":5968,"suono":27073,"parola":9837,"lettera":2688,"numero":2879,"prezzo":9874,"soldi":4630,"conto":38971,"negozio":9117,"mercato":32942,"supermercato":3389,"farmacia":3313,"ospedale":3116,"medico":2467,"polizia":2824,"banca":6055,"ufficio":27533,"chiesa":3118,"piazza":6184,"parco":2859,"giardino":2434,"cucina":5965,"bagno":5921,"letto":2304,"divano":2571,"armadio":2258,"specchio":2385,"chiave":8153,"telefono":2791,"computer":7190,"televisione":25498,"radio":24336,"camera":5988,"salotto":39108,"immagine":2360,"essere":5465,"avere":7271,"fare":11749,"stare":5466,"sapere":9034,"potere":11750,"volere":5441,"dovere":15523,"vedere":2474,"sentire":6572,"parlare":3345,"mangiare":2349,"bere":2276,"dormire":2369,"lavorare":2599,"studiare":2387,"comprare":6457,"leggere":2447,"scrivere":2380,"dire":9693,"chiedere":9844,"chiamare":6552,"rispondere":9031,"lavare":34826,"pulire":3351,"cucinare":2342,"giocare":2439,"vestirsi":2781,"aiutare":4570,"capire":6019,"pensare":8661,"ricordare":11357,"dimenticare":26258,"imparare":8029,"insegnare":26809,"mostrare":11308,"guardare":6564,"ascoltare":2381,"toccare":3293,"tenere":39414,"lasciare":11748,"vincere":7218,"pagare":29070,"costare":9874,"vendere":6652,"ricevere":17042,"spedire":21828,"mandare":25062,"usare":15485,"cambiare":8053,"cominciare":5431,"finire":5358,"continuare":17050,"smettere":28429,"provare":26144,"decidere":37861,"scegliere":11694,"preferire":30510,"piacere":21917,"amare":6600,"odiare":38936,"avere fame":7272,"avere sete":7273,"avere freddo":28653,"avere caldo":28655,"avere paura":35571,"avere ragione":21381,"avere torto":22198,"avere bisogno di":37160,"stare bene":5397,"stare male":7040,"mattina":25704,"pomeriggio":7268,"ieri":6926,"oggi":7131,"domani":7152,"adesso":13026,"dopo":13080,"prima":13028,"sempre":17322,"mai":5527,"spesso":37029,"a volte":27564,"primavera":5553,"estate":5604,"autunno":5531,"inverno":5493,"minuto":37374,"raramente":27385,"settimana":7244,"mese":7161,"padre":2497,"madre":31148,"fratello":2423,"sorella":2422,"figlio":9887,"figlia":9885,"nonno":2244,"nonna":2243,"zio":30255,"zia":30271,"cugino":30340,"nipote":10342,"marito":11550,"moglie":11552,"fidanzato":38939,"fidanzata":38937,"amico":8487,"amica":8486,"persona":34557,"gente":7116,"ragazzo":4673,"ragazza":10206,"signore":4744,"signora":4745,"bambina":10362,"anziano":25796,"adulto":6886,"famiglia":2392,"bello":11194,"brutto":4648,"grande":4658,"piccolo":4716,"buono":4581,"cattivo":4690,"nuovo":4705,"vecchio":4770,"lungo":4675,"corto":4615,"alto":4557,"basso":4571,"largo":4559,"stretto":4643,"caro":4589,"economico":4574,"facile":4645,"difficile":4629,"forte":4655,"debole":4620,"stanco":2314,"contento":3245,"triste":2606,"arrabbiato":2374,"simpatico":7251,"antipatico":6902,"gentile":33994,"vicino":30383,"sera":3176,"ciao":6009,"arrivederci":34467,"grazie":8128,"per favore":38907,"scusa":11625,"scusi":11625,"sì":5584,"no":5526,"benvenuto":6936,"età":7072,"indirizzo":30231,"germania":8011,"italia":8143,"lingua":32546,"abitare":7302,"conoscere":6993,"auguri":13018,"complimenti":38566,"cognome":27327,"nazionalità":12338,"bene":5397,"male":5504,"va bene":5397,"tedesco":8011,"italiano":8143,"chiamarsi":27357,"a domani":7152,"salve":6009,"salutare":6009};
 
 /* ── SVG-Baukasten ── */
 var INK="var(--ink,#2B2A26)", ACC="var(--verde,#2F7D4F)", OBJ="var(--oro,#9A6F12)", OBJL="var(--oro-l,#FBF0D6)",
@@ -102,6 +102,65 @@ var S = {
   aspettare:function(){ return P("wait",58)+clock(110,46)+txt("…",58,22,20,INK); }
 };
 
+/* ── Eigene Bilder ohne Boden: Zahlen, Ordnungszahlen, Farben, Wochentage, Monate, Tageszeiten ── */
+function dots(n){
+  if (n>12) return "";
+  var out="", cols=Math.min(n,6), rows=Math.ceil(n/6), r=4.2, gap=12;
+  for (var k=0;k<n;k++){ var c=k%6, rw=Math.floor(k/6), inRow=(rw<rows-1)?6:(n-6*(rows-1));
+    var x=80-(inRow-1)*gap/2+c*gap, y=74+rw*12;
+    out+='<circle class="vb-pop" style="animation-delay:'+(k*.12)+'s" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+ARR+'"/>'; }
+  return out;
+}
+function zahl(n){ return function(){ return txt(String(n).replace(/(\d)(?=(\d{3})+$)/,"$1."), 80, n>12?64:52, n>12?40:34, ACC)+dots(n); }; }
+function podest(place){ return function(){
+  var H={1:46,2:32,3:22}, X={2:34,1:80,3:126}, out="";
+  [2,1,3].forEach(function(p){ var on=p===place;
+    out+='<rect x="'+(X[p]-22)+'" y="'+(G-H[p])+'" width="44" height="'+H[p]+'" rx="3" fill="'+(on?ARR:OBJL)+'" stroke="'+(on?ARR:OBJ)+'" stroke-width="2.5"/>'+
+         txt(p+".",X[p],G-H[p]+18,15,on?PAP:OBJ);
+    if(on) out+='<g class="vb-hop"><g transform="translate('+X[p]+','+(G-H[p])+') scale(.55) translate('+(-X[p])+','+(-(G-H[p]))+')">'+P("win",X[p],G-H[p],{c:INK})+'</g></g>'; });
+  return out; }; }
+function farbe(c){ return function(){ return '<g class="vb-blob"><path d="M80 18 C108 14 124 34 120 56 C116 80 96 92 74 88 C50 84 36 70 40 48 C44 28 58 20 80 18Z" fill="'+c+'" stroke="rgba(0,0,0,.18)" stroke-width="2"/></g>'; }; }
+function woche(d){ return function(){ var out="";
+  for (var k=0;k<7;k++){ var x=13+k*20, on=k===d, we=k>=5;
+    out+='<rect class="'+(on?"vb-pulse":"")+'" x="'+x+'" y="34" width="16" height="34" rx="4" fill="'+(on?ARR:(we?"#F3E2C6":OBJL))+'" stroke="'+(on?ARR:OBJ)+'" stroke-width="2" style="transform-origin:'+(x+8)+'px 51px"/>'; }
+  return out+txt("1",21,84,11,OBJ)+txt("7",141,84,11,OBJ); }; }
+function monat(m){ return function(){ var out="";
+  for (var k=0;k<12;k++){ var c=k%4, r=Math.floor(k/4), x=36+c*23, y=14+r*25, on=k===m;
+    out+='<rect class="'+(on?"vb-pulse":"")+'" x="'+x+'" y="'+y+'" width="19" height="21" rx="3" fill="'+(on?ARR:OBJL)+'" stroke="'+(on?ARR:OBJ)+'" stroke-width="2" style="transform-origin:'+(x+9.5)+'px '+(y+10.5)+'px"/>'+
+      txt(k+1,x+9.5,y+15,10,on?PAP:OBJ); }
+  return out; }; }
+function sonne(cls,y){ return '<g class="'+cls+'"><circle cx="80" cy="'+y+'" r="14" fill="#E9B63B"/>'+
+  [0,45,90,135,180,225,270,315].map(function(a){var r=a*Math.PI/180;return ln(80+Math.cos(r)*19,y+Math.sin(r)*19,80+Math.cos(r)*25,y+Math.sin(r)*25,"#E9B63B",3);}).join("")+'</g>'; }
+function horizont(){ return '<rect x="8" y="70" width="144" height="26" fill="'+PAP+'"/>'+ln(8,70,152,70,OBJ,3); }
+function mond(){ return '<path class="vb-glow" d="M92 22 a22 22 0 1 0 14 38 a18 18 0 1 1 -14 -38z" fill="#E9CF8A"/>'+txt("✦",42,34,12,"#E9B63B")+txt("✦",124,26,10,"#E9B63B")+txt("✦",58,70,9,"#E9B63B"); }
+function glas(cls){ return '<clipPath id="vbg"><path d="M60 22 L100 22 L94 88 L66 88Z"/></clipPath>'+
+  '<g clip-path="url(#vbg)"><rect class="'+cls+'" x="56" y="22" width="48" height="66" fill="#7FB8D9"/></g>'+
+  '<path d="M60 22 L100 22 L94 88 L66 88Z" fill="none" stroke="'+INK+'" stroke-width="3.5" stroke-linejoin="round"/>'; }
+
+var NG = {
+  "uno":zahl(1),"due":zahl(2),"tre":zahl(3),"quattro":zahl(4),"cinque":zahl(5),"sei":zahl(6),"sette":zahl(7),"otto":zahl(8),
+  "nove":zahl(9),"dieci":zahl(10),"undici":zahl(11),"dodici":zahl(12),"venti":zahl(20),"trenta":zahl(30),"cento":zahl(100),"mille":zahl(1000),
+  "primo":podest(1),"secondo":podest(2),"terzo":podest(3),
+  "rosso":farbe("#D23B2E"),"blu":farbe("#2F5FC4"),"verde":farbe("#3A9A5B"),"giallo":farbe("#F2CC2E"),"bianco":farbe("#FFFFFF"),
+  "nero":farbe("#1E1E1E"),"grigio":farbe("#9A9A9A"),"rosa":farbe("#F4A6C1"),"arancione":farbe("#F28C28"),"viola":farbe("#8A4FC2"),"marrone":farbe("#8B5A2B"),
+  "lunedì":woche(0),"martedì":woche(1),"mercoledì":woche(2),"giovedì":woche(3),"venerdì":woche(4),"sabato":woche(5),"domenica":woche(6),
+  "gennaio":monat(0),"febbraio":monat(1),"marzo":monat(2),"aprile":monat(3),"maggio":monat(4),"giugno":monat(5),
+  "luglio":monat(6),"agosto":monat(7),"settembre":monat(8),"ottobre":monat(9),"novembre":monat(10),"dicembre":monat(11),
+  "buongiorno":function(){ return sonne("vb-rise2",48)+horizont(); },
+  "buonasera":function(){ return '<rect x="8" y="4" width="144" height="66" fill="#F6D7B0" opacity=".5"/>'+sonne("vb-set",48)+horizont(); },
+  "buonanotte":mond,
+  "pieno":function(){ return glas("vb-fill"); },
+  "vuoto":function(){ return glas("vb-empty"); },
+  "secondo|sekunde":function(){ return '<circle cx="80" cy="52" r="32" fill="'+PAP+'" stroke="'+INK+'" stroke-width="4"/>'+ln(80,14,80,20,INK,5)+ln(72,12,88,12,INK,5)+
+     '<g class="vb-tick" style="transform-origin:80px 52px">'+ln(80,52,80,28,ARR,3.5)+'</g><circle cx="80" cy="52" r="3.5" fill="'+INK+'"/>'; }
+};
+/* Bewegte Gegensätze mit Boden */
+S.veloce = function(){ return g("vb-run",walker("runA","runB",18),"--dx:110px")+g("vb-run",ln(-2,50,-16,50,ARR,3)+ln(0,62,-12,62,ARR,3),"--dx:110px"); };
+S.lento  = function(){ return g("vb-slow",'<path d="M26 '+G+' L70 '+G+' q6 0 6 -6 L76 80" fill="'+OBJL+'" stroke="'+OBJ+'" stroke-width="3" stroke-linejoin="round"/>'+
+  '<circle cx="50" cy="72" r="16" fill="#E9CF8A" stroke="'+OBJ+'" stroke-width="3"/><path d="M50 72 m0 -9 a9 9 0 1 1 -8 5 a5 5 0 1 1 6 -2" fill="none" stroke="'+OBJ+'" stroke-width="2.5"/>'+
+  ln(74,80,78,66,OBJ,2.5)+ln(76,80,84,68,OBJ,2.5)+'<circle cx="78" cy="65" r="2.5" fill="'+INK+'"/><circle cx="84" cy="67" r="2.5" fill="'+INK+'"/>',"--dx:46px")+txt("…",120,40,22,INK); };
+S.aperto = S.aprire; S.chiuso = S.chiudere;
+
 var CSS = "\
 .vbild{display:flex;flex-direction:column;align-items:center;margin:6px 0 0}\
 .vbild svg{width:116px;height:73px;overflow:visible}\
@@ -156,14 +215,37 @@ var CSS = "\
 @keyframes vbSpin{to{transform:rotate(360deg)}}\
 .vbild .vb-wave{animation:vbWaveF 1s ease-in-out infinite;transform-box:fill-box;transform-origin:left center}\
 @keyframes vbWaveF{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.8)}}\
+.vbild .vb-pop{animation:vbPop .4s cubic-bezier(.2,1.6,.4,1) both;transform-box:fill-box;transform-origin:center}\
+@keyframes vbHop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}\
+@keyframes vbPop{from{transform:scale(0)}to{transform:scale(1)}}\
+.vbild .vb-hop{animation:vbHop 1.2s cubic-bezier(.3,0,.7,1) infinite}\
+.vbild .vb-blob{animation:vbBlob 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}\
+@keyframes vbBlob{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.06) rotate(4deg)}}\
+.vbild .vb-pulse{animation:vbPulse 1.6s ease-in-out infinite}\
+@keyframes vbPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}\
+.vbild .vb-rise2{animation:vbSun 3.2s ease-out infinite}\
+@keyframes vbSun{0%{transform:translateY(40px)}60%,100%{transform:translateY(0)}}\
+.vbild .vb-set{animation:vbSet 3.2s ease-in infinite}\
+@keyframes vbSet{0%,15%{transform:translateY(0)}80%,100%{transform:translateY(40px)}}\
+.vbild .vb-glow{animation:vbGlow 2.4s ease-in-out infinite}\
+@keyframes vbGlow{0%,100%{opacity:1}50%{opacity:.7}}\
+.vbild .vb-fill{animation:vbFill 3.2s ease-in-out infinite}\
+@keyframes vbFill{0%,10%{transform:translateY(66px)}70%,100%{transform:translateY(4px)}}\
+.vbild .vb-empty{animation:vbFill 3.2s ease-in-out infinite reverse}\
+.vbild .vb-tick{animation:vbTick 4s steps(8) infinite}\
+@keyframes vbTick{to{transform:rotate(360deg)}}\
+.vbild .vb-slow{animation:vbWalk 6s linear infinite}\
 @media (prefers-reduced-motion:reduce){.vbild *{animation:none!important}.vbild .vb-fA,.vbild .vb-stepB{opacity:0}.vbild .vb-fB,.vbild .vb-rise,.vbild .vb-sink{opacity:1}}";
 
 var st=document.createElement("style"); st.textContent=CSS; document.head.appendChild(st);
 
 /* Öffentliche Schnittstelle für vokabeln.html */
-window.IT_BILD = function(it){
-  var k=(it||"").toLowerCase().trim();
-  if (S[k]) return {type:"anim", svg:'<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+ground()+S[k]()+'</svg>'};
+window.IT_BILD = function(it, de){
+  var k=(it||"").toLowerCase().trim().replace(/\/[a-z]+$/,""), kd=k+"|"+(de||"").toLowerCase().trim();
+  var svg=function(inner){ return {type:"anim", svg:'<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+inner+'</svg>'}; };
+  if (NG[kd]) return svg(NG[kd]());
+  if (S[k]) return svg(ground()+S[k]());
+  if (NG[k]) return svg(NG[k]());
   if (PIC[k]) { var id=PIC[k]; return {type:"pic", id:id,
       src:"https://static.arasaac.org/pictograms/"+id+"/"+id+"_300.png",
       alt:"https://api.arasaac.org/v1/pictograms/"+id+"?download=false"}; }
