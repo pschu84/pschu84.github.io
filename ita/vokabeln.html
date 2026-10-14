@@ -91,8 +91,15 @@ button{font:inherit;color:inherit}
 .lesson-name{font-weight:800;font-size:13.5px;padding-right:18px}
 .lesson-count{font-size:11.5px;color:var(--muted)}
 .bar{display:block;height:5px;background:var(--line);border-radius:9px;margin-top:6px;overflow:hidden}
-.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--verde),#57a874);border-radius:9px;transition:width .8s}
-.lesson.phrase .bar span{background:linear-gradient(90deg,var(--rosa),#d97ea2)}
+.bar{display:flex}
+.bar span{display:block;height:100%;transition:width .8s}
+.bar .b-done{background:linear-gradient(90deg,var(--verde),#57a874)}
+.bar .b-work{background:#8FCB9F}
+.bar .b-seen{background:#D9B464}
+.lesson.phrase .bar .b-done{background:linear-gradient(90deg,var(--rosa),#d97ea2)}
+.lesson.phrase .bar .b-work{background:var(--rosa-b)}
+.corner.rep{font-size:12px}
+.inwork{display:block;font-size:12.5px;color:var(--verde);font-weight:700;margin-top:2px}
 .corner{position:absolute;top:9px;right:10px;font-size:13px}
 .corner.ok{color:var(--verde);font-weight:900}
 
@@ -2148,6 +2155,21 @@ function isUnlocked(st, ld) {
   if (prev.isPhrase) return true;
   return mastered60(st, prev);
 }
+// Fortschritt in drei Teilen: gelernt (Stufe 3/4), dabei (Stufe 1/2, schon mindestens einmal gewusst),
+// angeschaut (Stufe 0, aber schon einmal abgefragt)
+function lessonParts(st, ld) {
+  let done=0, work=0, seen=0;
+  ld.words.forEach(w=>{
+    const c = getCard(st,ld.name,w.it);
+    if (c.phase>=3) done++; else if (c.phase>=1) work++; else if (c.seen) seen++;
+  });
+  return {done, work, seen};
+}
+function totalInWork(st) {
+  let n=0;
+  LESSON_DEFS.forEach(ld=>{ const p = lessonParts(st, ld); n += p.work + p.seen; });
+  return n;
+}
 function totalDone(st) {
   let n=0;
   LESSON_DEFS.forEach(ld=>ld.words.forEach(w=>{ if(getCard(st,ld.name,w.it).phase>=3) n++; }));
@@ -2605,6 +2627,7 @@ function App() {
     if (!w) return;
     const newSt = {...st};
     const c = getCard(newSt, curLesson.name, w.it);
+    c.seen = 1;
     if (known) c.phase = 4;
     else if (correct) { if (c.phase < 3) c.phase++; }
     else { if (c.phase > 1) c.phase = 1; }
@@ -2808,6 +2831,7 @@ function App() {
   });
 
   const done = totalDone(st);
+  const inWork = totalInWork(st);
   const pct = Math.min(100, Math.round(done/TOTAL_GOAL*100));
 
   function lessonStats(ld) {
@@ -2827,8 +2851,10 @@ function App() {
   function LessonCard({ld}) {
     const idx = LESSON_DEFS.indexOf(ld);
     const unlocked = isUnlocked(st,ld,idx);
-    const doneCnt = lessonMastered(st,ld);
+    const parts = lessonParts(st,ld);
+    const doneCnt = parts.done;
     const p = Math.round(doneCnt/ld.words.length*100);
+    const wp = parts.work/ld.words.length*100, sp = parts.seen/ld.words.length*100;
     const isSel = curLesson&&curLesson.name===ld.name;
     const delay = (cardDelay++)*0.025;
     return (
@@ -2838,9 +2864,10 @@ function App() {
         onClick={()=>unlocked&&selectLesson(ld)} disabled={!unlocked}>
         <span className="lesson-name">{ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,"")}</span>
         <span className="lesson-count">{ld.words.length} {ld.isPhrase?"Phrasen":"Wörter"} · {p}%</span>
-        <span className="bar"><span style={{width:p+"%"}}/></span>
+        <span className="bar"><span className="b-done" style={{width:(doneCnt/ld.words.length*100)+"%"}}/><span className="b-work" style={{width:wp+"%"}}/><span className="b-seen" style={{width:sp+"%"}}/></span>
         {!unlocked&&<span className="corner">🔒</span>}
         {p>=70&&unlocked&&<span className="corner ok">✓</span>}
+        {p<70&&unlocked&&parts.work>0&&<span className="corner rep" title="Wiederholungen offen">🔁</span>}
       </button></Hap>
     );
   }
@@ -2891,6 +2918,7 @@ function App() {
           <div className="ring-wrap"><Ring pct={pct}/><span className="ring-pct">{pct}%</span></div>
           <div className="goal-text">
             <b>{done}</b> von {TOTAL_GOAL} Wörtern gelernt
+            {inWork>0&&<span className="inwork">+ {inWork} in Arbeit</span>}
             <div className="io">
               <button className="chip" onClick={()=>exportProgress(st)}>⬇ Export</button>
               <button className="chip" onClick={()=>fileRef.current&&fileRef.current.click()}>⬆ Import</button>
