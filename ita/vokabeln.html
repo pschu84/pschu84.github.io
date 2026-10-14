@@ -2454,6 +2454,20 @@ function symbolsToWords(s, lang){
   if (map[out]) return map[out];                       // nur ein Zeichen erkannt
   return out.replace(/[.,?!:;\-+%&@\/=€]/g, ch => " "+map[ch]+" ");
 }
+// Ungerolltes „r“: Die Erkennung macht aus „pensare“ oft „pensave“, „pensavo“ oder „pensa e“.
+// Schlüssel ohne den Konsonanten vor dem Endvokal (r, v, l, d) und ohne Doppelbuchstaben.
+function rKey(s){
+  return s.replace(/([aeiou])r(?=si(?:\s|$))/g,"$1")
+          .replace(/([aeiou])[rvld]?(?=[aeiou](?:si)?(?:\s|$))/g,"$1")
+          .replace(/([a-z])\1+/g,"$1");
+}
+function rLenient(c, v){
+  if (!/r(?:[aeiou]|si)(?:\s|$)/.test(v)) return false;   // nur wenn die Vokabel auf r + Vokal endet (-are, -ere, -ire, -arsi …)
+  const cc = v.includes(" ") ? c : c.replace(/\s+/g,"");
+  const kc = rKey(cc), kv = rKey(v);
+  if (kc===kv) return true;
+  return kv.length>=4 && Math.abs(kc.length-kv.length)<=1 && lev(kc,kv)<=1;
+}
 function checkSpoken(alts, target, lang, isPhrase){
   const vars = answerVariants(target, lang, isPhrase);
   alts = alts.concat(alts.map(a=>symbolsToWords(a, lang)));
@@ -2467,6 +2481,7 @@ function checkSpoken(alts, target, lang, isPhrase){
       for (const v of vars){
         if (c===v) return {ok:true, heard:alt, sim:1};
         if (phonKey(c,lang)===phonKey(v,lang)) return {ok:true, heard:alt, sim:.98};
+        if (lang==="it" && !isPhrase && rLenient(c,v)) return {ok:true, heard:alt, sim:.96};
         const d = lev(c,v), L = Math.max(c.length,v.length);
         const sim = 1 - d/L;
         const tol = isPhrase ? Math.floor(L*0.2) : (v.length>=10 ? 2 : v.length>=6 ? 1 : 0);

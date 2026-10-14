@@ -106,7 +106,7 @@ var CSS = "\
 .vbild{display:flex;flex-direction:column;align-items:center;margin:6px 0 0}\
 .vbild svg{width:116px;height:73px;overflow:visible}\
 .vbild img{width:72px;height:72px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;box-shadow:0 1px 3px rgba(60,40,10,.12)}\
-.vb-credit{max-width:640px;margin:18px auto 28px;padding:0 16px;font-size:11px;line-height:1.5;color:var(--soft,#A79F90);text-align:center}\
+.vb-credit{max-width:560px;margin:14px auto 24px;padding:0 16px;font-size:9px;line-height:1.4;color:var(--soft,#A79F90);text-align:center}\
 .vb-credit a{color:inherit}\
 .vb-toggle{position:absolute;bottom:12px;left:12px;border:none;background:var(--bg,#FBF6EC);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer}\
 .vb-toggle.off{opacity:.45;filter:grayscale(1)}\
