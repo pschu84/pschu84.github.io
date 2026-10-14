@@ -2427,12 +2427,14 @@ function checkSpoken(alts, target, lang, isPhrase){
 }
 
 /* ───────── Vorlesen (nur Stimmen auf dem Gerät) ───────── */
-function useItalianVoice(){
+function useItalianVoice(){ return useLocalVoice(/^it/i); }
+function useGermanVoice(){ return useLocalVoice(/^de/i); }
+function useLocalVoice(langRe){
   const [voice, setVoice] = useState(null);
   useEffect(()=>{
     if (!window.speechSynthesis) return;
     const pick = ()=>{
-      const v = speechSynthesis.getVoices().filter(v=>/^it/i.test(v.lang) && v.localService);
+      const v = speechSynthesis.getVoices().filter(v=>langRe.test(v.lang) && v.localService);
       setVoice(v[0]||null);
     };
     pick();
@@ -2488,6 +2490,7 @@ function App() {
   const [autoListen, setAutoListenState] = useState(()=>lsGet(AUTO_KEY,"1")==="1");
   const autoTimer = useRef(null);
   const [hasVoice, speak] = useItalianVoice();
+  const [hasDeVoice, speakDe] = useGermanVoice();
   const fileRef = useRef(null);
   const recRef = useRef(null);
   const shownLoops = useRef(0);
@@ -2538,16 +2541,21 @@ function App() {
 
   useEffect(()=>()=>{ clearAuto(); stopRec(); },[]);
 
-  // Nach „weiß ich nicht“ beim Übersetzen ins Italienische: italienisches Wort vorlesen,
+  // deutsche Lösung zum Vorlesen glätten: „(gedeckter) Tisch / Tafel“ → „Tisch, Tafel“
+  function deForSpeech(t){ return (t||"").replace(/\([^)]*\)/g,"").replace(/\s*\/\s*/g,", ").replace(/\s+/g," ").trim(); }
+  // Nach „weiß ich nicht“: Lösung vorlesen (Italienisch bzw. Deutsch),
   // danach automatisch zur nächsten Karte (ohne selbst sprechen zu müssen)
-  const readAloudMode = result==="shown" && view==="study" && isSpeak && eff==="sayIT" && hasVoice;
+  // IT gefragt → italienisches Wort vorlesen, DE gefragt → deutsches Wort vorlesen
+  const canReadSolution = eff==="sayIT" ? hasVoice : hasDeVoice;
+  const readAloudMode = result==="shown" && view==="study" && isSpeak && canReadSolution;
   useEffect(()=>{
     if (!readAloudMode) return;
     const word = session[sidx]; if (!word) return;
     clearAuto(); stopRec();
     setReading(true);
     const t0 = setTimeout(()=>{
-      speak(word.it);
+      if (eff==="sayIT") speak(word.it);
+      else speakDe(deForSpeech(word.de));
       let waited = 0;
       const after = ()=>{
         waited += 250;
@@ -2641,7 +2649,7 @@ function App() {
       if (isCommand(alts, CMD_SKIP) || isCommand(alts, CMD_NEXT)) { revealSolution(); setSpeechMsg(null); return; }
       setTries(t=>t+1); setShake(s=>s+1); haptic("wrong");
       // nach dem dritten Fehlversuch automatisch aufdecken, damit der Fluss nicht abreißt
-      if (autoListen && tries>=2) { clearAuto(); revealSolution(); setSpeechMsg(eff==="sayIT"&&hasVoice ? "Hier ist die Lösung." : "Hier ist die Lösung. Sag sie einfach nach oder sag „weiter“."); return; }
+      if (autoListen && tries>=2) { clearAuto(); revealSolution(); setSpeechMsg(canReadSolution ? "Hier ist die Lösung." : "Hier ist die Lösung. Sag sie einfach nach oder sag „weiter“."); return; }
       setResult("wrong");
       // bei Fehler automatisch noch einmal zuhören (höchstens 2-mal)
       if (autoListen) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
@@ -2706,7 +2714,7 @@ function App() {
     // Sprache gehört, aber nicht verschriftet: vor dem Aufdecken wie „weiß ich nicht“ behandeln
     function unclearSpeech(){
       clearAuto(); revealSolution();
-      setSpeechMsg(eff==="sayIT"&&hasVoice ? "Das habe ich nicht verstanden, hier ist die Lösung." : "Das habe ich nicht verstanden, hier ist die Lösung. Sprich das Wort nach oder sag „weiter“.");
+      setSpeechMsg(canReadSolution ? "Das habe ich nicht verstanden, hier ist die Lösung." : "Das habe ich nicht verstanden, hier ist die Lösung. Sprich das Wort nach oder sag „weiter“.");
     }
     const retry = ()=>{ if (auto && attempt<3) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true, attempt+1), 400); return true; } return false; };
     r.onerror = (e)=>{
