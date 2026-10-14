@@ -2359,10 +2359,36 @@ function phonKey(s, lang){
   return k.replace(/\s+/g," ").trim();
 }
 // Sprachbefehle: „weiß ich nicht“ deckt auf, „weiter“ geht zur nächsten Karte
-const CMD_SKIP = ["weiss ich nicht","weiss nicht","ich weiss es nicht","ich weiss nicht","keine ahnung","losung","losung zeigen","aufdecken","non lo so","non so","non lo","non me lo ricordo","non ricordo","boh","aiuto","soluzione"];
-const CMD_NEXT = ["weiter","nachste","nachstes","nachste karte","okay weiter","ok weiter","avanti","prossimo","prossima","vai avanti","andiamo"];
+// Die Spracherkennung hört immer nur in EINER Sprache. Damit Befehle auch in der jeweils
+// anderen Sprache klappen, stehen hier zusätzlich typische Falsch-Schreibungen
+// (z. B. „non lo so“ von der deutschen Erkennung als „nonno so“ geschrieben).
+const CMD_SKIP = ["weiss ich nicht","weiss nicht","ich weiss es nicht","ich weiss nicht","keine ahnung","losung","losung zeigen","aufdecken","non lo so","non so","non lo","non me lo ricordo","non ricordo","boh","aiuto","soluzione",
+  "nonno so","nono so","non loso","nonlo so","bo","vais ich nicht","vai sich nicht","vais ic nicht","vais nicht","vai snicht","caine anung","kaine anung"];
+const CMD_NEXT = ["weiter","nachste","nachstes","nachste karte","okay weiter","ok weiter","avanti","prossimo","prossima","vai avanti","andiamo",
+  "waiter","vaiter","vaite","waite","uaiter","vaitter","weite"];
+// Sprachübergreifendes Klang-Skelett: macht deutsche und italienische Schreibweisen
+// desselben Klangs vergleichbar („weiß ich nicht“ ≈ „vai sich nicht“, „non lo so“ ≈ „nonno so“)
+function crossKey(s){
+  return " "+norm(s)+" "
+    .toString()
+    .replace(/w/g,"v").replace(/ei|ai|ay/g,"ai").replace(/sch/g,"s").replace(/ch|ck|c(?=[aou\s])|q/g,"k")
+    .replace(/z/g,"s").replace(/y/g,"i").replace(/h/g,"").replace(/([a-z])\1+/g,"$1")
+    .replace(/\s+/g,"");
+}
 function isCommand(alts, list){
-  return alts.some(a=>{ const t=" "+norm(a)+" "; return list.some(c=>t.includes(" "+c+" ")); });
+  return alts.some(a=>{
+    const n = norm(a), t = " "+n+" ", comp = n.replace(/\s/g,""), ck = crossKey(a);
+    return list.some(c=>{
+      if (t.includes(" "+c+" ")) return true;
+      // unscharf vergleichen (ohne Leerzeichen), damit leicht falsch erkannte Befehle trotzdem zählen
+      const cc = c.replace(/\s/g,"");
+      if (cc.length>=6 && Math.abs(comp.length-cc.length)<=2 && lev(comp,cc)<=Math.floor(cc.length/5)) return true;
+      // nach Klang vergleichen, damit Befehle auch in der jeweils anderen Sprache erkannt werden
+      const kc = crossKey(c);
+      if (kc.length>=4 && ck.includes(kc)) return true;
+      return kc.length>=5 && Math.abs(ck.length-kc.length)<=2 && lev(ck,kc)<=Math.max(1,Math.floor(kc.length/4));
+    });
+  });
 }
 // Spracherkennung schreibt manche Wörter als Zeichen („Punkt“ → „.“, „più“ → „+“)
 const SYMBOLS = {
@@ -2585,9 +2611,12 @@ function App() {
       clearAuto(); stopRec();
     } else {
       if (isCommand(alts, CMD_SKIP) || isCommand(alts, CMD_NEXT)) { revealSolution(); setSpeechMsg(null); return; }
-      setResult("wrong"); setTries(t=>t+1); setShake(s=>s+1); haptic("wrong");
+      setTries(t=>t+1); setShake(s=>s+1); haptic("wrong");
+      // nach dem dritten Fehlversuch automatisch aufdecken, damit der Fluss nicht abreißt
+      if (autoListen && tries>=2) { clearAuto(); revealSolution(); setSpeechMsg("Hier ist die Lösung. Sag sie einfach nach oder sag „weiter“."); return; }
+      setResult("wrong");
       // bei Fehler automatisch noch einmal zuhören (höchstens 2-mal)
-      if (autoListen && tries<2) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
+      if (autoListen) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
       setSpeechMsg(r.sim>=.6 ? "Fast! Versuch es noch einmal deutlicher." : "Das war leider nicht richtig.");
     }
   }
@@ -2600,11 +2629,17 @@ function App() {
     clearAuto();
     stopRec();
     const r = new SR();
-    r.lang = speakLang==="it" ? "it-IT" : "de-DE";
+    // Der Browser kann pro Zuhören nur EINE Sprache erkennen. Nach dem Aufdecken wird deshalb immer
+    // auf Italienisch gehört (das italienische Wort nachzusprechen ist die sinnvollste Übung).
+    // Ein deutsches Wort oder „weiter“ klappt trotzdem: Dort zählt schon, DASS gesprochen wurde (onspeechstart).
+    const shownPhase = result==="shown";
+    r.lang = shownPhase ? "it-IT" : (speakLang==="it" ? "it-IT" : "de-DE");
     r.interimResults = true;
     r.maxAlternatives = 5;
     r.continuous = false;
     let decided = false;
+    let spoke = false;   // hat der Browser überhaupt Sprache bemerkt (unabhängig von der Sprache)?
+    r.onspeechstart = ()=>{ spoke = true; };
     r.onresult = (e)=>{
       if (decided) return;
       let txt = "";
@@ -2617,8 +2652,10 @@ function App() {
       }
       if (last.isFinal && result==="shown") {
         decided = true;
+        // Karte ist schon aufgedeckt (als „nicht gewusst“ gewertet): Jedes gesprochene Wort führt weiter,
+        // egal ob das italienische Wort, das deutsche Wort oder „weiter“ / „avanti“.
         const alts = [txt]; for (let j=0;j<last.length;j++) alts.push(last[j].transcript);
-        if (isCommand(alts, CMD_NEXT) || isCommand(alts, CMD_SKIP) || (w && checkSpoken(alts, target, speakLang, !!w.phrase).ok)) doAnswer(false,false);
+        if (spoke || alts.some(a=>norm(a).replace(/\s/g,"").length>=1)) doAnswer(false,false);
         else relistenShown();
         return;
       }
@@ -2626,6 +2663,8 @@ function App() {
         decided = true;
         const alts = [txt];
         for (let j=0;j<last.length;j++) alts.push(last[j].transcript);
+        // Gesprochen, aber nichts Verwertbares erkannt (meist: Befehl in der anderen Sprache) → aufdecken
+        if (!alts.some(a=>norm(a))) { unclearSpeech(); return; }
         evaluate(alts);
       }
     };
@@ -2635,6 +2674,11 @@ function App() {
       shownLoops.current++;
       clearAuto();
       autoTimer.current = setTimeout(()=>startListenRef.current(true), 350);
+    }
+    // Sprache gehört, aber nicht verschriftet: vor dem Aufdecken wie „weiß ich nicht“ behandeln
+    function unclearSpeech(){
+      clearAuto(); revealSolution();
+      setSpeechMsg("Das habe ich nicht verstanden, hier ist die Lösung. Sprich das Wort nach oder sag „weiter“.");
     }
     const retry = ()=>{ if (auto && attempt<3) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true, attempt+1), 400); return true; } return false; };
     r.onerror = (e)=>{
@@ -2648,7 +2692,14 @@ function App() {
       else if (e.error==="network") setSpeechMsg("Keine Verbindung zum Spracherkennungsdienst. Prüfe das Internet oder tippe die Antwort ein.");
       else if (e.error==="language-not-supported") setSpeechMsg("Diese Sprache wird von deinem Browser nicht erkannt. Tippe die Antwort ein.");
     };
-    r.onend = ()=>{ if (recRef.current===r) { recRef.current = null; setListening(false); if (!decided && result==="shown") relistenShown(); } };
+    r.onend = ()=>{
+      if (recRef.current!==r) return;
+      recRef.current = null; setListening(false);
+      if (decided) return;
+      decided = true;
+      if (result==="shown") { if (spoke) doAnswer(false,false); else relistenShown(); return; }
+      if (spoke) unclearSpeech();
+    };
     recRef.current = r;
     setHeard(""); setSpeechMsg(null);
     try { r.start(); setListening(true); } catch { recRef.current = null; setListening(false); retry(); }
@@ -2668,6 +2719,20 @@ function App() {
     setTyped("");
   }
 
+  // Vorlesen: währenddessen nicht zuhören, sonst hält das Mikrofon die eigene Stimme für eine Antwort
+  function sayAloud(text){
+    const wasListening = listening || !!autoTimer.current;
+    clearAuto(); stopRec(); speak(text);
+    if (!isSpeak || !autoListen || !speechOk || !SR) return;
+    let waited = 0;
+    const resume = ()=>{
+      waited += 300;
+      if (window.speechSynthesis && speechSynthesis.speaking && waited < 8000) { autoTimer.current = setTimeout(resume, 300); return; }
+      autoTimer.current = null;
+      if (wasListening || result==="shown") startListenRef.current(true);
+    };
+    autoTimer.current = setTimeout(resume, 400);
+  }
   function revealSolution(){ stopRec(); setFlipped(true); setSeen(true); if(result!=="ok") setResult("shown"); }
 
   function handleImport(e) {
@@ -2868,13 +2933,13 @@ function App() {
                 <div className="face front">
                   <span className={"badge b"+(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
                   {front}
-                  {hasVoice&&eff!=="sayIT"&&<button className="tts" onClick={(e)=>{e.stopPropagation();speak(w.it);}} aria-label="Vorlesen">🔊</button>}
+                  {hasVoice&&eff!=="sayIT"&&<button className="tts" onClick={(e)=>{e.stopPropagation();sayAloud(w.it);}} aria-label="Vorlesen">🔊</button>}
                 </div>
                 <div className="face back">
                   <span className={"badge b"+(c?c.phase:0)}>{PHASE_LBL[c?c.phase:0]}</span>
                   {result==="ok"&&<div className="stamp">Giusto!</div>}
                   {back}
-                  {hasVoice&&<button className="tts" onClick={(e)=>{e.stopPropagation();speak(w.it);}} aria-label="Vorlesen">🔊</button>}
+                  {hasVoice&&<button className="tts" onClick={(e)=>{e.stopPropagation();sayAloud(w.it);}} aria-label="Vorlesen">🔊</button>}
                 </div>
               </div>
             </div>
@@ -2907,7 +2972,7 @@ function App() {
                     <Hap><button className="idk" onClick={revealSolution}><span>🤷</span>Weiß ich<br/>nicht</button></Hap>
                   </div>
                   <div className="mic-label">{listening ? (speakLang==="it"?"Ascolto … sprich jetzt Italienisch":"Ich höre zu … sprich jetzt Deutsch") : tries ? "Nochmal versuchen" : "Tippen und "+(speakLang==="it"?"auf Italienisch":"auf Deutsch")+" sprechen"}</div>
-                  <div className="mic-hint">Nicht gewusst? Sag „{speakLang==="it"?"non lo so":"weiß ich nicht"}“</div>
+                  <div className="mic-hint">Nicht gewusst? Sag „weiter“ oder tippe auf „Weiß ich nicht“.</div>
                 </>
               )}
               {result==="shown"&&(
@@ -2920,7 +2985,7 @@ function App() {
                       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
                     </button></Hap> : <span className="mic-side sm"/>}
                   </div>
-                  <div className="mic-label">{listening ? "Sag „"+(speakLang==="it"?"avanti":"weiter")+"“ oder wiederhole das Wort" : "Tippe auf Weiter oder sag „"+(speakLang==="it"?"avanti":"weiter")+"“"}</div>
+                  <div className="mic-label">{listening ? "Sprich das Wort nach (am besten auf Italienisch) oder sag „weiter“: Alles zählt" : "Tippe auf Weiter oder sprich das Wort nach"}</div>
                 </>
               )}
               {heard&&<div className={"heard"+(result==="ok"?" ok":result==="wrong"?" no":"")}>Erkannt: <b>„{heard}“</b></div>}
