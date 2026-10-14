@@ -2365,7 +2365,7 @@ function phonKey(s, lang){
 const CMD_SKIP = ["weiss ich nicht","weiss nicht","ich weiss es nicht","ich weiss nicht","keine ahnung","losung","losung zeigen","aufdecken","non lo so","non so","non lo","non me lo ricordo","non ricordo","boh","aiuto","soluzione",
   "nonno so","nono so","non loso","nonlo so","bo","vais ich nicht","vai sich nicht","vais ic nicht","vais nicht","vai snicht","caine anung","kaine anung"];
 const CMD_NEXT = ["weiter","nachste","nachstes","nachste karte","okay weiter","ok weiter","avanti","prossimo","prossima","vai avanti","andiamo",
-  "waiter","vaiter","vaite","waite","uaiter","vaitter","weite"];
+  "waiter","vaiter","vaite","waite","uaiter","vaitter","weite","vai te","via te","vaiti","vaitre","baiter","baita","white","whiter","weiter so"];
 // Sprachübergreifendes Klang-Skelett: macht deutsche und italienische Schreibweisen
 // desselben Klangs vergleichbar („weiß ich nicht“ ≈ „vai sich nicht“, „non lo so“ ≈ „nonno so“)
 function crossKey(s){
@@ -2972,7 +2972,7 @@ function App() {
                     <Hap><button className="idk" onClick={revealSolution}><span>🤷</span>Weiß ich<br/>nicht</button></Hap>
                   </div>
                   <div className="mic-label">{listening ? (speakLang==="it"?"Ascolto … sprich jetzt Italienisch":"Ich höre zu … sprich jetzt Deutsch") : tries ? "Nochmal versuchen" : "Tippen und "+(speakLang==="it"?"auf Italienisch":"auf Deutsch")+" sprechen"}</div>
-                  <div className="mic-hint">Nicht gewusst? Sag „weiter“ oder tippe auf „Weiß ich nicht“.</div>
+                  <div className="mic-hint">Nicht gewusst? Sag {speakLang==="it" ? "„avanti“" : "„weiter“"} oder tippe auf „Weiß ich nicht“.</div>
                 </>
               )}
               {result==="shown"&&(
