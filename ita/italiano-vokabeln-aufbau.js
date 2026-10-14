@@ -673,4 +673,651 @@ disperazione|la|Verzweiflung|Piange per la disperazione.
 cocaina|la|Kokain|La polizia ha sequestrato un chilo di cocaina.
 `
 });
+
+/* ---------- Teil 2 (e bis p), B1 ---------- */
+add({
+"B1 – Himmelsrichtungen & Herkunft": `
+est|l'|Osten|Il sole sorge a est.
+ovest|l'|Westen|Il vento soffia da ovest.
+occidente|l'|Westen / Abendland|Il sole tramonta a occidente.
+oriente|l'|Osten / Orient|Marco Polo viaggiò in Oriente.
+orientale||östlich / orientalisch|Abito nella parte orientale della città.
+mediterraneo||mediterran / Mittelmeer|La dieta mediterranea è molto sana.
+fiorentino||florentinisch / Florentiner|La bistecca fiorentina è famosa.
+milanese||mailändisch / Mailänder|Il risotto alla milanese è giallo.
+napoletano||neapolitanisch / Neapolitaner|La pizza napoletana ha il bordo alto.
+lombardo||lombardisch|Il lago di Como è lombardo.
+piemontese||piemontesisch|Il Barolo è un vino piemontese.
+irlandese||irisch / Ire|Beviamo una birra in un pub irlandese.
+olandese||niederländisch / Niederländer|I tulipani olandesi sono famosi.
+libanese||libanesisch / Libanese|Il ristorante libanese è ottimo.
+persiano||persisch / Perser|Il gatto persiano ha il pelo lungo.
+indiano||indisch / Inder|Stasera mangiamo indiano.
+latino||lateinisch / Latein|A scuola studio il latino.
+islamico||islamisch|L'arte islamica è molto ricca.
+musulmano||muslimisch / Muslim|Il mio collega è musulmano.
+moro||dunkelhaarig / Mohr (veraltet)|Ha i capelli mori e gli occhi verdi.
+`,
+"B1 – Menschen & Rollen 3": `
+maestra|la|Lehrerin (Grundschule)|La maestra legge una favola.
+marinaio|il|Seemann|Il marinaio vive sulla nave.
+musicista|il|Musiker|Il musicista suona il violino.
+fotografo|il|Fotograf|Il fotografo fa le foto del matrimonio.
+pescatore|il|Fischer|I pescatori tornano all'alba.
+pastore|il|Hirte / Pastor|Il pastore porta le pecore in montagna.
+modella|la|Model|La modella sfila a Milano.
+fanciulla|la|Mädchen / junge Frau (gehoben)|Nella fiaba c'è una bella fanciulla.
+guerriero|il|Krieger|Il guerriero porta la spada.
+gigante|il|Riese / riesig|Nella storia vive un gigante buono.
+nano|il|Zwerg|Biancaneve e i sette nani.
+mago|il|Zauberer|Il mago fa sparire una moneta.
+orco|l'|Oger / Menschenfresser|L'orco vive nel bosco.
+pilota|il|Pilot / Rennfahrer|Il pilota annuncia l'atterraggio.
+pirata|il|Pirat|I pirati cercano il tesoro.
+genio|il|Genie|Sei un genio!
+immigrato|l'|Einwanderer|Molti immigrati lavorano nell'agricoltura.
+laureato|il|Akademiker / mit Hochschulabschluss|È laureato in ingegneria.
+interlocutore|l'|Gesprächspartner|Guarda negli occhi il tuo interlocutore.
+narratore|il|Erzähler|Il narratore racconta in prima persona.
+operatore|l'|Mitarbeiter / Operator|Un operatore risponderà a breve.
+partecipante|il|Teilnehmer|Ogni partecipante riceve un attestato.
+passeggero|il|Fahrgast / vorübergehend|I passeggeri scendono dal treno.
+portatore|il|Träger / Überbringer|È portatore di occhiali.
+interprete|l'|Dolmetscher / Interpret|Serve un interprete per la riunione.
+ispettore|l'|Inspektor|L'ispettore controlla i biglietti.
+moderatore|il|Moderator|Il moderatore presenta gli ospiti.
+`,
+"B1 – Verben 8": `
+esplodere||explodieren|È esplosa una bombola del gas.
+esplorare||erkunden|Esploriamo il centro storico a piedi.
+fabbricare||herstellen|Questa ditta fabbrica scarpe.
+faticare||sich abmühen|Fatico a capire il dialetto.
+ficcare||stecken / hineinstopfen|Ha ficcato tutto nello zaino.
+filare||spinnen / laufen (gut)|Tutto fila liscio.
+filtrare||filtern|Filtra l'acqua prima di berla.
+forare||durchbohren / einen Platten haben|Ho forato una gomma.
+forzare||zwingen / aufbrechen|Hanno forzato la porta.
+fotografare||fotografieren|Vietato fotografare nel museo.
+frugare||durchwühlen|Frugo nella borsa per trovare le chiavi.
+gonfiare||aufblasen / anschwellen|Gonfiamo i palloncini per la festa.
+grattare||kratzen / reiben|Gratta il formaggio sulla pasta.
+gustare||kosten / genießen|Gustate il vino con calma.
+gradire||mögen / schätzen|Gradisce un caffè?
+illuminare||beleuchten|Le luci illuminano la piazza.
+imitare||nachahmen|Il bambino imita il papà.
+immergere||eintauchen|Immergi il biscotto nel latte.
+improvvisare||improvisieren|Non ho preparato niente, improvviso.
+incollare||kleben|Incolla la foto sul quaderno.
+incominciare||anfangen|Incominciamo la lezione.
+incrociare||kreuzen / begegnen|Ho incrociato Luca per strada.
+indovinare||erraten|Indovina chi ho visto ieri!
+ingoiare||schlucken|Ingoia la pillola con un po' d'acqua.
+inseguire||verfolgen|Il cane insegue il gatto.
+insultare||beleidigen|Non insultare l'arbitro!
+invecchiare||altern|Il vino migliora invecchiando.
+invidiare||beneiden|Ti invidio, vai al mare!
+irritare||reizen / ärgern|Il fumo mi irrita gli occhi.
+isolare||isolieren|Hanno isolato la casa dal freddo.
+`,
+"B1 – Verben 9": `
+leccare||lecken|Il cane mi lecca la mano.
+masticare||kauen|Mastica bene prima di ingoiare.
+mischiare||mischen|Mischia le carte.
+mordere||beißen|Il cane non morde.
+montare||montieren / aufschlagen (Sahne) / steigen|Monta la panna per il dolce.
+numerare||nummerieren|Numera le pagine del quaderno.
+nutrire||ernähren|La mamma nutre il neonato.
+obbedire||gehorchen|Il cane obbedisce al padrone.
+onorare||ehren|Onoriamo la memoria dei caduti.
+passeggiare||spazieren gehen|Passeggiamo lungo il fiume.
+pescare||fischen / angeln / ziehen (Karte)|Domenica andiamo a pescare.
+piantare||pflanzen / stehen lassen|Piantiamo un albero in giardino.
+picchiare||schlagen / verprügeln|Non picchiare tuo fratello!
+pigliare||nehmen / fangen (umgangssprachlich)|Piglia l'ombrello, piove!
+porgere||reichen|Mi porge la mano.
+posare||ablegen / posieren|Posa la valigia qui.
+postare||posten|Ha postato una foto su Instagram.
+partorire||gebären|Ha partorito una bambina.
+mirare||zielen|Mira al centro del bersaglio.
+moltiplicare||multiplizieren / vermehren|Moltiplica tre per quattro.
+maturare||reifen|Le pesche maturano al sole.
+parare||abwehren / halten (Ball)|Il portiere para il rigore.
+pendere||hängen / sich neigen|La torre di Pisa pende.
+piazzare||platzieren|Piazza la tenda vicino al lago.
+marcare||markieren / decken (Sport)|Marca bene l'attaccante!
+mascherare||maskieren / verbergen|Maschera la delusione con un sorriso.
+massacrare||niedermetzeln / fertigmachen|La critica ha massacrato il film.
+`,
+"B1 – Adjektive 4": `
+estivo||Sommer-|Ho comprato un vestito estivo.
+invernale||Winter-|I saldi invernali iniziano a gennaio.
+fastidioso||lästig|Che rumore fastidioso!
+faticoso||anstrengend|È stata una giornata faticosa.
+favoloso||fabelhaft|Abbiamo fatto un viaggio favoloso.
+fedele||treu|Il cane è un amico fedele.
+feroce||wild / grausam|Il leone è un animale feroce.
+fitto||dicht|C'è una nebbia fitta.
+folle||verrückt / wahnsinnig|È un'idea folle!
+fortunato||glücklich / Glücks-|Sei fortunato, hai vinto!
+fragile||zerbrechlich|Attenzione, il pacco è fragile.
+frenetico||hektisch|Milano ha un ritmo frenetico.
+furioso||wütend|È furioso con il vicino.
+gelido||eiskalt|Soffia un vento gelido.
+geniale||genial|Che idea geniale!
+gigantesco||riesig|C'è un albero gigantesco nel parco.
+ignorante||unwissend / ungebildet|Non sono ignorante, ho solo dimenticato.
+imbarazzante||peinlich|È una situazione imbarazzante.
+imbarazzato||verlegen|Era imbarazzato e rosso in viso.
+immenso||unermesslich / riesig|Il deserto è immenso.
+impressionante||beeindruckend|La vista è impressionante.
+inaspettato||unerwartet|È stata una visita inaspettata.
+incapace||unfähig|È incapace di dire di no.
+incerto||unsicher / ungewiss|Il tempo è incerto oggi.
+incomprensibile||unverständlich|La sua grafia è incomprensibile.
+indifferente||gleichgültig|Per me è indifferente.
+indispensabile||unentbehrlich|Il passaporto è indispensabile.
+infelice||unglücklich|Si sente infelice da settimane.
+ingiusto||ungerecht|È una decisione ingiusta.
+innocuo||harmlos|Il ragno è innocuo.
+inquietante||beunruhigend / unheimlich|È un film inquietante.
+insolito||ungewöhnlich|Fa un caldo insolito per ottobre.
+insopportabile||unerträglich|Il rumore è insopportabile.
+intatto||unversehrt|Il vaso è arrivato intatto.
+interessato||interessiert|Sono interessato al corso.
+invisibile||unsichtbar|Vorrei essere invisibile!
+`,
+"B1 – Adjektive 5": `
+lieto||froh / erfreut|Lieto di conoscerla!
+lieve||leicht / gering|Ha una lieve febbre.
+lucido||glänzend / klar (Kopf)|Il pavimento è lucido.
+luminoso||hell / leuchtend|L'appartamento è molto luminoso.
+magnifico||großartig|È una giornata magnifica.
+maledetto||verflucht / verdammt|Questo maledetto traffico!
+malvagio||böse|La strega malvagia vive nel castello.
+marcio||faul / verdorben|La mela è marcia.
+minuscolo||winzig / klein geschrieben|Abita in un appartamento minuscolo.
+misterioso||geheimnisvoll|Ha un sorriso misterioso.
+misto||gemischt|Prendo un'insalata mista.
+mortale||tödlich / sterblich|È stato un incidente mortale.
+muto||stumm|È rimasto muto per la sorpresa.
+notturno||nächtlich / Nacht-|Prendo l'autobus notturno.
+orribile||schrecklich|Che tempo orribile!
+pallido||blass|Sei pallido, stai bene?
+patetico||erbärmlich / pathetisch|È una scusa patetica.
+perplesso||ratlos / verwirrt|Mi guarda perplesso.
+pessimo||sehr schlecht|Il servizio è stato pessimo.
+piacevole||angenehm|È stata una serata piacevole.
+peggiore||schlechter / schlechteste|È il film peggiore dell'anno.
+nobile||edel / adelig|Ha un animo nobile.
+materno||mütterlich|Il nonno materno vive a Bari.
+infantile||kindlich / kindisch|Non essere infantile!
+favorevole||günstig / dafür|Sono favorevole alla proposta.
+fallito||gescheitert / pleite|È stato un tentativo fallito.
+eterno||ewig|L'amore eterno esiste?
+estraneo||fremd / Fremder|Vietato l'ingresso agli estranei.
+immediato||sofortig / unmittelbar|Serve un intervento immediato.
+identico||identisch|Le due borse sono identiche.
+`,
+"B1 – Nomen 4": `
+facciata|la|Fassade|La facciata della chiesa è di marmo.
+fango|il|Schlamm|Le scarpe sono piene di fango.
+fantasma|il|Gespenst|Nel castello c'è un fantasma.
+fattoria|la|Bauernhof|I bambini visitano una fattoria.
+favola|la|Fabel / Märchen|Raccontami una favola!
+fiaba|la|Märchen|Cappuccetto Rosso è una fiaba famosa.
+fazzoletto|il|Taschentuch|Hai un fazzoletto?
+fegato|il|Leber / Mut|Ci vuole fegato per farlo!
+ferrovia|la|Eisenbahn|La ferrovia attraversa le Alpi.
+fiamma|la|Flamme|Abbassa la fiamma del gas.
+fiato|il|Atem|Sono senza fiato dopo la corsa.
+filtro|il|Filter|Cambia il filtro della macchinetta.
+folla|la|Menschenmenge|Una folla aspetta il cantante.
+foro|il|Loch / Forum|Il Foro Romano è pieno di turisti.
+fossa|la|Grube / Graben|Hanno scavato una fossa per l'albero.
+freccia|la|Pfeil / Blinker|Metti la freccia prima di girare!
+frigo|il|Kühlschrank (kurz)|Il latte è in frigo.
+fucile|il|Gewehr|Il cacciatore carica il fucile.
+funerale|il|Beerdigung|Il funerale è domani mattina.
+furgone|il|Lieferwagen|Il furgone porta i mobili.
+gabbia|la|Käfig|L'uccellino è nella gabbia.
+galera|la|Knast|È finito in galera.
+giglio|il|Lilie|Il giglio è il simbolo di Firenze.
+giocattolo|il|Spielzeug|Il bambino ha tanti giocattoli.
+goccia|la|Tropfen|Cade qualche goccia di pioggia.
+gradino|il|Stufe|Attento al gradino!
+grano|il|Weizen / Korn|I campi di grano sono gialli d'estate.
+grido|il|Schrei|Ho sentito un grido nella notte.
+guaio|il|Schwierigkeit / Schlamassel|Siamo nei guai!
+icona|l'|Symbol / Ikone|Clicca sull'icona verde.
+insetto|l'|Insekt|C'è un insetto sulla finestra.
+insegna|l'|Schild / Ladenschild|L'insegna del negozio è rossa.
+lama|la|Klinge|La lama del coltello è affilata.
+lampo|il|Blitz|Un lampo illumina il cielo.
+lastra|la|Platte / Scheibe|Una lastra di ghiaccio copre il lago.
+leva|la|Hebel|Tira la leva per aprire.
+libretto|il|Heftchen / Libretto|Mostra il libretto delle istruzioni.
+magazzino|il|Lager|La merce è in magazzino.
+manica|la|Ärmel|Ho una macchia sulla manica.
+mantello|il|Umhang / Mantel|Il mago indossa un mantello nero.
+`,
+"B1 – Nomen 5": `
+marmo|il|Marmor|Il pavimento è di marmo di Carrara.
+materasso|il|Matratze|Il materasso è troppo duro.
+mattone|il|Ziegel|La casa è fatta di mattoni rossi.
+mazzo|il|Strauß / Bund / Kartenspiel|Le ho regalato un mazzo di rose.
+microfono|il|Mikrofon|Parla nel microfono, per favore.
+metallo|il|Metall|La sedia è di metallo.
+miniera|la|Bergwerk|Il nonno lavorava in miniera.
+mucchio|il|Haufen|C'è un mucchio di vestiti sul letto.
+muso|il|Schnauze / Schmollmund|Il gatto ha il muso bianco.
+nervo|il|Nerv|Mi dai sui nervi!
+nodo|il|Knoten|Fai un nodo alla corda.
+nozze|le|Hochzeit|Le nozze sono a giugno.
+nube|la|Wolke (gehoben)|Una nube nera copre il sole.
+occhiata|l'|Blick|Dai un'occhiata alla pentola!
+orlo|l'|Rand / Saum|Il bicchiere è pieno fino all'orlo.
+paglia|la|Stroh|Il cappello è di paglia.
+palcoscenico|il|Bühne|Gli attori salgono sul palcoscenico.
+pallina|la|Kügelchen / kleiner Ball|Il gatto gioca con la pallina.
+pezzetto|il|Stückchen|Vuoi un pezzetto di cioccolata?
+pianerottolo|il|Treppenabsatz|Il vicino aspetta sul pianerottolo.
+pianura|la|Ebene|La pianura padana è molto grande.
+piazzale|il|großer Platz / Vorplatz|Parcheggiamo nel piazzale della stazione.
+piega|la|Falte|La camicia ha una piega.
+pila|la|Batterie / Stapel|Il telecomando ha bisogno di pile nuove.
+piombo|il|Blei|Benzina senza piombo, per favore.
+polmone|il|Lunge|Il fumo danneggia i polmoni.
+pompa|la|Pumpe|Dov'è la pompa della bici?
+portone|il|Haustor|Il portone del palazzo è chiuso.
+pozzo|il|Brunnen / Schacht|Nel cortile c'è un vecchio pozzo.
+perla|la|Perle|Ha una collana di perle.
+petrolio|il|Erdöl|Il prezzo del petrolio è salito.
+marea|la|Gezeiten / Flut|Con la bassa marea si vede la sabbia.
+mattinata|la|Vormittag|Ci vediamo in mattinata.
+infarto|l'|Herzinfarkt|Il nonno ha avuto un infarto.
+infezione|l'|Infektion|Ha un'infezione all'orecchio.
+incubo|l'|Albtraum|Stanotte ho avuto un incubo.
+lusso|il|Luxus|Abitano in una villa di lusso.
+lutto|il|Trauer|La famiglia è in lutto.
+merce|la|Ware|La merce arriva lunedì.
+millimetro|il|Millimeter|Manca un millimetro.
+`,
+"B1 – Adverbien & Ausrufe 2": `
+finora||bisher|Finora va tutto bene.
+laggiù||dort unten / da hinten|Vedi la casa laggiù?
+lassù||dort oben|Lassù in montagna fa freddo.
+generalmente||allgemein / normalerweise|Generalmente ceno alle otto.
+giustamente||zu Recht|Si è lamentato, giustamente.
+improvvisamente||plötzlich|Improvvisamente è andata via la luce.
+inizialmente||anfangs|Inizialmente non mi piaceva.
+innanzitutto||zuallererst|Innanzitutto, grazie a tutti.
+leggermente||leicht / etwas|Sono leggermente in ritardo.
+normalmente||normalerweise|Normalmente vado al lavoro in bici.
+nuovamente||erneut|Ti ringrazio nuovamente.
+oramai||mittlerweile / nun schon|Oramai è troppo tardi.
+oltretutto||außerdem / obendrein|È caro e oltretutto brutto.
+pochino||ein bisschen|Aspetta un pochino.
+mah||tja / na ja|Mah, non so cosa dirti.
+oddio||oh Gott!|Oddio, ho dimenticato il forno acceso!
+nonché||sowie|Parla inglese e francese, nonché un po' di cinese.
+eventualmente||gegebenenfalls|Eventualmente ti chiamo domani.
+fortemente||stark / sehr|Sono fortemente contrario.
+`,
+"B1 – Umgangssprache derb": `
+fottere||(vulgär) ficken / reinlegen|Non farti fottere da quel venditore!
+fottersene||(vulgär) scheißegal sein|Me ne fotto delle sue opinioni.
+minchia||(vulgär, sizilianisch) Schwanz / verdammt!|Minchia, che caldo!
+imbecille||Schwachkopf|Quell'imbecille mi ha tagliato la strada!
+menare||(umgangssprachlich) verprügeln|Se lo trovo, lo meno!
+negro||(rassistisch, schwer beleidigend: NICHT verwenden) N-Wort|Questa parola è un insulto razzista: si dice "nero".
+`
+});
+
+/* ---------- Teil 2 (e bis p), B2 ---------- */
+add({
+"B2 – Verben 4": `
+estendere||ausdehnen / erweitern|Hanno esteso l'orario di apertura.
+estrarre||herausziehen / fördern|Il dentista estrae il dente.
+evocare||heraufbeschwören / wachrufen|Questa musica evoca ricordi d'infanzia.
+facilitare||erleichtern|La tecnologia facilita il lavoro.
+fallire||scheitern / pleitegehen|L'azienda è fallita.
+finanziare||finanzieren|La regione finanzia il progetto.
+fondere||schmelzen / verschmelzen|Il sole fonde la neve.
+governare||regieren|Chi governa il paese?
+giacere||liegen (gehoben)|Il libro giace sul tavolo da mesi.
+ideare||ausdenken / entwerfen|Ha ideato un nuovo gioco.
+imbattersi||stoßen auf|Mi sono imbattuto in un vecchio amico.
+imperare||herrschen|In ufficio impera il caos.
+implicare||mit sich bringen / verwickeln|Questo lavoro implica molti viaggi.
+impostare||einstellen / anlegen|Imposta la sveglia alle sei.
+impressionare||beeindrucken / erschrecken|Il film mi ha impressionato.
+inaugurare||eröffnen / einweihen|Oggi inaugurano il nuovo museo.
+incaricare||beauftragen|Mi hanno incaricato di organizzare la gita.
+incassare||einnehmen / einstecken|Il film ha incassato molti soldi.
+incastrare||einpassen / hereinlegen|Lo hanno incastrato con prove false.
+includere||einschließen|Il prezzo include la colazione.
+incuriosire||neugierig machen|Il titolo mi incuriosisce.
+indirizzare||richten / adressieren|Indirizza la lettera al direttore.
+indurre||veranlassen / verleiten|Cosa ti ha indotto a cambiare lavoro?
+infuriare||wüten / wütend machen|La tempesta infuria sulla costa.
+ingannare||täuschen|Le apparenze ingannano.
+inquadrare||einordnen / ins Bild nehmen|Bisogna inquadrare il problema.
+interagire||interagieren|I bambini interagiscono con il robot.
+intercettare||abfangen / abhören|La polizia intercetta le telefonate.
+intestare||ausstellen auf (Namen)|La macchina è intestata a mio padre.
+intitolare||betiteln / benennen|La scuola è intitolata a un poeta.
+`,
+"B2 – Verben 5": `
+intraprendere||unternehmen / einschlagen|Ha intrapreso la carriera di medico.
+intravedere||erahnen / flüchtig sehen|Intravedo una soluzione.
+intrecciare||flechten / verflechten|Intreccia i capelli della figlia.
+intuire||ahnen / erahnen|Ho intuito subito che c'era un problema.
+invadere||einfallen / überschwemmen|I turisti invadono la spiaggia.
+invocare||anrufen / berufen auf|Invoca l'aiuto dei santi.
+meditare||meditieren / nachdenken|Medito ogni mattina dieci minuti.
+mutare||verändern / wechseln|Il tempo muta rapidamente in montagna.
+narrare||erzählen|Il libro narra la storia di una famiglia.
+necessitare||benötigen|La casa necessita di lavori.
+orientare||ausrichten / orientieren|Orienta l'antenna verso sud.
+oscurare||verdunkeln / sperren|Le nuvole oscurano il sole.
+ostacolare||behindern|Il traffico ostacola i soccorsi.
+ovviare||abhelfen|Per ovviare al problema, cambiamo orario.
+paragonare||vergleichen|Non paragonarmi a mio fratello!
+penetrare||eindringen|L'acqua penetra nel muro.
+percorrere||zurücklegen / durchfahren|Percorriamo venti chilometri al giorno.
+perseguire||verfolgen (Ziel)|Persegue il suo sogno con passione.
+posizionare||positionieren|Posiziona il cursore qui.
+estrarre a sorte||auslosen|Estraiamo a sorte il vincitore.
+`,
+"B2 – Adjektive 4": `
+esplosivo||explosiv / Sprengstoff|Ha un carattere esplosivo.
+estetico||ästhetisch / Schönheits-|Ha fatto un intervento estetico.
+federale||Bundes-|La Germania è una repubblica federale.
+ferroviario||Eisenbahn-|La stazione ferroviaria è vicina.
+filosofico||philosophisch|È una domanda filosofica.
+fluido||flüssig|Parla un italiano fluido.
+formale||formell|È una cena formale.
+funzionale||funktional / zweckmäßig|La cucina è piccola ma funzionale.
+generico||allgemein / unspezifisch|È una risposta troppo generica.
+genetico||genetisch|È una malattia genetica.
+giovanile||jugendlich / Jugend-|C'è molta disoccupazione giovanile.
+giudiziario||gerichtlich / Justiz-|È iniziato il processo giudiziario.
+giuridico||juristisch|È una questione giuridica.
+grandioso||großartig / grandios|È un progetto grandioso.
+ideologico||ideologisch|È un conflitto ideologico.
+idrico||Wasser-|C'è una crisi idrica al sud.
+ignoto||unbekannt|Il ladro è ancora ignoto.
+illecito||unerlaubt / rechtswidrig|È un guadagno illecito.
+illustre||berühmt / angesehen|È un illustre scienziato.
+immaginario||imaginär / eingebildet|Il bambino ha un amico immaginario.
+impegnativo||anspruchsvoll|È un lavoro impegnativo.
+imperiale||kaiserlich|Roma imperiale era enorme.
+individuale||individuell / Einzel-|Faccio lezioni individuali.
+indiretto||indirekt|È un discorso indiretto.
+inedito||unveröffentlicht / neu|È un testo inedito di Pasolini.
+inesistente||nicht vorhanden|Il problema è inesistente.
+informativo||informativ|È un opuscolo informativo.
+innovativo||innovativ|È un'azienda innovativa.
+interiore||innerlich|Cerca la pace interiore.
+intimo||intim / vertraut|È un amico intimo.
+istituzionale||institutionell|È una visita istituzionale.
+laico||weltlich / laizistisch|L'Italia è uno Stato laico.
+laterale||seitlich / Seiten-|Entra dalla porta laterale.
+lecito||erlaubt|È lecito chiedere?
+letterario||literarisch|Ha vinto un premio letterario.
+`,
+"B2 – Adjektive 5": `
+liberale||liberal|È un partito liberale.
+lineare||linear / geradlinig|La trama è semplice e lineare.
+lirico||lyrisch / Opern-|Amo la musica lirica.
+logico||logisch|È logico, no?
+massiccio||massiv / umfangreich|C'è stata una partecipazione massiccia.
+matrimoniale||Ehe- / Doppel-|Una camera matrimoniale, per favore.
+medesimo||derselbe|Abbiamo la medesima opinione.
+medievale||mittelalterlich|È un borgo medievale.
+metallico||metallisch|Sento un rumore metallico.
+metropolitano||großstädtisch / U-Bahn-|La rete metropolitana è efficiente.
+mero||bloß / rein|È stata una mera coincidenza.
+moderato||gemäßigt / mäßig|Ha opinioni moderate.
+monetario||Währungs-|È una crisi monetaria.
+multinazionale||multinational / Konzern|Lavora per una multinazionale.
+multiplo||mehrfach / Vielfaches|Dieci è un multiplo di cinque.
+muscolare||Muskel-|Ho un dolore muscolare.
+nasale||Nasen-|Uso uno spray nasale.
+natalizio||weihnachtlich|Il mercatino natalizio apre domani.
+neutro||neutral / sächlich|Scegli un colore neutro.
+obbligatorio||verpflichtend|Il casco è obbligatorio.
+oggettivo||objektiv|Cerca di essere oggettivo.
+olimpico||olympisch|Ha vinto la medaglia olimpica.
+omonimo||gleichnamig|Il film è tratto dal romanzo omonimo.
+operativo||operativ / einsatzbereit|Il sistema è operativo.
+opportuno||angebracht / passend|Non è il momento opportuno.
+ordinario||gewöhnlich / ordentlich|È una giornata ordinaria.
+originario||ursprünglich / stammend|È originario della Sicilia.
+orizzontale||waagerecht|Disegna una linea orizzontale.
+ostile||feindlich|L'ambiente è ostile.
+parallelo||parallel|Le due strade sono parallele.
+parlamentare||parlamentarisch / Abgeordneter|È un sistema parlamentare.
+parziale||teilweise / parteiisch|Il risultato è parziale.
+pasquale||Oster-|Mangiamo la colomba pasquale.
+passivo||passiv|Non essere così passivo!
+penale||Straf-|Ha un processo penale in corso.
+periodico||periodisch / Zeitschrift|Fa controlli periodici dal medico.
+permanente||ständig / Dauerwelle|È una mostra permanente.
+poetico||poetisch|È un paesaggio poetico.
+potenziale||potenziell / Potenzial|È un potenziale cliente.
+misero||elend / kümmerlich|Guadagna uno stipendio misero.
+marino||Meeres-|L'acqua marina è salata.
+iscritto||eingeschrieben / Mitglied|Sono iscritto all'università.
+isolato||isoliert / Häuserblock|Abita due isolati più avanti.
+perduto||verloren|Il paradiso perduto.
+mancato||verpasst / gescheitert|È stata un'occasione mancata.
+`,
+"B2 – Adverbien 2": `
+essenzialmente||im Wesentlichen|È essenzialmente una questione di soldi.
+estremamente||äußerst|È estremamente difficile.
+fisicamente||körperlich|Sono fisicamente stanco.
+fondamentalmente||grundsätzlich|Fondamentalmente sono d'accordo.
+indipendentemente||unabhängig|Vengo indipendentemente dal tempo.
+inevitabilmente||unvermeidlich|Inevitabilmente siamo arrivati tardi.
+interamente||vollständig|La casa è interamente ristrutturata.
+letteralmente||buchstäblich|Sono letteralmente morto di fame.
+liberamente||frei|Puoi parlare liberamente.
+maggiormente||mehr / stärker|Sono maggiormente interessato alla storia.
+necessariamente||notwendigerweise|Non è necessariamente vero.
+mediante||mittels|Si paga mediante bonifico.
+ove||wo / falls (gehoben)|Ove necessario, chiamate il medico.
+`,
+"B2 – Staat, Recht & Gesellschaft 2": `
+fascismo|il|Faschismus|Il fascismo è durato vent'anni.
+fascista||faschistisch / Faschist|Il regime fascista cadde nel 1943.
+nazista||nationalsozialistisch / Nazi|La Germania nazista invase la Polonia.
+partigiano|il|Partisan|Il nonno era partigiano.
+mafia|la|Mafia|La lotta alla mafia continua.
+mafioso||mafiös / Mafioso|Il mafioso è stato arrestato.
+magistratura|la|Justiz / Richterschaft|La magistratura è indipendente.
+mandato|il|Mandat / Haftbefehl|Hanno emesso un mandato d'arresto.
+maresciallo|il|Hauptfeldwebel / Polizeimeister|Il maresciallo dei carabinieri interroga i testimoni.
+inchiesta|l'|Untersuchung / Ermittlung|È stata aperta un'inchiesta.
+indizio|l'|Indiz / Hinweis|La polizia ha trovato un indizio.
+interrogatorio|l'|Verhör|L'interrogatorio è durato ore.
+intercettazione|l'|Abhören|Le intercettazioni sono finite sui giornali.
+perquisizione|la|Durchsuchung|La polizia ha fatto una perquisizione.
+ordinanza|l'|Verordnung|Il sindaco ha firmato un'ordinanza.
+licenza|la|Lizenz / Genehmigung|Il negozio ha la licenza per gli alcolici.
+locazione|la|Vermietung|Il contratto di locazione dura quattro anni.
+notaio|il|Notar|Firmiamo dal notaio.
+perito|il|Gutachter|Il perito valuta i danni.
+funzionario|il|Beamter|Un funzionario del comune risponde.
+governatore|il|Gouverneur|Il governatore della banca centrale parla oggi.
+imperatore|l'|Kaiser|Augusto fu il primo imperatore romano.
+impero|l'|Reich / Imperium|L'impero romano era immenso.
+ideologia|l'|Ideologie|Ogni partito ha la sua ideologia.
+istanza|l'|Antrag / Instanz|Ho presentato un'istanza al comune.
+liberazione|la|Befreiung|Il 25 aprile è la Festa della Liberazione.
+indipendenza|l'|Unabhängigkeit|Il paese ha ottenuto l'indipendenza.
+occupazione|l'|Besetzung / Beschäftigung|L'occupazione giovanile è in crescita.
+nomina|la|Ernennung|È arrivata la nomina del nuovo ministro.
+invasione|l'|Invasion|È stata un'invasione di turisti.
+minaccia|la|Drohung / Bedrohung|È una minaccia per l'ambiente.
+lega|la|Liga / Bund / Legierung|La squadra gioca in una lega minore.
+patria|la|Heimat / Vaterland|Torna in patria dopo anni.
+fondazione|la|Stiftung / Gründung|La fondazione finanzia la ricerca.
+fondatore|il|Gründer|Il fondatore dell'azienda è mio nonno.
+finanza|la|Finanz(en)|Lavora nel mondo della finanza.
+fascicolo|il|Akte / Heft|Il giudice legge il fascicolo.
+giuramento|il|Eid / Schwur|Il presidente presta giuramento.
+inviato|l'|Gesandter / Korrespondent|L'inviato del giornale è a Kiev.
+esponente|l'|Vertreter / Exponent|È un esponente del partito.
+patrimonio|il|Vermögen / Erbe|Venezia è patrimonio dell'umanità.
+offesa|l'|Beleidigung|Non era un'offesa, solo una battuta.
+esposizione|l'|Ausstellung / Belichtung|Visitiamo l'esposizione di Picasso.
+`,
+"B2 – Wissenschaft & Technik 3": `
+fibra|la|Faser / Glasfaser|Abbiamo internet in fibra ottica.
+idrogeno|l'|Wasserstoff|L'acqua contiene idrogeno e ossigeno.
+ossigeno|l'|Sauerstoff|In alta montagna c'è meno ossigeno.
+ormone|l'|Hormon|Gli ormoni influenzano l'umore.
+membrana|la|Membran|La cellula ha una membrana.
+particella|la|Teilchen|L'atomo contiene particelle più piccole.
+linfa|la|Lymphe / Pflanzensaft|La linfa scorre nelle piante.
+ingegneria|l'|Ingenieurwesen|Studia ingegneria a Torino.
+linguistica|la|Sprachwissenschaft|La linguistica studia le lingue.
+infrastruttura|l'|Infrastruktur|Servono nuove infrastrutture.
+patologia|la|Krankheitsbild / Pathologie|È una patologia rara.
+polo|il|Pol|Al polo nord fa freddissimo.
+picco|il|Gipfel / Spitze|Il traffico ha un picco alle otto.
+navigazione|la|Navigation / Schifffahrt|Il sistema di navigazione indica la strada.
+montaggio|il|Montage / Schnitt (Film)|Il montaggio del film dura mesi.
+manutenzione|la|Wartung|L'ascensore è in manutenzione.
+lavorazione|la|Verarbeitung|La lavorazione del vetro a Murano è famosa.
+funzionamento|il|Funktionsweise|Spiegami il funzionamento della macchina.
+estrazione|l'|Förderung / Ziehung|L'estrazione del lotto è stasera.
+esplosione|l'|Explosion|C'è stata un'esplosione in fabbrica.
+frequenza|la|Häufigkeit / Frequenz|Con che frequenza vai in palestra?
+frazione|la|Bruch / Ortsteil|Un mezzo è una frazione.
+modifica|la|Änderung|Ho fatto una modifica al testo.
+modificazione|la|Veränderung|Ci sono state modificazioni genetiche.
+impostazione|l'|Einstellung / Ansatz|Cambia le impostazioni del telefono.
+inserimento|l'|Eingabe / Eingliederung|L'inserimento dei dati è lento.
+matricola|la|Matrikelnummer / Erstsemester|Qual è il tuo numero di matricola?
+`,
+"B2 – Abstrakte Nomen 3": `
+essenza|l'|Wesen / Essenz|Questa è l'essenza del problema.
+estensione|l'|Ausdehnung / Erweiterung|Il parco ha un'estensione enorme.
+estremità|l'|Ende / Spitze|Siamo all'estremità della spiaggia.
+facilità|la|Leichtigkeit|Impara le lingue con facilità.
+fascino|il|Reiz / Charme|Roma ha un fascino unico.
+fedeltà|la|Treue|La fedeltà del cane è commovente.
+finalità|la|Zweck / Ziel|Qual è la finalità del progetto?
+flusso|il|Fluss / Strom|C'è un flusso continuo di turisti.
+follia|la|Wahnsinn|È una follia uscire con questa tempesta!
+formato|il|Format|Il file è in formato PDF.
+frammento|il|Bruchstück|Ho trovato un frammento di vaso antico.
+furia|la|Wut / Raserei|Esce di casa in tutta furia.
+giovinezza|la|Jugend|Ricorda la sua giovinezza a Roma.
+gloria|la|Ruhm|Ha raggiunto la gloria con un solo film.
+grandezza|la|Größe|Non capisco la grandezza dell'universo.
+identificazione|l'|Identifizierung|Serve un documento di identificazione.
+illusione|l'|Illusion / Täuschung|È solo un'illusione ottica.
+impulso|l'|Impuls / Antrieb|Ho comprato le scarpe d'impulso.
+incapacità|l'|Unfähigkeit|Ammette la sua incapacità di decidere.
+incarico|l'|Auftrag / Amt|Ha ricevuto un incarico importante.
+incremento|l'|Zuwachs|C'è stato un incremento delle vendite.
+inferno|l'|Hölle|In agosto la città è un inferno.
+inganno|l'|Täuschung / Betrug|È stato vittima di un inganno.
+insegnamento|l'|Unterricht / Lehre|L'insegnamento è la mia passione.
+intensità|l'|Intensität|L'intensità della pioggia aumenta.
+intento|l'|Absicht|Il suo intento era aiutare.
+interazione|l'|Wechselwirkung|L'interazione con gli utenti è importante.
+interpretazione|l'|Interpretation / Darstellung|L'interpretazione dell'attore è magnifica.
+interruzione|l'|Unterbrechung|C'è un'interruzione della corrente.
+intesa|l'|Einverständnis / Abkommen|Hanno raggiunto un'intesa.
+intimità|l'|Privatsphäre / Vertrautheit|Rispetta la sua intimità.
+introduzione|l'|Einleitung / Einführung|Leggi l'introduzione del libro.
+intuizione|l'|Intuition / Einfall|Ho avuto un'intuizione geniale.
+ira|l'|Zorn|In un momento d'ira ha rotto il piatto.
+istinto|l'|Instinkt|Segui il tuo istinto.
+`,
+"B2 – Abstrakte Nomen 4": `
+lancio|il|Wurf / Start / Markteinführung|Il lancio del nuovo telefono è a settembre.
+leggenda|la|Legende / Sage|Secondo la leggenda, la città fu fondata da due gemelli.
+lesione|la|Verletzung|Ha una lesione al ginocchio.
+logica|la|Logik|Non c'è logica in questa decisione.
+lontananza|la|Ferne / Entfernung|La lontananza dalla famiglia è dura.
+lunghezza|la|Länge|Qual è la lunghezza della piscina?
+maceria|la|Trümmer (meist Mehrzahl)|Dopo il terremoto restano solo macerie.
+magia|la|Magie / Zauber|Il Natale ha una sua magia.
+maledizione|la|Fluch|Nella leggenda c'è una maledizione.
+mania|la|Manie / Tick|Ha la mania dell'ordine.
+manifesto|il|Plakat / Manifest|Hanno appeso un manifesto del concerto.
+manoscritto|il|Manuskript / Handschrift|La biblioteca conserva manoscritti antichi.
+manuale|il|Handbuch / manuell|Leggi il manuale d'istruzioni.
+marchio|il|Marke / Markenzeichen|È un marchio famoso di moda.
+marcia|la|Marsch / Gang (Auto)|Metti la prima marcia.
+maternità|la|Mutterschaft|È in maternità fino a marzo.
+maturità|la|Reife / Abitur|Quest'anno faccio l'esame di maturità.
+menzogna|la|Lüge|È tutta una menzogna.
+millennio|il|Jahrtausend|Siamo nel terzo millennio.
+mentalità|la|Mentalität / Denkweise|Ha una mentalità aperta.
+miglioramento|il|Verbesserung|C'è un miglioramento visibile.
+mito|il|Mythos / Idol|È un mito del calcio.
+modalità|la|Modus / Art und Weise|Attiva la modalità aereo.
+modernità|la|Modernität|Il palazzo unisce storia e modernità.
+monologo|il|Monolog|L'attore recita un lungo monologo.
+mossa|la|Zug / Bewegung|È stata una mossa intelligente.
+mutamento|il|Wandel|È un periodo di grandi mutamenti.
+narrazione|la|Erzählung|La narrazione è in terza persona.
+normalità|la|Normalität|Dopo la festa torniamo alla normalità.
+nozione|la|Begriff / Kenntnis|Ho perso la nozione del tempo.
+nucleo|il|Kern|Il nucleo familiare è di quattro persone.
+omaggio|l'|Huldigung / Gratisgabe|In omaggio c'è una borsa.
+ondata|l'|Welle|È arrivata un'ondata di caldo.
+opzione|l'|Option|Abbiamo due opzioni.
+ossessione|l'|Besessenheit|Il calcio è la sua ossessione.
+orrore|l'|Grauen / Horror|Guardiamo un film dell'orrore.
+osservazione|l'|Beobachtung / Bemerkung|Ho un'osservazione da fare.
+`,
+"B2 – Abstrakte Nomen 5": `
+panico|il|Panik|Niente panico!
+paradiso|il|Paradies|Questa spiaggia è un paradiso.
+parentesi|la|Klammer|Scrivi la risposta tra parentesi.
+partecipazione|la|Teilnahme|Grazie per la partecipazione.
+perdono|il|Vergebung|Ti chiedo perdono.
+percezione|la|Wahrnehmung|La percezione del rischio è diversa.
+perfezione|la|Perfektion|Il dolce è cotto alla perfezione.
+pietà|la|Mitleid / Erbarmen|Abbi pietà di me!
+posa|la|Pose / Verlegung|Fai una posa per la foto.
+possesso|il|Besitz|È in possesso di un regolare biglietto.
+potenza|la|Macht / Leistung|La potenza del motore è notevole.
+`
+});
+/* Nachträge Teil 2 */
+add({
+"B1 – Nomen 5": `
+filmato|il|Video / Filmaufnahme|Ho girato un filmato della festa.
+grammatica|la|Grammatik|La grammatica italiana non è facile.
+insulto|l'|Beleidigung|Non accetto insulti.
+oroscopo|l'|Horoskop|Leggi l'oroscopo ogni mattina?
+pellicola|la|Film (Material) / Frischhaltefolie|Copri la ciotola con la pellicola.
+ottavo||achter|Abito all'ottavo piano.
+nono||neunter|È il nono giorno di pioggia.
+mora|la|Brombeere / Säumniszuschlag|Raccogliamo le more nel bosco.
+`,
+"B1 – Menschen & Rollen 3": `
+filosofo|il|Philosoph|Socrate era un filosofo greco.
+gestore|il|Betreiber / Anbieter|Ho cambiato gestore telefonico.
+`,
+"B2 – Religion & Kultur": `
+madonna|la|Madonna / Gottesmutter|In chiesa c'è una statua della Madonna.
+messa|la|Messe|La messa inizia alle undici.
+medioevo|il|Mittelalter|Il castello risale al Medioevo.
+poema|il|(langes) Gedicht / Epos|La Divina Commedia è un poema.
+`,
+"B2 – Abstrakte Nomen 5": `
+ignoranza|l'|Unwissenheit|L'ignoranza è il nemico peggiore.
+interrogativo|l'|Frage / fragend|Resta un grande interrogativo.
+portale|il|Portal|Prenota sul portale del comune.
+`
+});
 })();
