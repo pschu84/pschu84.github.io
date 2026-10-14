@@ -1288,4 +1288,646 @@ oltrepassare||überschreiten|Non oltrepassare la linea gialla.
 piallare||hobeln|Il falegname pialla la tavola.
 `
 });
+
+/* ---------- Teil 3 (p bis z) ---------- */
+add({
+"A2 – Essen & Küche 6": `
+prosecco|il|Prosecco|Brindiamo con un bicchiere di prosecco.
+provola|la|Provola (Käse)|La provola affumicata è buona alla griglia.
+provolone|il|Provolone (Käse)|Un panino con il provolone.
+purè|il|Kartoffelpüree|Il purè accompagna la carne.
+radicchio|il|Radicchio|Il radicchio di Treviso è rosso.
+ragù|il|Ragù / Fleischsoße|Il ragù bolognese cuoce per ore.
+rapa|la|Rübe|Le cime di rapa sono tipiche della Puglia.
+ravanello|il|Radieschen|Metti i ravanelli nell'insalata.
+rosticceria|la|Imbiss (mit Gebratenem)|Compriamo un pollo arrosto in rosticceria.
+salatino|il|Salzgebäck|Con l'aperitivo ci sono i salatini.
+salume|il|Wurstware|In Emilia ci sono ottimi salumi.
+salvia|la|Salbei|Burro e salvia sui ravioli.
+sardina|la|Sardine|Le sardine fritte sono economiche.
+scamorza|la|Scamorza (Käse)|La scamorza fusa sul pane.
+semifreddo|il|Halbgefrorenes|Per dessert c'è un semifreddo al caffè.
+semolino|il|Grieß|La nonna fa il budino di semolino.
+senape|la|Senf|Il wurstel con la senape.
+seppia|la|Tintenfisch (Sepia)|Il risotto al nero di seppia è nero.
+sfoglia|la|Teigplatte / Blätterteig|La sfoglia per le lasagne è fatta in casa.
+sogliola|la|Seezunge|La sogliola alla mugnaia è delicata.
+sottaceto|il|eingelegtes Gemüse (in Essig)|Mi piacciono i cetrioli sottaceto.
+sottolio||in Öl eingelegt|Compro i carciofini sottolio.
+spalmabile||streichfähig|La crema è spalmabile.
+spalmare||streichen (aufs Brot)|Spalma il burro sul pane.
+spiedino|lo|Spieß|Facciamo spiedini di carne e verdura.
+spiedo|lo|Bratspieß|Il pollo allo spiedo gira lentamente.
+spremere||auspressen|Spremi due arance.
+spumante|lo|Sekt|A Capodanno si stappa lo spumante.
+spuntino|lo|Imbiss / Snack|Faccio uno spuntino alle undici.
+squisito||köstlich|Questa torta è squisita!
+stracchino|lo|Stracchino (Weichkäse)|La piadina con lo stracchino.
+strutto|lo|Schmalz|Una volta si cucinava con lo strutto.
+susina|la|Pflaume|Le susine sono mature.
+taleggio|il|Taleggio (Käse)|Il taleggio ha un sapore forte.
+tagliatella|la|Bandnudel|Tagliatelle al ragù per tutti!
+tarallo|il|Tarallo (Kringel)|I taralli pugliesi sono croccanti.
+tartufo|il|Trüffel|Il tartufo bianco d'Alba è caro.
+tisana|la|Kräutertee|Bevo una tisana prima di dormire.
+torrone|il|Nougat|A Natale mangiamo il torrone.
+tortellino|il|Tortellino|I tortellini in brodo sono il piatto di Natale.
+trota|la|Forelle|Peschiamo trote nel torrente.
+vongola|la|Venusmuschel|Spaghetti alle vongole, per favore.
+zucchina|la|Zucchini|Le zucchine ripiene sono buonissime.
+zuppa|la|Suppe|Una zuppa calda d'inverno.
+wurstel|il|Würstchen|Il bambino vuole il wurstel con le patatine.
+`,
+"A2 – Essen & Küche 7": `
+rinfresco|il|Empfang / Buffet|Dopo la cerimonia c'è un rinfresco.
+sorso|il|Schluck|Bevi un sorso d'acqua.
+sbornia|la|Rausch / Kater|Ieri ha preso una sbornia.
+salare||salzen|Sala l'acqua della pasta.
+soffriggere||andünsten|Soffriggi la cipolla nell'olio.
+scongelare||auftauen|Scongela il pesce in frigo.
+tritare||hacken / klein schneiden|Trita il prezzemolo.
+travasare||umfüllen|Travasa il vino in una caraffa.
+scodella|la|Schale / Napf|Mangio i cereali in una scodella.
+tegame|il|Pfanne / Schmortopf|Cuoci le uova nel tegame.
+teglia|la|Backblech / Auflaufform|Metti le lasagne nella teglia.
+saliera|la|Salzstreuer|Passami la saliera.
+tovaglietta|la|Platzset|Metti le tovagliette sul tavolo.
+stoviglia|la|Geschirr (meist Mehrzahl)|Laviamo le stoviglie.
+stuzzicadenti|lo|Zahnstocher|C'è uno stuzzicadenti?
+tostapane|il|Toaster|Il pane è nel tostapane.
+rancio|il|Essen (beim Militär)|I soldati mangiano il rancio.
+recipiente|il|Gefäß|Versa il latte in un recipiente.
+scolapiatti|lo|Abtropfgestell|Metti i piatti nello scolapiatti.
+spuma|la|Schaum / Mousse|La spuma di salmone è un antipasto.
+susino|il|Pflaumenbaum|Il susino è pieno di frutti.
+`,
+"A2 – Tiere 4": `
+pulce|la|Floh|Il cane ha le pulci.
+pulcino|il|Küken|Il pulcino segue la chioccia.
+puledro|il|Fohlen|Il puledro corre nel prato.
+puma|il|Puma|Il puma è un felino americano.
+quaglia|la|Wachtel|Le uova di quaglia sono piccole.
+rana|la|Frosch|La rana salta nello stagno.
+rettile|il|Reptil|Il serpente è un rettile.
+rinoceronte|il|Nashorn|Il rinoceronte ha un corno sul naso.
+rondine|la|Schwalbe|Le rondini tornano in primavera.
+ruminante|il|Wiederkäuer|La mucca è un ruminante.
+sanguisuga|la|Blutegel|Nello stagno ci sono le sanguisughe.
+scarafaggio|lo|Kakerlake|C'è uno scarafaggio in cucina!
+scoiattolo|lo|Eichhörnchen|Lo scoiattolo sale sull'albero.
+scorpione|lo|Skorpion|Lo scorpione ha la coda velenosa.
+scrofa|la|Sau|La scrofa allatta i maialini.
+sciame|lo|Schwarm|Uno sciame di api vola sul giardino.
+selvaggina|la|Wild(bret)|In autunno si mangia la selvaggina.
+sorcio|il|Maus|Il gatto ha preso un sorcio.
+stallone|lo|Hengst|Lo stallone è nero.
+struzzo|lo|Strauß (Vogel)|Lo struzzo non vola.
+suino||Schweine- / Schwein|La carne suina è economica.
+talpa|la|Maulwurf|La talpa scava gallerie.
+tarlo|il|Holzwurm|Il mobile ha il tarlo.
+tordo|il|Drossel|Il tordo canta nel bosco.
+tortora|la|Turteltaube|Due tortore sul tetto.
+usignolo|l'|Nachtigall|L'usignolo canta di notte.
+vespa|la|Wespe / Vespa (Roller)|Una vespa mi ha punto.
+vipera|la|Viper / Kreuzotter|Attenzione alle vipere in montagna.
+zebra|la|Zebra|La zebra ha le strisce bianche e nere.
+zanna|la|Stoßzahn / Reißzahn|L'elefante ha due zanne.
+ringhiare||knurren|Il cane ringhia al postino.
+ringhio|il|Knurren|Si sente un ringhio dietro la porta.
+ruggire||brüllen|Il leone ruggisce.
+ruggito|il|Gebrüll|Il ruggito del leone fa paura.
+scodinzolare||mit dem Schwanz wedeln|Il cane scodinzola felice.
+ronzare||summen|Una mosca ronza nella stanza.
+ronzio|il|Summen|Il ronzio della zanzara non mi fa dormire.
+svolazzare||flattern|Le farfalle svolazzano nel prato.
+tosare||scheren|Il pastore tosa le pecore.
+trottare||traben|Il cavallo trotta.
+zoccolo|lo|Huf / Holzschuh|Il cavallo ha perso un ferro dallo zoccolo.
+velenoso||giftig|Questo fungo è velenoso.
+`,
+"B1 – Pflanzen & Natur 3": `
+quadrifoglio|il|vierblättriges Kleeblatt|Ho trovato un quadrifoglio!
+quercia|la|Eiche|La quercia ha cento anni.
+rampicante||Kletter- / Kletterpflanze|L'edera è una pianta rampicante.
+risaia|la|Reisfeld|In Piemonte ci sono molte risaie.
+rovo|il|Brombeerstrauch|Mi sono graffiato con i rovi.
+ruscello|il|Bach|Un ruscello scorre nel bosco.
+salice|il|Weide (Baum)|Il salice piangente è vicino al lago.
+scirocco|lo|Schirokko (Südwind)|Con lo scirocco fa caldo e umido.
+scoglio|lo|Klippe / Fels|Ci tuffiamo dallo scoglio.
+selva|la|Wald (gehoben)|Ci siamo persi in una selva oscura.
+siepe|la|Hecke|Il giardino è circondato da una siepe.
+spiga|la|Ähre|Le spighe di grano sono dorate.
+stagno|lo|Teich / Zinn|Le rane vivono nello stagno.
+terriccio|il|Blumenerde|Compra un sacco di terriccio.
+trifoglio|il|Klee|Le mucche mangiano il trifoglio.
+tulipano|il|Tulpe|In aprile fioriscono i tulipani.
+uragano|l'|Hurrikan|L'uragano ha distrutto le case.
+valanga|la|Lawine|C'è pericolo di valanghe.
+vigna|la|Weinberg|Le vigne coprono le colline.
+vite|la|Weinrebe / Schraube|La vite produce l'uva. Stringi la vite!
+violetta|la|Veilchen|Le violette sono piccole e viola.
+violetto||violett|Ha un vestito violetto.
+zolla|la|Erdscholle|Il contadino rompe le zolle.
+roccioso||felsig|La costa è rocciosa.
+rocca|la|Burg / Festung|La rocca domina il paese.
+ventata|la|Windstoß|Una ventata di aria fresca.
+vampata|la|Hitzewallung / Stichflamme|Ho una vampata di calore.
+tramontare||untergehen (Sonne)|Il sole tramonta alle otto.
+settentrione|il|Norden|Il settentrione è più industriale.
+tenebra|la|Finsternis|Le tenebre avvolgono la valle.
+sughero|il|Kork|Il tappo è di sughero.
+trebbiare||dreschen|In estate si trebbia il grano.
+vendemmiare||Weinlese halten|A settembre si vendemmia.
+sbocciare||aufblühen|Le rose sono sbocciate.
+`
+});
+
+add({
+"A2 – Haushalt & Bad 4": `
+rasoio|il|Rasierer|Il rasoio elettrico è scarico.
+rastrello|il|Rechen|Raccogli le foglie con il rastrello.
+registratore|il|Rekorder|Il nonno ha un vecchio registratore.
+ricambio|il|Ersatz(teil)|Porta un cambio di ricambio.
+ricarica|la|Aufladung / Guthaben|Faccio una ricarica di dieci euro.
+riflettore|il|Scheinwerfer (Bühne)|I riflettori illuminano il palco.
+ringhiera|la|Geländer|Tieniti alla ringhiera.
+rotella|la|Rädchen / Rolle|La sedia ha le rotelle.
+rullo|il|Rolle / Walze|Dipingi il muro con il rullo.
+salvadanaio|il|Sparschwein|Metto le monete nel salvadanaio.
+salvagente|il|Rettungsring / Schwimmreifen|Il bambino nuota con il salvagente.
+salvietta|la|Serviette / Feuchttuch|Prendi una salvietta umidificata.
+saponetta|la|Seifenstück|La saponetta è finita.
+scaldabagno|lo|Boiler|Lo scaldabagno è rotto, l'acqua è fredda.
+scalinata|la|Freitreppe|La scalinata di Trinità dei Monti è a Roma.
+scalino|lo|Stufe|Attento allo scalino!
+scarpiera|la|Schuhschrank|Metti le scarpe nella scarpiera.
+schedario|lo|Kartei|Lo schedario è in ordine alfabetico.
+schiuma|la|Schaum|La birra ha troppa schiuma.
+sgabello|lo|Hocker|Siediti sullo sgabello.
+smacchiatore|lo|Fleckentferner|Usa lo smacchiatore sulla camicia.
+sgrassatore|lo|Fettlöser|Pulisci il forno con lo sgrassatore.
+smalto|lo|Nagellack / Emaille|Si mette lo smalto rosso.
+sofà|il|Sofa|Ci sediamo sul sofà.
+soffitta|la|Dachboden|Le vecchie foto sono in soffitta.
+solaio|il|Dachboden / Decke|Il solaio è pieno di scatole.
+soppalco|il|Hochebene (Zwischengeschoss)|Il letto è sul soppalco.
+soprammobile|il|Nippesfigur|La nonna ha tanti soprammobili.
+spazzola|la|Bürste|Pettina i capelli con la spazzola.
+spazzolone|lo|Schrubber|Lava il pavimento con lo spazzolone.
+spillo|lo|Stecknadel|Fissa l'orlo con gli spilli.
+spago|lo|Schnur|Lega il pacco con lo spago.
+stendibiancheria|lo|Wäscheständer|Stendi i panni sullo stendibiancheria.
+stufa|la|Ofen|La stufa a legna scalda la stanza.
+stuoia|la|Matte|Mettiamo una stuoia sulla sabbia.
+talco|il|Talkpuder|Metti il talco al bambino.
+tappetino|il|Matte / Mauspad|Pulisciti le scarpe sul tappetino.
+tegola|la|Dachziegel|Il vento ha fatto cadere una tegola.
+termosifone|il|Heizkörper|Il termosifone è freddo.
+tettoia|la|Vordach|Ci ripariamo sotto la tettoia.
+tinello|il|Essküche|Mangiamo nel tinello.
+toilette|la|Toilette|Dov'è la toilette?
+toletta|la|Frisiertisch|La nonna si pettina alla toletta.
+torcia|la|Taschenlampe / Fackel|Prendi la torcia, è buio.
+trapunta|la|Steppdecke|D'inverno dormo sotto la trapunta.
+utensile|l'|Werkzeug / Utensil|Gli utensili da cucina sono nel cassetto.
+ventilatore|il|Ventilator|Accendi il ventilatore, fa caldo.
+roulotte|la|Wohnwagen|Andiamo in vacanza in roulotte.
+`,
+"B1 – Werkzeug & Werkstatt": `
+vanga|la|Spaten|Scava con la vanga.
+trapano|il|Bohrmaschine|Mi presti il trapano?
+tenaglia|la|Kneifzange|Togli il chiodo con la tenaglia.
+scalpello|lo|Meißel|Lo scultore lavora con lo scalpello.
+scure|la|Axt|Il boscaiolo prende la scure.
+tassello|il|Dübel|Metti un tassello nel muro.
+staffa|la|Halterung / Steigbügel|Fissa la mensola con due staffe.
+tacca|la|Kerbe|Fa una tacca sul bastone.
+valvola|la|Ventil|La valvola della bici perde aria.
+stanga|la|Stange|Una stanga chiude il cancello.
+spranga|la|Eisenstange / Riegel|Hanno bloccato la porta con una spranga.
+sbarra|la|Schranke / Gitterstab|La sbarra del parcheggio è alzata.
+telaio|il|Rahmen / Webstuhl|Il telaio della bici è leggero.
+tornio|il|Drehbank|L'operaio lavora al tornio.
+tino|il|Bottich|L'uva fermenta nel tino.
+timbro|il|Stempel|Serve il timbro dell'ufficio.
+saldatura|la|Schweißnaht / Lötstelle|La saldatura si è rotta.
+segheria|la|Sägewerk|Il legno viene tagliato in segheria.
+stoppa|la|Werg|L'idraulico usa la stoppa.
+rocchetto|il|Garnrolle / Spule|Un rocchetto di filo rosso.
+scheggia|la|Splitter|Mi è entrata una scheggia nel dito.
+stampella|la|Krücke / Kleiderbügel|Cammina con le stampelle.
+`,
+"B1 – Körper & Gesundheit 5": `
+ricciolo|il|Locke|La bambina ha i riccioli biondi.
+ruga|la|Falte|Ha qualche ruga intorno agli occhi.
+saliva|la|Speichel|Il cane ha molta saliva.
+siringa|la|Spritze|L'infermiera prepara la siringa.
+sopracciglio|il|Augenbraue|Alza un sopracciglio.
+stinco|lo|Schienbein / Haxe|Ho preso un calcio sullo stinco.
+tonsilla|la|Mandel (Hals)|Gli hanno tolto le tonsille.
+torcicollo|il|steifer Hals|Ho il torcicollo.
+ulcera|l'|Geschwür|Ha un'ulcera allo stomaco.
+vertebra|la|Wirbel|Si è rotto una vertebra.
+vertigine|la|Schwindel|Soffro di vertigini in alto.
+vomito|il|Erbrochenes / Erbrechen|Ha nausea e vomito.
+trasfusione|la|Transfusion|Ha bisogno di una trasfusione.
+trapianto|il|Transplantation|Il trapianto di cuore è riuscito.
+scarlattina|la|Scharlach|Il bambino ha la scarlattina.
+rosolia|la|Röteln|La rosolia è pericolosa in gravidanza.
+prurito|il|Juckreiz|Ho prurito alla schiena.
+prudere||jucken|Mi prude il naso.
+purga|la|Abführmittel|Una volta si dava la purga ai bambini.
+respirazione|la|Atmung|Controlla la respirazione.
+ricaduta|la|Rückfall|Ha avuto una ricaduta.
+sanguinare||bluten|Il naso sanguina.
+sbadigliare||gähnen|Sbadiglio perché ho sonno.
+sbadiglio|lo|Gähnen|Non riesce a trattenere uno sbadiglio.
+russare||schnarchen|Mio marito russa forte.
+ruttare||rülpsen|Non si rutta a tavola!
+rutto|il|Rülpser|Che maleducato, ha fatto un rutto!
+sputo|lo|Spucke|C'è uno sputo per terra.
+smorfia|la|Grimasse|Fa una smorfia di disgusto.
+sudato||verschwitzt|Sono tutto sudato.
+slogare||verrenken / verstauchen|Mi sono slogato la caviglia.
+unguento|l'|Salbe|Metti l'unguento sulla scottatura.
+psichiatria|la|Psychiatrie|Lavora in psichiatria.
+pungere||stechen|Una vespa mi ha punto.
+`,
+"A2 – Kleidung & Pflege": `
+ricamo|il|Stickerei|La tovaglia ha un ricamo a mano.
+ricamare||sticken|La nonna ricama un fazzoletto.
+rammendo|il|Stopfen / gestopfte Stelle|Il calzino ha un rammendo.
+scialle|lo|Schal / Tuch|Si mette uno scialle sulle spalle.
+soprabito|il|Übermantel|Prendi il soprabito, fa fresco.
+stivaletto|lo|Stiefelette|Porta stivaletti neri.
+stringa|la|Schnürsenkel|Si è slacciata la stringa.
+suola|la|Sohle|La suola della scarpa è consumata.
+tunica|la|Tunika|Indossa una tunica bianca.
+tonaca|la|Kutte / Soutane|Il frate porta la tonaca marrone.
+trina|la|Spitze (Stoff)|Il colletto è di trina.
+velluto|il|Samt / Cord|I pantaloni di velluto sono caldi.
+vellutato||samtig|È una crema vellutata.
+radere||rasieren|Si rade ogni mattina.
+rasare||rasieren / kahl scheren|Si è rasato la testa.
+sbarbare||rasieren (Bart)|Si sbarba prima del lavoro.
+truccare||schminken|Si trucca per la festa.
+spettinare||zerzausen|Il vento mi spettina.
+sporcizia|la|Schmutz|Che sporcizia in questa cucina!
+sudicio||schmutzig|Ha le mani sudicie.
+sbottonare||aufknöpfen|Sbottona la giacca.
+slacciare||aufbinden / lösen|Slaccia le scarpe.
+travestirsi||sich verkleiden|A Carnevale mi travesto da pirata.
+specchiarsi||sich spiegeln|Si specchia nella vetrina.
+spazzolare||bürsten|Spazzola il cane.
+`,
+"B1 – Verkehr & Freizeit": `
+pulmino|il|Kleinbus|Il pulmino porta i bambini a scuola.
+racchetta|la|Schläger|Ho comprato una racchetta da tennis.
+remare||rudern|Remiamo fino all'isola.
+remo|il|Ruder|Si è rotto un remo.
+rimorchio|il|Anhänger|Il trattore traina un rimorchio.
+rodaggio|il|Einfahren (Motor) / Eingewöhnung|La macchina nuova è in rodaggio.
+rotaia|la|Schiene|Il tram corre sulle rotaie.
+ruspa|la|Bagger|La ruspa demolisce la casa.
+scafo|lo|Rumpf (Schiff)|Lo scafo della barca è bianco.
+scappamento|lo|Auspuff|Il tubo di scappamento fa rumore.
+sciatore|lo|Skifahrer|Lo sciatore scende veloce.
+scivolo|lo|Rutsche|I bambini scendono dallo scivolo.
+scompartimento|lo|Abteil|Lo scompartimento è pieno.
+seggiolino|il|Kindersitz|Il bambino viaggia nel seggiolino.
+seggiovia|la|Sessellift|Saliamo con la seggiovia.
+slitta|la|Schlitten|I bambini scendono con la slitta.
+sorpasso|il|Überholen|Il sorpasso in curva è vietato.
+sottomarino|il|U-Boot|Il sottomarino scende in profondità.
+sottopassaggio|il|Unterführung|Usa il sottopassaggio per attraversare.
+sterzare||lenken|Sterza a destra!
+sterzo|lo|Lenkrad / Lenkung|Lo sterzo è duro.
+tergicristallo|il|Scheibenwischer|Accendi il tergicristallo, piove.
+timone|il|Ruder (Steuer)|Il capitano è al timone.
+timoniere|il|Steuermann|Il timoniere guida la barca.
+traforo|il|Tunnel (durch Berge)|Il traforo del Monte Bianco collega Italia e Francia.
+trampolino|il|Sprungbrett / Schanze|Si tuffa dal trampolino.
+trattore|il|Traktor|Il contadino guida il trattore.
+transito|il|Durchfahrt|Divieto di transito ai camion.
+zattera|la|Floß|Costruiamo una zattera.
+tamponare||auffahren / abtupfen|Mi hanno tamponato al semaforo.
+trainare||ziehen / abschleppen|Il carro attrezzi traina l'auto.
+rifornimento|il|Tanken / Nachschub|Facciamo rifornimento al prossimo distributore.
+pugilato|il|Boxen|Il pugilato è uno sport duro.
+punteggio|il|Punktestand|Qual è il punteggio?
+rivincita|la|Revanche|Voglio la rivincita!
+scacchiera|la|Schachbrett|La scacchiera ha sessantaquattro caselle.
+scalata|la|Besteigung|La scalata è durata dieci ore.
+scudetto|lo|Meistertitel (Fußball)|La squadra ha vinto lo scudetto.
+tifo|il|Anfeuern / Typhus|Faccio il tifo per la Roma.
+tombola|la|Tombola (Spiel)|A Natale giochiamo a tombola.
+trofeo|il|Trophäe|Il trofeo è in bacheca.
+trottola|la|Kreisel|Il bambino gioca con la trottola.
+tuffo|il|Sprung (ins Wasser)|Facciamo un tuffo in mare!
+telecronaca|la|Fernsehübertragung|Ascolto la telecronaca della partita.
+scampagnata|la|Ausflug ins Grüne|A Pasquetta facciamo una scampagnata.
+pupazzo|il|Puppe / Schneemann|Facciamo un pupazzo di neve!
+tamburo|il|Trommel|Il bambino suona il tamburo.
+zampogna|la|Dudelsack (italienisch)|A Natale suonano le zampogne.
+tarantella|la|Tarantella (Tanz)|Balliamo la tarantella.
+serenata|la|Ständchen|Le canta una serenata sotto il balcone.
+stornello|lo|Volkslied (kurz)|Cantano stornelli romani.
+ritornello|il|Refrain|Cantiamo tutti il ritornello!
+stonare||falsch singen|Canta bene, ma ogni tanto stona.
+recita|la|Aufführung|La recita di Natale è venerdì.
+veglione|il|Silvesterball|Andiamo al veglione di Capodanno.
+ritrovo|il|Treffpunkt|Il bar è il ritrovo dei giovani.
+taverna|la|Taverne|Ceniamo in una taverna greca.
+`
+});
+
+add({
+"B1 – Menschen & Charakter 2": `
+rapinatore|il|Räuber|Il rapinatore è scappato in moto.
+recluta|la|Rekrut|Le reclute si allenano in caserma.
+rigattiere|il|Trödler|Ho comprato la lampada da un rigattiere.
+ripetente|il|Sitzenbleiber|In classe ci sono due ripetenti.
+sagrestano|il|Küster|Il sagrestano suona le campane.
+sarto|il|Schneider|Il sarto accorcia i pantaloni.
+scaricatore|lo|Hafenarbeiter / Packer|Gli scaricatori lavorano al porto.
+sceriffo|lo|Sheriff|Lo sceriffo arresta il bandito.
+scolaro|lo|Schüler (Grundschule)|Gli scolari entrano in classe.
+scultore|lo|Bildhauer|Michelangelo era anche scultore.
+seduttore|il|Verführer|Si crede un grande seduttore.
+spacciatore|lo|Dealer|La polizia ha arrestato uno spacciatore.
+spazzino|lo|Straßenkehrer|Lo spazzino pulisce la strada.
+stregone|lo|Hexenmeister|Lo stregone prepara una pozione.
+telecronista|il|Fernsehkommentator|Il telecronista grida "gol!".
+tiranno|il|Tyrann|Il tiranno governa con la paura.
+torero|il|Torero|Il torero affronta il toro.
+tutore|il|Vormund|Il tutore si occupa del ragazzo.
+vandalo|il|Vandale|I vandali hanno rotto le panchine.
+viaggiatrice|la|Reisende|La viaggiatrice ha perso il treno.
+zingaro|lo|(abwertend) Zigeuner – besser: rom, sinti|Oggi si dice "rom" o "sinti", non "zingaro".
+zitella|la|(abwertend) alte Jungfer|È una parola antiquata e offensiva.
+rauco||heiser|Ho la voce rauca.
+rozzo||grob / ungehobelt|Ha modi rozzi.
+rude||rau / schroff|È un uomo rude ma buono.
+sapiente||weise / gelehrt|Il vecchio sapiente dà consigli.
+sbadato||schusselig|Sono sbadato, ho perso le chiavi.
+scontento||unzufrieden|Il cliente è scontento.
+scortese||unhöflich|La commessa è stata scortese.
+sfortunato||vom Pech verfolgt|Che giornata sfortunata!
+sfrenato||zügellos|Fa una vita sfrenata.
+sgarbato||unfreundlich / grob|Non essere sgarbato con la nonna.
+slanciato||schlank / hochgewachsen|Ha una figura slanciata.
+snello||schlank|È alta e snella.
+sorridente||lächelnd|È sempre sorridente.
+spensierato||unbeschwert|È stata un'estate spensierata.
+svelto||flink / schnell|Sii svelto, il treno parte!
+valoroso||tapfer|È un soldato valoroso.
+volenteroso||willig / eifrig|È uno studente volenteroso.
+viziato||verwöhnt|È un bambino viziato.
+scherzoso||scherzhaft|Ha un tono scherzoso.
+scalzo||barfuß|Cammina scalzo sulla spiaggia.
+zoppo||hinkend|Il cane è zoppo.
+sdraiato||liegend|È sdraiato sul divano.
+`,
+"B1 – Verben 15": `
+raddrizzare||geraderichten|Raddrizza la schiena!
+rallegrare||erfreuen / aufheitern|La tua visita mi rallegra.
+rattristare||traurig machen|La notizia mi rattrista.
+recintare||einzäunen|Hanno recintato il giardino.
+ricalcare||durchpausen / nachahmen|Ricalca il disegno.
+ricompensare||belohnen|Ti ricompenserò per l'aiuto.
+riconciliarsi||sich versöhnen|I due fratelli si sono riconciliati.
+ricopiare||abschreiben|Ricopia il tema in bella.
+rifinire||den letzten Schliff geben|Rifinisco gli ultimi dettagli.
+rigovernare||abspülen|Rigoverna la cucina dopo cena.
+rilegare||binden (Buch)|Faccio rilegare la tesi.
+rimbombare||dröhnen / hallen|Il tuono rimbomba nella valle.
+rimborsare||erstatten|Ci rimborsano il biglietto.
+rimodernare||modernisieren|Hanno rimodernato il bagno.
+rincarare||teurer werden|La benzina è rincarata.
+ringiovanire||verjüngen|Questa crema ti ringiovanisce.
+rinnegare||verleugnen|Non rinnega le sue origini.
+riordinare||aufräumen|Riordina la tua camera!
+riscattare||freikaufen / einlösen|Ha riscattato il debito.
+risciacquare||ausspülen|Risciacqua i piatti.
+risplendere||strahlen|Il sole risplende sul mare.
+ristampare||nachdrucken|Hanno ristampato il libro.
+ritoccare||nachbessern|Ritocca la foto.
+rivoltare||umdrehen / wenden|Rivolta la frittata.
+rodere||nagen|Il topo rode il formaggio.
+rotolare||rollen|La palla rotola giù per la strada.
+sabotare||sabotieren|Hanno sabotato la macchina.
+saccheggiare||plündern|I barbari saccheggiarono Roma.
+saltellare||hüpfen|Il bambino saltella felice.
+sbiadire||verblassen|I colori sono sbiaditi al sole.
+sbiancare||bleichen / erblassen|Sbianca i denti dal dentista.
+sbigottire||bestürzen|La notizia ci ha sbigottito.
+sbloccare||entsperren / lösen|Sblocca il telefono con il codice.
+sboccare||münden|Il fiume sbocca nel mare.
+sbriciolare||zerkrümeln|Sbriciola il pane per gli uccelli.
+sbuffare||schnauben|Sbuffa perché è annoiato.
+scandalizzare||schockieren|Il suo vestito ha scandalizzato tutti.
+scansare||ausweichen|Scansa la buca!
+scarabocchiare||kritzeln|Il bambino scarabocchia sul foglio.
+scarcerare||aus der Haft entlassen|Lo hanno scarcerato ieri.
+scavalcare||überklettern|Ha scavalcato il muro.
+sciacquare||ausspülen|Sciacqua la bocca.
+scioperare||streiken|I ferrovieri scioperano domani.
+scolpire||meißeln / bildhauern|Scolpisce il marmo.
+`,
+"B1 – Verben 16": `
+sconsigliare||abraten|Ti sconsiglio quel ristorante.
+screpolare||rissig werden|Il freddo mi screpola le labbra.
+scricchiolare||knarren|Il pavimento scricchiola.
+scurire||dunkel werden / verdunkeln|Il cielo si scurisce.
+sdebitarsi||sich revanchieren|Come posso sdebitarmi?
+sdegnare||verschmähen|Sdegna ogni aiuto.
+sfinire||erschöpfen|La corsa mi ha sfinito.
+sfollare||evakuieren / räumen|Hanno sfollato il paese.
+sganciare||abkoppeln / lockermachen|Sgancia il rimorchio.
+sgonfiare||Luft ablassen|Si è sgonfiata la gomma.
+sgozzare||die Kehle durchschneiden|Nel film l'assassino sgozza la vittima.
+sgridare||ausschimpfen|La maestra sgrida gli alunni.
+slegare||losbinden|Slega il cane.
+smacchiare||Flecken entfernen|Devo smacchiare la tovaglia.
+smascherare||entlarven|La polizia ha smascherato il truffatore.
+smuovere||bewegen / verrücken|Non riesco a smuovere il mobile.
+soccorrere||helfen / retten|Il bagnino soccorre il bambino.
+sorteggiare||auslosen|Sorteggiamo i gruppi.
+sostare||halten / parken|È vietato sostare davanti al cancello.
+spellare||häuten / pellen|Mi sono spellato il ginocchio.
+spennare||rupfen / ausnehmen (Geld)|In quel ristorante ti spennano!
+spianare||ebnen / ausrollen|Spiana la pasta con il mattarello.
+spruzzare||spritzen / sprühen|Spruzza il profumo.
+stipendiare||besolden|L'azienda stipendia venti persone.
+storcere||verdrehen|Storce il naso davanti al piatto.
+strangolare||erwürgen|Nel giallo la vittima è strangolata.
+stuzzicare||reizen / necken|Non stuzzicare il cane!
+susseguirsi||aufeinanderfolgen|Le notizie si susseguono.
+tappezzare||tapezieren|Hanno tappezzato la stanza.
+tassare||besteuern|Lo Stato tassa i redditi.
+traballare||wackeln|Il tavolo traballa.
+traboccare||überlaufen|L'acqua trabocca dalla vasca.
+tranquillizzare||beruhigen|Il medico ci tranquillizza.
+truffare||betrügen|L'hanno truffato al telefono.
+viziare||verwöhnen|I nonni viziano i nipoti.
+zoppicare||hinken|Zoppica da quando è caduto.
+violentare||vergewaltigen|La donna è stata violentata, dice il giornale.
+`,
+"B1 – Alltag & Welt 5": `
+raccomandazione|la|Empfehlung / Vitamin B|Ha trovato lavoro per raccomandazione.
+rafforzamento|il|Verstärkung|Serve un rafforzamento della sicurezza.
+ragnatela|la|Spinnennetz|In cantina ci sono ragnatele.
+rapimento|il|Entführung|Il rapimento è durato un mese.
+rateale||Raten-|Pago con un pagamento rateale.
+recinto|il|Gehege / Zaun|Le pecore sono nel recinto.
+reggimento|il|Regiment|Il reggimento sfila in piazza.
+repressione|la|Unterdrückung|La repressione del dissenso è dura.
+resoconto|il|Bericht|Fammi un resoconto della riunione.
+rettangolare||rechteckig|Il tavolo è rettangolare.
+rimanenza|la|Restbestand|Le rimanenze vanno in saldo.
+rimprovero|il|Tadel|Ha ricevuto un rimprovero dal capo.
+rincorsa|la|Anlauf|Prende la rincorsa e salta.
+rinforzo|il|Verstärkung|Arrivano i rinforzi.
+rinuncia|la|Verzicht|È stata una dolorosa rinuncia.
+rinvio|il|Aufschub / Verweis|Il rinvio della partita è ufficiale.
+rione|il|Stadtviertel|Abita in un rione popolare.
+ripensamento|il|Sinneswandel|Ho avuto un ripensamento.
+ripido||steil|La salita è ripida.
+ripiego|il|Notlösung|È solo un ripiego.
+ripieno|il|Füllung / gefüllt|Il ripieno dei tortellini è di carne.
+riscatto|il|Lösegeld / Freikauf|I rapitori chiedono un riscatto.
+risentimento|il|Groll|Prova risentimento verso il fratello.
+ritirata|la|Rückzug|L'esercito batte in ritirata.
+ritto||aufrecht|Sta ritto in piedi.
+riunito||vereinigt / versammelt|La famiglia è riunita a tavola.
+riuscita|la|Gelingen|La riuscita della festa dipende da te.
+rivendita|la|Verkaufsstelle|È una rivendita di tabacchi.
+rivestimento|il|Verkleidung / Beschichtung|Il rivestimento del muro è in legno.
+rombo|il|Dröhnen / Raute / Steinbutt|Si sente il rombo dei motori.
+rosario|il|Rosenkranz|La nonna dice il rosario.
+rosato||rosé / rosa|Beviamo un vino rosato.
+roseo||rosig|Il futuro non è roseo.
+rossore|il|Röte|Il rossore sulle guance.
+rustico||rustikal / ländlich|Hanno un casale rustico.
+sberla|la|Ohrfeige|Gli ha dato una sberla.
+sbarramento|lo|Sperre|La polizia ha fatto uno sbarramento.
+sbocco|lo|Mündung / Ausweg|Non c'è sbocco per questo lavoro.
+scampo|lo|Ausweg / Kaisergranat|Non c'è scampo!
+scappatoia|la|Hintertür / Schlupfloch|Ha trovato una scappatoia.
+scarabocchio|lo|Gekritzel|Il quaderno è pieno di scarabocchi.
+scavo|lo|Ausgrabung|Gli scavi di Pompei sono famosi.
+scheletro|lo|Skelett|Al museo c'è uno scheletro di dinosauro.
+schiacciato||zerquetscht / platt|Il panino è schiacciato.
+scivolata|la|Ausrutscher / Grätsche|Ha fatto una scivolata sul ghiaccio.
+scossa|la|Stromschlag / Erdstoß|Ho preso la scossa!
+scrupolo|lo|Skrupel / Gewissenhaftigkeit|Lavora con scrupolo.
+seccatura|la|Ärgernis|Che seccatura dover rifare tutto!
+`,
+"B1 – Alltag & Welt 6": `
+semestre|il|Halbjahr / Semester|Il semestre finisce a gennaio.
+serietà|la|Ernsthaftigkeit / Zuverlässigkeit|Lavora con serietà.
+sfollamento|lo|Evakuierung|Lo sfollamento del paese è durato ore.
+sgarbo|lo|Unhöflichkeit|Mi ha fatto uno sgarbo.
+sgombro|lo|Makrele / frei, geräumt|La stanza è sgombra.
+sillaba|la|Silbe|"Casa" ha due sillabe.
+smisurato||maßlos|Ha un'ambizione smisurata.
+soggezione|la|Befangenheit / Ehrfurcht|Il professore mi mette soggezione.
+solletico|il|Kitzeln|Soffro il solletico.
+soprannome|il|Spitzname|Il suo soprannome è "Il Rosso".
+sorteggio|il|Auslosung|Il sorteggio dei gironi è domani.
+spaccatura|la|Spaltung / Riss|C'è una spaccatura nel partito.
+spaccio|lo|Laden / Drogenhandel|Lo spaccio aziendale vende a prezzi bassi.
+spazioso||geräumig|L'appartamento è spazioso.
+sperone|lo|Sporn|Lo sperone di roccia sporge sul mare.
+spiazzo|lo|freier Platz / Lichtung|Ci fermiamo in uno spiazzo.
+spigolo|lo|Kante|Ho sbattuto contro lo spigolo del tavolo.
+spionaggio|lo|Spionage|È un film di spionaggio.
+splendente||strahlend|È una giornata splendente.
+spogliatoio|lo|Umkleide|I giocatori sono nello spogliatoio.
+spoglio||kahl|Gli alberi sono spogli in inverno.
+sporgente||vorstehend|Ha i denti sporgenti.
+sproposito|lo|Unsinn / Unsumme|Ha speso uno sproposito.
+squallido||trostlos / schäbig|È un albergo squallido.
+squarcio|lo|Riss / Spalt|Uno squarcio di cielo azzurro.
+stacco|lo|Abstand / Pause|C'è uno stacco di cinque minuti.
+stampatello|lo|Blockschrift|Scrivi il nome in stampatello.
+svolgimento|lo|Verlauf / Ausführung|Lo svolgimento del tema è buono.
+superbia|la|Hochmut|La superbia è un peccato.
+tatto|il|Tastsinn / Takt|Ha poco tatto.
+tic|il|Tick|Ha un tic all'occhio.
+ticchettio|il|Ticken / Prasseln|Sento il ticchettio della pioggia.
+tornaconto|il|Eigennutz|Lo fa per il suo tornaconto.
+trabocchetto|il|Falle|È una domanda trabocchetto.
+trafila|la|Prozedur / Instanzenweg|Che trafila per avere il permesso!
+trancio|il|Stück (Fisch, Pizza)|Un trancio di pizza margherita.
+trattenuta|la|Abzug (vom Lohn)|Le trattenute sullo stipendio sono alte.
+trincea|la|Schützengraben|I soldati combattevano in trincea.
+tribù|la|Stamm|La tribù vive nella foresta.
+umorismo|l'|Humor|Ha un grande senso dell'umorismo.
+urna|l'|Urne / Wahlurne|Gli elettori vanno alle urne.
+vanto|il|Stolz / Prahlerei|È il vanto della città.
+variopinto||bunt|Il mercato è variopinto.
+veglia|la|Nachtwache|Fa la veglia al malato.
+venuta|la|Ankunft / Kommen|Aspettiamo la venuta della primavera.
+volantino|il|Flugblatt|Distribuiscono volantini in piazza.
+volata|la|Endspurt|Vince in volata.
+votazione|la|Abstimmung|La votazione è segreta.
+tessile||Textil-|L'industria tessile di Prato.
+telegramma|il|Telegramm|Una volta si mandava un telegramma.
+telegrafo|il|Telegraf|Il telegrafo fu inventato nell'Ottocento.
+telegrafico||telegrafisch / knapp|Una risposta telegrafica.
+telecomandato||ferngesteuert|Il bambino ha una macchina telecomandata.
+tirrenico||tyrrhenisch|La costa tirrenica è lunga.
+ultravioletto||ultraviolett|I raggi ultravioletti scottano la pelle.
+`,
+"B1 – Länder & Regionen 4": `
+pugliese||apulisch|Le orecchiette sono un piatto pugliese.
+romagnolo||aus der Romagna|La piadina è romagnola.
+umbro||umbrisch|Perugia è una città umbra.
+valdostano||aus dem Aostatal|La fontina è un formaggio valdostano.
+trentino||aus dem Trentino|Le mele trentine sono famose.
+sudtirolese||Südtiroler|Lo speck sudtirolese è affumicato.
+veneziano||venezianisch / Venezianer|La gondola veneziana è nera.
+siamese||siamesisch|Ha un gatto siamese.
+slavo||slawisch|Il russo è una lingua slava.
+slovacco||slowakisch / Slowake|Bratislava è la capitale slovacca.
+sloveno||slowenisch / Slowene|Trieste è vicina al confine sloveno.
+serbo||serbisch / Serbe|Belgrado è la capitale serba.
+romeno||rumänisch / Rumäne|Il romeno è una lingua neolatina.
+rumeno||rumänisch / Rumäne|La mia vicina è rumena.
+scozzese||schottisch / Schotte|Il whisky scozzese è famoso.
+siriano||syrisch / Syrer|Ha accolto una famiglia siriana.
+svedese||schwedisch / Schwede|I mobili svedesi sono pratici.
+ucraino||ukrainisch / Ukrainer|Kiev è la capitale ucraina.
+ungherese||ungarisch / Ungar|Il gulasch è un piatto ungherese.
+tunisino||tunesisch / Tunesier|Il cuscus tunisino è piccante.
+sudamericano||südamerikanisch|Ama la musica sudamericana.
+socialdemocratico||sozialdemokratisch|È un partito socialdemocratico.
+`
+});
+/* Nachträge Teil 3 */
+add({
+"B1 – Alltag & Welt 6": `
+puntiglio|il|Starrsinn / Ehrgeiz|Lo fa per puntiglio.
+ricevimento|il|Empfang|Il ricevimento di nozze è in una villa.
+ricompensa|la|Belohnung|C'è una ricompensa per chi trova il cane.
+rosetta|la|Brötchen (Rosette)|A Roma compro le rosette.
+ruggine|la|Rost|Il cancello è pieno di ruggine.
+sigaro|il|Zigarre|Il nonno fuma il sigaro.
+strillo|lo|Kreischen|Ho sentito uno strillo.
+sventola|la|Ohrfeige / Fächer|Gli ha dato una sventola.
+tagliola|la|Fangeisen|Il lupo è finito nella tagliola.
+tavoletta|la|Tafel (Schokolade) / Tablett|Mangio una tavoletta di cioccolato.
+toppa|la|Flicken / Schlüsselloch|Metti una toppa sui jeans.
+trapezio|il|Trapez|L'acrobata vola sul trapezio.
+zuffa|la|Rauferei|C'è stata una zuffa tra tifosi.
+torbido||trüb|L'acqua del fiume è torbida.
+soffice||weich|Il cuscino è soffice.
+`,
+"B1 – Verben 16": `
+sgrassare||entfetten|Sgrassa il forno.
+vagire||wimmern (Baby)|Il neonato vagisce nella culla.
+`
+});
 })();
