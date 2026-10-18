@@ -358,7 +358,11 @@ function initDashboard() {
   const state = Store.load();
 
   // Streak
-  const sc = state.streak.count || 0;
+  // Serie gilt nur, wenn zuletzt heute oder gestern geübt wurde (sonst ist sie gerissen → 0)
+  const _today = new Date().toISOString().slice(0, 10);
+  const _yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const _alive = state.streak.lastDay === _today || state.streak.lastDay === _yesterday;
+  const sc = _alive ? (state.streak.count || 0) : 0;
   document.getElementById('streakCount').textContent = sc;
   if (sc > 0) document.getElementById('topbarStreak').textContent = `🔥 ${sc} ${sc === 1 ? 'Tag' : 'Tage'}`;
 
