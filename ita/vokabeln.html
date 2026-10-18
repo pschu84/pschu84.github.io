@@ -103,6 +103,16 @@ button{font:inherit;color:inherit}
 .inwork{display:block;font-size:12.5px;color:var(--verde);font-weight:700;margin-top:2px}
 .corner{position:absolute;top:9px;right:10px;font-size:13px}
 .corner.ok{color:var(--verde);font-weight:900}
+.lesson-due{font-size:11px;font-weight:700;color:var(--soft);margin-top:4px}
+.lesson-due.on{color:var(--oro);background:var(--oro-l);border:1px solid var(--oro-b);border-radius:99px;padding:2px 8px;align-self:flex-start}
+.due-box{background:var(--oro-l);border:1.5px solid var(--oro-b);border-radius:16px;padding:12px 14px;margin:14px 0 4px}
+.due-title{font-weight:800;color:var(--oro);font-size:14px}
+.due-text{font-size:12.5px;color:var(--muted);margin:3px 0 9px;line-height:1.4}
+.due-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip.due-chip{background:var(--paper);border-color:var(--oro-b);color:var(--ink);font-weight:700}
+.end-info{background:var(--oro-l);border:1px solid var(--oro-b);border-radius:14px;padding:11px 14px;font-size:13.5px;color:var(--ink);line-height:1.45;max-width:400px;margin:0 auto 16px;text-align:left}
+.end-next{font-size:12.5px !important;margin:8px 0 4px !important}
+.btn.force{margin-top:12px;font-size:13px;padding:10px 16px}
 
 /* Belohnungen */
 .rw{margin-top:16px;border-top:1.5px dashed var(--line);padding-top:14px}
@@ -2167,10 +2177,50 @@ function getCard(st, ln, word) {
 function lessonMastered(st, ld) {
   return ld.words.filter(w=>getCard(st,ld.name,w.it).phase>=3).length;
 }
+/* ───────── Verteiltes Wiederholen ─────────
+   neu → (gewusst) → 1. Wdh. frühestens nach 1 Stunde → (gewusst) → 2. Wdh. frühestens am nächsten Tag → gelernt.
+   Gewusste Wörter kommen also nicht sofort wieder, sondern erst nach einer Pause (Abstandseffekt).
+   Nicht gewusste Wörter sind sofort wieder dran und müssen danach erst einmal „sitzen“,
+   bevor sie die nächste Stufe erreichen. */
+const HOUR = 3600000;
+const REVIEW_GAP = {1: 1*HOUR, 2: 20*HOUR};
+function cardStatus(c, now){
+  if (c.phase>=3) return "done";
+  if (c.phase===0) return c.seen ? "due" : "new";      // schon einmal nicht gewusst → gleich wiederholen
+  return (!c.due || c.due<=now) ? "due" : "wait";
+}
+function lessonQueue(st, ld, now){
+  const q = {due:[], neu:[], wait:[], done:[], nextDue:0};
+  ld.words.forEach(w=>{
+    const c = getCard(st, ld.name, w.it), s = cardStatus(c, now);
+    if (s==="due") q.due.push(w); else if (s==="new") q.neu.push(w); else if (s==="wait") { q.wait.push(w); if (!q.nextDue || c.due<q.nextDue) q.nextDue = c.due; } else q.done.push(w);
+  });
+  return q;
+}
+function shortName(ld){ return ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,""); }
+function fmtDue(ts, short){
+  const d = new Date(ts), now = Date.now(), diff = ts - now;
+  if (diff <= 0) return short ? "jetzt" : "ab jetzt";
+  if (diff < HOUR) { const m = Math.max(1, Math.ceil(diff/60000)); return short ? "in "+m+" Min." : "in "+m+" Minuten"; }
+  const hm = d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");
+  const tm = new Date(); tm.setDate(tm.getDate()+1);
+  if (dayStr(d)===dayStr()) return short ? "ab "+hm : "heute ab "+hm+" Uhr";
+  if (dayStr(d)===dayStr(tm)) return short ? "morgen" : "morgen ab "+hm+" Uhr";
+  return short ? d.toLocaleDateString("de-DE",{weekday:"short"}) : d.toLocaleDateString("de-DE",{weekday:"long"})+" ab "+hm+" Uhr";
+}
 // Zwei getrennte Ketten: die ursprünglichen Lektionen (Verhalten unverändert) und
 // die neuen Lektionen je Niveau, die frei sind, sobald die erste Lektion des Niveaus frei ist.
 const ORIG_DEFS = LESSON_DEFS.filter(l=>!l.extra);
-function mastered60(st, l){ return lessonMastered(st,l) >= Math.floor(l.words.length*0.6); }
+// Freischalten: 60 % der vorherigen Lektion mindestens einmal gewusst (sonst müsste man wegen der
+// Wiederholungs-Pausen tagelang auf die nächste Lektion warten)
+function mastered60(st, l){ return l.words.filter(w=>getCard(st,l.name,w.it).phase>=1).length >= Math.floor(l.words.length*0.6); }
+// Nächste sinnvolle Lektion: zuerst eine mit fälligen Wiederholungen, sonst die nächste mit neuen Wörtern
+function findNextLesson(st, cur, now){
+  const i = LESSON_DEFS.indexOf(cur);
+  const group = LESSON_DEFS.filter(l=>l!==cur && !!l.isPhrase===!!cur.isPhrase && isUnlocked(st,l));
+  const ordered = group.filter(l=>LESSON_DEFS.indexOf(l)>i).concat(group.filter(l=>LESSON_DEFS.indexOf(l)<i));
+  return ordered.find(l=>lessonQueue(st,l,now).due.length>0) || ordered.find(l=>lessonQueue(st,l,now).neu.length>0) || null;
+}
 function isUnlocked(st, ld) {
   if (ld.isPhrase) return true;
   if (st.__frei && st.__frei[ld.name]) return true;   // von Hand vorzeitig freigeschaltet
@@ -2394,6 +2444,8 @@ function answerVariants(target, lang, isPhrase){
   });
   const out = new Set();
   parts.forEach(p=>{ const n = norm(p); if (n) { out.add(n); const s = stripArt(n, lang); if (s) out.add(s); } });
+  // „sich anziehen“: auch „anziehen“ gilt (das „sich“ ist beim Abfragen optional)
+  if (lang==="de") [...out].forEach(n=>{ const s = n.replace(/^sich\s+/,""); if (s && s!==n) out.add(s); });
   return [...out];
 }
 function lev(a,b){
@@ -2487,7 +2539,28 @@ function rLenient(c, v){
   if (kc===kv) return true;
   return kv.length>=4 && Math.abs(kc.length-kv.length)<=1 && lev(kc,kv)<=1;
 }
-function checkSpoken(alts, target, lang, isPhrase){
+// Klang-ähnlich (nur italienische Einzelwörter): ähnlich klingende Laute zusammenfassen
+// (b/v/p/f, d/t, r/l, c/g/k, s/z, e/i, o/u), damit z. B. „manu“ für „mano“ oder „voci“ für „voce“ zählt.
+// Bei Wörtern ab 4 Buchstaben darf außerdem der Endvokal abweichen („solo“ für „sole“).
+function softKey(s){
+  return s.replace(/\s+/g,"").replace(/h/g,"")
+    .replace(/[bvpf]/g,"b").replace(/[dt]/g,"d").replace(/[rl]/g,"r").replace(/[cgkq]/g,"k").replace(/[sz]/g,"s")
+    .replace(/[ei]/g,"e").replace(/[ou]/g,"o").replace(/([a-z])\1+/g,"$1");
+}
+function softMatch(c, v){
+  if (v.length<4) return false;
+  const kc = softKey(c), kv = softKey(v);
+  if (kc===kv) return true;
+  return kv.length>=4 && kc.length===kv.length && /[aeo]$/.test(kv) && /[aeo]$/.test(kc) && kc.slice(0,-1)===kv.slice(0,-1);
+}
+// Wörter, die die Spracherkennung erfahrungsgemäß hartnäckig anders schreibt
+const HEARD_AS = {
+  sole:["sale","suole","sol","so le","sold","soul"],
+  voce:["voci","foce","boce","vo ce","voche","vocce","bocce"],
+  bere:["bene","berre","vere","pere","be re","bè","bear"],
+  mano:["manu","mamo","ma no","man","mani"]
+};
+function checkSpoken(alts, target, lang, isPhrase, typed){
   const vars = answerVariants(target, lang, isPhrase);
   alts = alts.concat(alts.map(a=>symbolsToWords(a, lang)));
   alts = alts.concat(alts.map(a=>digitsToWords(norm(a), lang)));
@@ -2501,6 +2574,8 @@ function checkSpoken(alts, target, lang, isPhrase){
         if (c===v) return {ok:true, heard:alt, sim:1};
         if (phonKey(c,lang)===phonKey(v,lang)) return {ok:true, heard:alt, sim:.98};
         if (lang==="it" && !isPhrase && rLenient(c,v)) return {ok:true, heard:alt, sim:.96};
+        if (lang==="it" && !isPhrase && !typed && softMatch(c,v)) return {ok:true, heard:alt, sim:.94};
+        if (lang==="it" && !typed && HEARD_AS[v] && HEARD_AS[v].some(h=>norm(h)===c)) return {ok:true, heard:alt, sim:.93};
         const d = lev(c,v), L = Math.max(c.length,v.length);
         const sim = 1 - d/L;
         const tol = isPhrase ? Math.floor(L*0.2) : (v.length>=10 ? 2 : v.length>=6 ? 1 : 0);
@@ -2592,15 +2667,26 @@ function App() {
   const setAutoListen = (v)=>{ setAutoListenState(v); lsSet(AUTO_KEY, v?"1":"0"); if(!v) clearAuto(); };
   function clearAuto(){ if (autoTimer.current) { clearTimeout(autoTimer.current); autoTimer.current=null; } }
 
-  function buildSession(ld, stRef) {
-    const active = ld.words.filter(w=>getCard(stRef, ld.name, w.it).phase < 3);
-    const picked = active.slice(0, SESSION_SIZE);
-    return shuffle(picked).slice(0, SESSION_SIZE);
+  // Runde: zuerst fällige Wiederholungen (inkl. nicht gewusster Wörter), dann neue Wörter.
+  // Gewusste Wörter, deren Pause noch läuft, kommen nicht dran.
+  // force („Trotzdem üben“): Wörter, deren Pause noch läuft, und schon gelernte (am längsten her zuerst).
+  function buildSession(ld, stRef, force) {
+    const now = Date.now();
+    const q = lessonQueue(stRef, ld, now);
+    let picked = shuffle(q.due).slice(0, SESSION_SIZE);
+    picked = picked.concat(q.neu.slice(0, SESSION_SIZE - picked.length));
+    if (!picked.length && force) {
+      const cd = w=>getCard(stRef, ld.name, w.it);
+      const waitSorted = q.wait.slice().sort((a,b)=>cd(a).due-cd(b).due);
+      const doneSorted = q.done.slice().sort((a,b)=>(cd(a).phase===4)-(cd(b).phase===4) || (cd(a).learned||0)-(cd(b).learned||0));
+      picked = waitSorted.concat(doneSorted).slice(0, SESSION_SIZE);
+    }
+    return shuffle(picked);
   }
 
-  function selectLesson(ld) {
+  function selectLesson(ld, force) {
     setCurLesson(ld);
-    const sess = buildSession(ld, st);
+    const sess = buildSession(ld, st, force);
     setSession(sess);
     setDirs(sess.map(()=>Math.random()<.5?"sayIT":"sayDE"));
     setSidx(0);
@@ -2692,10 +2778,24 @@ function App() {
     if (!w) return;
     const newSt = {...st};
     const c = getCard(newSt, curLesson.name, w.it);
+    const now = Date.now();
     c.seen = 1;
-    if (known) c.phase = 4;
-    else if (correct) { if (c.phase < 3) c.phase++; }
-    else { if (c.phase > 1) c.phase = 1; }
+    if (known) { c.phase = 4; delete c.due; delete c.lapse; }
+    else if (correct) {
+      // vorgezogen (Pause läuft noch, z. B. bei „Trotzdem üben“): zählt nicht als Wiederholung
+      const early = c.phase>=1 && c.phase<3 && c.due && c.due>now;
+      if (c.lapse) { delete c.lapse; c.due = now + REVIEW_GAP[Math.max(1, Math.min(2, c.phase))]; }   // nach Fehler erst festigen
+      else if (!early && c.phase < 3) {
+        c.phase++;
+        if (c.phase < 3) c.due = now + REVIEW_GAP[c.phase];
+        else { delete c.due; c.learned = now; }
+      }
+    }
+    else {
+      if (c.phase > 1) c.phase = 1;
+      if (c.phase >= 1) c.lapse = 1;
+      c.due = now;
+    }
     persist(newSt);
     setRoundStats(r=>({ok:r.ok+(correct||known?1:0), no:r.no+(correct||known?0:1)}));
     const next = sidx+1;
@@ -2725,9 +2825,9 @@ function App() {
   const c = w ? getCard(st, curLesson?.name, w.it) : null;
   const target = w ? (eff==="sayIT" ? w.it : w.de) : "";
 
-  function evaluate(alts){
+  function evaluate(alts, typedIn){
     if (!w || result==="ok") return;
-    const r = checkSpoken(alts, target, speakLang, !!w.phrase);
+    const r = checkSpoken(alts, target, speakLang, !!w.phrase, !!typedIn);
     setHeard(r.heard);
     if (r.ok) {
       setResult("ok"); setFlipped(true); setSeen(true); setSpeechMsg(null);
@@ -2839,7 +2939,7 @@ function App() {
   function submitTyped(e){
     e.preventDefault();
     if (!typed.trim()) return;
-    evaluate([typed]);
+    evaluate([typed], true);
     setTyped("");
   }
 
@@ -2899,6 +2999,12 @@ function App() {
   const inWork = totalInWork(st);
   const pct = Math.min(100, Math.round(done/TOTAL_GOAL*100));
 
+  // Startseite jede Minute neu berechnen, damit fällige Wiederholungen ohne Neuladen erscheinen
+  const [nowTick, setNowTick] = useState(()=>Date.now());
+  useEffect(()=>{ setNowTick(Date.now()); if (view!=="lessons" && view!=="end") return; const t = setInterval(()=>setNowTick(Date.now()), 60000); return ()=>clearInterval(t); },[view]);
+  const dueLessons = view==="lessons" ? LESSON_DEFS.filter(l=>isUnlocked(st,l)).map(l=>({ld:l, n:lessonQueue(st,l,nowTick).due.length})).filter(x=>x.n>0) : [];
+  const dueTotal = dueLessons.reduce((s,x)=>s+x.n,0);
+
   function lessonStats(ld) {
     let neu=0, lernen=0, gelernt=0, bekannt=0;
     ld.words.forEach(w=>{
@@ -2922,6 +3028,8 @@ function App() {
     const wp = parts.work/ld.words.length*100, sp = parts.seen/ld.words.length*100;
     const isSel = curLesson&&curLesson.name===ld.name;
     const delay = (cardDelay++)*0.025;
+    const q = unlocked ? lessonQueue(st, ld, nowTick) : null;
+    const nDue = q ? q.due.length : 0;
     return (
       <Hap block><button type="button"
         className={"lesson"+(ld.isPhrase?" phrase":"")+(unlocked?"":" locked")+(isSel?" sel":"")+(p>=70?" comp":"")}
@@ -2930,16 +3038,18 @@ function App() {
         onClick={()=>{
           if (unlocked) { selectLesson(ld); return; }
           const kurz = ld.name.replace(/^[A-Z0-9]+ – /,"");
-          if (!window.confirm("„"+kurz+"“ ist noch gesperrt.\n\nNormalerweise wird eine Lektion frei, wenn du 60 % der vorherigen Lektion gelernt hast.\n\nTrotzdem jetzt freischalten?")) return;
+          if (!window.confirm("„"+kurz+"“ ist noch gesperrt.\n\nNormalerweise wird eine Lektion frei, wenn du 60 % der Wörter der vorherigen Lektion mindestens einmal gewusst hast.\n\nTrotzdem jetzt freischalten?")) return;
           const nst = {...st, __frei:{...(st.__frei||{}), [ld.name]:true}};
           persist(nst); selectLesson(ld);
         }}>
         <span className="lesson-name">{ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,"")}</span>
         <span className="lesson-count">{ld.words.length} {ld.isPhrase?"Phrasen":"Wörter"} · {p}%</span>
         <span className="bar"><span className="b-done" style={{width:(doneCnt/ld.words.length*100)+"%"}}/><span className="b-work" style={{width:wp+"%"}}/><span className="b-seen" style={{width:sp+"%"}}/></span>
+        {nDue>0 && <span className="lesson-due on" title="Diese Wörter jetzt zu wiederholen bringt am meisten">🔁 {nDue} {nDue===1?"Wort":"Wörter"} wiederholen</span>}
+        {nDue===0 && q && q.wait.length>0 && <span className="lesson-due" title="Wörter, die gerade eine Pause machen, damit sie besser im Gedächtnis bleiben">⏳ Wdh. {fmtDue(q.nextDue, true)}</span>}
         {!unlocked&&<span className="corner">🔒</span>}
         {p>=70&&unlocked&&<span className="corner ok">✓</span>}
-        {p<70&&unlocked&&parts.work>0&&<span className="corner rep" title="Wiederholungen offen">🔁</span>}
+        {p<70&&nDue>0&&<span className="corner rep" title="Wiederholung fällig">🔁</span>}
       </button></Hap>
     );
   }
@@ -3031,6 +3141,17 @@ function App() {
             ))}
           </div>
           {isSpeak&&!SR&&<div className="note warn">Dein Browser unterstützt keine Spracheingabe (z. B. Firefox). Du kannst die Antwort im Sprechmodus eintippen oder Chrome, Edge bzw. Safari nutzen.</div>}
+          {dueTotal>0&&(
+            <div className="due-box">
+              <div className="due-title">🔁 Jetzt wiederholen lohnt sich</div>
+              <div className="due-text">{dueTotal} {dueTotal===1?"Wort ist":"Wörter sind"} wieder dran. Wer zum richtigen Zeitpunkt wiederholt, behält die Wörter viel länger.</div>
+              <div className="due-chips">
+                {dueLessons.slice().sort((a,b)=>b.n-a.n).slice(0,4).map(x=>(
+                  <Hap key={x.ld.name}><button type="button" className="chip due-chip" onClick={()=>selectLesson(x.ld)}>{shortName(x.ld)} · {x.n}</button></Hap>
+                ))}
+              </div>
+            </div>
+          )}
 
           {levels.map(lv=>(
             <div key={lv}>
@@ -3154,12 +3275,17 @@ function App() {
         </section>
       )}
 
-      {view==="end"&&curLesson&&(
+      {view==="end"&&curLesson&&(()=>{
+        const eq = lessonQueue(st, curLesson, nowTick);
+        const more = eq.due.length + eq.neu.length;
+        const allDone = !more && !eq.wait.length;
+        const nxt = more ? null : findNextLesson(st, curLesson, nowTick);
+        return (
         <section className="fade-in">
           <button className="back" onClick={()=>setView("lessons")}>← Lektionen</button>
           <div className="end">
-            <div className="end-emoji">🎉</div>
-            <h2>{session.length ? "Bravissimo!" : "Alles gelernt!"}</h2>
+            <div className="end-emoji">{session.length||allDone ? "🎉" : "⏳"}</div>
+            <h2>{session.length ? "Bravissimo!" : allDone ? "Alles gelernt!" : "Gerade nichts fällig"}</h2>
             {session.length>0&&<p className="end-round"><span className="g">{roundStats.ok} gewusst</span> · <span className="r">{roundStats.no} noch nicht</span></p>}
             <p>{lessonMastered(st,curLesson)} von {curLesson.words.length} gelernt ({Math.round(lessonMastered(st,curLesson)/curLesson.words.length*100)}%)</p>
             {roundEvents.length>0&&(
@@ -3175,12 +3301,25 @@ function App() {
                 ))}
               </div>
             )}
-            {session.length>0 || lessonMastered(st,curLesson)<curLesson.words.length
-              ? <Hap><button className="btn next" onClick={()=>selectLesson(curLesson)}>Neue Runde</button></Hap>
-              : <Hap><button className="btn next" onClick={()=>setView("lessons")}>Nächste Lektion wählen</button></Hap>}
+            {more>0 ? <>
+                <Hap><button className="btn next" onClick={()=>selectLesson(curLesson)}>Neue Runde</button></Hap>
+                <p className="end-next">Nächste Runde: {[eq.due.length && (Math.min(eq.due.length,SESSION_SIZE)+" zum Wiederholen"), eq.due.length<SESSION_SIZE && eq.neu.length && (Math.min(eq.neu.length, SESSION_SIZE-eq.due.length)+" neue Wörter")].filter(Boolean).join(" · ")}</p>
+              </> : <>
+                <div className="end-info">
+                  {allDone
+                    ? <>Du hast alle Wörter dieser Lektion gelernt. Wenn es schon eine Weile her ist, kannst du sie trotzdem noch einmal üben.</>
+                    : <>Alle Vokabeln dieser Lektion hattest du jetzt schon. Damit sie gut im Gedächtnis bleiben, wiederholst du sie am besten erst nach einer Pause: <b>{fmtDue(eq.nextDue)}</b>.</>}
+                </div>
+                {nxt
+                  ? <Hap><button className="btn next" onClick={()=>selectLesson(nxt)}>Neue Runde: {shortName(nxt)}</button></Hap>
+                  : <Hap><button className="btn next" onClick={()=>setView("lessons")}>Zu den Lektionen</button></Hap>}
+                {nxt && lessonQueue(st,nxt,nowTick).due.length>0 && <p className="end-next">Dort sind Wiederholungen fällig.</p>}
+                <div><Hap><button className="btn show force" onClick={()=>selectLesson(curLesson, true)}>Trotzdem diese Lektion üben</button></Hap></div>
+              </>}
           </div>
         </section>
-      )}
+        );
+      })()}
 
       {view==="badges"&&(
         <section className="fade-in">
