@@ -2257,8 +2257,26 @@ const BADGES = [
   {id:"early", icon:"🐓", name:"Mattiniero",       desc:"Vor 7 Uhr gelernt",                 val:r=>r.early, goal:1},
 ];
 
+// Setzt NUR die „Tage in Folge“-Serie der Don-Due-Hauptseite fort (gleiche Logik wie Store.updateStreak in assets/shared.js).
+// Tagesrekord, „richtig“-Zähler usw. von Don Due bleiben unberührt. Mehrfaches Aufrufen am selben Tag ändert nichts.
+function bumpDonDueStreak(){
+  try {
+    const KEY = "grammaticaviva_v1";
+    const raw = localStorage.getItem(KEY);
+    const s = raw ? JSON.parse(raw) : {schema:1, modules:{}, streak:{count:0,lastDay:null}, settings:{accentHelp:true}, meta:{totalAnswered:0,totalCorrect:0,lastAnswered:null,created:Date.now()}, daily:{}};
+    if (!s.streak) s.streak = {count:0, lastDay:null};
+    const today = new Date().toISOString().slice(0, 10);
+    if (s.streak.lastDay === today) return;
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    s.streak.count = (s.streak.lastDay === yesterday) ? (s.streak.count||0) + 1 : 1;
+    s.streak.lastDay = today;
+    localStorage.setItem(KEY, JSON.stringify(s));
+  } catch {}
+}
+
 // Wertet eine Antwort aus und liefert neuen Stand + Ereignisse (Rekord, Abzeichen, Tagesziel)
 function applyAnswer(rw, st, info){
+  bumpDonDueStreak();
   const r = Object.assign({}, rw, {dayCount:Object.assign({}, rw.dayCount), badges:Object.assign({}, rw.badges)});
   const ev = [];
   const today = dayStr();
