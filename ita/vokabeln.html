@@ -109,6 +109,10 @@ button{font:inherit;color:inherit}
 .due-title{font-weight:800;color:var(--oro);font-size:14px}
 .due-text{font-size:12.5px;color:var(--muted);margin:3px 0 9px;line-height:1.4}
 .due-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ref-box{background:var(--viola-l);border-color:var(--viola-b)}
+.ref-box .due-title{color:var(--viola)}
+.ref-box .chip.due-chip{border-color:var(--viola-b)}
+.lesson-due.ref{color:var(--viola);background:var(--viola-l);border:1px solid var(--viola-b);border-radius:99px;padding:2px 8px;align-self:flex-start}
 .chip.due-chip{background:var(--paper);border-color:var(--oro-b);color:var(--ink);font-weight:700}
 .end-info{background:var(--oro-l);border:1px solid var(--oro-b);border-radius:14px;padding:11px 14px;font-size:13.5px;color:var(--ink);line-height:1.45;max-width:400px;margin:0 auto 16px;text-align:left}
 .end-next{font-size:12.5px !important;margin:8px 0 4px !important}
@@ -2164,7 +2168,13 @@ function lsGet(k, d){ try { const v = localStorage.getItem(k); return v===null ?
 function lsSet(k, v){ try { localStorage.setItem(k, v); } catch {} }
 
 function loadState() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}"); } catch { return {}; }
+  let st;
+  try { st = JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}"); } catch { st = {}; }
+  // Ältere Spielstände: gelernte Wörter ohne Lern-Datum bekommen heute als Datum (für das Auffrischen)
+  const now = Date.now(); let ch = false;
+  for (const k in st) { const c = st[k]; if (c && c.phase===3 && !c.learned) { c.learned = now; ch = true; } }
+  if (ch) saveState(st);
+  return st;
 }
 function saveState(st) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(st)); } catch {}
@@ -2196,6 +2206,28 @@ function lessonQueue(st, ld, now){
     if (s==="due") q.due.push(w); else if (s==="new") q.neu.push(w); else if (s==="wait") { q.wait.push(w); if (!q.nextDue || c.due<q.nextDue) q.nextDue = c.due; } else q.done.push(w);
   });
   return q;
+}
+/* ───────── Auffrischen ─────────
+   Gelernte Wörter werden ca. 6 Wochen nach dem Lernen einmal zum Auffrischen vorgeschlagen,
+   danach frühestens nach 1 Jahr wieder. Es wird immer höchstens EINE Lektion vorgeschlagen
+   (und höchstens eine pro Tag), damit sich nichts aufstaut. */
+const DAY = 24*HOUR;
+const REFRESH_FIRST = 42*DAY;
+const REFRESH_NEXT = 365*DAY;
+function refreshAt(c){ if (!c || c.phase!==3 || !c.learned) return 0; return c.ref ? c.ref + REFRESH_NEXT : c.learned + REFRESH_FIRST; }
+function refreshWords(st, ld, now){ return ld.words.filter(w=>{ const t = refreshAt(getCard(st,ld.name,w.it)); return t && t<=now; }); }
+function refreshSuggestion(st, now){
+  if (st.__refDone === dayStr(new Date(now))) return null;
+  let best = null, bestT = Infinity;
+  LESSON_DEFS.forEach(ld=>{
+    const learnedN = ld.words.filter(w=>getCard(st,ld.name,w.it).phase===3).length;
+    if (!learnedN) return;
+    const due = refreshWords(st, ld, now);
+    if (due.length < Math.min(5, learnedN)) return;
+    const t = Math.min(...due.map(w=>refreshAt(getCard(st,ld.name,w.it))));
+    if (t < bestT) { bestT = t; best = {ld, n:due.length}; }
+  });
+  return best;
 }
 function shortName(ld){ return ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,""); }
 function fmtDue(ts, short){
@@ -2625,6 +2657,7 @@ function App() {
   const [st, setSt] = useState(()=>loadState());
   const [curLesson, setCurLesson] = useState(null);
   const [session, setSession] = useState([]);
+  const [sessMode, setSessMode] = useState("normal");   // normal | force | refresh
   const [sidx, setSidx] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const firstFlip = useRef(true);
@@ -2639,6 +2672,8 @@ function App() {
   const [heard, setHeard] = useState("");
   const [result, setResult] = useState(null);   // null | "ok" | "wrong"
   const [tries, setTries] = useState(0);
+  const triesRef = useRef(0);
+  const liveRestarts = useRef(0);
   const [speechMsg, setSpeechMsg] = useState(null);
   const [typed, setTyped] = useState("");
   const [shake, setShake] = useState(0);
@@ -2672,6 +2707,7 @@ function App() {
   // force („Trotzdem üben“): Wörter, deren Pause noch läuft, und schon gelernte (am längsten her zuerst).
   function buildSession(ld, stRef, force) {
     const now = Date.now();
+    if (force==="refresh") return shuffle(refreshWords(stRef, ld, now)).slice(0, SESSION_SIZE);
     const q = lessonQueue(stRef, ld, now);
     let picked = shuffle(q.due).slice(0, SESSION_SIZE);
     picked = picked.concat(q.neu.slice(0, SESSION_SIZE - picked.length));
@@ -2686,7 +2722,10 @@ function App() {
 
   function selectLesson(ld, force) {
     setCurLesson(ld);
-    const sess = buildSession(ld, st, force);
+    let sess = buildSession(ld, st, force);
+    // nichts zu lernen, aber Auffrischen fällig → gleich auffrischen
+    if (!sess.length && !force && refreshWords(st, ld, Date.now()).length) { force = "refresh"; sess = buildSession(ld, st, force); }
+    setSessMode(force==="refresh" ? "refresh" : force ? "force" : "normal");
     setSession(sess);
     setDirs(sess.map(()=>Math.random()<.5?"sayIT":"sayDE"));
     setSidx(0);
@@ -2709,7 +2748,7 @@ function App() {
     stopRec();
     try { if (window.speechSynthesis && speechSynthesis.speaking) speechSynthesis.cancel(); } catch {}
     setFlipped(false); setSeen(false); setResult(null); setHeard("");
-    setTries(0); setSpeechMsg(null); setTyped("");
+    setTries(0); triesRef.current = 0; liveRestarts.current = 0; setSpeechMsg(null); setTyped("");
   },[sidx, session, mode, view]);
 
   useEffect(()=>()=>{ clearAuto(); stopRec(); },[]);
@@ -2780,6 +2819,10 @@ function App() {
     const c = getCard(newSt, curLesson.name, w.it);
     const now = Date.now();
     c.seen = 1;
+    // gelerntes Wort, dessen Auffrischung fällig ist, richtig gewusst → aufgefrischt (nächste frühestens in 1 Jahr)
+    if (correct && !known && c.phase===3 && refreshAt(c) && refreshAt(c)<=now) {
+      c.ref = now;
+    }
     if (known) { c.phase = 4; delete c.due; delete c.lapse; }
     else if (correct) {
       // vorgezogen (Pause läuft noch, z. B. bei „Trotzdem üben“): zählt nicht als Wiederholung
@@ -2788,7 +2831,7 @@ function App() {
       else if (!early && c.phase < 3) {
         c.phase++;
         if (c.phase < 3) c.due = now + REVIEW_GAP[c.phase];
-        else { delete c.due; c.learned = now; }
+        else { delete c.due; delete c.ref; c.learned = now; }
       }
     }
     else {
@@ -2796,6 +2839,7 @@ function App() {
       if (c.phase >= 1) c.lapse = 1;
       c.due = now;
     }
+    if (sessMode==="refresh" && !refreshWords(newSt, curLesson, now).length) newSt.__refDone = dayStr();
     persist(newSt);
     setRoundStats(r=>({ok:r.ok+(correct||known?1:0), no:r.no+(correct||known?0:1)}));
     const next = sidx+1;
@@ -2825,7 +2869,8 @@ function App() {
   const c = w ? getCard(st, curLesson?.name, w.it) : null;
   const target = w ? (eff==="sayIT" ? w.it : w.de) : "";
 
-  function evaluate(alts, typedIn){
+  // live: Das Mikrofon hört nach einem falschen Wort weiter zu (kein Neustart nötig)
+  function evaluate(alts, typedIn, live){
     if (!w || result==="ok") return;
     const r = checkSpoken(alts, target, speakLang, !!w.phrase, !!typedIn);
     setHeard(r.heard);
@@ -2835,21 +2880,23 @@ function App() {
       clearAuto(); stopRec();
     } else {
       if (isCommand(alts, CMD_SKIP) || isCommand(alts, CMD_NEXT)) { revealSolution(); setSpeechMsg(null); return; }
-      setTries(t=>t+1); setShake(s=>s+1); haptic("wrong");
-      // nach dem dritten Fehlversuch automatisch aufdecken, damit der Fluss nicht abreißt
-      if (autoListen && tries>=2) { clearAuto(); revealSolution(); setSpeechMsg(canReadSolution ? "Hier ist die Lösung." : "Hier ist die Lösung. Sag sie einfach nach oder sag „weiter“."); return; }
+      const nt = triesRef.current + 1; triesRef.current = nt;
+      setTries(nt); setShake(s=>s+1); haptic("wrong");
+      // nach dem vierten Fehlversuch automatisch aufdecken, damit der Fluss nicht abreißt
+      if (autoListen && nt>=4) { clearAuto(); revealSolution(); setSpeechMsg(canReadSolution ? "Hier ist die Lösung." : "Hier ist die Lösung. Sag sie einfach nach oder sag „weiter“."); return; }
       setResult("wrong");
       // bei Fehler automatisch noch einmal zuhören (höchstens 2-mal)
-      if (autoListen) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
-      setSpeechMsg(r.sim>=.6 ? "Fast! Versuch es noch einmal deutlicher." : "Das war leider nicht richtig.");
+      if (autoListen && !live) { clearAuto(); autoTimer.current = setTimeout(()=>startListenRef.current(true), 1500); }
+      setSpeechMsg((r.sim>=.6 ? "Fast! Versuch es noch einmal deutlicher." : "Das war leider nicht richtig.") + (live ? " Ich höre weiter zu …" : ""));
     }
   }
 
-  function startListen(auto, attempt){
+  function startListen(auto, attempt, keepMsg){
     attempt = attempt || 0;
     if (!SR) { setSpeechMsg("Dein Browser unterstützt keine Spracheingabe. Nutze Chrome, Edge oder Safari oder tippe die Antwort unten ein."); return; }
     if (!speechOk) { if (!auto) setConsentOpen(true); return; }
     if (listening && !auto) { clearAuto(); stopRec(); return; }
+    if (!auto) liveRestarts.current = 0;
     clearAuto();
     stopRec();
     const r = new SR();
@@ -2860,19 +2907,40 @@ function App() {
     r.lang = shownPhase ? "it-IT" : (speakLang==="it" ? "it-IT" : "de-DE");
     r.interimResults = true;
     r.maxAlternatives = 5;
-    r.continuous = false;
+    // Beim Warten auf die Antwort durchgehend zuhören: Nach einem falschen Wort bleibt das Mikrofon an,
+    // damit ein kurz danach gesagtes richtiges Wort noch erkannt wird.
+    r.continuous = !shownPhase;
     let decided = false;
     let spoke = false;   // hat der Browser überhaupt Sprache bemerkt (unabhängig von der Sprache)?
+    let gotAny = false;  // schon etwas Verwertbares gehört (dann nach Ende weiter zuhören statt aufdecken)
+    let countedIdx = -1, lastWrong = "";
     r.onspeechstart = ()=>{ spoke = true; };
     r.onresult = (e)=>{
       if (decided) return;
       let txt = "";
-      for (let i=0;i<e.results.length;i++) txt += e.results[i][0].transcript;
+      for (let i=0;i<e.results.length;i++) txt += (txt && !/^\s/.test(e.results[i][0].transcript) ? " " : "") + e.results[i][0].transcript;
+      txt = txt.trim();
       setHeard(txt);
       const last = e.results[e.results.length-1];
-      // schon das Zwischenergebnis prüfen: passt es, sofort werten (nicht auf die Sprechpause warten)
-      if (!last.isFinal && result!=="shown" && w && checkSpoken([txt], target, speakLang, !!w.phrase).ok) {
-        decided = true; evaluate([txt]); return;
+      // Beim Warten auf die Antwort: ALLES Gehörte prüfen (Gesamttext, jedes Stück, jede Alternative,
+      // bei Einzelwörtern auch jedes einzelne Wort), auch Zwischenergebnisse. So zählt das richtige Wort,
+      // auch wenn vorher falsche kamen („cane … ähm … pane“).
+      if (result!=="shown" && w) {
+        const alts = [txt];
+        for (let i=0;i<e.results.length;i++) for (let j=0;j<e.results[i].length;j++) alts.push(e.results[i][j].transcript);
+        const cands = w.phrase ? alts : alts.concat(alts.flatMap(a=>norm(a).split(" ")).filter(x=>x.length>=2));
+        if (checkSpoken(cands, target, speakLang, !!w.phrase).ok) { decided = true; evaluate(cands); return; }
+        if (!last.isFinal) return;
+        // neu abgeschlossene Teilstücke als Fehlversuch werten, Mikrofon bleibt dabei an
+        const fresh = [];
+        for (let i=countedIdx+1;i<e.results.length;i++) if (e.results[i].isFinal) { countedIdx = i; for (let j=0;j<e.results[i].length;j++) fresh.push(e.results[i][j].transcript); }
+        if (!fresh.some(a=>norm(a))) { if (!gotAny) { decided = true; unclearSpeech(); } return; }
+        gotAny = true;
+        const key = norm(fresh[0]);
+        if (key === lastWrong) return;     // dieselbe Erkennung doppelt gemeldet (kommt bei Android vor)
+        lastWrong = key;
+        evaluate(fresh, false, true);
+        return;
       }
       if (last.isFinal && result==="shown") {
         decided = true;
@@ -2922,10 +2990,12 @@ function App() {
       if (decided) return;
       decided = true;
       if (result==="shown") { if (spoke) doAnswer(false,false); else relistenShown(); return; }
+      // schon etwas (Falsches) gehört: gleich weiter zuhören, damit das richtige Wort noch ankommt
+      if (gotAny) { if (liveRestarts.current < 6 && !document.hidden) { liveRestarts.current++; startListenRef.current(true, 0, true); } return; }
       if (spoke) unclearSpeech();
     };
     recRef.current = r;
-    setHeard(""); setSpeechMsg(null);
+    if (!keepMsg) { setHeard(""); setSpeechMsg(null); }
     try { r.start(); setListening(true); } catch { recRef.current = null; setListening(false); retry(); }
   }
 
@@ -3004,6 +3074,7 @@ function App() {
   useEffect(()=>{ setNowTick(Date.now()); if (view!=="lessons" && view!=="end") return; const t = setInterval(()=>setNowTick(Date.now()), 60000); return ()=>clearInterval(t); },[view]);
   const dueLessons = view==="lessons" ? LESSON_DEFS.filter(l=>isUnlocked(st,l)).map(l=>({ld:l, n:lessonQueue(st,l,nowTick).due.length})).filter(x=>x.n>0) : [];
   const dueTotal = dueLessons.reduce((s,x)=>s+x.n,0);
+  const refSug = view==="lessons" ? refreshSuggestion(st, nowTick) : null;
 
   function lessonStats(ld) {
     let neu=0, lernen=0, gelernt=0, bekannt=0;
@@ -3046,7 +3117,8 @@ function App() {
         <span className="lesson-count">{ld.words.length} {ld.isPhrase?"Phrasen":"Wörter"} · {p}%</span>
         <span className="bar"><span className="b-done" style={{width:(doneCnt/ld.words.length*100)+"%"}}/><span className="b-work" style={{width:wp+"%"}}/><span className="b-seen" style={{width:sp+"%"}}/></span>
         {nDue>0 && <span className="lesson-due on" title="Diese Wörter jetzt zu wiederholen bringt am meisten">🔁 {nDue} {nDue===1?"Wort":"Wörter"} wiederholen</span>}
-        {nDue===0 && q && q.wait.length>0 && <span className="lesson-due" title="Wörter, die gerade eine Pause machen, damit sie besser im Gedächtnis bleiben">⏳ Wdh. {fmtDue(q.nextDue, true)}</span>}
+        {nDue===0 && refSug && refSug.ld===ld && <span className="lesson-due ref" title="Diese Wörter hast du vor einiger Zeit gelernt">✨ Auffrischen</span>}
+        {nDue===0 && !(refSug && refSug.ld===ld) && q && q.wait.length>0 && <span className="lesson-due" title="Wörter, die gerade eine Pause machen, damit sie besser im Gedächtnis bleiben">⏳ Wdh. {fmtDue(q.nextDue, true)}</span>}
         {!unlocked&&<span className="corner">🔒</span>}
         {p>=70&&unlocked&&<span className="corner ok">✓</span>}
         {p<70&&nDue>0&&<span className="corner rep" title="Wiederholung fällig">🔁</span>}
@@ -3150,6 +3222,13 @@ function App() {
                   <Hap key={x.ld.name}><button type="button" className="chip due-chip" onClick={()=>selectLesson(x.ld)}>{shortName(x.ld)} · {x.n}</button></Hap>
                 ))}
               </div>
+            </div>
+          )}
+          {refSug&&(
+            <div className="due-box ref-box">
+              <div className="due-title">✨ Auffrischen: {shortName(refSug.ld)}</div>
+              <div className="due-text">{refSug.n} {refSug.n===1?"Wort":"Wörter"} aus dieser Lektion hast du vor einiger Zeit gelernt. Einmal kurz auffrischen, dann bleiben sie dauerhaft hängen.</div>
+              <div className="due-chips"><Hap><button type="button" className="chip due-chip" onClick={()=>selectLesson(refSug.ld,"refresh")}>Jetzt auffrischen</button></Hap></div>
             </div>
           )}
 
@@ -3280,6 +3359,8 @@ function App() {
         const more = eq.due.length + eq.neu.length;
         const allDone = !more && !eq.wait.length;
         const nxt = more ? null : findNextLesson(st, curLesson, nowTick);
+        const isRef = sessMode==="refresh" && session.length>0;
+        const refLeft = isRef ? refreshWords(st, curLesson, nowTick).length : 0;
         return (
         <section className="fade-in">
           <button className="back" onClick={()=>setView("lessons")}>← Lektionen</button>
@@ -3301,15 +3382,19 @@ function App() {
                 ))}
               </div>
             )}
-            {more>0 ? <>
+            {isRef && refLeft===0 && <div className="end-info">✨ <b>Lektion aufgefrischt!</b> Diese Wörter schlage ich dir frühestens in einem Jahr wieder zum Auffrischen vor.{roundStats.no>0 ? " Die nicht gewussten Wörter übst du jetzt wieder ganz normal mit Wiederholungen." : ""}</div>}
+            {isRef && refLeft>0 ? <>
+                <Hap><button className="btn next" onClick={()=>selectLesson(curLesson,"refresh")}>Weiter auffrischen ({refLeft} {refLeft===1?"Wort":"Wörter"})</button></Hap>
+                <div><Hap><button className="btn show force" onClick={()=>setView("lessons")}>Zu den Lektionen</button></Hap></div>
+              </> : more>0 ? <>
                 <Hap><button className="btn next" onClick={()=>selectLesson(curLesson)}>Neue Runde</button></Hap>
                 <p className="end-next">Nächste Runde: {[eq.due.length && (Math.min(eq.due.length,SESSION_SIZE)+" zum Wiederholen"), eq.due.length<SESSION_SIZE && eq.neu.length && (Math.min(eq.neu.length, SESSION_SIZE-eq.due.length)+" neue Wörter")].filter(Boolean).join(" · ")}</p>
               </> : <>
-                <div className="end-info">
+                {!(isRef && allDone) && <div className="end-info">
                   {allDone
                     ? <>Du hast alle Wörter dieser Lektion gelernt. Wenn es schon eine Weile her ist, kannst du sie trotzdem noch einmal üben.</>
                     : <>Alle Vokabeln dieser Lektion hattest du jetzt schon. Damit sie gut im Gedächtnis bleiben, wiederholst du sie am besten erst nach einer Pause: <b>{fmtDue(eq.nextDue)}</b>.</>}
-                </div>
+                </div>}
                 {nxt
                   ? <Hap><button className="btn next" onClick={()=>selectLesson(nxt)}>Neue Runde: {shortName(nxt)}</button></Hap>
                   : <Hap><button className="btn next" onClick={()=>setView("lessons")}>Zu den Lektionen</button></Hap>}
