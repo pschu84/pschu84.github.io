@@ -498,8 +498,90 @@ function playMilestoneSound(type) {
  * todayTotal: Gesamtanzahl heute (aus Store)
  * todayCorrect: Korrekte heute (aus Store)
  */
+/* ================================================================
+   VIBRATION (Haptik)
+   Android/Chrome: navigator.vibrate mit Mustern.
+   iPhone: Safari lässt eine Seite nicht selbst vibrieren. Es klopft, wenn der Finger
+   auf einem Schalter (input type=checkbox switch) landet. Deshalb liegt über jeder
+   Tippfläche ein unsichtbarer Schalter (wie im Vokabeltrainer). Für Ereignisse wie
+   „richtig“ oder „Tagesziel“ wird zusätzlich ein versteckter Schalter angetippt;
+   das wirkt auf dem iPhone nur direkt nach einem echten Fingertipp (iOS 18+).
+   ================================================================ */
+const Haptics = (() => {
+  const KEY = 'dondue_haptic';
+  let on = (() => { try { return localStorage.getItem(KEY) !== '0'; } catch (e) { return true; } })();
+  const canVib = typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function';
+  const touch = typeof navigator !== 'undefined' && ((navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window);
+  const useSwitch = !canVib && touch;
+  const PAT = {
+    tap: [10], correct: [18, 60, 32], wrong: [45, 45, 45], combo: [12, 40, 12, 40, 24],
+    badge: [20, 50, 20, 50, 60], goal: [30, 40, 30, 40, 30, 80, 90],
+    record: [25, 35, 25, 35, 25, 35, 25, 90, 140], round: [40, 70, 40, 70, 40, 70, 60, 120, 60, 120, 220],
+  };
+  const SEL = 'button, .so-chip';
+  let lbl = null;
+  function iosTick() {
+    try {
+      if (!lbl) {
+        lbl = document.createElement('label'); lbl.setAttribute('aria-hidden', 'true');
+        lbl.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;opacity:0.01;pointer-events:none;';
+        const i = document.createElement('input'); i.type = 'checkbox'; i.setAttribute('switch', ''); i.tabIndex = -1;
+        lbl.appendChild(i); document.body.appendChild(lbl);
+      }
+      lbl.click();
+    } catch (e) { /* */ }
+  }
+  function play(name) {
+    if (!on) return;
+    const p = PAT[name] || [12];
+    if (canVib) { try { navigator.vibrate(p); } catch (e) { /* */ } return; }
+    if (useSwitch && name !== 'tap') {
+      const n = Math.min(4, Math.ceil(p.length / 2));
+      for (let k = 0; k < n; k++) setTimeout(iosTick, 90 + k * 110);
+    }
+  }
+  function wrap(el) {
+    if (el.dataset.hap || el.closest('.hapwrap') || !el.parentNode) return;
+    el.dataset.hap = '1';
+    const cs = getComputedStyle(el);
+    const w = document.createElement('span');
+    w.className = 'hapwrap' + (/^(block|flex|grid)$/.test(cs.display) ? ' block' : '');
+    if (el.style.marginLeft) { w.style.marginLeft = el.style.marginLeft; el.style.marginLeft = ''; }
+    el.parentNode.insertBefore(w, el); w.appendChild(el);
+    const i = document.createElement('input');
+    i.type = 'checkbox'; i.setAttribute('switch', ''); i.className = 'hapin'; i.tabIndex = -1; i.setAttribute('aria-hidden', 'true');
+    i.addEventListener('click', ev => { ev.stopPropagation(); if (!el.disabled) el.click(); });
+    w.appendChild(i);
+  }
+  function scan(root) {
+    if (!useSwitch) return;
+    if (root.matches && root.matches(SEL)) wrap(root);
+    if (root.querySelectorAll) root.querySelectorAll(SEL).forEach(wrap);
+  }
+  function init() {
+    document.documentElement.classList.toggle('hap-off', !on);
+    if (canVib) {
+      document.addEventListener('click', e => { if (e.isTrusted && e.target.closest && e.target.closest(SEL + ', .mode-tab, a.btn')) play('tap'); }, true);
+    }
+    if (useSwitch) {
+      scan(document.body);
+      new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) scan(n); })))
+        .observe(document.body, { childList: true, subtree: true });
+    }
+  }
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  }
+  return {
+    play, available: canVib || useSwitch,
+    isOn: () => on,
+    setOn(v) { on = v; try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (e) { /* */ } document.documentElement.classList.toggle('hap-off', !v); if (v) play('correct'); },
+  };
+})();
+
 function checkMilestones(sessionCount, todayTotal, todayCorrect) {
   // Session-Meilensteine (pro Seitenaufruf)
+  if ([5, 10, 20, 50].includes(sessionCount)) Haptics.play(sessionCount >= 20 ? 'record' : 'badge');
   if (sessionCount === 5) {
     confetti(40);
     playMilestoneSound('chime');
@@ -526,6 +608,7 @@ function checkMilestones(sessionCount, todayTotal, todayCorrect) {
     // Kleiner Verzögerung damit nicht gleichzeitig mit Session-Toast
     setTimeout(() => {
       confetti(50);
+      Haptics.play('goal');
       playMilestoneSound('fanfare');
       showToast('🎯', 'Tagesziel erreicht!', `${DAILY_GOAL} korrekte Aufgaben heute — Bravissimo!`, 'var(--terra)', 4500);
     }, 600);
@@ -1511,7 +1594,10 @@ class ModuleTrainer {
     const bar = document.createElement('div'); bar.className = 'trainer-bar';
     const am = [['mix', 'Gemischt'], ['tap', 'Ohne Tippen'], ['type', 'Nur Tippen']].map(([k, t]) =>
       `<button type="button" class="chip${k === this.answerMode ? ' active' : ''}" data-am="${k}">${t}</button>`).join('');
-    bar.innerHTML = `<div class="chip-row chip-row-small"><span class="chip-label">Aufgaben:</span>${am}</div><div class="drill-stats"></div>`;
+    const hap = Haptics.available ? `<button type="button" class="chip${Haptics.isOn() ? ' active' : ''}" data-hap="1">${Haptics.isOn() ? '📳 Vibration an' : '📴 Vibration aus'}</button>` : '';
+    bar.innerHTML = `<div class="chip-row chip-row-small"><span class="chip-label">Aufgaben:</span>${am}${hap}</div><div class="drill-stats"></div>`;
+    const hb = bar.querySelector('[data-hap]');
+    if (hb) hb.addEventListener('click', e => { e.stopPropagation(); const v = !Haptics.isOn(); Haptics.setOn(v); hb.classList.toggle('active', v); hb.textContent = v ? '📳 Vibration an' : '📴 Vibration aus'; });
     this.progressWrap.parentNode.insertBefore(bar, this.progressWrap.nextSibling);
     this.statsEl = bar.querySelector('.drill-stats');
     bar.querySelector('.chip-row').addEventListener('click', e => {
@@ -1574,9 +1660,9 @@ class ModuleTrainer {
     if (due >= 0) {
       const r = this.retry.splice(due, 1)[0];
       this.level = r.level;
-      const s = r.spec, mc = s.mode !== 'lt' && s.distractors.length >= 2;
-      if (this.answerMode === 'type' || !mc) item = this.answerMode === 'tap' ? null : { fmt: 'lt', specs: [s] };
-      else item = { fmt: R2.pick(['mc', 'rf']), specs: [s] };
+      const s = r.spec;
+      const fmts = this.answerMode === 'type' ? ['lt'] : this.answerMode === 'tap' ? ['mc', 'rf', 'bu'] : ['mc', 'lt', 'rf', 'bu'];
+      for (const f of shuffle(fmts)) { item = this._make(f, s); if (item) break; }
     }
     for (let t = 0; !item && t < 10; t++) item = this._make(this._pickFormat());
     if (!item) item = this._make(this.answerMode === 'type' ? 'lt' : 'mc') || this._make('lt');
@@ -1632,25 +1718,27 @@ class ModuleTrainer {
     for (const k of keys) { r -= w[k]; if (r <= 0) return k; }
     return keys[0];
   }
-  _make(fmt) {
+  _make(fmt, given) {
     const canMC = s => s.mode !== 'lt' && s.distractors.length >= 2;
     const full = s => s.text.replace('___', s.accept[0]);
     const sentence = s => s.so && !/→/.test(s.text);
     switch (fmt) {
       case 'mc': case 'lt': {
-        const s = this._spec(); let f = fmt;
+        const s = given || this._spec(); let f = fmt;
         if (f === 'mc' && !canMC(s)) f = this.answerMode === 'tap' ? null : 'lt';
         if (f === 'lt' && s.mode === 'mc') f = 'mc';
         return f ? { fmt: f, specs: [s] } : null;
       }
       case 'rf': {
-        const s = this._spec(x => x.distractors.length >= 1 && x.mode !== 'lt');
+        const okRF = x => x.distractors.length >= 1 && x.mode !== 'lt';
+        const s = given ? (okRF(given) ? given : null) : this._spec(okRF);
         if (!s) return null;
         const right = Math.random() < 0.5;
         return { fmt, specs: [s], right, shown: s.text.replace('___', right ? s.accept[0] : R2.pick(s.distractors)), full: full(s) };
       }
       case 'bu': {
-        const s = this._spec(x => /^[a-zàèéìòù']{2,13}$/i.test(x.accept[0]));
+        const okBU = x => /^[a-zàèéìòù']{2,13}$/i.test(x.accept[0]);
+        const s = given ? (okBU(given) ? given : null) : this._spec(okBU);
         if (!s) return null;
         const ans = s.accept[0];
         let pre = '';
@@ -1940,6 +2028,8 @@ class ModuleTrainer {
     this.answered = true;
     this.sessionTotal++;
     if (ok) { this.sessionCorrect++; this.streak++; } else this.streak = 0;
+    Haptics.play(ok ? 'correct' : 'wrong');
+    if (ok) this._streakEvents();
     const act = Store.getActivityStats();
     if (window._updateDailyGoalBanner) window._updateDailyGoalBanner(act.todayCorrect);
     checkMilestones(this.sessionTotal, act.todayTotal, act.todayCorrect);
@@ -1958,6 +2048,18 @@ class ModuleTrainer {
     }
   }
 
+  _streakEvents() {
+    const st = Store.getModule(Store.load(), this.mod.id);
+    const best = (st.drill && st.drill.bestStreak) || 0;
+    if (this.streak > best) Store.setDrillPrefs(this.mod.id, { bestStreak: this.streak });
+    if (this.streak > best && best >= 5 && !this._recordShown) {
+      this._recordShown = true;
+      setTimeout(() => { Haptics.play('record'); starBurst(20); showToast('🏅', 'Neuer Serien-Rekord!', `${this.streak} richtig am Stück in diesem Modul.`, 'var(--sun-deep)'); }, 350);
+    } else if (this.streak === 5 || this.streak === 10 || this.streak === 20) {
+      setTimeout(() => { Haptics.play('combo'); showToast('🔥', `${this.streak} richtig am Stück!`, this.streak >= 10 ? 'Fantastico!' : 'Bravo, weiter so!', 'var(--terra)'); }, 350);
+    }
+  }
+
   _finishRun() {
     const vals = Object.values(this.run.done);
     const score = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
@@ -1968,6 +2070,7 @@ class ModuleTrainer {
     this.hintEl.innerHTML = `<div class="drill-suggest"><strong>${passed ? '🏆' : '📚'} Alle Übungen dieses Moduls geschafft: ${pct} %.</strong>
       ${passed ? 'Modul bestanden!' : 'Ab 60 % gilt das Modul als bestanden.'} Es geht mit einem neuen Durchgang weiter.</div>`;
     if (passed) confetti(70);
+    Haptics.play('round');
     this._progress();
   }
 }

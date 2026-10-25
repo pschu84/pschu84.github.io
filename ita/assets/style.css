@@ -730,3 +730,9 @@ button { font-family: var(--f-body); }
 .bu-undo { background: var(--paper-2); }
 .bu-pre { color: var(--ink-soft); }
 .au-play { margin-bottom: 1rem; }
+/* ===== Vibration auf dem iPhone: unsichtbare Schalter über Tippflächen ===== */
+.hapwrap { position: relative; display: inline-flex; max-width: 100%; min-width: 0; vertical-align: top; }
+.hapwrap.block { display: flex; }
+.hapwrap.block > :first-child { flex: 1; min-width: 0; }
+.hapin { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; opacity: 0.011; z-index: 5; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.hapwrap:has(> :disabled) > .hapin, .hapwrap:has(> .used) > .hapin, html.hap-off .hapin { display: none; }

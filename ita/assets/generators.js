@@ -1298,5 +1298,232 @@ const GEN = (() => {
     },
   });
 
+  /* ================================================================
+     M36  Passato prossimo oder Imperfetto?
+     ================================================================ */
+  const T_IMPF = ['Ogni estate', 'Di solito', 'Ogni giorno', 'Prima', 'Ogni domenica'];
+  const T_PP = ['Ieri', 'Sabato scorso', 'Lunedì scorso', 'Stamattina', "L'anno scorso"];
+  const PPI_V = () => [...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc].filter(v => !v.pp && v.aux === 'a' && !['ricevere', 'conoscere'].includes(v.inf));
+  const BG = [['leggere', 'un libro'], ['dormire', ''], ['cucinare', 'la cena'], ['guardare', 'la TV'], ['studiare', ''], ['lavorare', 'in giardino']];
+  const EVT = [['arrivato', 'Marco', 'ms'], ['arrivata', 'Anna', 'fs'], ['entrato', 'il gatto', 'ms'], ['suonato', 'il telefono', 'ms'], ['tornata', 'mia sorella', 'fs']];
+  register('m36', {
+    levels: ['Grundregel: Signalwörter (sempre, ieri …)', '+ Hintergrund und Ereignis (mentre …)', '+ begrenzte Dauer, sapevo / ho saputo'],
+    ka: true,
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.4) {
+        const items = [
+          ['Non ___ che eri in città. (wusste)', 'sapevo', ['ho saputo', 'so', 'saprò'], 'sapevo = ich wusste (Zustand).'],
+          ['Ieri ___ che Marco si sposa. (habe erfahren)', 'ho saputo', ['sapevo', 'so', 'sapevo già'], 'ho saputo = ich habe erfahren (Ereignis).'],
+          ['___ Anna da molti anni. (kannte)', 'Conoscevo', ['Ho conosciuto', 'Conosco', 'Conoscerò'], 'conoscevo = ich kannte.'],
+          ['Ieri sera ___ la sorella di Luca. (habe kennengelernt)', 'ho conosciuto', ['conoscevo', 'conosco', 'conoscevamo'], 'ho conosciuto = ich habe kennengelernt.'],
+          ['___ a Roma per dieci anni, poi mi sono trasferito.', 'Ho vissuto', ['Vivevo', 'Vivo', 'Vivrò'], 'Begrenzte, abgeschlossene Dauer → PP.'],
+          ['Ieri ___ per tre ore. (lavorare)', 'ho lavorato', ['lavoravo', 'lavoro', 'lavorerò'], 'per tre ore = begrenzte Dauer → PP.'],
+          ['Domenica ___ tutto il giorno. (dormire)', 'ho dormito', ['dormivo', 'dormo', 'dormirò'], 'Ein bestimmter Tag, abgeschlossen → PP.'],
+        ];
+        const [text, acc, dis, ex] = R.pick(items);
+        return spec({ key: 'pi3-' + text, prompt: 'Imperfetto oder Passato prossimo?', text, accept: acc, distractors: dis, explain: ex });
+      }
+      if (level >= 1 && r < 0.75) {
+        const s = R.pick(SUBJ.filter(x => x[1] < 3)), p = s[1];
+        const [bv, bc] = R.pick(BG), v = VERBS.are.concat(VERBS.ere, VERBS.ire).find(x => x.inf === bv) || { inf: bv, cls: bv.slice(-3) };
+        const [ptc, who] = R.pick(EVT.filter(e => e[1] !== s[0]));
+        const impf = imperfetto(v, p);
+        if (R.chance(0.5)) {
+          return spec({ key: 'pi2a-' + bv + p, cue: bv, prompt: `Hintergrund: ${bv}`, text: `Mentre ${s[0]} ___ ${bc ? bc + ' ' : ''}è ${ptc} ${who}.`.replace(' è', ', è'),
+            so: SO(null, `Mentre ${s[0]}`, `${bc ? bc + ', ' : ', '}è ${ptc} ${who}`.replace(/^, /, '')), accept: impf,
+            distractors: [AVERE[p] + ' ' + part(v), presente(v, p), futuro(v, p)], explain: 'mentre + Imperfetto: die Handlung lief gerade (Hintergrund).' });
+        }
+        const evInf = ptc.startsWith('arriv') ? 'arrivare' : ptc.startsWith('entr') ? 'entrare' : ptc.startsWith('suon') ? 'suonare' : 'tornare';
+        return spec({ key: 'pi2b-' + bv + who, prompt: `Ereignis: ${evInf}`, text: `Mentre ${s[0]} ${impf}${bc ? ' ' + bc : ''}, ___ ${who}.`, accept: 'è ' + ptc,
+          distractors: [ptc.slice(0, -3) + 'ava', 'ha ' + ptc.slice(0, -1) + 'o', 'è ' + ptc.slice(0, -1) + (ptc.endsWith('o') ? 'a' : 'o')],
+          explain: `Ein Ereignis unterbricht den Hintergrund → Passato prossimo (mit essere: è ${ptc}).` });
+      }
+      const v = R.pick(PPI_V()), s = R.pick(SUBJ), p = s[1], impfT = R.chance(0.5);
+      const t = R.pick(impfT ? T_IMPF : T_PP), c = R.pick(v.c);
+      const impf = imperfetto(v, p), pp = AVERE[p] + ' ' + part(v);
+      return spec({ key: 'pi-' + v.inf + p + t, cue: v.inf, prompt: `${v.inf} (${v.de}): Imperfetto oder Passato prossimo?`, text: `${t} ${s[0]} ___ ${c}.`,
+        so: SO(t, s[0], c), accept: impfT ? impf : pp, distractors: [impfT ? pp : impf, presente(v, p), futuro(v, p)],
+        explain: impfT ? `„${t}“ zeigt eine Gewohnheit → Imperfetto.` : `„${t}“ zeigt ein einmaliges Ereignis → Passato prossimo.` });
+    },
+  });
+
+  /* ================================================================
+     M37  Vergleiche
+     ================================================================ */
+  const CMP_PAIRS = [
+    ['il treno', "l'autobus", 'veloce', 'schnell'], ['la macchina', 'la bici', 'veloce', 'schnell'], ['Roma', 'Firenze', 'grande', 'groß'],
+    ['il caffè', 'il tè', 'forte', 'stark'], ['la casa', "l'appartamento", 'grande', 'groß'], ['il gatto', 'il cane', 'piccolo', 'klein'],
+    ['Marco', 'Luca', 'alto', 'groß'], ['Anna', 'Sara', 'simpatico', 'sympathisch'], ['questo libro', 'quel film', 'interessante', 'interessant'],
+    ["l'aereo", 'il treno', 'caro', 'teuer'], ['la pizza', 'la pasta', 'buono', 'gut'], ['mio padre', 'mia madre', 'vecchio', 'alt'],
+  ];
+  const FEM_N = ['la macchina', 'la casa', 'Anna', 'la pizza', 'Roma', 'mia madre', 'Firenze', 'la bici', 'la pasta'];
+  const adjFor = (a, subj) => {
+    const f = FEM_N.includes(subj);
+    if (a.endsWith('e')) return a;
+    if (a === 'simpatico') return f ? 'simpatica' : 'simpatico';
+    return a.slice(0, -1) + (f ? 'a' : 'o');
+  };
+  const diArt = obj => {
+    const m = obj.match(/^(il|la|lo|l'|i|gli|le) ?(.*)$/);
+    if (!m) return 'di ' + obj;
+    const f = PA.di[ART_ALL.indexOf(m[1])];
+    return withArt(f, m[2]);
+  };
+  register('m37', {
+    levels: ['Grundregel: più / meno … di', '+ come, il più …, -issimo', '+ di oder che, migliore / meglio'],
+    ka: true,
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.4) {
+        const items = [
+          ['Questa pizza è ___ di quella. (besser)', 'migliore', ['meglio', 'più bene', 'più migliore'], 'Adjektiv besser = migliore.'],
+          ['Marco canta ___ di me. (besser)', 'meglio', ['migliore', 'più bene', 'buono'], 'Adverb besser = meglio.'],
+          ['Oggi sto ___ di ieri. (schlechter)', 'peggio', ['peggiore', 'più male', 'cattivo'], 'Adverb schlechter = peggio.'],
+          ['È più bello ___ utile.', 'che', ['di', 'come', 'del'], 'Zwei Adjektive vergleichen → che.'],
+          ['Mi piace più leggere ___ scrivere.', 'che', ['di', 'come', 'quanto'], 'Zwei Verben vergleichen → che.'],
+          ['Sono più alto ___ mio fratello.', 'di', ['che', 'come', 'quanto'], 'Vor Nomen → di.'],
+          ['Mia sorella ___ ha 30 anni. (ältere)', 'maggiore', ['migliore', 'più vecchia', 'minore'], 'ältere Schwester = sorella maggiore.'],
+          ['È il ___ ristorante della città. (beste)', 'migliore', ['meglio', 'più buono di', 'ottimo di'], 'der/die beste = il/la migliore.'],
+        ];
+        const [text, acc, dis, ex] = R.pick(items);
+        return spec({ key: 'cmp3-' + text, prompt: 'Welche Form passt?', text, accept: acc, distractors: dis, explain: ex });
+      }
+      const [a, b, adj, de] = R.pick(CMP_PAIRS), af = adjFor(adj, a);
+      if (level >= 1 && r < 0.75) {
+        const k = Math.random();
+        if (k < 0.35) {
+          const fe = FEM_N.includes(a) ? 'a' : 'o';
+          const sup = /i[oa]$/.test(af) ? af.slice(0, -2) + 'issim' + fe : af.slice(0, -1) + 'issim' + fe;
+          return spec({ key: 'cmpS-' + a + adj, prompt: `Sehr ${de}: bilde -issimo`, text: `${cap(a)} è ___.`, so: SO(null, cap(a) + ' è', ''), accept: sup,
+            distractors: [sup.replace(/issim./, 'issimi'), af + 'issimo', sup.slice(0, -1) + 'e', sup.replace(/a$/, 'o').replace(/o$/, FEM_N.includes(a) ? 'o' : 'a')].filter(x => x !== sup),
+            explain: `${adj} → ${sup}: Endung -issimo passt sich an.` });
+        }
+        if (k < 0.65) {
+          return spec({ key: 'cmpC-' + a + b, prompt: `So ${de} wie …`, text: `${cap(a)} è ${af} ___ ${b}.`, so: SO(null, `${cap(a)} è ${af}`, b), accept: ['come', 'quanto'],
+            distractors: ['di', 'che', 'più', diArt(b).split(' ')[0]], explain: 'Gleichheit: (così) … come / (tanto) … quanto.' });
+        }
+        const [sa, sx, sg, sd] = R.pick([['Marco', 'alto', 'della classe', 'größte'], ['Roma', 'grande', "d'Italia", 'größte'], ['Anna', 'simpatica', 'del gruppo', 'sympathischste'],
+          ['questo libro', 'interessante', 'della biblioteca', 'interessanteste'], ['il treno', 'veloce', 'di tutti', 'schnellste'], ['questa pizza', 'buona', 'della città', 'beste'],
+          ['mio nonno', 'vecchio', 'della famiglia', 'älteste'], ["l'aereo", 'caro', 'di tutti', 'teuerste']]);
+        const sart = /^(Anna|questa)/.test(sa) ? 'la' : 'il';
+        return spec({ key: 'cmpR-' + sa, prompt: `Superlativ: der/die/das ${sd}`, text: `${cap(sa)} è ${sart} ___ ${sx} ${sg}.`, accept: 'più',
+          distractors: ['molto', 'tanto', 'meno di', 'come'], explain: `Superlativ: il/la più + Adjektiv + di (${sg}).` });
+      }
+      const plus = R.chance(0.6);
+      if (R.chance(0.45)) {
+        const da = diArt(b), dm = da.match(/^(\S+?')(.+)$/) || da.match(/^(\S+) (.+)$/), apo = dm[1].endsWith("'");
+        return spec({ key: 'cmpD-' + a + b, prompt: `„als“ + ${b}`, text: `${cap(a)} è ${plus ? 'più' : 'meno'} ${af} ___${apo ? '' : ' '}${dm[2]}.`,
+          accept: dm[1], distractors: uniq(['di', 'che', 'come', 'del', 'della', "dell'", 'dal'].filter(x => x !== dm[1])),
+          explain: `di + Artikel: ${da}.` });
+      }
+      return spec({ key: 'cmpP-' + a + b + plus, prompt: `${plus ? 'mehr' : 'weniger'} ${de} als …`, text: `${cap(a)} è ___ ${af} ${diArt(b)}.`, so: SO(null, cap(a) + ' è', `${af} ${diArt(b)}`),
+        accept: plus ? 'più' : 'meno', distractors: plus ? ['meno', 'molto', 'come'] : ['più', 'poco', 'come'], explain: plus ? 'mehr … als = più … di.' : 'weniger … als = meno … di.' });
+    },
+  });
+
+  /* ================================================================
+     M38  Betonte Pronomen
+     ================================================================ */
+  const TON = [['me', 'mir', 'mich', 'ich', ['io', 'mi', 'mio']], ['te', 'dir', 'dich', 'du', ['tu', 'ti', 'tuo']], ['lui', 'ihm', 'ihn', 'er', ['gli', 'lo', 'suo']],
+    ['lei', 'ihr', 'sie', 'sie', ['le', 'la', 'sua']], ['noi', 'uns', 'uns', 'wir', ['ci', 'nostro', 'ce']], ['voi', 'euch', 'euch', 'ihr', ['vi', 'vostro', 've']],
+    ['loro', 'ihnen', 'sie (Pl.)', 'sie (Pl.)', ['gli', 'li', 'essi']]];
+  const TPL = [
+    ['Vieni al cinema con ___?', 1, 'mit'], ['Questo regalo è per ___.', 2, 'für'], ['Stasera ceniamo da ___.', 1, 'bei'],
+    ['Non posso vivere senza di ___.', 2, 'ohne'], ['Parliamo spesso di ___.', 2, 'über'], ['Luca è più alto di ___.', 3, 'als'], ['Abito vicino a ___.', 1, 'nahe bei'],
+  ];
+  register('m38', {
+    levels: ['Grundregel: con me, per te, di lui', '+ noi, voi, loro, Vergleich, a me piace', '+ Hervorhebung und feste Ausdrücke'],
+    ka: true,
+    table(level) {
+      const t = R.pick(TPL.slice(0, 5));
+      return TAB(`Ergänze: ${t[0].replace('___', '…')}`, TON.slice(0, level ? 7 : 4).map(x => [x[t[1]], x[0]]));
+    },
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.4) {
+        const items = [
+          ['Cerco ___, non tua sorella! (dich)', 'te', ['ti', 'tu', 'tuo'], 'Hervorhebung: betontes Pronomen nach dem Verb.'],
+          ['Invito ___, non lui. (sie, eine Frau)', 'lei', ['la', 'le', 'sua'], 'Hervorhebung: invito lei.'],
+          ['___ me, hai ragione. (meiner Meinung nach)', 'Secondo', ['Per', 'Di', 'Con'], 'secondo me = meiner Meinung nach.'],
+          ['Adesso tocca ___ te!', 'a', ['di', 'da', 'per'], 'Tocca a te = Du bist dran.'],
+          ['Questo resta tra ___. (unter uns)', 'noi', ['ci', 'nostro', 'ce'], 'tra noi = unter uns.'],
+          ['Signora, dopo di ___! (Ihnen, höflich)', 'Lei', ['te', 'voi', 'Loro'], 'Höflichkeitsform: Lei.'],
+        ];
+        const [text, acc, dis, ex] = R.pick(items);
+        return spec({ key: 'ton3-' + text, prompt: 'Ergänze:', text, accept: acc, distractors: dis, explain: ex });
+      }
+      const pool = level === 0 ? TON.slice(0, 4) : TON;
+      const p = R.pick(pool);
+      if (level >= 1 && R.chance(0.3)) {
+        return spec({ key: 'tonA-' + p[0], prompt: `Betonung: „${cap(p[1])} gefällt das Meer.“`, text: `A ___ piace il mare.`, so: SO(null, 'A', 'piace il mare'), accept: p[0],
+          distractors: p[4], explain: `Betont mit a + Pronomen: a ${p[0]}.` });
+      }
+      const t = R.pick(level === 0 ? TPL.slice(0, 5) : TPL);
+      const [pre, post] = t[0].split('___');
+      return spec({ key: 'ton-' + t[0] + p[0], prompt: `Setze das Pronomen für „${p[t[1]]}“ ein:`, text: t[0], so: SO(null, pre.trim(), post.trim()), accept: p[0],
+        distractors: p[4], explain: `Nach ${t[0].split(' ').slice(-2, -1)[0]} steht das betonte Pronomen: ${p[0]}.` });
+    },
+  });
+
+  /* ================================================================
+     M39  Indefinita
+     ================================================================ */
+  const MASS = [['tempo', 'm', 's', 'Zeit'], ['acqua', 'f', 's', 'Wasser'], ['pazienza', 'f', 's', 'Geduld'], ['pane', 'm', 's', 'Brot'], ['amici', 'm', 'p', 'Freunde'],
+    ['persone', 'f', 'p', 'Leute'], ['idee', 'f', 'p', 'Ideen'], ['soldi', 'm', 'p', 'Geld'], ['libri', 'm', 'p', 'Bücher'], ['ore', 'f', 'p', 'Stunden']];
+  const agree4 = (base, g, n) => base.slice(0, -1) + (n === 's' ? (g === 'f' ? 'a' : 'o') : (base === 'poco' ? 'h' : '') + (g === 'f' ? 'e' : 'i'));
+  const NESS = n => n.g === 'f' ? (n.a === 'v' ? "nessun'" : 'nessuna') : n.a === 's' ? 'nessuno' : 'nessun';
+  register('m39', {
+    levels: ['Grundregel: qualche, ogni, qualcosa, qualcuno', '+ tutto, molto, poco, alcuni', '+ nessun/nessuno, molto als Adverb'],
+    ka: true,
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.45) {
+        if (R.chance(0.6)) {
+          const n = R.pick(N.filter(x => !['amico', 'amica', 'zio'].includes(x.it))), f = NESS(n);
+          return spec({ key: 'ness-' + n.it, prompt: `„kein/keine …“ (${n.de})`, text: f.endsWith("'") ? `Non c'è ___${n.it}.` : `Non c'è ___ ${n.it}.`, accept: f,
+            distractors: ['nessun', 'nessuno', 'nessuna', "nessun'"], explain: `nessuno vor Nomen wie un/uno/una/un': ${f}${f.endsWith("'") ? '' : ' '}${n.it}.` });
+        }
+        const adjs = [['bella', 'la casa'], ['stanchi', 'i ragazzi'], ['buona', 'la pizza'], ['difficili', 'le domande']];
+        const [aj, sb] = R.pick(adjs);
+        return spec({ key: 'moltoA-' + aj, prompt: 'molto vor einem Adjektiv:', text: `${cap(sb)} ${sb.startsWith('la') ? 'è' : 'sono'} ___ ${aj}.`, accept: 'molto',
+          distractors: ['molta', 'molti', 'molte'], explain: 'Vor Adjektiven ist molto ein Adverb und bleibt unverändert.' });
+      }
+      if (level >= 1 && r < 0.75) {
+        const k = Math.random();
+        if (k < 0.45) {
+          const n = R.pick(N), pl = R.chance(0.5), art = artDet(n, pl), idx = (pl ? 2 : 0) + (n.g === 'f' ? 1 : 0), f = ['tutto', 'tutta', 'tutti', 'tutte'][idx];
+          return spec({ key: 'tutto-' + n.it + pl, prompt: `„ganz / alle“ (${n.de}${pl ? ', Plural' : ''})`, text: `Ho visto ___ ${withArt(art, pl ? n.pl : n.it)}.`, so: SO(null, 'Ho visto', withArt(art, pl ? n.pl : n.it)),
+            accept: f, distractors: ['tutto', 'tutta', 'tutti', 'tutte', 'ogni'], explain: `tutto passt sich an: ${f} ${withArt(art, pl ? n.pl : n.it)}.` });
+        }
+        if (k < 0.8) {
+          const [w, g, nu, de] = R.pick(MASS), much = R.chance(0.6), f = agree4(much ? 'molto' : 'poco', g, nu);
+          return spec({ key: 'molto-' + w + much, prompt: `${much ? 'viel / viele' : 'wenig / wenige'} (${de})`, text: `Ho ___ ${w}.`, so: SO(null, 'Ho', w), accept: f,
+            distractors: uniq(['o', 'a', 'i', 'e'].map(e => (much ? 'molt' : 'poc') + (e === 'i' && !much ? 'hi' : e === 'e' && !much ? 'he' : e))).filter(x => x !== f),
+            explain: `${w} ist ${g === 'f' ? 'feminin' : 'maskulin'} ${nu === 'p' ? 'Plural' : 'Singular'} → ${f}.` });
+        }
+        const n = R.pick(N), pl = R.chance(0.5), f = pl ? (n.g === 'f' ? 'alcune' : 'alcuni') : 'qualche';
+        return spec({ key: 'alc-' + n.it + pl, prompt: `„ein paar“ (${n.de})`, text: `Ho visto ___ ${pl ? n.pl : n.it}.`, so: SO(null, 'Ho visto', pl ? n.pl : n.it), accept: f,
+          distractors: ['qualche', 'alcuni', 'alcune', 'ogni'], explain: pl ? `Plural → alcuni/alcune (${n.pl} ist ${n.g === 'f' ? 'feminin' : 'maskulin'}).` : 'Singular → qualche.' });
+      }
+      if (R.chance(0.45)) {
+        const items = [['Vuoi bere ___? (etwas)', 'qualcosa'], ['C\'è ___ alla porta? (jemand)', 'qualcuno'], ['Hai detto ___? (etwas)', 'qualcosa'], ['Ha telefonato ___? (jemand)', 'qualcuno'],
+          ['Hai bisogno di ___? (etwas)', 'qualcosa'], ['Conosci ___ qui? (jemand)', 'qualcuno']];
+        const [text, acc] = R.pick(items);
+        return spec({ key: 'qq-' + text, prompt: 'qualcosa oder qualcuno?', text, accept: acc, distractors: ['qualcosa', 'qualcuno', 'qualche', 'ogni'], explain: 'qualcosa = etwas, qualcuno = jemand.' });
+      }
+      if (R.chance(0.6)) {
+        const n = R.pick(['giorno', 'sera', 'mattina', 'settimana', 'anno', 'mese', 'domenica', 'estate']);
+        const fem = ['sera', 'mattina', 'settimana', 'domenica', 'estate'].includes(n);
+        return spec({ key: 'ogni-' + n, prompt: '„jeden / jede …“', text: `Vado in palestra ___ ${n}.`, so: SO(null, 'Vado in palestra', n), accept: 'ogni',
+          distractors: ['qualche', fem ? 'tutte' : 'tutti', 'alcuni'], explain: 'ogni + Singular = jeden/jede (unverändert).' });
+      }
+      const [qt, qd] = R.pick([['Vado al mare ___ volta.', 'manchmal'], ['Torno tra ___ giorno.', 'in ein paar Tagen'], ['Ho ___ problema con il computer.', 'ein paar Probleme'],
+        ['Ci vediamo tra ___ settimana.', 'in ein paar Wochen'], ['Ho letto ___ libro italiano.', 'ein paar Bücher']]);
+      return spec({ key: 'qual-' + qt, prompt: `„${qd}“`, text: qt, accept: 'qualche', distractors: ['ogni', 'alcuni', 'qualcosa'],
+        explain: 'qualche + Singular = ein paar / einige (unverändert).' });
+    },
+  });
+
   return { get, register, _int: { presente, futuro, imperfetto, gerundio, part, artDet, artInd, VERBS, N, PA } };
 })();
