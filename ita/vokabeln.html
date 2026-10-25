@@ -357,6 +357,12 @@ button{font:inherit;color:inherit}
   .note{display:none}
 }
 </style>
+<style>
+/* Handy: Lektionskacheln passen in die Breite */
+.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lesson,.lesson-name{min-width:0;overflow-wrap:anywhere}
+.hapwrap{max-width:100%;min-width:0}
+</style>
 </head>
 <body>
 <div id="root"></div>

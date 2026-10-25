@@ -221,6 +221,13 @@ body.lernmodus .voc.revealed .de{
   .brand span.brand-txt{display:none;}
 }
 </style>
+<style>
+/* Handy: nichts ragt über den Rand */
+.vsec-head{flex-wrap:wrap;min-width:0}
+.week{grid-template-columns:repeat(7,minmax(0,1fr))}
+.day{min-width:0;overflow-wrap:anywhere}
+@media (max-width:480px){.week{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
 </head>
 <body>
 

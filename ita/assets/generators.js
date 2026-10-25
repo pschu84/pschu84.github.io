@@ -216,6 +216,12 @@ const GEN = (() => {
     return o;
   }
 
+  // Satzbau-Daten für Sortier-Aufgaben: lead = fester Satzanfang, words = Reihenfolge, '@' = Lösung
+  const SO = (lead, pre, post) => ({ lead: lead || null,
+    words: [...(pre ? pre.split(' ') : []), '@', ...(post ? post.replace(/[.!?]$/, '').split(' ') : [])].filter(Boolean) });
+  // Formtabelle
+  const TAB = (prompt, rows) => ({ prompt, rows: rows.map(([label, acc]) => ({ label, accept: Array.isArray(acc) ? acc : [acc] })) });
+
   function register(id, def) { reg[id] = def; }
   function get(id) { return reg[id] || null; }
 
@@ -227,16 +233,20 @@ const GEN = (() => {
     const form = presente(v, p);
     const wrong = others(i => presente(v, i), p);
     if (v.cls === 'isc') wrong.push(stem(v) + ['o', 'i', 'e', 'iamo', 'ite', 'ono'][p]);
+    const c = R.pick(v.c);
     return spec({
       key: 'pres-' + v.inf + p,
       prompt: `Setze ${v.inf} (${v.de}) ins Präsens:`,
-      text: `${cap(s[0])} ___ ${R.pick(v.c)}.`,
+      text: `${cap(s[0])} ___ ${c}.`, so: SO(null, s[0], c),
       accept: form, distractors: wrong,
       explain: `${v.inf} → ${PRON[p]}: ${form}` + (v.cls === 'isc' ? ' (Verb mit -isc-)' : ''),
     });
   }
+  const presPool = level => level === 0 ? ALL_REG : [...VERBS.isc, ...VERBS.spell];
+  const conjTable = (v, fn, title) => TAB(`${title}: ${v.inf} (${v.de})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], fn(v, p)]));
   register('m20', {
     levels: ['Grundregel: -are, -ere, -ire', '+ -isc- und -care/-gare/-iare'],
+    table(level) { return conjTable(R.pick(presPool(level)), presente, 'Konjugiere im Präsens'); },
     make(level) {
       if (level === 0) return presTask(ALL_REG);
       return presTask(R.chance(0.5) ? VERBS.isc : VERBS.spell);
@@ -276,6 +286,19 @@ const GEN = (() => {
   }
   register('m01', {
     levels: ['Grundregel: avere + -ato/-uto/-ito', '+ Verben mit essere', '+ unregelmäßige Partizipien'],
+    table(level) {
+      if (level >= 1 && R.chance(0.5)) {
+        const e = R.pick(level >= 2 ? [...PP_ESS, ...PP_ESS_IRR] : PP_ESS);
+        return TAB(`Passato prossimo: ${e[0]} (${e[1]}). Bei io/tu/lui passt -o oder -a, im Plural -i oder -e.`,
+          [0, 1, 2, 3, 4, 5].map(p => [PRON[p], p < 3 ? [ESSERE[p] + ' ' + e[2] + 'o', ESSERE[p] + ' ' + e[2] + 'a'] : [ESSERE[p] + ' ' + e[2] + 'i', ESSERE[p] + ' ' + e[2] + 'e']]));
+      }
+      if (level >= 2 && R.chance(0.5)) {
+        const e = R.pick(PP_IRR_AVERE);
+        return TAB(`Passato prossimo: ${e[0]} (${e[1]})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], AVERE[p] + ' ' + e[2]]));
+      }
+      const v = R.pick([...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc].filter(x => !x.pp && x.aux === 'a'));
+      return TAB(`Passato prossimo: ${v.inf} (${v.de})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], AVERE[p] + ' ' + part(v)]));
+    },
     make(level) {
       const t = R.pick(TIME_PAST);
       const r = Math.random();
@@ -284,14 +307,14 @@ const GEN = (() => {
           const e = R.pick(PP_ESS_IRR), s = R.pick(SUBJ_G), p = s[1];
           const form = ESSERE[p] + ' ' + e[2] + GN_END[s[2]];
           return spec({ key: 'ppei-' + e[0] + s[0], prompt: `Passato prossimo von ${e[0]} (${e[1]}):`,
-            text: `${t} ${s[0]} ___ ${R.pick(e[3])}.`, accept: form,
+            ...(() => { const c = R.pick(e[3]); return { text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0].replace(/ \(.*\)/, ''), c) }; })(), accept: form,
             distractors: [AVERE[p] + ' ' + e[2] + 'o', ESSERE[p] + ' ' + e[0].slice(0, -3) + (e[0].endsWith('ere') ? 'ut' : 'at') + GN_END[s[2]], ESSERE[p] + ' ' + e[2] + (GN_END[s[2]] === 'o' ? 'a' : 'o')],
             explain: `${e[0]} bildet das Passato mit essere, Partizip unregelmäßig: ${e[2]}o. Angleichung an das Subjekt: ${form}.` });
         }
         const e = R.pick(PP_IRR_AVERE), s = R.pick(SUBJ), p = s[1];
         const { form, wrong } = ppAvere(e[2], p, null, e[0]);
         return spec({ key: 'ppi-' + e[0] + p, prompt: `Passato prossimo von ${e[0]} (${e[1]}):`,
-          text: `${t} ${s[0]} ___ ${R.pick(e[3])}.`, accept: form, distractors: wrong,
+          ...(() => { const c = R.pick(e[3]); return { text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0].replace(/ \(.*\)/, ''), c) }; })(), accept: form, distractors: wrong,
           explain: `${e[0]} hat ein unregelmäßiges Partizip: ${e[2]}. → ${form}` });
       }
       if (level >= 1 && r < 0.75) {
@@ -300,7 +323,7 @@ const GEN = (() => {
         const form = ESSERE[p] + ' ' + e[2] + end;
         const wrongEnd = ['o', 'a', 'i', 'e'].filter(x => x !== end);
         return spec({ key: 'ppe-' + e[0] + s[0], prompt: `Passato prossimo von ${e[0]} (${e[1]}), achte auf die Endung:`,
-          text: `${t} ${s[0]} ___ ${R.pick(e[3])}.`, accept: form,
+          ...(() => { const c = R.pick(e[3]); return { text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0].replace(/ \(.*\)/, ''), c) }; })(), accept: form,
           distractors: [AVERE[p] + ' ' + e[2] + 'o', ...wrongEnd.map(x => ESSERE[p] + ' ' + e[2] + x)],
           explain: `${e[0]} → Hilfsverb essere. Das Partizip passt sich dem Subjekt an (${s[2] === 'ms' ? 'm. Sg. -o' : s[2] === 'fs' ? 'f. Sg. -a' : s[2] === 'mp' ? 'm. Pl. -i' : 'f. Pl. -e'}): ${form}.` });
       }
@@ -308,7 +331,7 @@ const GEN = (() => {
       const v = R.pick(pool), s = R.pick(SUBJ), p = s[1];
       const { form, wrong } = ppAvere(v, p);
       return spec({ key: 'ppa-' + v.inf + p, prompt: `Passato prossimo von ${v.inf} (${v.de}):`,
-        text: `${t} ${s[0]} ___ ${R.pick(v.c)}.`, accept: form, distractors: wrong,
+        ...(() => { const c = R.pick(v.c); return { text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0].replace(/ \(.*\)/, ''), c) }; })(), accept: form, distractors: wrong,
         explain: `avere (${PRON[p]}: ${AVERE[p]}) + Partizip: -are → -ato, -ere → -uto, -ire → -ito. ${v.inf} → ${part(v)}.` });
     },
   });
@@ -334,12 +357,18 @@ const GEN = (() => {
     if (v.cls === 'are' || v.cls === 'spell') wrong.push(v.inf.slice(0, -1) + FUT_E[p].replace(/^[eò]/, m => m)); // parlarò-Fehler
     if (v.cls === 'irr') wrong.push(v.inf.slice(0, -1) + FUT_E[p]);
     if (v.cls === 'spell') wrong.push(stem(v) + 'er' + FUT_E[p]);
+    const t = R.pick(TIME_FUT), c = R.pick(v.c);
     return spec({ key: 'fut-' + v.inf + p, prompt: `Futuro von ${v.inf} (${v.de}):`,
-      text: `${R.pick(TIME_FUT)} ${s[0]} ___ ${R.pick(v.c)}.`, accept: form, distractors: wrong,
+      text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0], c), accept: form, distractors: wrong,
       explain: `${v.inf} → Stamm ${st}- + Endung ${FUT_E[p]} = ${form}.` + (note ? ' ' + note(v) : '') });
   }
   register('m02', {
     levels: ['Grundregel: -erò / -irò', '+ -care/-gare/-ciare/-giare', '+ unregelmäßige Stämme'],
+    table(level) {
+      const pool = level >= 2 && R.chance(0.5) ? FUT_IRR_V : level >= 1 && R.chance(0.5) ? VERBS.spell.filter(v => v.inf !== 'studiare')
+        : [...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc].filter(v => !FUT_IRR[v.inf]);
+      return conjTable(R.pick(pool), futuro, 'Konjugiere im Futuro');
+    },
     make(level) {
       if (level >= 2 && R.chance(0.5)) return futTask(FUT_IRR_V, () => 'Unregelmäßiger Stamm.');
       if (level >= 1 && R.chance(0.5)) return futTask(VERBS.spell.filter(v => v.inf !== 'studiare'),
@@ -359,6 +388,7 @@ const GEN = (() => {
   ].map(r => ({ inf: r[0], de: r[1], c: r[2], cls: 'irr' }));
   register('m22', {
     levels: ['Grundregel: -avo / -evo / -ivo', '+ essere, fare, bere, dire'],
+    table(level) { return conjTable(R.pick(level >= 1 && R.chance(0.5) ? IMPF_IRR_V : [...ALL_REG, ...VERBS.isc, ...VERBS.spell]), imperfetto, 'Konjugiere im Imperfetto'); },
     make(level) {
       const irr = level >= 1 && R.chance(0.5);
       const pool = irr ? IMPF_IRR_V : [...ALL_REG, ...VERBS.isc, ...VERBS.spell];
@@ -369,8 +399,9 @@ const GEN = (() => {
       if (v.inf === 'fare') wrong.push('fa' + ['vo', 'vi', 'va', 'vamo', 'vate', 'vano'][p]);
       if (v.inf === 'bere') wrong.push('be' + ['vo', 'vi', 'va', 'vamo', 'vate', 'vano'][p]);
       if (v.inf === 'dire') wrong.push('di' + ['vo', 'vi', 'va', 'vamo', 'vate', 'vano'][p]);
+      const t = R.pick(TIME_IMPF), c = R.pick(v.c);
       return spec({ key: 'impf-' + v.inf + p, prompt: `Imperfetto von ${v.inf} (${v.de}):`,
-        text: `${R.pick(TIME_IMPF)} ${s[0]} ___ ${R.pick(v.c)}.`, accept: form, distractors: wrong,
+        text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0], c), accept: form, distractors: wrong,
         explain: irr ? `${v.inf} ist im Imperfetto unregelmäßig: ${PRON[p]} ${form}.` :
           `Infinitiv ohne -re + -vo, -vi, -va, -vamo, -vate, -vano: ${v.inf.slice(0, -2)} + ${form.slice(v.inf.length - 2)} = ${form}.` });
     },
@@ -381,6 +412,10 @@ const GEN = (() => {
      ================================================================ */
   register('m13', {
     levels: ['Grundregel: sto + -ando/-endo', '+ facendo, bevendo, dicendo'],
+    table(level) {
+      const v = R.pick(level >= 1 && R.chance(0.5) ? IMPF_IRR_V.filter(x => x.inf !== 'essere') : [...ALL_REG.filter(x => x.aux === 'a'), ...VERBS.isc]);
+      return conjTable(v, (vv, p) => STARE[p] + ' ' + gerundio(vv), 'Verlaufsform (gerade)');
+    },
     make(level) {
       const irr = level >= 1 && R.chance(0.45);
       const pool = irr ? IMPF_IRR_V.filter(v => v.inf !== 'essere') : [...ALL_REG.filter(v => v.aux === 'a'), ...VERBS.isc, ...VERBS.spell];
@@ -389,8 +424,9 @@ const GEN = (() => {
       const form = STARE[p] + ' ' + g;
       const wrongG = irr ? { fare: 'farendo', bere: 'berendo', dire: 'direndo' }[v.inf] : (conj(v) === 'are' ? stem(v) + 'endo' : stem(v) + 'ando');
       const wrong = [STARE[p] + ' ' + wrongG, STARE[(p + 2) % 6] + ' ' + g, ESSERE[p] + ' ' + g];
+      const c = R.pick(v.c);
       return spec({ key: 'ger-' + v.inf + p, prompt: `Was passiert gerade? stare + Gerundio von ${v.inf} (${v.de}):`,
-        text: `In questo momento ${s[0]} ___ ${R.pick(v.c)}.`, accept: form, distractors: wrong,
+        text: `In questo momento ${s[0]} ___ ${c}.`, so: SO('In questo momento', s[0], c), accept: form, distractors: wrong,
         explain: `stare (${PRON[p]}: ${STARE[p]}) + Gerundio ${g}` + (irr ? ' (unregelmäßig, vom alten Stamm).' : '. -are → -ando, -ere/-ire → -endo.') });
     },
   });
@@ -404,6 +440,8 @@ const GEN = (() => {
   const CE_PL = ['molti turisti', 'due bar', 'tante chiese', 'molti negozi', 'pochi parcheggi'];
   register('m21', {
     levels: ['Grundregel: Formen von essere und avere', '+ essere oder avere? (ho fame …)', "+ c'è / ci sono"],
+    ka: true,
+    table() { const e = R.chance(0.5); return TAB(`Konjugiere ${e ? 'essere (sein)' : 'avere (haben)'}`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], (e ? ESSERE : AVERE)[p]])); },
     make(level) {
       const r = Math.random();
       if (level >= 2 && r < 0.33) {
@@ -416,7 +454,7 @@ const GEN = (() => {
       if (level >= 1 && r < 0.7) {
         const av = R.chance(0.5), compl = R.pick(av ? AV_EXPR : ES_EXPR);
         const form = av ? AVERE[p] : ESSERE[p];
-        return spec({ key: 'ea-' + compl + p, prompt: 'essere oder avere? Setze die richtige Form ein:', text: `${cap(s[0])} ___ ${compl}.`,
+        return spec({ key: 'ea-' + compl + p, prompt: 'essere oder avere? Setze die richtige Form ein:', text: `${cap(s[0])} ___ ${compl}.`, so: SO(null, s[0], compl),
           accept: form, distractors: [av ? ESSERE[p] : AVERE[p], ...(av ? others(i => AVERE[i], p) : others(i => ESSERE[i], p)).slice(0, 2)],
           explain: av ? (AV_EXPR.indexOf(compl) < 9 ? `Feste Wendung mit avere: avere ${compl.split(' ')[0]} (im Deutschen oft „sein“: Hunger haben / ich habe Angst …). ${PRON[p]} → ${form}` : `Besitz → avere. ${PRON[p]} → ${form}`) : `Ort, Herkunft, Zustand → essere. ${PRON[p]} → ${form}` });
       }
@@ -438,13 +476,14 @@ const GEN = (() => {
   const MOD_INF = ['studiare per il test', 'lavorare domani', 'uscire stasera', 'andare al cinema', 'parlare con Marco', 'comprare il pane', 'venire alla festa', 'pagare il conto', 'restare a casa', 'prendere il treno'];
   register('m12', {
     levels: ['Grundregel: Formen von dovere, potere, volere', '+ im Satz mit Infinitiv'],
+    table() { const m = R.pick(Object.keys(MOD)); return TAB(`Konjugiere ${m} (${MOD[m][0]})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], MOD[m][1][p]])); },
     make(level) {
       const m = R.pick(Object.keys(MOD)), [de, f] = MOD[m];
       const s = R.pick(SUBJ), p = s[1];
       const wrongExtra = { dovere: ['dovo', 'dobbono'], potere: ['poto', 'possete'], volere: ['volo', 'volgono'] }[m];
       if (level >= 1 && R.chance(0.6)) {
         const neg = R.chance(0.25);
-        return spec({ key: 'modS-' + m + p, prompt: `Setze ${m} (${de}) ein:`, text: `${cap(s[0])} ${neg ? 'non ' : ''}___ ${R.pick(MOD_INF)}.`,
+        return spec({ key: 'modS-' + m + p, prompt: `Setze ${m} (${de}) ein:`, ...(() => { const mi = R.pick(MOD_INF); return { text: `${cap(s[0])} ${neg ? 'non ' : ''}___ ${mi}.`, so: SO(null, s[0] + (neg ? ' non' : ''), mi) }; })(),
           accept: f[p], distractors: [...others(i => f[i], p).slice(0, 2), ...wrongExtra],
           explain: `${m} + Infinitiv. ${PRON[p]}: ${f[p]}.` + (neg ? ' non steht vor dem Modalverb.' : '') });
       }
@@ -481,6 +520,12 @@ const GEN = (() => {
   }
   register('m17', {
     levels: ['Grundregel: -o → -i, -a → -e, -e → -i', '+ -ca/-ga, -io und unveränderliche', '+ -co/-go und Ausnahmen'],
+    table(level) {
+      const pool = N.filter(regPlural).map(n => [n.it, n.pl]);
+      const extra = level >= 2 ? [...PL2, ...PL3] : level >= 1 ? PL2 : [];
+      const picks = uniq(Array.from({ length: 30 }, () => (extra.length && R.chance(0.5) ? R.pick(extra) : R.pick(pool)).slice(0, 2).join('|'))).slice(0, 6);
+      return TAB('Bilde den Plural', picks.map(x => x.split('|')));
+    },
     make(level) {
       let sg, pl, ex, key;
       const r = Math.random();
@@ -512,8 +557,11 @@ const GEN = (() => {
     if (n.a === 'v') return pl ? 'Maskulin Plural vor Vokal → gli.' : "Maskulin vor Vokal → l'.";
     return pl ? 'Maskulin Plural vor s+Konsonant, z, ps, gn → gli.' : 'Maskulin vor s+Konsonant, z, ps, gn → lo.';
   }
+  const nounPick = (level, k) => uniq(Array.from({ length: 40 }, () => R.pick(level === 0 ? N.filter(n => n.a === 'c') : N))).slice(0, k);
   register('m18', {
     levels: ['Grundregel: il, la, i, le', "+ l', lo, gli"],
+    ka: true,
+    table(level) { return TAB('Schreibe den bestimmten Artikel', nounPick(level, 6).map(n => { const pl = R.chance(0.4); return [pl ? n.pl : n.it, artDet(n, pl)]; })); },
     make(level) {
       const pool = level === 0 ? N.filter(n => n.a === 'c') : N.filter(n => n.a !== 'c' || R.chance(0.3));
       const n = R.pick(pool), pl = R.chance(0.45);
@@ -530,6 +578,8 @@ const GEN = (() => {
      ================================================================ */
   register('m19', {
     levels: ['Grundregel: un, una', "+ uno und un'"],
+    ka: true,
+    table(level) { return TAB('Schreibe den unbestimmten Artikel', nounPick(level, 6).map(n => [n.it, artInd(n)])); },
     make(level) {
       const pool = level === 0 ? N.filter(n => n.a === 'c') : N.filter(n => n.a !== 'c' || R.chance(0.25));
       const n = R.pick(pool), art = artInd(n);
@@ -554,6 +604,11 @@ const GEN = (() => {
   function prepGen(prep) {
     return {
       levels: [`Grundregel: ${prep} + il, la, i, le`, `+ ${prep} + lo, l', gli`, '+ Artikel selbst bestimmen'],
+      ka: true,
+      table(level) {
+        const arts = level === 0 ? ['il', 'la', 'i', 'le'] : ART_ALL;
+        return TAB(`Verschmelze ${prep} mit dem Artikel`, arts.map(a => [`${prep} + ${a}`, PA[prep][artIdx(a)]]));
+      },
       make(level) {
         if (level >= 2 && R.chance(0.6)) {
           const n = R.pick(N), pl = R.chance(0.4), word = pl ? n.pl : n.it, art = artDet(n, pl);
@@ -602,9 +657,11 @@ const GEN = (() => {
   ];
   register('m10', {
     levels: ['Grundregel: a, in, di, da, per, con'],
+    ka: true,
     make() {
       const [text, ans, ex] = R.pick(P10)();
-      return spec({ key: 'p10-' + text, prompt: 'Welche Präposition passt?', text, accept: ans,
+      const [pre, post] = text.split('___').map(x => x.trim());
+      return spec({ key: 'p10-' + text, prompt: 'Welche Präposition passt?', text, accept: ans, so: SO(null, pre, post),
         distractors: ['a', 'in', 'di', 'da', 'per', 'con', 'su', 'al', 'nel'], explain: ex });
     },
   });
@@ -630,6 +687,12 @@ const GEN = (() => {
   const DO_V = ['chiama', 'aiuta', 'invita', 'aspetta', 'ascolta', 'saluta', 'capisce', 'conosce'];
   register('m03', {
     levels: ['Grundregel: lo, la, li, le', '+ mi, ti, ci, vi', "+ im Passato: l'ho comprata …"],
+    ka: true,
+    table(level) {
+      if (level >= 1 && R.chance(0.5)) return TAB('Welches Pronomen? (Akkusativ)', DO_DE.slice(0, 6).map(([d, p]) => [d, p]));
+      const objs = uniq(Array.from({ length: 40 }, () => R.pick(DO))).slice(0, 6);
+      return TAB('Ersetze durch lo, la, li oder le', objs.map(d => [d[2], DOP[d[3]]]));
+    },
     make(level) {
       const r = Math.random();
       if (level >= 2 && r < 0.4) {
@@ -643,7 +706,7 @@ const GEN = (() => {
       }
       if (level >= 1 && r < 0.75) {
         const [de, pr] = R.pick(DO_DE), v = R.pick(DO_V);
-        return spec({ key: 'dod-' + de + v, prompt: `Setze das Pronomen für „${de}“ ein:`, text: `Marco ___ ${v}.`, accept: pr,
+        return spec({ key: 'dod-' + de + v, prompt: `Setze das Pronomen für „${de}“ ein:`, text: `Marco ___ ${v}.`, so: SO(null, 'Marco', v), accept: pr,
           distractors: ['mi', 'ti', 'ci', 'vi', 'lo', 'la', 'li', 'le', 'gli'], explain: `${de} = ${pr}. Das Pronomen steht vor dem Verb.` });
       }
       const d = R.pick(DO), pron = DOP[d[3]];
@@ -666,18 +729,24 @@ const GEN = (() => {
   const PIAC_PL = ['i gatti', 'gli spaghetti', 'le lingue', 'i film gialli', 'le mele', 'i libri di storia'];
   register('m04', {
     levels: ['Grundregel: gli, le', '+ mi, ti, ci, vi', '+ piacere: mi piace / mi piacciono'],
+    ka: true,
+    table(level) {
+      if (level >= 1 && R.chance(0.6)) return TAB('Welches Pronomen? (Dativ)', IO_DE.map(([d, p]) => [d, p]));
+      const ts = uniq(Array.from({ length: 30 }, () => R.pick(IO_T))).slice(0, 6);
+      return TAB('Ersetze durch gli oder le', ts.map(([t, p]) => [t, p]));
+    },
     make(level) {
       const r = Math.random();
       if (level >= 2 && r < 0.4) {
         const pl = R.chance(0.5), thing = R.pick(pl ? PIAC_PL : PIAC_SG), [de, pr] = R.pick(IO_DE);
         const form = pr + ' ' + (pl ? 'piacciono' : 'piace');
-        return spec({ key: 'piac-' + thing + pr, prompt: `„${cap(de)} gefällt/gefallen …“: Pronomen + piacere`, text: `___ ${thing}.`,
+        return spec({ key: 'piac-' + thing + pr, prompt: `„${cap(de)} gefällt/gefallen …“: Pronomen + piacere`, text: `___ ${thing}.`, so: SO(null, '', thing),
           accept: form, distractors: [pr + ' ' + (pl ? 'piace' : 'piacciono'), (pr === 'gli' ? 'lo' : pr === 'le' ? 'la' : 'io') + ' piace', pr + ' piaccio'],
           explain: `${de} = ${pr}. ${pl ? 'Mehrzahl → piacciono' : 'Einzahl oder Infinitiv → piace'}.` });
       }
       if (level >= 1 && r < 0.75) {
         const [de, pr] = R.pick(IO_DE), v = R.pick(['scrive una lettera', 'regala un libro', 'telefona stasera', 'spiega la regola', 'manda una foto', 'offre un caffè']);
-        return spec({ key: 'iod-' + de + v, prompt: `Setze das Pronomen für „${de}“ ein:`, text: `Marco ___ ${v}.`, accept: pr,
+        return spec({ key: 'iod-' + de + v, prompt: `Setze das Pronomen für „${de}“ ein:`, text: `Marco ___ ${v}.`, so: SO(null, 'Marco', v), accept: pr,
           distractors: ['mi', 'ti', 'gli', 'le', 'ci', 'vi', 'lo', 'la'], explain: `${de} (Dativ) = ${pr}.` });
       }
       const [t, pr] = R.pick(IO_T), [V1, v2] = R.pick(IO_V);
@@ -700,19 +769,29 @@ const GEN = (() => {
   const RP = ['mi', 'ti', 'si', 'ci', 'vi', 'si'];
   register('m11', {
     levels: ['Grundregel: mi alzo, ti alzi …', '+ im Passato: mi sono alzato/a'],
+    table(level) {
+      const rv = R.pick(RIF.filter(r => r[0] !== 'chiamarsi')), inf = rv[0].slice(0, -2) + 'e';
+      const v = { inf, cls: 'x' };
+      if (level >= 1 && R.chance(0.5)) {
+        const st = partReg(v).slice(0, -1);
+        return TAB(`Passato prossimo: ${rv[0]} (${rv[1]}). Bei io/tu/lui passt -o oder -a, im Plural -i oder -e.`,
+          [0, 1, 2, 3, 4, 5].map(p => [PRON[p], (p < 3 ? ['o', 'a'] : ['i', 'e']).map(e => RP[p] + ' ' + ESSERE[p] + ' ' + st + e)]));
+      }
+      return TAB(`Konjugiere im Präsens: ${rv[0]} (${rv[1]})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], RP[p] + ' ' + presente(v, p)]));
+    },
     make(level) {
       const rv = R.pick(RIF), inf = rv[0].slice(0, -2) + 'e';   // alzarsi → alzare
       const v = { inf, cls: inf.endsWith('ire') ? 'ire' : inf.endsWith('ere') ? 'ere' : 'are' };
       if (level >= 1 && R.chance(0.55) && rv[0] !== 'chiamarsi') {
         const s = R.pick(SUBJ_G), p = s[1];
         const form = RP[p] + ' ' + ESSERE[p] + ' ' + partReg(v).slice(0, -1) + GN_END[s[2]];
-        return spec({ key: 'rifp-' + rv[0] + s[0], prompt: `Passato prossimo von ${rv[0]} (${rv[1]}):`, text: `Ieri ${s[0]} ___ ${R.pick(rv[2])}.`,
+        return spec({ key: 'rifp-' + rv[0] + s[0], prompt: `Passato prossimo von ${rv[0]} (${rv[1]}):`, ...(() => { const c = R.pick(rv[2]); return { text: `Ieri ${s[0]} ___ ${c}.`, so: SO('Ieri', s[0].replace(/ \(.*\)/, ''), c) }; })(),
           accept: form, distractors: [RP[p] + ' ' + AVERE[p] + ' ' + partReg(v), RP[p] + ' ' + ESSERE[p] + ' ' + partReg(v).slice(0, -1) + (GN_END[s[2]] === 'o' ? 'a' : 'o'), ESSERE[p] + ' ' + partReg(v).slice(0, -1) + GN_END[s[2]]],
           explain: `Reflexive Verben bilden das Passato mit essere, das Partizip passt sich an: ${form}.` });
       }
       const s = R.pick(SUBJ), p = s[1];
       const form = RP[p] + ' ' + presente(v, p);
-      return spec({ key: 'rif-' + rv[0] + p, prompt: `Setze ${rv[0]} (${rv[1]}) ins Präsens:`, text: `${cap(s[0])} ___ ${R.pick(rv[2])}.`,
+      return spec({ key: 'rif-' + rv[0] + p, prompt: `Setze ${rv[0]} (${rv[1]}) ins Präsens:`, ...(() => { const c = R.pick(rv[2]); return { text: `${cap(s[0])} ___ ${c}.`, so: SO(null, s[0], c) }; })(),
         accept: form, distractors: [RP[(p + 1) % 6] + ' ' + presente(v, p), 'si ' + presente(v, p), RP[p] + ' ' + presente(v, (p + 2) % 6)],
         explain: `Reflexivpronomen (${RP.join(', ')}) vor dem Verb: ${PRON[p]} ${form}.` });
     },

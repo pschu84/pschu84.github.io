@@ -248,7 +248,13 @@ function normalize(str, strictAccents = false) {
 
 function compareAnswer(input, acceptArr, opts = {}) {
   const ni = normalize(input, opts.strictAccents || false);
-  return acceptArr.some(a => normalize(a, opts.strictAccents || false) === ni);
+  const hasApo = /['`\u2018\u2019\u00B4]\s*$/.test(String(input || '').trim());
+  return acceptArr.some(a => {
+    if (normalize(a, opts.strictAccents || false) !== ni) return false;
+    // Antworten wie un' / l' / dell': der Apostroph am Ende gehört dazu (un ≠ un')
+    if (/^\S+'$/.test(String(a).trim()) && !hasApo) return false;
+    return true;
+  });
 }
 
 /* ── Web Speech API ─────────────────────────────────────────── */
@@ -600,6 +606,7 @@ function _renderSection(sec) {
     case 'table': {
       const head = sec.head.map(h => `<th>${h}</th>`).join('');
       const rows = sec.rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+      div.className = 'table-scroll';
       div.innerHTML = `<table class="theory-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
       break;
     }
@@ -1463,14 +1470,24 @@ function setupModuleModes(session) {
     if (b) apply(b.dataset.mode, false);
   });
   apply(mode, false);
+  // Wie früher: beim Öffnen direkt zu den Aufgaben springen (Erklärung bleibt oben erreichbar)
+  if (mode === 'drill') requestAnimationFrame(() => tabs.scrollIntoView({ block: 'start' }));
 }
+
+/* Formate im Grundtraining (Gewichte je Antwort-Modus) */
+const DRILL_FORMATS = {
+  mix:  { mc: 22, lt: 18, so: 14, find: 12, zo: 10, ka: 8, ft: 8, fk: 4, sr: 4 },
+  tap:  { mc: 30, so: 22, find: 20, zo: 14, ka: 10, sr: 4 },
+  type: { lt: 55, ft: 25, fk: 20 },
+};
 
 class DrillSession {
   constructor(mod, gen, mount, gotoExercises) {
     this.mod = mod; this.gen = gen; this.mount = mount; this.gotoExercises = gotoExercises;
     const st = Store.getModule(Store.load(), mod.id).drill || {};
     this.level = Math.min(st.level || 0, gen.levels.length - 1);
-    this.answerMode = st.answerMode || 'mix';
+    this.answerMode = ({ mc: 'tap', lt: 'type' })[st.answerMode] || st.answerMode || 'mix';
+    if (!DRILL_FORMATS[this.answerMode]) this.answerMode = 'mix';
     this.recent = [];
     this.retry = [];
     this.count = 0;
@@ -1478,20 +1495,21 @@ class DrillSession {
     this.sessionTotal = 0;
     this.streak = 0;
     this.suggested = false;
+    this.lastFmt = null;
     this._build();
-    this.next();
+    this.next(true);
   }
 
   _build() {
     const lv = this.gen.levels.map((l, i) =>
       `<button type="button" class="chip${i === this.level ? ' active' : ''}" data-lv="${i}">${i === 0 ? '🌱' : i === 1 ? '🌿' : '🌳'} ${escHtml(l)}</button>`).join('');
-    const am = [['mix', 'Gemischt'], ['mc', 'Auswählen'], ['lt', 'Tippen']].map(([k, t]) =>
+    const am = [['mix', 'Gemischt'], ['tap', 'Ohne Tippen'], ['type', 'Nur Tippen']].map(([k, t]) =>
       `<button type="button" class="chip${k === this.answerMode ? ' active' : ''}" data-am="${k}">${t}</button>`).join('');
     this.mount.innerHTML = `
       <div class="drill-head">
-        <p class="drill-intro">Neue Aufgaben ohne Ende, jedes Mal anders. Fang mit der Grundregel an und schalte erst weiter, wenn sie sitzt.</p>
+        <p class="drill-intro">Neue Aufgaben ohne Ende in wechselnden Formaten. Fang mit der Grundregel an und schalte erst weiter, wenn sie sitzt.</p>
         <div class="chip-row" data-row="lv">${lv}</div>
-        <div class="chip-row chip-row-small" data-row="am"><span class="chip-label">Antworten:</span>${am}</div>
+        <div class="chip-row chip-row-small" data-row="am"><span class="chip-label">Formate:</span>${am}</div>
         <div class="drill-stats"></div>
       </div>
       <div class="exercise-box drill-box"></div>
@@ -1507,14 +1525,14 @@ class DrillSession {
       this.level = +b.dataset.lv; this.retry = []; this.recent = [];
       this.mount.querySelectorAll('[data-lv]').forEach(x => x.classList.toggle('active', x === b));
       Store.setDrillPrefs(this.mod.id, { level: this.level });
-      this.next();
+      this.next(true);
     });
     this.mount.querySelector('[data-row="am"]').addEventListener('click', e => {
       const b = e.target.closest('[data-am]'); if (!b) return;
       this.answerMode = b.dataset.am;
       this.mount.querySelectorAll('[data-am]').forEach(x => x.classList.toggle('active', x === b));
       Store.setDrillPrefs(this.mod.id, { answerMode: this.answerMode });
-      if (!this.answered) this._render(this.current);
+      if (!this.answered) this.next(true);
     });
     this._stats();
   }
@@ -1528,42 +1546,170 @@ class DrillSession {
       `<span title="Alle bisher im Grundtraining dieses Moduls richtig gelösten Aufgaben">🏅 gesamt ${d.correct || 0}</span>`;
   }
 
-  _generate() {
-    const due = this.retry.findIndex(r => r.due <= this.count);
-    if (due >= 0) return this.retry.splice(due, 1)[0].spec;
+  /* ---------- Aufgaben erzeugen ---------- */
+  _spec(filter) {
     let spec = null;
-    for (let i = 0; i < 25; i++) {
-      spec = this.gen.make(this.level);
-      if (!this.recent.includes(spec.key)) break;
+    for (let i = 0; i < 30; i++) {
+      const s = this.gen.make(this.level);
+      if (filter && !filter(s)) continue;
+      spec = s;
+      if (!this.recent.includes(s.key)) break;
     }
+    if (spec) { this.recent.push(spec.key); if (this.recent.length > 14) this.recent.shift(); }
     return spec;
   }
 
-  next() {
-    this.count++;
-    this.current = this._generate();
-    this.recent.push(this.current.key);
-    if (this.recent.length > 12) this.recent.shift();
-    this._render(this.current);
+  _pickFormat() {
+    const w = Object.assign({}, DRILL_FORMATS[this.answerMode]);
+    if (!this.gen.table) delete w.ft;
+    if (!this.gen.ka) delete w.ka;
+    if (this.lastFmt && Object.keys(w).length > 2) delete w[this.lastFmt];
+    const keys = Object.keys(w), total = keys.reduce((a, k) => a + w[k], 0);
+    let r = Math.random() * total;
+    for (const k of keys) { r -= w[k]; if (r <= 0) return k; }
+    return keys[0];
   }
 
-  _render(spec) {
+  _make(fmt) {
+    const canMC = s => s.mode !== 'lt' && s.distractors.length >= 2;
+    const full = s => s.text.replace('___', s.accept[0]);
+    if (fmt === 'mc' || fmt === 'lt') {
+      const s = this._spec();
+      let f = fmt;
+      if (f === 'mc' && !canMC(s)) f = this.answerMode === 'tap' ? null : 'lt';
+      if (f === 'lt' && s.mode === 'mc') f = 'mc';
+      return f ? { fmt: f, specs: [s] } : null;
+    }
+    if (fmt === 'so') {
+      const s = this._spec(x => x.so && !/→/.test(x.text));
+      if (!s) return null;
+      const before = s.text.split('___')[0].trim();
+      const post = s.so.words.slice(s.so.words.indexOf('@') + 1);
+      const solution = [...s.accept[0].split(' '), ...post];
+      if (solution.length < 3) return null;
+      const extra = [];
+      shuffle(s.distractors).forEach(d => d.split(' ').forEach(w => {
+        if (extra.length < 2 && !solution.includes(w) && !extra.includes(w)) extra.push(w);
+      }));
+      return { fmt, specs: [s], ex: {
+        type: 'SO', prompt: s.prompt + (before ? ` Ergänze den Satz: „${before} …“` : ' Bilde den Satz:'),
+        tokens: [...solution, ...extra], solution,
+        explain: `${s.explain} Ganzer Satz: ${full(s)}` } };
+    }
+    if (fmt === 'find' || fmt === 'fk') {
+      for (let t = 0; t < 12; t++) {
+        const s = this._spec(x => x.so && !/→/.test(x.text) && x.distractors.length);
+        if (!s) return null;
+        const ans = s.accept[0].split(' ');
+        const cands = shuffle(s.distractors).map(d => d.split(' ')).filter(dw => dw.length === ans.length &&
+          dw.filter((w, i) => w !== ans[i]).length === 1);
+        if (!cands.length) continue;
+        // Kandidat wählen, für dessen Fehlerstelle es die meisten Auswahlwörter gibt
+        const allD = s.distractors.map(d => d.split(' ')).filter(c => c.length === ans.length);
+        const optsFor = (dw0, di0) => [...new Set([ans[di0], ...allD.map(c => c[di0])])].filter(w => w && w !== dw0[di0]);
+        const scored = cands.map(c => { const i0 = c.findIndex((w, i) => w !== ans[i]); return { c, i0, n: optsFor(c, i0).length }; })
+          .sort((x, y) => y.n - x.n);
+        if (scored[0].n < 2) continue;
+        const dw = scored[0].c, di = scored[0].i0;
+        const [b, a] = s.text.split('___');
+        const bw = b.trim() ? b.trim().split(' ') : [];
+        const aw = a.trim() ? a.trim().split(' ') : [];
+        const wrongWords = [...bw, ...dw, ...aw];
+        const errIdx = bw.length + di;
+        if (fmt === 'fk') {
+          return { fmt, specs: [s], ex: { type: 'FK', prompt: 'Ein Wort ist falsch. Schreibe den ganzen Satz richtig:',
+            sentence: wrongWords.join(' '), solution: full(s), errorToken: null, explain: `${s.explain} Richtig: ${full(s)}` } };
+        }
+        const opts = [ans[di], ...shuffle(optsFor(dw, di).filter(w => w !== ans[di])).slice(0, 2)];
+        return { fmt, specs: [s], words: wrongWords, errIdx, opts, correct: ans[di], full: full(s) };
+      }
+      return null;
+    }
+    if (fmt === 'zo') {
+      const picks = [], seenA = new Set();
+      for (let i = 0; i < 40 && picks.length < 5; i++) {
+        const s = this._spec(x => x.accept[0].length <= 24 && x.text.length <= 70);
+        if (s && !seenA.has(s.accept[0])) { seenA.add(s.accept[0]); picks.push(s); }
+      }
+      if (picks.length < 4) return null;
+      return { fmt, specs: picks, ex: { type: 'ZO', prompt: 'Ordne jeder Aufgabe die passende Lösung zu:',
+        pairs: picks.map(s => ({ de: s.text, it: s.accept[0] })) } };
+    }
+    if (fmt === 'ka') {
+      const groups = {};
+      for (let i = 0; i < 50; i++) {
+        const s = this.gen.make(this.level);
+        if (s.accept[0].length > 14) continue;
+        const g = groups[s.accept[0]] || (groups[s.accept[0]] = []);
+        if (!g.some(x => x.text === s.text)) g.push(s);
+      }
+      let keys = shuffle(Object.keys(groups).filter(k => groups[k].length >= 2));
+      if (keys.length < 2) return null;
+      keys = keys.slice(0, keys.length >= 3 && Math.random() < 0.4 ? 3 : 2);
+      const per = keys.length === 3 ? 2 : 3;
+      const items = shuffle(keys.flatMap((k, ci) => groups[k].slice(0, per).map(s => ({ text: s.text, cat: ci }))));
+      return { fmt, specs: [groups[keys[0]][0]], ex: { type: 'KA', prompt: 'Welche Lösung gehört in die Lücke? Ordne jede Zeile zu:',
+        categories: keys, items } };
+    }
+    if (fmt === 'ft') {
+      const t = this.gen.table(this.level);
+      if (!t || !t.rows.length) return null;
+      return { fmt, specs: [], ex: { type: 'FT', prompt: t.prompt, rows: t.rows } };
+    }
+    if (fmt === 'sr') {
+      const s = this._spec(x => x.so && !/→/.test(x.text));
+      if (!s) return null;
+      return { fmt, specs: [s], ex: { type: 'SR', prompt: 'Sprich den Satz laut nach:', it: full(s), de: '' } };
+    }
+    return null;
+  }
+
+  next(first) {
+    this.count++;
+    let item = null;
+    const due = this.retry.findIndex(r => r.due <= this.count);
+    if (due >= 0) {
+      const s = this.retry.splice(due, 1)[0].spec;
+      const mc = s.mode !== 'lt' && s.distractors.length >= 2;
+      item = { fmt: this.answerMode === 'type' || !mc ? 'lt' : 'mc', specs: [s], retry: true };
+      if (this.answerMode === 'tap' && !mc) item = null;
+    }
+    for (let t = 0; !item && t < 8; t++) item = this._make(this._pickFormat());
+    if (!item) item = this._make('lt');
+    this.lastFmt = item.fmt;
+    this.current = item;
+    this._render(item);
+    if (!first) this.box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ---------- Darstellung ---------- */
+  _render(item) {
     this.answered = false;
     this.nextBtn.disabled = true;
     const box = this.box;
     box.innerHTML = '';
-    const canMC = spec.mode !== 'lt' && spec.distractors.length >= 2;
-    const useMC = spec.mode === 'mc' || (canMC && (this.answerMode === 'mc' || (this.answerMode === 'mix' && Math.random() < 0.5)));
-    const badge = document.createElement('div');
-    badge.className = 'ex-type-badge';
-    badge.textContent = useMC ? 'Auswählen' : 'Tippen';
-    box.appendChild(badge);
+    if (item.ex) {
+      renderExercise(item.ex, box, status => this._done(item, status === 'correct' || status === 'self-ok', true));
+      return;
+    }
+    if (item.fmt === 'find') { this._renderFind(item); return; }
+    this._renderSingle(item, item.fmt === 'mc');
+  }
+
+  _badge(text) {
+    const b = document.createElement('div');
+    b.className = 'ex-type-badge'; b.textContent = text;
+    this.box.appendChild(b);
+  }
+
+  _renderSingle(item, useMC) {
+    const box = this.box, spec = item.specs[0];
+    this._badge(useMC ? 'Multiple Choice' : 'Lückentext');
     _prompt(box, spec.prompt);
     const sent = document.createElement('div');
     sent.className = 'drill-sentence';
     const [before, after] = spec.text.split('___');
-    const done = (ok, given) => this._done(spec, ok, given);
-
+    const done = ok => this._done(item, ok, false);
     if (useMC) {
       sent.innerHTML = `${escHtml(before)}<span class="drill-gap">&nbsp;?&nbsp;</span>${escHtml(after || '')}`;
       box.appendChild(sent);
@@ -1578,9 +1724,9 @@ class DrillSession {
             if (spec.accept.includes(x.textContent)) x.classList.add('correct');
             else if (x === b) x.classList.add('wrong');
           });
-          sent.querySelector('.drill-gap').textContent = spec.accept[0];
-          sent.querySelector('.drill-gap').classList.add(ok ? 'ok' : 'bad');
-          done(ok, opt);
+          const gap = sent.querySelector('.drill-gap');
+          gap.textContent = spec.accept[0]; gap.classList.add(ok ? 'ok' : 'bad');
+          done(ok);
         });
         grid.appendChild(b);
       });
@@ -1591,7 +1737,7 @@ class DrillSession {
       const inp = sent.querySelector('input');
       const longAns = spec.accept[0].length > 14;
       inp.style.width = Math.max(5, Math.min(longAns ? 30 : 16, spec.accept[0].length + 2)) + 'ch';
-      if (longAns) { inp.classList.add('drill-input-long'); }
+      if (longAns) inp.classList.add('drill-input-long');
       box.appendChild(buildAccentHelper(box));
       const check = document.createElement('button');
       check.className = 'btn btn-primary'; check.style.marginTop = '0.9rem'; check.textContent = 'Prüfen';
@@ -1606,7 +1752,7 @@ class DrillSession {
           sol.className = 'drill-solution'; sol.textContent = spec.accept[0];
           inp.insertAdjacentElement('afterend', sol);
         }
-        done(ok, inp.value);
+        done(ok);
       };
       check.addEventListener('click', doCheck);
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doCheck(); } });
@@ -1616,20 +1762,73 @@ class DrillSession {
     addFeedbackArea(box);
   }
 
-  _done(spec, ok, given) {
+  // Fehlersuche: falsches Wort antippen, dann richtiges Wort wählen
+  _renderFind(item) {
+    const box = this.box, spec = item.specs[0];
+    this._badge('Fehlersuche');
+    _prompt(box, 'Ein Wort ist falsch. Tippe es an.');
+    const hint = document.createElement('p'); hint.className = 'drill-find-hint'; hint.textContent = spec.prompt;
+    box.appendChild(hint);
+    const line = document.createElement('div'); line.className = 'drill-find';
+    let tappedOk = null;
+    const optsWrap = document.createElement('div');
+    item.words.forEach((w, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'find-word'; b.textContent = w;
+      b.addEventListener('click', () => {
+        if (tappedOk !== null) return;
+        tappedOk = i === item.errIdx;
+        line.querySelectorAll('.find-word').forEach((x, j) => {
+          x.disabled = true;
+          if (j === item.errIdx) x.classList.add('err');
+          else if (x === b) x.classList.add('miss');
+        });
+        const p = document.createElement('p'); p.className = 'ex-prompt'; p.style.margin = '1rem 0 0.6rem';
+        p.textContent = tappedOk ? 'Richtig gefunden! Welches Wort gehört dorthin?' : 'Das falsche Wort ist markiert. Welches Wort gehört dorthin?';
+        optsWrap.appendChild(p);
+        const grid = document.createElement('div'); grid.className = 'mc-grid';
+        shuffle(item.opts).forEach(o => {
+          const ob = document.createElement('button'); ob.className = 'mc-btn'; ob.textContent = o;
+          ob.addEventListener('click', () => {
+            const ok = o === item.correct;
+            grid.querySelectorAll('.mc-btn').forEach(x => {
+              x.disabled = true;
+              if (x.textContent === item.correct) x.classList.add('correct');
+              else if (x === ob) x.classList.add('wrong');
+            });
+            const errBtn = line.querySelectorAll('.find-word')[item.errIdx];
+            errBtn.textContent = item.correct; errBtn.classList.add('fixed');
+            this._done(item, ok && tappedOk, false, `${spec.explain} Richtig: ${item.full}`);
+          });
+          grid.appendChild(ob);
+        });
+        optsWrap.appendChild(grid);
+      });
+      line.appendChild(b);
+    });
+    box.appendChild(line);
+    box.appendChild(optsWrap);
+    addFeedbackArea(box);
+  }
+
+  _done(item, ok, composite, explainOverride) {
+    if (this.answered) return;
     this.answered = true;
     this.sessionTotal++;
-    if (ok) { this.sessionCorrect++; this.streak++; } else { this.streak = 0; this.retry.push({ spec, due: this.count + 3 }); }
-    const extra = ok ? spec.explain : (spec.explain || '') + ' Die Aufgabe kommt gleich noch einmal.';
-    showFeedback(this.box, ok, extra);
+    if (ok) { this.sessionCorrect++; this.streak++; } else {
+      this.streak = 0;
+      if (item.specs[0]) this.retry.push({ spec: item.specs[0], due: this.count + 3 });
+    }
+    if (!composite) {
+      const ex = explainOverride || item.specs[0].explain || '';
+      showFeedback(this.box, ok, ok ? ex : ex + (item.specs[0] ? ' Die Aufgabe kommt gleich noch einmal.' : ''));
+    }
     Store.recordDrill(this.mod.id, ok, this.level);
     const act = Store.getActivityStats();
     if (window._updateDailyGoalBanner) window._updateDailyGoalBanner(act.todayCorrect);
     checkMilestones(this.sessionTotal, act.todayTotal, act.todayCorrect);
     this._stats();
     this.nextBtn.disabled = false;
-    this.nextBtn.focus({ preventScroll: true });
-    // Hinweis, wenn die Grundregel sitzt
+    if (!item.ex) this.nextBtn.focus({ preventScroll: true });
     const rate = this.sessionCorrect / this.sessionTotal;
     if (!this.suggested && this.sessionTotal >= 15 && rate >= 0.8) {
       this.suggested = true;

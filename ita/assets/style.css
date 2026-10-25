@@ -694,3 +694,25 @@ button { font-family: var(--f-body); }
   .drill-sentence { font-size: 1.12rem; }
   .mode-tab { font-size: 0.9rem; }
 }
+
+/* ===== HANDY: Tabellen und Vergleiche passen in die Breite ===== */
+.table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.8rem 0 1rem; }
+.table-scroll .theory-table { margin: 0; }
+.theory-text, .theory-example, .theory-compare-body, .feedback-area, .ex-prompt { overflow-wrap: break-word; }
+@media (max-width: 600px) {
+  .theory-table { font-size: 0.8rem; }
+  .theory-table th, .theory-table td { padding: 0.4rem 0.45rem; overflow-wrap: anywhere; }
+  .theory-compare { grid-template-columns: 1fr; }
+  .theory-compare-col:first-child { border-right: none; border-bottom: 2px solid var(--ink); }
+  .theory-body { padding-left: 0.9rem; padding-right: 0.9rem; }
+}
+.drill-find { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.4rem 0 0.2rem; }
+.find-word {
+  font-family: var(--f-display); font-size: 1.12rem; padding: 0.3rem 0.55rem; border: 2px solid var(--line);
+  border-radius: var(--r-sm); background: var(--paper); cursor: pointer; color: var(--ink);
+}
+.find-word:disabled { cursor: default; opacity: 1; }
+.find-word.err { border-color: var(--terra); background: var(--terra-soft); text-decoration: line-through; }
+.find-word.err.fixed { text-decoration: none; border-color: var(--oliva); background: var(--oliva-soft); }
+.find-word.miss { border-color: var(--sun-deep); background: var(--sun-soft); }
+.drill-find-hint { font-size: 0.85rem; color: var(--ink-soft); margin: -0.6rem 0 0.6rem; }
