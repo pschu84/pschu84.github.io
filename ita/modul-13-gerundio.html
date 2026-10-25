@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Verlaufsform: stare + Gerundio</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
 <div id="daily-goal-mount"></div>   <!-- NEU -->
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 67</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -108,7 +108,7 @@ const MODULE = {
       translation:'Ich lese gerade eine schöne Geschichte.',
       explain:'sto = stare 1. Sg. (ich). sta = stare 3. Sg. (er/sie) — falsche Person. leggo = Präsens (ich lese) — statt sto + Gerundio kein stare nötig, aber dann entfällt die Verlaufsform. stare + Gerundio = Verlaufsform (Aktion läuft gerade ab).' },
 
-    { id:'m13-so-02', type:'SO',
+    { id:'m13-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['stava', 'stavo', 'dormiva', 'quando', 'dormendo', 'ho', 'chiamato'],
       solution:['stava', 'dormendo', 'quando', 'ho', 'chiamato'],
@@ -129,7 +129,7 @@ const MODULE = {
       translation:'Wir schreiben gerade eine Nachricht.',
       explain:'stiamo = stare 1. Pl. Präsens (wir). stanno = stare 3. Pl. (sie) — Subjekt ist noi. stavo = Imperfetto 1. Sg. — falsche Person und Zeitform. scrivendo = Gerundio von scrivere (-ere → -endo).' },
 
-    { id:'m13-so-05', type:'SO',
+    { id:'m13-so-05', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['stavo','stava','sto','parlando','parlavo','io','al','telefono'],
       solution:['io','stavo','parlando','al','telefono'],
@@ -150,7 +150,7 @@ const MODULE = {
       translation:'Ich lerne gerade für die Prüfung.',
       explain:'sto = stare 1. Sg. Präsens (ich). sta = stare 3. Sg. (er/sie) — Subjekt ist ich. studiando = Gerundio von studiare (-are → -ando). studiavo = Imperfetto — falsche Zeitform hier.' },
 
-    { id:'m13-so-08', type:'SO',
+    { id:'m13-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['stava','stavo','stavi','piangendo','piangeva','lei'],
       solution:['lei','stava','piangendo'],
@@ -164,7 +164,7 @@ const MODULE = {
       translation:'Ich suche gerade die Schlüssel.',
       explain:'sto = stare 1. Sg. Präsens (ich). sta = stare 3. Sg. (er/sie) — Subjekt ist ich. cercando = Gerundio von cercare (-are → -ando). cerco = einfaches Präsens — drückt keine Verlaufsform aus.' },
 
-    { id:'m13-so-10', type:'SO',
+    { id:'m13-so-10', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['stavano','stavamo','stevano','ridendo','ridevano','tutti'],
       solution:['tutti','stavano','ridendo'],
@@ -183,7 +183,7 @@ const MODULE = {
         { de:'partire (-ire)',   it:'-endo'  },
       ] },
 
-    { id:'m13-zo-02', type:'ZO',
+    { id:'m13-zo-02', type:'ZO', stufe:2,
       prompt:'Ordne zu: unregelmäßige Gerundi',
       pairs:[
         { de:'bere',      it:'bevendo'    },
@@ -205,7 +205,7 @@ const MODULE = {
         { de:'sie (stare)',     it:'stanno'  },
       ] },
 
-    { id:'m13-zo-04', type:'ZO',
+    { id:'m13-zo-04', type:'ZO', stufe:2,
       prompt:'Ordne zu: stare im Imperfetto (alle Formen)',
       pairs:[
         { de:'ich (stare Imperf.)',     it:'stavo'    },
@@ -227,7 +227,7 @@ const MODULE = {
         { de:'Stanno parlando.',        it:'Sie reden gerade.'            },
       ] },
 
-    { id:'m13-zo-06', type:'ZO',
+    { id:'m13-zo-06', type:'ZO', stufe:2,
       prompt:'Ordne zu: Passato progressivo -> Deutsch',
       pairs:[
         { de:'Stavo dormendo.',          it:'Ich schlief gerade.'          },
@@ -238,7 +238,7 @@ const MODULE = {
         { de:'Stavano discutendo.',      it:'Sie haben gerade gestritten.' },
       ] },
 
-    { id:'m13-zo-07', type:'ZO',
+    { id:'m13-zo-07', type:'ZO', stufe:3,
       prompt:'Ordne zu: Pronomen-Position beim Gerundio',
       pairs:[
         { de:'Ich lese es gerade. (vor stare)',   it:'Lo sto leggendo.'      },
@@ -249,7 +249,7 @@ const MODULE = {
         { de:'Ich esse es. (an Gerundio)',         it:'Sto mangiandolo.'      },
       ] },
 
-    { id:'m13-zo-08', type:'ZO',
+    { id:'m13-zo-08', type:'ZO', stufe:2,
       prompt:'Ordne zu: deutschen Ausdruck → richtiger Gerundio',
       pairs:[
         { de:'(beim) Schreiben',   it:'scrivendo'  },
@@ -273,37 +273,37 @@ const MODULE = {
       correctValue:'vedendo',
       explain:'-ere -> Gerundio auf -endo. vedere -> vedendo.' },
 
-    { id:'m13-mc-03', type:'MC',
+    { id:'m13-mc-03', type:'MC', stufe:2,
       prompt:'Wie lautet das Gerundio von "fare"?',
       options:['farendo','facendo','fando','fatendo'],
       correctValue:'facendo',
       explain:'fare hat ein unregelmäßiges Gerundio: facendo (nicht farendo).' },
 
-    { id:'m13-mc-04', type:'MC',
+    { id:'m13-mc-04', type:'MC', stufe:2,
       prompt:'Wie lautet das Gerundio von "bere"?',
       options:['berendo','berando','bevendo','bibendo'],
       correctValue:'bevendo',
       explain:'bere hat ein unregelmäßiges Gerundio: bevendo.' },
 
-    { id:'m13-mc-05', type:'MC',
+    { id:'m13-mc-05', type:'MC', stufe:2,
       prompt:'Welche Form? "Marco ___ la TV quando ho chiamato." (guardare, Vergangenheit)',
       options:['stava guardando','stava guardato','stava guardare','stavano guardando'],
       correctValue:'stava guardando',
       explain:'Passato progressivo: stava (Imperfetto von stare) + guardando.' },
 
-    { id:'m13-mc-06', type:'MC',
+    { id:'m13-mc-06', type:'MC', stufe:2,
       prompt:'Welche Form? "Noi ___ quando è arrivata la mail." (lavorare)',
       options:['stiamo lavorando','stavamo lavorando','stamo lavorando','stevano lavorando'],
       correctValue:'stavamo lavorando',
       explain:'Noi, Imperfetto von stare: stavamo + lavorando.' },
 
-    { id:'m13-mc-07', type:'MC',
+    { id:'m13-mc-07', type:'MC', stufe:3,
       prompt:'"Sto leggendolo." Was bedeutet das?',
       options:['Ich habe es gelesen.','Ich lese es gerade.','Ich lese sie gerade.','Ich habe es gerade gelesen.'],
       correctValue:'Ich lese es gerade.',
       explain:'sto leggendo + lo (an Gerundio). lo = es/ihn (m). Gerade jetzt.' },
 
-    { id:'m13-mc-08', type:'MC',
+    { id:'m13-mc-08', type:'MC', stufe:3,
       prompt:'Welche Aussage ist korrekt?',
       options:[
         'Das Gerundio kongruiert mit dem Subjekt.',
@@ -314,13 +314,13 @@ const MODULE = {
       correctValue:'Das Gerundio ist unveränderlich.',
       explain:'Das Gerundio hat keine Genus- oder Numerus-Endungen. Immer -ando oder -endo, für alle Personen gleich.' },
 
-    { id:'m13-mc-09', type:'MC',
+    { id:'m13-mc-09', type:'MC', stufe:2,
       prompt:'"Cosa stai facendo?" Was bedeutet das?',
       options:['Was hast du gemacht?','Was machst du gerade?','Was wirst du tun?','Was sollst du tun?'],
       correctValue:'Was machst du gerade?',
       explain:'stai facendo = Verlaufsform 2. Pers. Sg. fare. "Was bist du gerade am Machen?"' },
 
-    { id:'m13-mc-10', type:'MC',
+    { id:'m13-mc-10', type:'MC', stufe:2,
       prompt:'Wie heißt das Gerundio von "dire"?',
       options:['direndo','dicendo','diccendo','dirando'],
       correctValue:'dicendo',
@@ -332,7 +332,7 @@ const MODULE = {
       correctValue:'Sta dormendo.',
       explain:'Verlaufsform: sta + dormendo. Betont, dass die Handlung gerade jetzt läuft.' },
 
-    { id:'m13-mc-12', type:'MC',
+    { id:'m13-mc-12', type:'MC', stufe:2,
       prompt:'"Stava piovendo quando siamo usciti." Was bedeutet das?',
       options:['Es hat geregnet, nachdem wir gegangen sind.','Es regnete gerade, als wir rausgingen.','Es wird regnen, wenn wir rausgehen.','Es regnete, bis wir rausgingen.'],
       correctValue:'Es regnete gerade, als wir rausgingen.',
@@ -346,21 +346,21 @@ const MODULE = {
       translation:'Ich kann nicht sprechen, ich rede gerade mit jemandem.',
       explain:'Gerade jetzt: sto parlando (Presente progressivo).' },
 
-    { id:'m13-mcl-02', type:'MC',
+    { id:'m13-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "___ alle tre ieri pomeriggio?" (cosa / tu / fare)',
       options:['Stavi facendo','Stai facendo','Hai fatto','Fai'],
       correctValue:'Stavi facendo',
       translation:'Was hast du gestern Nachmittag um drei gemacht (warst du gerade am Tun)?',
       explain:'Gestern um drei = Vergangenheit + laufende Handlung: stavi facendo.' },
 
-    { id:'m13-mcl-03', type:'MC',
+    { id:'m13-mcl-03', type:'MC', stufe:2,
       prompt:'Wähle: "___ quando hai chiamato." (dormire / lui)',
       options:['Stava dormendo','Sta dormendo','Ha dormito','Dormì'],
       correctValue:'Stava dormendo',
       translation:'Er schlief gerade, als du angerufen hast.',
       explain:'Hintergrund in Vergangenheit: stava dormendo. Ereignis: hai chiamato.' },
 
-    { id:'m13-mcl-04', type:'MC',
+    { id:'m13-mcl-04', type:'MC', stufe:3,
       prompt:'Wähle: "Lo ___ adesso." (leggere / io, Pronomen an Gerundio)',
       options:['sto leggendolo','sto lo leggendo','lo sto leggendolo','sto letto'],
       correctValue:'sto leggendolo',
@@ -374,25 +374,25 @@ const MODULE = {
       translation:'Was machst du gerade? — Ich lese gerade ein Buch.',
       explain:'stai facendo (2. Sg.); Sto leggendo (1. Sg.).' },
 
-    { id:'m13-lt-02', type:'LT',
+    { id:'m13-lt-02', type:'LT', stufe:2,
       text:'Ieri alle otto {0} ancora {1} quando il telefono ha suonato.',
       blanks:[ { accept:['stavo'] }, { accept:['dormendo'] } ],
       translation:'Gestern um acht schlief ich noch, als das Telefon klingelte.',
       explain:'stavo dormendo (Imperfetto von stare + Gerundio). Hintergrund.' },
 
-    { id:'m13-lt-03', type:'LT',
+    { id:'m13-lt-03', type:'LT', stufe:2,
       text:'Loro {0} {1} quando siamo arrivati.',
       blanks:[ { accept:['stavano'] }, { accept:['mangiando'] } ],
       translation:'Sie aßen gerade, als wir ankamen.',
       explain:'stavano mangiando (3. Pl. Imperfetto stare + Gerundio von mangiare).' },
 
-    { id:'m13-lt-04', type:'LT',
+    { id:'m13-lt-04', type:'LT', stufe:3,
       text:'La {0} adesso — {1} chiamandola.',
       blanks:[ { accept:['sto chiamando'] }, { accept:['sto'] } ],
       translation:'Ich rufe sie gerade an.',
       explain:'La sto chiamando (Pronomen vor stare) = Sto chiamandola (Pronomen an Gerundio). Beide korrekt.' },
 
-    { id:'m13-lt-05', type:'LT',
+    { id:'m13-lt-05', type:'LT', stufe:2,
       text:'Stavo {0} la mail quando si è spento il computer.',
       blanks:[ { accept:['scrivendo'] } ],
       translation:'Ich schrieb gerade die E-Mail, als der Computer ausging.',
@@ -422,7 +422,7 @@ const MODULE = {
       ] },
 
     /* === FK 3 === */
-    { id:'m13-fk-01', type:'FK',
+    { id:'m13-fk-01', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Sto mangiato quando hai chiamato.',
       solution:'Stavo mangiando quando hai chiamato.',
@@ -430,7 +430,7 @@ const MODULE = {
       translation:'Ich aß gerade, als du angerufen hast.',
       explain:'Verlaufsform in der Vergangenheit: stavo (Imperfetto) + mangiando (Gerundio). "mangiato" ist das Partizip, nicht das Gerundio.' },
 
-    { id:'m13-fk-02', type:'FK',
+    { id:'m13-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Stanno facendo lo.',
       solution:'Lo stanno facendo.',
@@ -438,7 +438,7 @@ const MODULE = {
       translation:'Sie machen es gerade.',
       explain:'Das Pronomen lo steht entweder vor stare (Lo stanno facendo) oder an das Gerundio (Stanno facendolo). Nie zwischen Gerundio und Pronomen getrennt.' },
 
-    { id:'m13-fk-03', type:'FK',
+    { id:'m13-fk-03', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Sto bevando un caffè.',
       solution:'Sto bevendo un caffè.',
@@ -459,7 +459,7 @@ const MODULE = {
         { text:'scrivere',  cat:1 },
       ] },
 
-    { id:'m13-ka-02', type:'KA',
+    { id:'m13-ka-02', type:'KA', stufe:2,
       prompt:'Kategorisiere: Presente progressivo oder Passato progressivo?',
       categories:['Presente (sto...ando/endo)', 'Passato (stavo...ando/endo)'],
       items:[
@@ -484,7 +484,7 @@ const MODULE = {
       solutions:['Sto cucinando la cena. Puoi chiamare dopo?','Sto preparando la cena. Puoi richiamare più tardi?'],
       note:'sto cucinando/preparando (Presente progressivo); puoi chiamare (Möglichkeit).' },
 
-    { id:'m13-de-02', type:'DE',
+    { id:'m13-de-02', type:'DE', stufe:2,
       prompt:'"Sie schrieb gerade eine E-Mail, als der Chef reinkam."',
       solutions:['Stava scrivendo una mail quando è entrato il capo.','Stava scrivendo un\'email quando il capo è entrato.'],
       note:'stava scrivendo (Passato progressivo); è entrato (Passato Prossimo, Ereignis).' },
@@ -495,17 +495,17 @@ const MODULE = {
       note:'stai leggendo (2. Sg.); sto leggendo (1. Sg.). Gerundio von leggere: leggendo.' },
 
     /* === IT 3 === */
-    { id:'m13-it-01', type:'IT',
+    { id:'m13-it-01', type:'IT', stufe:2,
       prompt:'"Sto facendo la doccia, richiama tra cinque minuti."',
       solutions:['Ich dusche gerade, ruf in fünf Minuten zurück.','Ich bin gerade unter der Dusche, ruf in fünf Minuten nochmal an.'],
       note:'sto facendo la doccia = ich dusche gerade; richiama = ruf zurück (Imperativ); tra cinque minuti.' },
 
-    { id:'m13-it-02', type:'IT',
+    { id:'m13-it-02', type:'IT', stufe:2,
       prompt:'"Stavano discutendo animatamente quando siamo entrati."',
       solutions:['Sie stritten gerade lebhaft, als wir reinkamen.','Sie diskutierten gerade heftig, als wir eintraten.'],
       note:'stavano discutendo (Passato progressivo, Hintergrund); siamo entrati (Ereignis).' },
 
-    { id:'m13-it-03', type:'IT',
+    { id:'m13-it-03', type:'IT', stufe:3,
       prompt:'"La sto cercando da un\'ora ma non la trovo."',
       solutions:['Ich suche sie seit einer Stunde, aber ich finde sie nicht.','Ich bin seit einer Stunde auf der Suche nach ihr, finde sie aber nicht.'],
       note:'la sto cercando (Verlaufsform + Pronomen); da un\'ora (seit).' },
@@ -586,13 +586,13 @@ const MODULE = {
     { id:'m13-sr-06', type:'SR',
       it:'Stanno correndo nel parco.',
       de:'Sie laufen gerade im Park.' },
-    { id:'m13-sr-07', type:'SR',
+    { id:'m13-sr-07', type:'SR', stufe:2,
       it:'Stavo dormendo quando ha suonato il telefono.',
       de:'Ich schlief gerade, als das Telefon klingelte.' },
-    { id:'m13-sr-08', type:'SR',
+    { id:'m13-sr-08', type:'SR', stufe:2,
       it:'Stava piovendo forte quando siamo usciti.',
       de:'Es regnete stark, als wir rausgingen.' },
-    { id:'m13-sr-09', type:'SR',
+    { id:'m13-sr-09', type:'SR', stufe:2,
       it:'Cosa stai facendo in questo momento?',
       de:'Was machst du gerade in diesem Moment?' },
     { id:'m13-sr-10', type:'SR',
@@ -606,7 +606,7 @@ const MODULE = {
       de:'Ich höre gerade Musik.',
       solutions:['Sto ascoltando musica.', 'Sto ascoltando la musica.'],
       note:'stare (io: sto) + ascoltando (-are → -ando)' },
-    { id:'m13-st-02', type:'ST',
+    { id:'m13-st-02', type:'ST', stufe:2,
       de:'Was machst du gerade?',
       solutions:['Cosa stai facendo?', 'Che cosa stai facendo?'],
       note:'stare (tu: stai) + facendo (Gerundio von fare: irregulär)' },

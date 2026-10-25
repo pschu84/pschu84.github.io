@@ -83,6 +83,37 @@ const Store = (() => {
     save(state);
   }
 
+  // Grundtraining (Generator-Aufgaben): zählt für Tagesziel, nicht für den Modul-Score
+  function recordDrill(mId, ok, level) {
+    const state = load();
+    const m = _getOrCreate(state, mId);
+    if (!m.drill) m.drill = { correct: 0, total: 0, bestStreak: 0, level: 0 };
+    m.drill.total += 1;
+    if (ok) m.drill.correct += 1;
+    if (typeof level === 'number') m.drill.level = level;
+    const _today = new Date().toISOString().slice(0, 10);
+    if (!state.daily) state.daily = {};
+    if (!state.daily[_today]) state.daily[_today] = { correct: 0, total: 0 };
+    state.daily[_today].total += 1;
+    state.meta.totalAnswered = (state.meta.totalAnswered || 0) + 1;
+    if (ok) { state.daily[_today].correct += 1; state.meta.totalCorrect = (state.meta.totalCorrect || 0) + 1; }
+    state.meta.lastAnswered = Date.now();
+    save(state);
+    return m.drill;
+  }
+  function setDrillPrefs(mId, prefs) {
+    const state = load();
+    const m = _getOrCreate(state, mId);
+    if (!m.drill) m.drill = { correct: 0, total: 0, bestStreak: 0, level: 0 };
+    Object.assign(m.drill, prefs);
+    save(state);
+  }
+  function setOrder(mId, order) {
+    const state = load();
+    _getOrCreate(state, mId).order = order;
+    save(state);
+  }
+
   function setLastIndex(mId, idx) {
     const state = load();
     _getOrCreate(state, mId).lastIndex = idx;
@@ -190,7 +221,7 @@ const Store = (() => {
     };
   }
 
-  return { load, save, recordAnswer, recordRun, setLastIndex, updateStreak, moduleProgress, moduleExerciseStats, getActivityStats, findWeakest, exportData, importData, resetModule, resetAll, getModule };
+  return { load, save, recordAnswer, recordRun, recordDrill, setDrillPrefs, setOrder, setLastIndex, updateStreak, moduleProgress, moduleExerciseStats, getActivityStats, findWeakest, exportData, importData, resetModule, resetAll, getModule };
 })();
 
 
@@ -1391,8 +1422,296 @@ function _renderST(ex, box, onDone) {
    EXERCISE SESSION
    ================================================================ */
 
+
+/* ================================================================
+   GRUNDTRAINING (Generator-Aufgaben) + Umschalter zu den Übungen
+   ================================================================ */
+function setupModuleModes(session) {
+  const gen = (typeof GEN !== 'undefined') ? GEN.get(session.mod.id) : null;
+  if (!gen) return;
+  const mod = session.mod;
+  const progressEl = session.fillEl.closest('.exercise-progress');
+  const exEls = [progressEl, session.boxEl, session.navEl].filter(Boolean);
+
+  const tabs = document.createElement('div');
+  tabs.className = 'mode-tabs';
+  tabs.innerHTML = `
+    <button type="button" class="mode-tab" data-mode="drill">🌱 Grundtraining<span>unbegrenzt</span></button>
+    <button type="button" class="mode-tab" data-mode="ex">📚 Übungen<span>${mod.exercises.length} Aufgaben</span></button>`;
+  const drillMount = document.createElement('div');
+  drillMount.className = 'drill-wrap';
+  progressEl.parentNode.insertBefore(tabs, progressEl);
+  progressEl.parentNode.insertBefore(drillMount, progressEl);
+
+  const state = Store.load();
+  const mState = Store.getModule(state, mod.id);
+  const d = mState.drill || {};
+  let mode = d.tab || ((mState.attempts || 0) === 0 && (d.correct || 0) < 15 ? 'drill' : 'ex');
+  let drill = null;
+
+  function apply(m, scroll) {
+    mode = m;
+    tabs.querySelectorAll('.mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+    exEls.forEach(el => { el.style.display = m === 'ex' ? '' : 'none'; });
+    drillMount.style.display = m === 'drill' ? '' : 'none';
+    if (m === 'drill' && !drill) drill = new DrillSession(mod, gen, drillMount, () => apply('ex', true));
+    Store.setDrillPrefs(mod.id, { tab: m });
+    if (scroll) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  tabs.addEventListener('click', e => {
+    const b = e.target.closest('.mode-tab');
+    if (b) apply(b.dataset.mode, false);
+  });
+  apply(mode, false);
+}
+
+class DrillSession {
+  constructor(mod, gen, mount, gotoExercises) {
+    this.mod = mod; this.gen = gen; this.mount = mount; this.gotoExercises = gotoExercises;
+    const st = Store.getModule(Store.load(), mod.id).drill || {};
+    this.level = Math.min(st.level || 0, gen.levels.length - 1);
+    this.answerMode = st.answerMode || 'mix';
+    this.recent = [];
+    this.retry = [];
+    this.count = 0;
+    this.sessionCorrect = 0;
+    this.sessionTotal = 0;
+    this.streak = 0;
+    this.suggested = false;
+    this._build();
+    this.next();
+  }
+
+  _build() {
+    const lv = this.gen.levels.map((l, i) =>
+      `<button type="button" class="chip${i === this.level ? ' active' : ''}" data-lv="${i}">${i === 0 ? '🌱' : i === 1 ? '🌿' : '🌳'} ${escHtml(l)}</button>`).join('');
+    const am = [['mix', 'Gemischt'], ['mc', 'Auswählen'], ['lt', 'Tippen']].map(([k, t]) =>
+      `<button type="button" class="chip${k === this.answerMode ? ' active' : ''}" data-am="${k}">${t}</button>`).join('');
+    this.mount.innerHTML = `
+      <div class="drill-head">
+        <p class="drill-intro">Neue Aufgaben ohne Ende, jedes Mal anders. Fang mit der Grundregel an und schalte erst weiter, wenn sie sitzt.</p>
+        <div class="chip-row" data-row="lv">${lv}</div>
+        <div class="chip-row chip-row-small" data-row="am"><span class="chip-label">Antworten:</span>${am}</div>
+        <div class="drill-stats"></div>
+      </div>
+      <div class="exercise-box drill-box"></div>
+      <div class="drill-hint"></div>
+      <div class="exercise-nav"><button type="button" class="btn btn-primary drill-next" style="margin-left:auto" disabled>Nächste Aufgabe →</button></div>`;
+    this.box = this.mount.querySelector('.drill-box');
+    this.statsEl = this.mount.querySelector('.drill-stats');
+    this.hintEl = this.mount.querySelector('.drill-hint');
+    this.nextBtn = this.mount.querySelector('.drill-next');
+    this.nextBtn.addEventListener('click', () => this.next());
+    this.mount.querySelector('[data-row="lv"]').addEventListener('click', e => {
+      const b = e.target.closest('[data-lv]'); if (!b) return;
+      this.level = +b.dataset.lv; this.retry = []; this.recent = [];
+      this.mount.querySelectorAll('[data-lv]').forEach(x => x.classList.toggle('active', x === b));
+      Store.setDrillPrefs(this.mod.id, { level: this.level });
+      this.next();
+    });
+    this.mount.querySelector('[data-row="am"]').addEventListener('click', e => {
+      const b = e.target.closest('[data-am]'); if (!b) return;
+      this.answerMode = b.dataset.am;
+      this.mount.querySelectorAll('[data-am]').forEach(x => x.classList.toggle('active', x === b));
+      Store.setDrillPrefs(this.mod.id, { answerMode: this.answerMode });
+      if (!this.answered) this._render(this.current);
+    });
+    this._stats();
+  }
+
+  _stats() {
+    const d = Store.getModule(Store.load(), this.mod.id).drill || { correct: 0 };
+    const pct = this.sessionTotal ? Math.round(this.sessionCorrect / this.sessionTotal * 100) : null;
+    this.statsEl.innerHTML =
+      `<span>✅ ${this.sessionCorrect} von ${this.sessionTotal}${pct !== null ? ` (${pct} %)` : ''}</span>` +
+      `<span>🔥 Serie ${this.streak}</span>` +
+      `<span title="Alle bisher im Grundtraining dieses Moduls richtig gelösten Aufgaben">🏅 gesamt ${d.correct || 0}</span>`;
+  }
+
+  _generate() {
+    const due = this.retry.findIndex(r => r.due <= this.count);
+    if (due >= 0) return this.retry.splice(due, 1)[0].spec;
+    let spec = null;
+    for (let i = 0; i < 25; i++) {
+      spec = this.gen.make(this.level);
+      if (!this.recent.includes(spec.key)) break;
+    }
+    return spec;
+  }
+
+  next() {
+    this.count++;
+    this.current = this._generate();
+    this.recent.push(this.current.key);
+    if (this.recent.length > 12) this.recent.shift();
+    this._render(this.current);
+  }
+
+  _render(spec) {
+    this.answered = false;
+    this.nextBtn.disabled = true;
+    const box = this.box;
+    box.innerHTML = '';
+    const canMC = spec.mode !== 'lt' && spec.distractors.length >= 2;
+    const useMC = spec.mode === 'mc' || (canMC && (this.answerMode === 'mc' || (this.answerMode === 'mix' && Math.random() < 0.5)));
+    const badge = document.createElement('div');
+    badge.className = 'ex-type-badge';
+    badge.textContent = useMC ? 'Auswählen' : 'Tippen';
+    box.appendChild(badge);
+    _prompt(box, spec.prompt);
+    const sent = document.createElement('div');
+    sent.className = 'drill-sentence';
+    const [before, after] = spec.text.split('___');
+    const done = (ok, given) => this._done(spec, ok, given);
+
+    if (useMC) {
+      sent.innerHTML = `${escHtml(before)}<span class="drill-gap">&nbsp;?&nbsp;</span>${escHtml(after || '')}`;
+      box.appendChild(sent);
+      const opts = shuffle([spec.accept[0], ...shuffle(spec.distractors).slice(0, 3)]);
+      const grid = document.createElement('div'); grid.className = 'mc-grid';
+      opts.forEach(opt => {
+        const b = document.createElement('button'); b.className = 'mc-btn'; b.textContent = opt;
+        b.addEventListener('click', () => {
+          const ok = spec.accept.includes(opt);
+          grid.querySelectorAll('.mc-btn').forEach(x => {
+            x.disabled = true;
+            if (spec.accept.includes(x.textContent)) x.classList.add('correct');
+            else if (x === b) x.classList.add('wrong');
+          });
+          sent.querySelector('.drill-gap').textContent = spec.accept[0];
+          sent.querySelector('.drill-gap').classList.add(ok ? 'ok' : 'bad');
+          done(ok, opt);
+        });
+        grid.appendChild(b);
+      });
+      box.appendChild(grid);
+    } else {
+      sent.innerHTML = `${escHtml(before)}<input class="lt-input drill-input" autocomplete="off" autocapitalize="off" spellcheck="false">${escHtml(after || '')}`;
+      box.appendChild(sent);
+      const inp = sent.querySelector('input');
+      const longAns = spec.accept[0].length > 14;
+      inp.style.width = Math.max(5, Math.min(longAns ? 30 : 16, spec.accept[0].length + 2)) + 'ch';
+      if (longAns) { inp.classList.add('drill-input-long'); }
+      box.appendChild(buildAccentHelper(box));
+      const check = document.createElement('button');
+      check.className = 'btn btn-primary'; check.style.marginTop = '0.9rem'; check.textContent = 'Prüfen';
+      const doCheck = () => {
+        if (this.answered) { this.next(); return; }
+        if (!inp.value.trim()) { inp.focus(); return; }
+        const ok = compareAnswer(inp.value, spec.accept);
+        inp.readOnly = true; check.disabled = true;
+        inp.classList.add(ok ? 'correct' : 'wrong');
+        if (!ok) {
+          const sol = document.createElement('span');
+          sol.className = 'drill-solution'; sol.textContent = spec.accept[0];
+          inp.insertAdjacentElement('afterend', sol);
+        }
+        done(ok, inp.value);
+      };
+      check.addEventListener('click', doCheck);
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doCheck(); } });
+      box.appendChild(check);
+      setTimeout(() => { try { inp.focus({ preventScroll: true }); } catch (e) { /* */ } }, 50);
+    }
+    addFeedbackArea(box);
+  }
+
+  _done(spec, ok, given) {
+    this.answered = true;
+    this.sessionTotal++;
+    if (ok) { this.sessionCorrect++; this.streak++; } else { this.streak = 0; this.retry.push({ spec, due: this.count + 3 }); }
+    const extra = ok ? spec.explain : (spec.explain || '') + ' Die Aufgabe kommt gleich noch einmal.';
+    showFeedback(this.box, ok, extra);
+    Store.recordDrill(this.mod.id, ok, this.level);
+    const act = Store.getActivityStats();
+    if (window._updateDailyGoalBanner) window._updateDailyGoalBanner(act.todayCorrect);
+    checkMilestones(this.sessionTotal, act.todayTotal, act.todayCorrect);
+    this._stats();
+    this.nextBtn.disabled = false;
+    this.nextBtn.focus({ preventScroll: true });
+    // Hinweis, wenn die Grundregel sitzt
+    const rate = this.sessionCorrect / this.sessionTotal;
+    if (!this.suggested && this.sessionTotal >= 15 && rate >= 0.8) {
+      this.suggested = true;
+      const hasNext = this.level < this.gen.levels.length - 1;
+      this.hintEl.innerHTML = `<div class="drill-suggest"><strong>Das sitzt! 🎉</strong> ${Math.round(rate * 100)} % richtig.
+        ${hasNext ? '<button type="button" class="btn btn-ghost btn-sm" data-act="up">Nächste Stufe</button>' : ''}
+        <button type="button" class="btn btn-oliva btn-sm" data-act="ex">Zu den Übungen →</button></div>`;
+      this.hintEl.onclick = e => {
+        const a = e.target.closest('[data-act]'); if (!a) return;
+        this.hintEl.innerHTML = '';
+        if (a.dataset.act === 'ex') this.gotoExercises();
+        else this.mount.querySelector(`[data-lv="${this.level + 1}"]`).click();
+        this.suggested = false; this.sessionCorrect = 0; this.sessionTotal = 0; this._stats();
+      };
+    }
+  }
+}
+
+/* ================================================================
+   AUFGABEN-REIHENFOLGE: erst Stufe 1 (Grundregel), dann 2, dann 3.
+   Innerhalb einer Stufe: leichte Formate zuerst, Typen abwechseln.
+   ================================================================ */
+const STUFE_LABEL = { 1: '🌱 Grundregel', 2: '🌿 Erweiterung', 3: '🌳 Sonderfälle' };
+
+function _decodeEntities(str) {
+  if (typeof str !== 'string' || str.indexOf('&') < 0) return str;
+  const ta = document.createElement('textarea');
+  ta.innerHTML = str;
+  return ta.value;
+}
+function _decodeDeep(obj) {
+  if (typeof obj === 'string') return _decodeEntities(obj);
+  if (Array.isArray(obj)) return obj.map(_decodeDeep);
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const k of Object.keys(obj)) out[k] = _decodeDeep(obj[k]);
+    return out;
+  }
+  return obj;
+}
+
+function buildExerciseSequence(exs) {
+  const DIFFICULTY = {
+    SO: 0, ZO: 0, EL: 0, SR: 0,
+    MC: 1, MCL: 1, LT: 1, FT: 1, ST: 1,
+    FK: 2, KA: 2, KO: 2, DE: 2, IT: 2,
+  };
+  const MIN_GAP = 4;
+  const result = [];
+  const lastSeen = {};
+  const diffOf = ex => DIFFICULTY[ex.type] ?? 1;
+
+  [1, 2, 3].forEach(stufe => {
+    const remaining = shuffle(exs.filter(e => (e.stufe || 1) === stufe));
+    while (remaining.length > 0) {
+      const pos = result.length;
+      const eligible = remaining.filter(ex => {
+        const last = lastSeen[ex.type];
+        return last === undefined || (pos - last) >= MIN_GAP;
+      });
+      let pool;
+      if (eligible.length > 0) {
+        pool = eligible;
+      } else {
+        const gapOf = ex => lastSeen[ex.type] === undefined ? Infinity : pos - lastSeen[ex.type];
+        const maxGap = Math.max(...remaining.map(gapOf));
+        pool = remaining.filter(ex => gapOf(ex) === maxGap);
+      }
+      const minDiff = Math.min(...pool.map(diffOf));
+      const best = pool.filter(ex => diffOf(ex) === minDiff);
+      const chosen = best[Math.floor(Math.random() * best.length)];
+      result.push(chosen);
+      lastSeen[chosen.type] = pos;
+      remaining.splice(remaining.indexOf(chosen), 1);
+    }
+  });
+  return result;
+}
+
 class ExerciseSession {
   constructor(moduleData, fillEl, textEl, boxEl, navEl) {
+    moduleData.exercises = moduleData.exercises.map(_decodeDeep);
     this.mod    = moduleData;
     this.fillEl = fillEl;
     this.textEl = textEl;
@@ -1436,70 +1755,22 @@ class ExerciseSession {
 
   start() {
     Store.updateStreak();
+    if (!this._modesDone) { this._modesDone = true; setupModuleModes(this); }
     const state = Store.load();
     const mState = Store.getModule(state, this.mod.id);
 
     if (!this._sequenceBuilt) {
       this._sequenceBuilt = true;
       const exs = this.mod.exercises;
-
-      const DIFFICULTY = {
-        SO: 0, ZO: 0, EL: 0, SR: 0,
-        MC: 1, MCL: 1, LT: 1, FT: 1, ST: 1,
-        FK: 2, KA: 2, KO: 2, DE: 2, IT: 2,
-      };
-
-      function shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
+      const byId = new Map(exs.map(e => [e.id, e]));
+      const saved = Array.isArray(mState.order) ? mState.order : null;
+      // Gespeicherte Reihenfolge weiterverwenden, solange der Aufgabensatz gleich ist
+      if (saved && saved.length === exs.length && saved.every(id => byId.has(id)) && (mState.lastIndex || 0) > 0) {
+        this._exercises = saved.map(id => byId.get(id));
+      } else {
+        this._exercises = buildExerciseSequence(exs);
+        Store.setOrder(this.mod.id, this._exercises.map(e => e.id));
       }
-
-      const pools = [[], [], []];
-      exs.forEach(ex => pools[DIFFICULTY[ex.type] ?? 1].push(ex));
-      pools.forEach(p => shuffle(p));
-
-      const MIN_GAP = 4;
-      const result = [];
-      const lastSeen = {};
-
-      const remaining = [...pools[0], ...pools[1], ...pools[2]];
-      const diffOf = ex => DIFFICULTY[ex.type] ?? 1;
-
-      while (remaining.length > 0) {
-        const pos = result.length;
-
-        const eligible = remaining.filter(ex => {
-          const last = lastSeen[ex.type];
-          return last === undefined || (pos - last) >= MIN_GAP;
-        });
-
-        let pool;
-        if (eligible.length > 0) {
-          pool = eligible;
-        } else {
-          const maxGap = Math.max(...remaining.map(ex => {
-            const last = lastSeen[ex.type];
-            return last === undefined ? Infinity : pos - last;
-          }));
-          pool = remaining.filter(ex => {
-            const last = lastSeen[ex.type];
-            const gap = last === undefined ? Infinity : pos - last;
-            return gap === maxGap;
-          });
-        }
-        const minDiff = Math.min(...pool.map(diffOf));
-        const best = pool.filter(ex => diffOf(ex) === minDiff);
-        const chosen = best[Math.floor(Math.random() * best.length)];
-
-        result.push(chosen);
-        lastSeen[chosen.type] = pos;
-        remaining.splice(remaining.indexOf(chosen), 1);
-      }
-
-      this._exercises = result;
     }
 
     this.mod.exercises = this._exercises || this.mod.exercises;
@@ -1508,11 +1779,12 @@ class ExerciseSession {
   }
 
   _updateProgressText() {
-    const act = Store.getActivityStats();
-    const n = act.todayCorrect;
-    this.textEl.textContent = n === 1
-      ? '1 Aufgabe heute gelöst'
-      : `${n} Aufgaben heute gelöst`;
+    const total = this.mod.exercises.length;
+    const pos = Math.min(this.index + 1, total);
+    if (this._hasStufe === undefined) this._hasStufe = this.mod.exercises.some(e => e.stufe);
+    const st = this.mod.exercises[this.index]?.stufe || 1;
+    const stufeTxt = this._hasStufe && STUFE_LABEL[st] ? ` · ${STUFE_LABEL[st]}` : '';
+    this.textEl.textContent = `Aufgabe ${pos} / ${total}${stufeTxt}`;
   }
 
   _render() {
@@ -1593,7 +1865,7 @@ class ExerciseSession {
     const pct    = Math.round(score * 100);
 
     this.fillEl.style.width = '100%';
-    this._updateProgressText();
+    this.textEl.textContent = `${this.mod.exercises.length} von ${this.mod.exercises.length} Aufgaben erledigt`;
     this.navEl.style.display = 'none';
 
     this.boxEl.innerHTML = `

@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Imperfetto</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
   <div id="daily-goal-mount"></div>
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -103,7 +103,7 @@ const MODULE = {
       translation:'Als Kind spielte ich immer im Garten.',
       explain:'giocavo = Imperfetto 1. Sg. (ich spielte). giocava wäre 3. Sg. (er/sie spielte). Da bambino = als Kind.' },
 
-    { id:'m22-so-02', type:'SO',
+    { id:'m22-so-02', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['Marco', 'quando', 'dormiva', 'dormivo', 'ho', 'chiamato', 'dormivamo'],
       solution:['Marco', 'dormiva', 'quando', 'ho', 'chiamato'],
@@ -131,35 +131,35 @@ const MODULE = {
       translation:'Sie wohnte in Neapel.',
       explain:'abitava = Imperfetto 3. Sg. (sie wohnte). abitavo wäre 1. Sg. (ich wohnte) — Subjekt ist lei.' },
 
-    { id:'m22-so-06', type:'SO',
+    { id:'m22-so-06', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['eravamo', 'erano', 'noi', 'molto', 'stanchi', 'ero'],
       solution:['noi', 'eravamo', 'molto', 'stanchi'],
       translation:'Wir waren sehr müde.',
       explain:'eravamo = Imperfetto 1. Pl. von essere (wir waren). erano wäre 3. Pl. (sie waren) — Subjekt ist noi.' },
 
-    { id:'m22-so-07', type:'SO',
+    { id:'m22-so-07', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['faceva', 'facevo', 'quando', 'caldo', 'andiamo', 'andavamo', 'al', 'mare'],
       solution:['quando', 'faceva', 'caldo', 'andavamo', 'al', 'mare'],
       translation:'Wenn es heiß war, gingen wir ans Meer.',
       explain:'faceva = Imperfetto 3. Sg. (es war heiß, Zustand). andavamo = 1. Pl. Imperfetto (wir gingen, Gewohnheit). andiamo wäre Präsens.' },
 
-    { id:'m22-so-08', type:'SO',
+    { id:'m22-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['volevi', 'voleva', 'tu', 'un', 'gelato', 'volevo'],
       solution:['tu', 'volevi', 'un', 'gelato'],
       translation:'Du wolltest ein Eis.',
       explain:'volevi = Imperfetto 2. Sg. von volere (du wolltest). voleva wäre 3. Sg. (er/sie wollte) — Subjekt ist tu.' },
 
-    { id:'m22-so-09', type:'SO',
+    { id:'m22-so-09', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['avevo', 'aveva', 'io', 'tanta', 'fame', 'avevamo'],
       solution:['io', 'avevo', 'tanta', 'fame'],
       translation:'Ich hatte sehr viel Hunger.',
       explain:'avevo = Imperfetto 1. Sg. von avere (ich hatte). aveva wäre 3. Sg. (er/sie hatte) — Subjekt ist io.' },
 
-    { id:'m22-so-10', type:'SO',
+    { id:'m22-so-10', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['pioveva', 'piovevo', 'quel', 'giorno', 'tanto', 'piovevano'],
       solution:['quel', 'giorno', 'pioveva', 'tanto'],
@@ -204,12 +204,12 @@ const MODULE = {
       translation:'Du sangst als Kind sehr gut und spieltest oft mit mir.',
       explain:'cantavi / giocavi = 2. Sg. Imperfetto.' },
 
-    { id:'m22-el-06', type:'EL',
+    { id:'m22-el-06', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Voi {0} spesso la pizza e {1} sempre la birra.',
-      blanks:[{accept:'mangiavate', distractors:['mangiavamo', 'mangiamo']}, {accept:'bevavate', distractors:['bevevamo', 'beviamo']}],
+      blanks:[{accept:'mangiavate', distractors:['mangiavamo', 'mangiamo']}, {accept:'bevevate', distractors:['bevevamo', 'beviamo']}],
       translation:'Ihr aßt oft Pizza und trankt immer Bier.',
-      explain:'mangiavate / bevavate = 2. Pl. Imperfetto.' },
+      explain:'mangiavate / bevevate = 2. Pl. Imperfetto (bere → Stamm beve-).' },
 
     { id:'m22-el-07', type:'EL',
       prompt:'Wähle die richtigen Wörter für die Lücken:',
@@ -225,14 +225,14 @@ const MODULE = {
       translation:'Als Kind benutzte du immer das Fahrrad und liefst im Park.',
       explain:'usavi / correvi = 2. Sg. Imperfetto.' },
 
-    { id:'m22-el-09', type:'EL',
+    { id:'m22-el-09', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Lei {0} stanca e {1} fame dopo il lavoro.',
       blanks:[{accept:'era', distractors:['ero', 'è']}, {accept:'aveva', distractors:['avevo', 'ha']}],
       translation:'Sie war müde und hatte Hunger nach der Arbeit.',
       explain:'era / aveva = 3. Sg. Imperfetto von essere/avere.' },
 
-    { id:'m22-el-10', type:'EL',
+    { id:'m22-el-10', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Io {0} molto freddo e {1} sete quella notte.',
       blanks:[{accept:'avevo', distractors:['aveva', 'ho']}, {accept:'avevo', distractors:['aveva', 'ho']}],
@@ -251,7 +251,7 @@ const MODULE = {
         { de:'sie sprachen',    it:'parlavano' },
       ] },
 
-    { id:'m22-zo-02', type:'ZO',
+    { id:'m22-zo-02', type:'ZO', stufe:2,
       prompt:'Ordne zu: essere im Imperfetto (unregelmäßig)',
       pairs:[
         { de:'ich war',     it:'ero'     },
@@ -262,7 +262,7 @@ const MODULE = {
         { de:'sie waren',   it:'erano'   },
       ] },
 
-    { id:'m22-zo-03', type:'ZO',
+    { id:'m22-zo-03', type:'ZO', stufe:3,
       prompt:'Ordne zu: Imperfetto oder Passato Prossimo?',
       pairs:[
         { de:'andauernder Zustand',          it:'Imperfetto: era stanco'         },
@@ -273,7 +273,7 @@ const MODULE = {
         { de:'Ereignis im Vordergrund',      it:'PP: è arrivato Marco'           },
       ] },
 
-    { id:'m22-zo-04', type:'ZO',
+    { id:'m22-zo-04', type:'ZO', stufe:3,
       prompt:'Ordne zu: Signalwörter für Imperfetto oder PP?',
       pairs:[
         { de:'sempre (immer)',      it:'Imperfetto'    },
@@ -295,7 +295,7 @@ const MODULE = {
         { de:'Non sapevo cosa fare.',              it:'Ich wusste nicht, was ich tun sollte.'   },
       ] },
 
-    { id:'m22-zo-06', type:'ZO',
+    { id:'m22-zo-06', type:'ZO', stufe:2,
       prompt:'Ordne zu: unregelmäßige Imperfetti',
       pairs:[
         { de:'fare (machen)',   it:'facevo'    },
@@ -317,7 +317,7 @@ const MODULE = {
         { de:'sie sahen',    it:'vedevano' },
       ] },
 
-    { id:'m22-zo-08', type:'ZO',
+    { id:'m22-zo-08', type:'ZO', stufe:3,
       prompt:'Ordne zu: Hintergrund oder Ereignis?',
       pairs:[
         { de:'Pioveva. (es regnete)',          it:'Hintergrund (Imperfetto)'   },
@@ -346,7 +346,7 @@ const MODULE = {
       correctValue:'dormivo',
       explain:'Gewohnheit in der Vergangenheit: Imperfetto. dormire 1. Sg.: dormivo.' },
 
-    { id:'m22-mc-02', type:'MC',
+    { id:'m22-mc-02', type:'MC', stufe:2,
       prompt:'Welche Form? "___ tardi quando siamo arrivati." (essere, es war)',
       options:['È stato','Era','Stava','Fu'],
       correctValue:'Era',
@@ -358,19 +358,19 @@ const MODULE = {
       correctValue:'andavamo',
       explain:'Regelmäßige Gewohnheit (ogni estate): Imperfetto. andare 1. Pl.: andavamo.' },
 
-    { id:'m22-mc-04', type:'MC',
+    { id:'m22-mc-04', type:'MC', stufe:3,
       prompt:'Welche Form? "Mentre ___ la TV, è arrivato Marco." (guardare)',
       options:['ho guardato','guardavo','guardo','guarderò'],
       correctValue:'guardavo',
       explain:'Hintergrund (mentre): Imperfetto. guardare 1. Sg.: guardavo.' },
 
-    { id:'m22-mc-05', type:'MC',
+    { id:'m22-mc-05', type:'MC', stufe:2,
       prompt:'Welche Form von "fare" im Imperfetto, 1. Sg.?',
       options:['farevo','favo','facevo','fecevo'],
       correctValue:'facevo',
       explain:'fare ist unregelmäßig im Imperfetto: Stamm face-. 1. Sg.: facevo.' },
 
-    { id:'m22-mc-06', type:'MC',
+    { id:'m22-mc-06', type:'MC', stufe:2,
       prompt:'Welche Form? "Lei ___ stanca dopo il lavoro." (essere, Zustand)',
       options:['è stata','era','fu','stava'],
       correctValue:'era',
@@ -382,7 +382,7 @@ const MODULE = {
       correctValue:'studiavano',
       explain:'Gewohnheit in der Vergangenheit: Imperfetto. studiare 3. Pl.: studiavano.' },
 
-    { id:'m22-mc-08', type:'MC',
+    { id:'m22-mc-08', type:'MC', stufe:3,
       prompt:'Welcher Satz beschreibt eine einmalige abgeschlossene Handlung?',
       options:[
         'Da bambino andavo spesso al parco.',
@@ -393,13 +393,13 @@ const MODULE = {
       correctValue:'Ieri ho incontrato un amico.',
       explain:'Ieri (gestern) + einmalige Handlung: Passato Prossimo. ho incontrato.' },
 
-    { id:'m22-mc-09', type:'MC',
+    { id:'m22-mc-09', type:'MC', stufe:2,
       prompt:'Welche Form von "bere" im Imperfetto, 3. Sg.?',
       options:['bereva','bibeva','beveva','bevava'],
       correctValue:'beveva',
       explain:'bere ist unregelmäßig: Stamm beve-. 3. Sg.: beveva.' },
 
-    { id:'m22-mc-10', type:'MC',
+    { id:'m22-mc-10', type:'MC', stufe:3,
       prompt:'"Non sapevo che fosse così difficile." Warum Imperfetto?',
       options:[
         'Weil es in der Zukunft liegt.',
@@ -416,7 +416,7 @@ const MODULE = {
       correctValue:'cantavate',
       explain:'voi + Imperfetto von cantare (-are): cantavate.' },
 
-    { id:'m22-mc-12', type:'MC',
+    { id:'m22-mc-12', type:'MC', stufe:2,
       prompt:'"Di solito mi ___ alle sette." (svegliarsi) Welche Form?',
       options:['mi svegliavo','mi sono svegliato','mi sveglio','mi svegliai'],
       correctValue:'mi svegliavo',
@@ -430,21 +430,21 @@ const MODULE = {
       translation:'Als ich klein war, spielte ich viel und las viele Bücher.',
       explain:'Da piccola = Kindheit (Gewohnheit): Imperfetto. giocavo / leggevo.' },
 
-    { id:'m22-mcl-02', type:'MC',
+    { id:'m22-mcl-02', type:'MC', stufe:3,
       prompt:'Wähle: "Mentre ___ la cena, ___ il telefono."',
       options:['preparavo / ha suonato','ho preparato / suonava','preparavo / suonava','preparo / suona'],
       correctValue:'preparavo / ha suonato',
       translation:'Während ich das Abendessen kochte, klingelte das Telefon.',
       explain:'Hintergrund (mentre): preparavo (Imperfetto). Ereignis: ha suonato (PP).' },
 
-    { id:'m22-mcl-03', type:'MC',
+    { id:'m22-mcl-03', type:'MC', stufe:3,
       prompt:'Wähle: "Ieri ___ bel tempo ma oggi ___."',
-      options:['faceva / fa freddo','faceva / fa freddo','ha fatto / fa','fa / ha fatto'],
+      options:['faceva / fa freddo','fa / faceva freddo','ha fatto / fa','fa / ha fatto'],
       correctValue:'faceva / fa freddo',
       translation:'Gestern war schönes Wetter, aber heute ist es kalt.',
       explain:'Ieri + Zustand Wetter: faceva (Imperfetto). oggi = Präsens: fa freddo.' },
 
-    { id:'m22-mcl-04', type:'MC',
+    { id:'m22-mcl-04', type:'MC', stufe:2,
       prompt:'Wähle: "Non ___ cosa rispondere — ___ troppo sorpreso."',
       options:['sapevo / ero','ho saputo / sono stato','sapevo / sono stato','so / ero'],
       correctValue:'sapevo / ero',
@@ -465,25 +465,25 @@ const MODULE = {
       translation:'Als Kind lebte ich immer auf dem Land. Ich verbrachte die Tage damit, mit Freunden zu spielen.',
       explain:'vivere 1. Sg. Imperfetto: vivevo; passare 1. Sg. Imperfetto: Passavo.' },
 
-    { id:'m22-lt-02', type:'LT',
+    { id:'m22-lt-02', type:'LT', stufe:3,
       text:'Mentre {0} a casa, {1} squillato il telefono.',
       blanks:[ { accept:['dormivo'] }, { accept:['è'] } ],
       translation:'Während ich zu Hause schlief, klingelte das Telefon.',
       explain:'dormivo (Imperfetto, Hintergrund); è squillato (PP, Ereignis).' },
 
-    { id:'m22-lt-03', type:'LT',
+    { id:'m22-lt-03', type:'LT', stufe:3,
       text:'{0} tardi e tutti {1} — nessuno ci ha sentiti.',
       blanks:[ { accept:['Era'] }, { accept:['dormivano'] } ],
       translation:'Es war spät und alle schliefen — niemand hat uns gehört.',
       explain:'Era (essere Imperfetto, Zustand); dormivano (Imperfetto, Zustand); ha sentiti (PP).' },
 
-    { id:'m22-lt-04', type:'LT',
+    { id:'m22-lt-04', type:'LT', stufe:3,
       text:'Prima {0} tutti i giorni, ma ora non {1} più tempo.',
       blanks:[ { accept:['correvo'] }, { accept:['ho'] } ],
       translation:'Früher lief ich jeden Tag, aber jetzt habe ich keine Zeit mehr.',
       explain:'Prima + ogni giorno = Gewohnheit: correvo (Imperfetto). ora = Präsens: ho.' },
 
-    { id:'m22-lt-05', type:'LT',
+    { id:'m22-lt-05', type:'LT', stufe:2,
       text:'Che tempo {0} ieri? — {1} freddo e {2} molto.',
       blanks:[ { accept:['faceva'] }, { accept:['Faceva'] }, { accept:['pioveva'] } ],
       translation:'Wie war das Wetter gestern? — Es war kalt und es regnete viel.',
@@ -501,7 +501,7 @@ const MODULE = {
         { label:'loro',     accept:['mangiavano'] },
       ] },
 
-    { id:'m22-ft-02', type:'FT',
+    { id:'m22-ft-02', type:'FT', stufe:2,
       prompt:'Konjugiere "fare" im Imperfetto (Stamm: face-):',
       rows:[
         { label:'io',       accept:['facevo']   },
@@ -513,7 +513,7 @@ const MODULE = {
       ] },
 
     /* === FK 3 === */
-    { id:'m22-fk-01', type:'FK',
+    { id:'m22-fk-01', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Da bambino mangiavo sempre la pizza ieri.',
       solution:'Da bambino mangiavo sempre la pizza.',
@@ -521,7 +521,7 @@ const MODULE = {
       translation:'Als Kind aß ich immer Pizza.',
       explain:'"Da bambino" und "ieri" passen nicht zusammen — da bambino ist Kindheit (Imperfetto), ieri ist Gestern (PP). Einen der beiden Zeitausdrücke entfernen.' },
 
-    { id:'m22-fk-02', type:'FK',
+    { id:'m22-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Mentre ho letto, è arrivato Marco.',
       solution:'Mentre leggevo, è arrivato Marco.',
@@ -529,7 +529,7 @@ const MODULE = {
       translation:'Während ich las, kam Marco an.',
       explain:'Mentre + Hinterground → Imperfetto. leggevo (nicht ho letto = PP, das wäre abgeschlossen).' },
 
-    { id:'m22-fk-03', type:'FK',
+    { id:'m22-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Ogni estate andavo al mare una volta.',
       solution:'L\'estate scorsa sono andato al mare una volta.',
@@ -538,7 +538,7 @@ const MODULE = {
       explain:'"Una volta" (einmal) signalisiert eine einzelne Handlung → PP. "Ogni estate" (jede Sommer) würde Imperfetto verlangen, aber dann passt "una volta" nicht.' },
 
     /* === KA 3 === */
-    { id:'m22-ka-01', type:'KA',
+    { id:'m22-ka-01', type:'KA', stufe:3,
       prompt:'Kategorisiere: Imperfetto oder Passato Prossimo?',
       categories:['Imperfetto (Zustand / Gewohnheit)', 'Passato Prossimo (abgeschlossen)'],
       items:[
@@ -550,7 +550,7 @@ const MODULE = {
         { text:'Ho letto il libro.',               cat:1 },
       ] },
 
-    { id:'m22-ka-02', type:'KA',
+    { id:'m22-ka-02', type:'KA', stufe:3,
       prompt:'Kategorisiere: Signalwort für Imperfetto oder PP?',
       categories:['Imperfetto (sempre, ogni, di solito...)', 'PP (ieri, una volta, alle tre...)'],
       items:[
@@ -562,7 +562,7 @@ const MODULE = {
         { text:'una volta',       cat:1 },
       ] },
 
-    { id:'m22-ka-03', type:'KA',
+    { id:'m22-ka-03', type:'KA', stufe:3,
       prompt:'Kategorisiere: Hintergrund (Imperfetto) oder Ereignis (PP)?',
       categories:['Hintergrund (Imperfetto)', 'Ereignis (PP)'],
       items:[
@@ -575,46 +575,46 @@ const MODULE = {
       ] },
 
     /* === KO 2 === */
-    { id:'m22-ko-01', type:'KO',
+    { id:'m22-ko-01', type:'KO', stufe:3,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Ieri mangiavo la pizza.', tag:'Imperfetto: falsch für Gestern-Ereignis' },
       b:{ sentence:'Ieri ho mangiato la pizza.', tag:'PP: korrekt für einmalig abgeschlossenes Ereignis' },
       reveal:'"Ieri mangiavo" klingt seltsam — ieri signalisiert ein abgeschlossenes Gestern-Ereignis, was das PP verlangt. Imperfetto + ieri würde nur funktionieren, wenn man einen Hintergrund beschreibt: "Ieri mentre mangiavo la pizza, è arrivata una mail." Ohne Hintergrundkontext: "Ieri ho mangiato la pizza."' },
 
-    { id:'m22-ko-02', type:'KO',
+    { id:'m22-ko-02', type:'KO', stufe:3,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Sapevo che era difficile.', tag:'Imperfetto: andauerndes Wissen' },
       b:{ sentence:'Ho saputo che era difficile.', tag:'PP: ich habe erfahren (neu gelernt)' },
       reveal:'sapere im Imperfetto = wissen (andauernder Zustand). sapere im PP = erfahren, herausfinden (Moment der Erkenntnis). "Sapevo" = Ich wusste es (schon). "Ho saputo" = Ich habe es erfahren (gerade eben). Dasselbe gilt für conoscere: conoscevo (ich kannte) vs. ho conosciuto (ich habe kennengelernt).' },
 
     /* === DE 3 === */
-    { id:'m22-de-01', type:'DE',
+    { id:'m22-de-01', type:'DE', stufe:2,
       prompt:'"Als ich jung war, spielte ich jeden Tag Fußball."',
       solutions:['Quando ero giovane, giocavo a calcio ogni giorno.','Da giovane, giocavo a calcio ogni giorno.'],
       note:'Imperfetto: ero (essere) + giocavo (giocare). ogni giorno = Gewohnheit.' },
 
-    { id:'m22-de-02', type:'DE',
+    { id:'m22-de-02', type:'DE', stufe:3,
       prompt:'"Es war Nacht, es regnete und alle schliefen, als das Telefon klingelte."',
       solutions:['Era notte, pioveva e tutti dormivano quando ha suonato il telefono.'],
       note:'Drei Hintergründe (Imperfetto) + ein Ereignis (PP: ha suonato).' },
 
-    { id:'m22-de-03', type:'DE',
+    { id:'m22-de-03', type:'DE', stufe:3,
       prompt:'"Früher arbeitete ich in einer Bank, aber jetzt bin ich Lehrer."',
       solutions:['Prima lavoravo in una banca, ma ora sono insegnante.','Una volta lavoravo in una banca, ma adesso sono insegnante.'],
       note:'prima / una volta = früher (Imperfetto); ora / adesso = jetzt (Präsens).' },
 
     /* === IT 3 === */
-    { id:'m22-it-01', type:'IT',
+    { id:'m22-it-01', type:'IT', stufe:3,
       prompt:'"Mentre camminavo per il parco, ho trovato un portafoglio."',
       solutions:['Während ich durch den Park spazierte, habe ich ein Portemonnaie gefunden.','Beim Spaziergang im Park habe ich eine Geldbörse gefunden.'],
       note:'camminavo (Imperfetto, Hintergrund); ho trovato (PP, Ereignis).' },
 
-    { id:'m22-it-02', type:'IT',
+    { id:'m22-it-02', type:'IT', stufe:3,
       prompt:'"Da bambino non mi piaceva la verdura, ma ora la mangio volentieri."',
       solutions:['Als Kind mochte ich kein Gemüse, aber jetzt esse ich es gerne.','Als ich klein war, mochte ich kein Gemüse, aber jetzt esse ich es gerne.'],
       note:'non mi piaceva (Imperfetto, Kindheitszustand); ora la mangio (Präsens).' },
 
-    { id:'m22-it-03', type:'IT',
+    { id:'m22-it-03', type:'IT', stufe:3,
       prompt:'"Non sapevo che avevi già finito — pensavo che stavi ancora lavorando."',
       solutions:['Ich wusste nicht, dass du schon fertig warst — ich dachte, du arbeitest noch.','Ich wusste nicht, dass du schon fertig bist — ich glaubte, du arbeitest noch.'],
       note:'sapevo / pensavo (Imperfetto, Zustände des Wissens/Glaubens); stavi lavorando (Progressiv, Imperfetto).' },
@@ -624,19 +624,19 @@ const MODULE = {
     { id:'m22-sr-01', type:'SR',
       it:'Da bambino andavo al mare ogni estate.',
       de:'Als Kind fuhr ich jeden Sommer ans Meer.' },
-    { id:'m22-sr-02', type:'SR',
+    { id:'m22-sr-02', type:'SR', stufe:2,
       it:'Quando ero piccola, parlavo solo italiano.',
       de:'Als ich klein war, sprach ich nur Italienisch.' },
     { id:'m22-sr-03', type:'SR',
       it:'I nonni abitavano in un piccolo paese.',
       de:'Die Großeltern wohnten in einem kleinen Dorf.' },
-    { id:'m22-sr-04', type:'SR',
+    { id:'m22-sr-04', type:'SR', stufe:2,
       it:"Studiavi molto quando eri all'università?",
       de:'Hast du viel gelernt, als du an der Uni warst?' },
-    { id:'m22-sr-05', type:'SR',
+    { id:'m22-sr-05', type:'SR', stufe:2,
       it:'Eravamo sempre insieme da ragazzi.',
       de:'Als Jugendliche waren wir immer zusammen.' },
-    { id:'m22-sr-06', type:'SR',
+    { id:'m22-sr-06', type:'SR', stufe:2,
       it:'Faceva freddo e la gente portava il cappotto.',
       de:'Es war kalt und die Leute trugen Mäntel.' },
     { id:'m22-sr-07', type:'SR',
@@ -648,7 +648,7 @@ const MODULE = {
     { id:'m22-sr-09', type:'SR',
       it:'Voi dormivate tardi il sabato mattina.',
       de:'Ihr schlieft samstags morgens lange.' },
-    { id:'m22-sr-10', type:'SR',
+    { id:'m22-sr-10', type:'SR', stufe:2,
       it:"C'era la nebbia e non si vedeva niente.",
       de:'Es war neblig und man konnte nichts sehen.' },
 
@@ -660,11 +660,11 @@ const MODULE = {
       de:'Sie wohnte früher in einer kleinen Stadt.',
       solutions:['Prima abitava in una piccola città.','Una volta abitava in una piccola città.'],
       note:'abitare → abitava (3. Ps. Sg., regelmäßig -ava)' },
-    { id:'m22-st-03', type:'ST',
+    { id:'m22-st-03', type:'ST', stufe:2,
       de:'Wir hatten damals viel Zeit.',
       solutions:['Allora avevamo molto tempo.'],
       note:'avere → avevamo (1. Ps. Pl., unregelmäßig)' },
-    { id:'m22-st-04', type:'ST',
+    { id:'m22-st-04', type:'ST', stufe:2,
       de:'Es war schön und die Sonne schien.',
       solutions:["Era bello e c'era il sole.",'Faceva bel tempo e splendeva il sole.'],
       note:'essere → era (3. Ps. Sg.); Wetterbeschreibungen → imperfetto' },
@@ -676,7 +676,7 @@ const MODULE = {
       de:'Er schlief immer acht Stunden.',
       solutions:['Dormiva sempre otto ore.'],
       note:'dormire → dormiva (3. Ps. Sg., -iva)' },
-    { id:'m22-st-07', type:'ST',
+    { id:'m22-st-07', type:'ST', stufe:3,
       de:'Während ich kochte, hörte ich Musik.',
       solutions:['Mentre cucinavo, ascoltavo la musica.','Mentre cucinavo ascoltavo musica.'],
       note:'Gleichzeitige Handlungen in der Vergangenheit → beide im imperfetto' },
@@ -684,7 +684,7 @@ const MODULE = {
       de:'Die Kinder spielten draußen, wenn es warm war.',
       solutions:['I bambini giocavano fuori quando faceva caldo.'],
       note:'Gewohnheit + Bedingung in der Vergangenheit → imperfetto' },
-    { id:'m22-st-09', type:'ST',
+    { id:'m22-st-09', type:'ST', stufe:2,
       de:'Du warst immer so lustig.',
       solutions:['Eri sempre così divertente.'],
       note:'essere → eri (2. Ps. Sg., unregelmäßig)' },

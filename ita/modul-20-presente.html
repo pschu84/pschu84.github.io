@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Präsens: Regelmäßige Verben</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
   <div id="daily-goal-mount"></div>
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -111,7 +111,7 @@ const MODULE = {
       translation:'Jeden Morgen spreche ich Italienisch.',
       explain:'parlo = 1. Pers. Sg. (ich). parla wäre 3. Pers. Sg. (er/sie).' },
 
-    { id:'m20-so-02', type:'SO',
+    { id:'m20-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['capiscono', 'capisce', 'non', 'loro', 'bene', "l'italiano", 'capiamo'],
       solution:['loro', 'non', 'capiscono', 'bene', "l'italiano"],
@@ -153,7 +153,7 @@ const MODULE = {
       translation:'Ihr schlaft sonntags viel.',
       explain:'dormite = 2. Pers. Pl. (ihr). dormiamo wäre 1. Pers. Pl. (wir) — Subjekt ist voi.' },
 
-    { id:'m20-so-08', type:'SO',
+    { id:'m20-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['finisce', 'finiamo', 'lui', 'il', 'compito', 'tardi', 'finiscono'],
       solution:['lui', 'finisce', 'il', 'compito', 'tardi'],
@@ -167,7 +167,7 @@ const MODULE = {
       translation:'Ihr sprecht gut Italienisch.',
       explain:'parlate = 2. Pers. Pl. von parlare (ihr). parliamo wäre 1. Pers. Pl. (wir) — Subjekt ist voi.' },
 
-    { id:'m20-so-10', type:'SO',
+    { id:'m20-so-10', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['preferisce', 'preferisco', 'lei', 'il', 'tè', 'al', 'caffè', 'preferiamo'],
       solution:['lei', 'preferisce', 'il', 'tè', 'al', 'caffè'],
@@ -184,7 +184,7 @@ const MODULE = {
       translation:'Ich spreche Italienisch und du sprichst Französisch.',
       explain:'parlo = 1. Sg. parli = 2. Sg.' },
 
-    { id:'m20-el-02', type:'EL',
+    { id:'m20-el-02', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Tu {0} bene e lui {1} poco.',
       blanks:[{accept:'capisci', distractors:['capisce', 'capisco']}, {accept:'capisce', distractors:['capisci', 'capiscono']}],
@@ -205,7 +205,7 @@ const MODULE = {
       translation:'Wir leben in Mailand und ihr lebt in Rom.',
       explain:'viviamo = 1. Pl. vivete = 2. Pl.' },
 
-    { id:'m20-el-05', type:'EL',
+    { id:'m20-el-05', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Voi {0} la lezione e loro {1} gli appunti.',
       blanks:[{accept:'capite', distractors:['capiamo', 'capiscono']}, {accept:'scrivono', distractors:['scriviamo', 'scrivo']}],
@@ -281,7 +281,7 @@ const MODULE = {
         { de:'sie fahren ab',    it:'partono'  },
       ] },
 
-    { id:'m20-zo-04', type:'ZO',
+    { id:'m20-zo-04', type:'ZO', stufe:2,
       prompt:'Ordne zu: capire (-isc-) — alle Formen',
       pairs:[
         { de:'ich verstehe',     it:'capisco'   },
@@ -314,7 +314,7 @@ const MODULE = {
         { de:'Sie essen (Pl.) zusammen.',        it:'Mangiano insieme.'        },
       ] },
 
-    { id:'m20-zo-07', type:'ZO',
+    { id:'m20-zo-07', type:'ZO', stufe:2,
       prompt:'Ordne zu: -ire mit -isc- oder ohne? (io / loro)',
       pairs:[
         { de:'finire (zu Ende)',       it:'mit -isc-'    },
@@ -325,7 +325,7 @@ const MODULE = {
         { de:'sentire (hören)',        it:'kein -isc-'   },
       ] },
 
-    { id:'m20-zo-08', type:'ZO',
+    { id:'m20-zo-08', type:'ZO', stufe:2,
       prompt:'Ordne zu: Verwendung des Presente',
       pairs:[
         { de:'Mangio adesso.',              it:'gerade jetzt'         },
@@ -336,7 +336,7 @@ const MODULE = {
         { de:'Parto alle tre!',             it:'bevorstehende Handlung' },
       ] },
 
-    { id:'m20-zo-09', type:'ZO',
+    { id:'m20-zo-09', type:'ZO', stufe:2,
       prompt:'Ordne zu: -care/-gare → Form bei tu/noi (h-Einfügung!)',
       pairs:[
         { de:'cercare — tu',           it:'cerchi'     },
@@ -348,7 +348,7 @@ const MODULE = {
       ] },
 
     /* === MC 12 === */
-    { id:'m20-mc-01', type:'MC',
+    { id:'m20-mc-01', type:'MC', stufe:2,
       prompt:'Welche Form? "Io ___ l\'italiano." (studiare)',
       options:['studio','studii','studia','studiao'],
       correctValue:'studio',
@@ -367,12 +367,12 @@ const MODULE = {
       explain:'leggere ist -ere. 3. Pers. Sg.: legge.' },
 
     { id:'m20-mc-04', type:'MC',
-      prompt:'Welche Form? "Loro ___ in palestra tre volte a settimana." (andare — regelmäßig wenn: allenarsi)',
-      options:['alleno','allenano','allenansi','allenate'],
-      correctValue:'allenano',
-      explain:'allenarsi (reflexiv von allenare, -are). 3. Pers. Pl.: allenano (+ si = si allenano).' },
+      prompt:'Welche Form? "Loro ___ in palestra tre volte a settimana." (lavorare)',
+      options:['lavoro','lavorano','lavorate','lavora'],
+      correctValue:'lavorano',
+      explain:'lavorare (-are), 3. Pers. Pl. (loro): lavorano.' },
 
-    { id:'m20-mc-05', type:'MC',
+    { id:'m20-mc-05', type:'MC', stufe:2,
       prompt:'Welche Form? "Io non ___ bene l\'inglese." (capire)',
       options:['capisce','capisco','capisci','capiamo'],
       correctValue:'capisco',
@@ -384,27 +384,27 @@ const MODULE = {
       correctValue:'partite',
       explain:'partire ist -ire (kein -isc-). 2. Pers. Pl.: partite.' },
 
-    { id:'m20-mc-07', type:'MC',
+    { id:'m20-mc-07', type:'MC', stufe:2,
       prompt:'Welche Form? "Noi ___ a cercare casa." (cominciare)',
       options:['cominciate','cominciano','cominciamo','comincemo'],
       correctValue:'cominciamo',
       explain:'cominciare ist -iare (-are). 1. Pers. Pl.: cominciamo (kein Doppel-i).' },
 
-    { id:'m20-mc-08', type:'MC',
+    { id:'m20-mc-08', type:'MC', stufe:2,
       prompt:'Welche Form? "Tu ___ il conto?" (pagare)',
-      options:['pagi','paghi','paghe','paghe'],
+      options:['pagi','paghi','paga','pagii'],
       correctValue:'paghi',
       explain:'pagare: vor -i ein h einschreiben (g-Laut bleibt hart). tu paghi.' },
 
-    { id:'m20-mc-09', type:'MC',
+    { id:'m20-mc-09', type:'MC', stufe:2,
       prompt:'Welche Form? "Loro ___ la pizza." (preferire)',
-      options:['preferono','preferiscono','preferono','prefiscono'],
+      options:['preferono','preferiscono','preferisce','prefiscono'],
       correctValue:'preferiscono',
       explain:'preferire ist -ire mit -isc-. 3. Pers. Pl.: preferiscono.' },
 
     { id:'m20-mc-10', type:'MC',
       prompt:'Welche Form? "Marco e Sara ___ a Milano." (vivere)',
-      options:['vivono','vivono','vive','vivete'],
+      options:['vivono','vivano','vive','vivete'],
       correctValue:'vivono',
       explain:'vivere ist -ere. 3. Pers. Pl.: vivono.' },
 
@@ -426,14 +426,14 @@ const MODULE = {
       explain:'aprire ist -ire ohne -isc-. 1. Pers. Sg.: apro.' },
 
     /* === MCL 5 === */
-    { id:'m20-mcl-01', type:'MC',
+    { id:'m20-mcl-01', type:'MC', stufe:3,
       prompt:'Wähle: "Ogni giorno ___ alle sette e ___ alle otto." (svegliarsi / uscire)',
       options:['mi sveglio / esco','mi sveglio / esci','si sveglio / esco','mi svegli / esco'],
       correctValue:'mi sveglio / esco',
       translation:'Jeden Tag wache ich um sieben auf und gehe um acht raus.',
       explain:'svegliarsi 1. Sg.: mi sveglio; uscire (unregelm.) 1. Sg.: esco.' },
 
-    { id:'m20-mcl-02', type:'MC',
+    { id:'m20-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "Noi ___ l\'italiano e loro ___ il francese."',
       options:['studiamo / studiano','studiamo / studono','studamo / studiano','studiamo / studiamo'],
       correctValue:'studiamo / studiano',
@@ -447,14 +447,14 @@ const MODULE = {
       translation:'Du hörst Musik, während ich lese.',
       explain:'ascoltare 2. Sg.: ascolti; leggere 1. Sg.: leggo.' },
 
-    { id:'m20-mcl-04', type:'MC',
+    { id:'m20-mcl-04', type:'MC', stufe:2,
       prompt:'Wähle: "Voi ___ quando ___ la lezione?" (capire / finire)',
       options:['capite / finisce','capite / finise','capisce / finisce','capite / finiscono'],
       correctValue:'capite / finisce',
       translation:'Versteht ihr, wenn die Stunde zu Ende ist?',
       explain:'capire 2. Pl.: capite (kein -isc- bei voi); finire 3. Sg.: finisce (-isc-).' },
 
-    { id:'m20-mcl-05', type:'MC',
+    { id:'m20-mcl-05', type:'MC', stufe:3,
       prompt:'Wähle: "Dove ___ e cosa ___ di lavoro?" (abitare / fare)',
       options:['abiti / fai','abiti / fa','abita / fai','abiti / fare'],
       correctValue:'abiti / fai',
@@ -474,7 +474,7 @@ const MODULE = {
       translation:'Marco liest jeden Morgen die Zeitung und seine Schwester liest ein Buch.',
       explain:'leggere 3. Sg.: legge (-ere).' },
 
-    { id:'m20-lt-03', type:'LT',
+    { id:'m20-lt-03', type:'LT', stufe:2,
       text:'Noi {0} l\'italiano ma non {1} ancora tutto.',
       blanks:[ { accept:['studiamo'] }, { accept:['capiamo'] } ],
       translation:'Wir lernen Italienisch, aber wir verstehen noch nicht alles.',
@@ -486,7 +486,7 @@ const MODULE = {
       translation:'Um wie viel Uhr fährt der Zug ab? — Um 14 Uhr.',
       explain:'partire 3. Sg.: parte (-ire, kein -isc-).' },
 
-    { id:'m20-lt-05', type:'LT',
+    { id:'m20-lt-05', type:'LT', stufe:2,
       text:'Voi {0} il caffè o il tè? — Noi {1} il caffè.',
       blanks:[ { accept:['preferite'] }, { accept:['preferiamo'] } ],
       translation:'Bevorzugt ihr Kaffee oder Tee? — Wir bevorzugen Kaffee.',
@@ -515,7 +515,7 @@ const MODULE = {
         { label:'loro',     accept:['scrivono']  },
       ] },
 
-    { id:'m20-ft-03', type:'FT',
+    { id:'m20-ft-03', type:'FT', stufe:2,
       prompt:'Konjugiere "finire" (-ire, mit -isc-) im Presente:',
       rows:[
         { label:'io',       accept:['finisco']   },
@@ -546,7 +546,7 @@ const MODULE = {
       translation:'Sie essen jeden Abend zusammen.',
       explain:'mangiare 3. Pers. Pl.: mangiano (-ano, nicht -aro oder -ano). Die loro-Endung für -are ist immer -ano.' },
 
-    { id:'m20-fk-02', type:'FK',
+    { id:'m20-fk-02', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Tu cercas le chiavi?',
       solution:'Tu cerchi le chiavi?',
@@ -554,7 +554,7 @@ const MODULE = {
       translation:'Suchst du die Schlüssel?',
       explain:'cercare 2. Pers. Sg.: cerchi (nicht cercas — kein -s Plural!). Vor -i ein h: cerchi.' },
 
-    { id:'m20-fk-03', type:'FK',
+    { id:'m20-fk-03', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Voi capiscete bene l\'italiano.',
       solution:'Voi capite bene l\'italiano.',
@@ -575,7 +575,7 @@ const MODULE = {
         { text:'leggere',    cat:1 },
       ] },
 
-    { id:'m20-ka-02', type:'KA',
+    { id:'m20-ka-02', type:'KA', stufe:2,
       prompt:'Kategorisiere: -ire mit -isc- oder ohne?',
       categories:['-ire mit -isc- (finisco...)', '-ire ohne -isc- (parto...)'],
       items:[
@@ -587,7 +587,7 @@ const MODULE = {
         { text:'sentire',    cat:1 },
       ] },
 
-    { id:'m20-ka-03', type:'KA',
+    { id:'m20-ka-03', type:'KA', stufe:2,
       prompt:'Kategorisiere: Verwendung des Presente',
       categories:['Gegenwart / Gewohnheit', 'Nahe Zukunft'],
       items:[
@@ -600,13 +600,13 @@ const MODULE = {
       ] },
 
     /* === KO 2 === */
-    { id:'m20-ko-01', type:'KO',
+    { id:'m20-ko-01', type:'KO', stufe:2,
       prompt:'Worin unterscheiden sich diese Formen?',
       a:{ sentence:'voi capite', tag:'-ire ohne -isc- bei voi' },
       b:{ sentence:'loro capiscono', tag:'-ire mit -isc- bei loro' },
       reveal:'"voi capite" und "loro capiscono" — bei noi und voi entfällt -isc-: capiamo, capite. Bei io/tu/lui/loro bleibt -isc-: capisco, capisci, capisce, capiscono. Eine häufige Falle ist "voi capiscete" — das ist falsch. Die noi/voi-Formen folgen immer der normalen -ire-Regel.' },
 
-    { id:'m20-ko-02', type:'KO',
+    { id:'m20-ko-02', type:'KO', stufe:2,
       prompt:'Worin unterscheiden sich diese Formen?',
       a:{ sentence:'tu cerchi', tag:'-care: h vor -i (Laut bleibt hart)' },
       b:{ sentence:'tu mangi', tag:'-giare: kein Doppel-i' },
@@ -618,18 +618,18 @@ const MODULE = {
       solutions:['Abito a Berlino, lavoro in una scuola e parlo tre lingue.'],
       note:'abito / lavoro / parlo — alle -are, 1. Pers. Sg., Endung -o.' },
 
-    { id:'m20-de-02', type:'DE',
+    { id:'m20-de-02', type:'DE', stufe:2,
       prompt:'"Versteht ihr die Regel? — Wir verstehen die Regel, aber wir schreiben sie nicht gut."',
       solutions:['Capite la regola? — Capiamo la regola, ma non la scriviamo bene.'],
       note:'capite (voi, -ire kein -isc-); capiamo (noi); scriviamo (noi, -ere).' },
 
-    { id:'m20-de-03', type:'DE',
+    { id:'m20-de-03', type:'DE', stufe:2,
       prompt:'"Marco bevorzugt Kaffee, aber seine Schwester bevorzugt Tee."',
       solutions:['Marco preferisce il caffè, ma sua sorella preferisce il tè.','Marco preferisce il caffè, ma sua sorella preferisce il tè.'],
       note:'preferire 3. Sg.: preferisce (-isc-). sua sorella (Verwandte + Possessiv = kein Artikel).' },
 
     /* === IT 3 === */
-    { id:'m20-it-01', type:'IT',
+    { id:'m20-it-01', type:'IT', stufe:2,
       prompt:'"Dove lavori e a che ora finisci?"',
       solutions:['Wo arbeitest du und um wie viel Uhr bist du fertig?','Wo arbeitest du und wann hörst du auf?'],
       note:'lavori (2. Sg. lavorare); finisci (2. Sg. finire, -isc-).' },
@@ -639,7 +639,7 @@ const MODULE = {
       solutions:['Die Kinder schlafen viel und essen gut.'],
       note:'dormono (3. Pl. dormire, kein -isc-); mangiano (3. Pl. mangiare).' },
 
-    { id:'m20-it-03', type:'IT',
+    { id:'m20-it-03', type:'IT', stufe:3,
       prompt:'"Ogni mattina leggo il giornale mentre bevo il caffè."',
       solutions:['Jeden Morgen lese ich die Zeitung, während ich Kaffee trinke.'],
       note:'leggo (1. Sg. leggere); bevo (1. Sg. bere, unregelm.).' },
@@ -661,19 +661,19 @@ const MODULE = {
     { id:'m20-sr-05', type:'SR',
       it:'Loro abitano vicino alla scuola.',
       de:'Sie wohnen in der Nähe der Schule.' },
-    { id:'m20-sr-06', type:'SR',
+    { id:'m20-sr-06', type:'SR', stufe:2,
       it:'Voi capite bene la grammatica italiana.',
       de:'Ihr versteht die italienische Grammatik gut.' },
     { id:'m20-sr-07', type:'SR',
       it:'Marco lavora in un ufficio in centro.',
       de:'Marco arbeitet in einem Büro in der Innenstadt.' },
-    { id:'m20-sr-08', type:'SR',
+    { id:'m20-sr-08', type:'SR', stufe:2,
       it:'Noi finiamo i compiti dopo cena.',
       de:'Wir beenden die Hausaufgaben nach dem Abendessen.' },
     { id:'m20-sr-09', type:'SR',
       it:'Tu mangi la pasta tutti i giorni?',
       de:'Isst du jeden Tag Pasta?' },
-    { id:'m20-sr-10', type:'SR',
+    { id:'m20-sr-10', type:'SR', stufe:2,
       it:'Io capisco quando parli lentamente.',
       de:'Ich verstehe, wenn du langsam sprichst.' },
 
@@ -701,7 +701,7 @@ const MODULE = {
       de:'Sie (Pl.) arbeiten in einem Hotel.',
       solutions:['Lavorano in un albergo.','Lavorano in un hotel.'],
       note:'lavorare: loro lavorano (6. Ps., -are)' },
-    { id:'m20-st-07', type:'ST',
+    { id:'m20-st-07', type:'ST', stufe:2,
       de:'Ich verstehe die Frage nicht.',
       solutions:['Non capisco la domanda.'],
       note:'capire: io capisco (isc-Verb, -ire)' },

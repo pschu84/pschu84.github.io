@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GrammaticaViva — Negation</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
 <div id="daily-goal-mount"></div>   <!-- NEU -->
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 67</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -95,7 +95,7 @@ const MODULE = {
       translation:'Ich gehe nie ins Kino.',
       explain:'mai = nie (dauerhafte Gewohnheit). ancora = noch nicht (temporär, z.B. non sono ancora andato). mica = gar nicht / wirklich nicht (umgangssprachlich, drückt Abschwächung aus) — passt nicht für eine dauerhafte Gewohnheit.' },
 
-    { id:'m14-so-02', type:'SO',
+    { id:'m14-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['mangiato', 'ho', 'non', 'ancora', 'mai', 'mica'],
       solution:['non', 'ho', 'ancora', 'mangiato'],
@@ -103,14 +103,14 @@ const MODULE = {
       explain:'ancora = noch nicht (temporär — die Handlung kann noch kommen). mai = nie (dauerhaft, z.B. non ho mai mangiato carne). mica = gar nicht / wirklich nicht (umgangsspr. Abschwächung) — drückt kein "noch nicht" aus. ancora steht zwischen Hilfsverb und Partizip.' },
 
 
-    { id:'m14-so-03', type:'SO',
+    { id:'m14-so-03', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['niente','nessuno','mai','ho','non','mangiato'],
       solution:['non','ho','mangiato','niente'],
       translation:'Ich habe nichts gegessen.',
       explain:'niente = nichts (non … niente). nessuno = niemand (Person). mai = nie (zeitlich) — hier geht es um ein Objekt (Essen), nicht um Zeit.' },
 
-    { id:'m14-so-04', type:'SO',
+    { id:'m14-so-04', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['nessuno','niente','mai','ha','non','telefonato'],
       solution:['non','ha','telefonato','nessuno'],
@@ -124,35 +124,35 @@ const MODULE = {
       translation:'Ich wohne hier nicht mehr.',
       explain:'più = nicht mehr (abgeschlossene Situation). ancora = noch nicht (erwartet aber nicht eingetreten). mai = nie (hat nie stattgefunden). non … più: Situation ist beendet.' },
 
-    { id:'m14-so-06', type:'SO',
+    { id:'m14-so-06', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['mai','ancora','più','ho','non','visto','questo','film'],
       solution:['non','ho','mai','visto','questo','film'],
       translation:'Ich habe diesen Film nie gesehen.',
       explain:'mai = nie (dauerhaft: nie in meinem Leben). ancora = noch nicht (temporär). più = nicht mehr (etwas hat aufgehört). non … mai: mai nach dem Hilfsverb.' },
 
-    { id:'m14-so-07', type:'SO',
+    { id:'m14-so-07', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['niente','nessuno','mai','so','non','fare'],
       solution:['non','so','fare','niente'],
       translation:'Ich kann nichts tun.',
       explain:'niente = nichts (Objekt). nessuno = niemand (Person, Subjekt). mai = nie (zeitlich). non … niente: bezieht sich auf das Objekt.' },
 
-    { id:'m14-so-08', type:'SO',
+    { id:'m14-so-08', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['né','nessuno','mica','non','parla','lei','né','tedesco','inglese'],
       solution:['lei','non','parla','né','tedesco','né','inglese'],
       translation:'Sie spricht weder Deutsch noch Englisch.',
       explain:'né … né = weder … noch (doppelte Verneinung). nessuno = niemand — bezieht sich auf Personen. mica = gar nicht (umgangsspr.) — kein Paarausdruck.' },
 
-    { id:'m14-so-09', type:'SO',
+    { id:'m14-so-09', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['mica','ancora','mai','siamo','non','arrivati'],
       solution:['non','siamo','ancora','arrivati'],
       translation:'Wir sind noch nicht angekommen.',
       explain:'ancora = noch nicht (temporär: wir kommen noch). mica = gar nicht (Abschwächung, keine zeitliche Komponente). mai = nie. ancora zwischen Hilfsverb und Partizip.' },
 
-    { id:'m14-so-10', type:'SO',
+    { id:'m14-so-10', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['più','ancora','mai','vuole','non','lavorare','lui'],
       solution:['lui','non','vuole','più','lavorare'],
@@ -182,7 +182,7 @@ const MODULE = {
         { de:'Non mangio né pane né pasta.',  it:'Ich esse weder Brot noch Nudeln.'},
       ] },
 
-    { id:'m14-zo-03', type:'ZO',
+    { id:'m14-zo-03', type:'ZO', stufe:2,
       prompt:'Ordne zu: Position von NON im Satz',
       pairs:[
         { de:'Non parlo tedesco.',          it:'vor dem Verb'                         },
@@ -193,7 +193,7 @@ const MODULE = {
         { de:'Non è bello.',                it:'vor essere'                           },
       ] },
 
-    { id:'m14-zo-04', type:'ZO',
+    { id:'m14-zo-04', type:'ZO', stufe:3,
       prompt:'Ordne zu: Voranstellung (kein non) — Betonung',
       pairs:[
         { de:'Nessuno è venuto.',         it:'Niemand ist gekommen.'           },
@@ -204,7 +204,7 @@ const MODULE = {
         { de:'Mai avrei immaginato.',     it:'Das hätte ich nie gedacht.'      },
       ] },
 
-    { id:'m14-zo-05', type:'ZO',
+    { id:'m14-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu: nessuno als Adjektiv — richtige Form',
       pairs:[
         { de:'vor: problema (m/Sg.)',      it:'nessun problema'     },
@@ -215,7 +215,7 @@ const MODULE = {
         { de:'vor: amico (m/Vokal)',        it:'nessun amico'        },
       ] },
 
-    { id:'m14-zo-06', type:'ZO',
+    { id:'m14-zo-06', type:'ZO', stufe:2,
       prompt:'Ordne zu: ancora oder più?',
       pairs:[
         { de:'Ich bin noch nicht fertig.',      it:'Non ho ancora finito.'      },
@@ -226,7 +226,7 @@ const MODULE = {
         { de:'Isst du kein Fleisch mehr?',      it:'Non mangi più la carne?'    },
       ] },
 
-    { id:'m14-zo-07', type:'ZO',
+    { id:'m14-zo-07', type:'ZO', stufe:3,
       prompt:'Ordne zu: né … né — Übersetzung',
       pairs:[
         { de:'né carne né pesce',        it:'weder Fleisch noch Fisch'         },
@@ -237,7 +237,7 @@ const MODULE = {
         { de:'né a destra né a sinistra',it:'weder rechts noch links'          },
       ] },
 
-    { id:'m14-zo-08', type:'ZO',
+    { id:'m14-zo-08', type:'ZO', stufe:2,
       prompt:'Ordne zu: Satz im Passato Prossimo mit Negation',
       pairs:[
         { de:'Ich habe niemanden gesehen.',    it:'Non ho visto nessuno.'      },
@@ -248,7 +248,7 @@ const MODULE = {
         { de:'Wir haben weder gekauft noch gegessen.', it:'Non abbiamo né comprato né mangiato.' },
       ] },
 
-    { id:'m14-zo-09', type:'ZO',
+    { id:'m14-zo-09', type:'ZO', stufe:2,
       prompt:'Ordne zu: niente oder nessuno?',
       pairs:[
         { de:'Ich sage nichts. (Sache)',     it:'Non dico niente.'           },
@@ -260,13 +260,13 @@ const MODULE = {
       ] },
 
     /* === MC 12 === */
-    { id:'m14-mc-01', type:'MC',
+    { id:'m14-mc-01', type:'MC', stufe:3,
       prompt:'"___ vado al cinema." (Ich gehe nie ins Kino — Voranstellung)',
       options:['Non mai','Mai non','Mai','Niente'],
       correctValue:'Mai',
       explain:'Voranstellung ohne non: Mai vado al cinema. (betont)' },
 
-    { id:'m14-mc-02', type:'MC',
+    { id:'m14-mc-02', type:'MC', stufe:2,
       prompt:'Richtige Position: "Non ho ___ mangiato." (noch nicht)',
       options:['ancora','mai','niente','più'],
       correctValue:'ancora',
@@ -278,25 +278,25 @@ const MODULE = {
       correctValue:'più',
       explain:'non … più = nicht mehr. Non vivo più a Milano.' },
 
-    { id:'m14-mc-04', type:'MC',
+    { id:'m14-mc-04', type:'MC', stufe:3,
       prompt:'Welche Form? "Non c\'è ___ problema." (kein Problem)',
       options:['nessuno','nessun','nessuna','non'],
       correctValue:'nessun',
       explain:'problema ist m/Sg. mit normalem Anlaut -> nessun problema.' },
 
-    { id:'m14-mc-05', type:'MC',
+    { id:'m14-mc-05', type:'MC', stufe:3,
       prompt:'"Non mangio ___ carne ___ pesce."',
       options:['né / né','o / o','né / o','o / né'],
       correctValue:'né / né',
       explain:'weder … noch: né … né. Non mangio né carne né pesce.' },
 
-    { id:'m14-mc-06', type:'MC',
+    { id:'m14-mc-06', type:'MC', stufe:3,
       prompt:'"Non mi piace ___ questa musica." (überhaupt nicht)',
       options:['ancora','più','affatto','nessuno'],
       correctValue:'affatto',
       explain:'non … affatto = überhaupt nicht. Non mi piace affatto questa musica.' },
 
-    { id:'m14-mc-07', type:'MC',
+    { id:'m14-mc-07', type:'MC', stufe:2,
       prompt:'Welcher Satz ist grammatisch korrekt?',
       options:[
         'Non ho mangiato niente non.',
@@ -307,66 +307,66 @@ const MODULE = {
       correctValue:'Non ho mangiato niente.',
       explain:'non vor Hilfsverb, niente nach Partizip. "Non ho mangiato niente." ist korrekt.' },
 
-    { id:'m14-mc-08', type:'MC',
+    { id:'m14-mc-08', type:'MC', stufe:3,
       prompt:'"Nessuno è venuto." Was passiert ohne non?',
       options:['Der Satz ist falsch.','Nessuno vor dem Verb ersetzt non.','non muss trotzdem stehen.','Der Satz bedeutet etwas anderes.'],
       correctValue:'Nessuno vor dem Verb ersetzt non.',
       explain:'Wenn nessuno/niente/mai vor dem Verb steht, entfällt non. Nessuno è venuto = Niemand ist gekommen.' },
 
-    { id:'m14-mc-09', type:'MC',
+    { id:'m14-mc-09', type:'MC', stufe:2,
       prompt:'"Non l\'ho ___ visto." Was fehlt? (noch nicht gesehen)',
       options:['più','mai','ancora','niente'],
       correctValue:'ancora',
       explain:'ancora zwischen Pronomen + Hilfsverb und Partizip: Non l\'ho ancora visto.' },
 
-    { id:'m14-mc-10', type:'MC',
+    { id:'m14-mc-10', type:'MC', stufe:2,
       prompt:'"Ho telefonato ma ___ ha risposto." (niemand)',
       options:['non nessuno','nessuno','niente','non niente'],
       correctValue:'nessuno',
       explain:'nessuno vor dem Verb (ohne non): nessuno ha risposto = niemand hat geantwortet.' },
 
-    { id:'m14-mc-11', type:'MC',
+    { id:'m14-mc-11', type:'MC', stufe:3,
       prompt:'Welche Form? "Non ho ___ amica qui." (keine Freundin)',
       options:['nessun','nessuno','nessuna','nessun\''],
       correctValue:'nessuna',
       explain:'amica ist f/Sg. mit Konsonant-Anlaut -> nessuna amica.' },
 
-    { id:'m14-mc-12', type:'MC',
+    { id:'m14-mc-12', type:'MC', stufe:3,
       prompt:'"Non voglio ___ uscire ___ restare." (weder … noch)',
       options:['né / né','o / o','non / né','né / non'],
       correctValue:'né / né',
       explain:'weder … noch: né … né. Non voglio né uscire né restare.' },
 
     /* === MCL 5 === */
-    { id:'m14-mcl-01', type:'MC',
+    { id:'m14-mcl-01', type:'MC', stufe:2,
       prompt:'Wähle: "Ho aspettato un\'ora ma ___ è arrivato."',
       options:['non nessuno','nessuno','niente','non mai'],
       correctValue:'nessuno',
       translation:'Ich habe eine Stunde gewartet, aber niemand ist gekommen.',
       explain:'nessuno vor dem Verb ersetzt non.' },
 
-    { id:'m14-mcl-02', type:'MC',
+    { id:'m14-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "Non studio ___ come una volta." (nicht mehr so wie früher)',
       options:['ancora','più','niente','mai'],
       correctValue:'più',
       translation:'Ich lerne nicht mehr so wie früher.',
       explain:'non … più = nicht mehr.' },
 
-    { id:'m14-mcl-03', type:'MC',
+    { id:'m14-mcl-03', type:'MC', stufe:2,
       prompt:'Wähle: "Non capisco ___ di quello che dice."',
       options:['nessuno','niente','mai','più'],
       correctValue:'niente',
       translation:'Ich verstehe nichts von dem, was er sagt.',
       explain:'niente = nichts (Sache). Non capisco niente.' },
 
-    { id:'m14-mcl-04', type:'MC',
+    { id:'m14-mcl-04', type:'MC', stufe:2,
       prompt:'Wähle: "Non mi ha ___ detto che veniva."',
       options:['niente','ancora','mai','nessuno'],
       correctValue:'mai',
       translation:'Er/Sie hat mir nie gesagt, dass er/sie kommen würde.',
       explain:'non … mai = nie. Non mi ha mai detto.' },
 
-    { id:'m14-mcl-05', type:'MC',
+    { id:'m14-mcl-05', type:'MC', stufe:3,
       prompt:'Wähle: "Non c\'è ___ studente in classe." (kein Schüler)',
       options:['nessun','nessuno','nessuna','non uno'],
       correctValue:'nessun',
@@ -380,32 +380,32 @@ const MODULE = {
       translation:'Ich fahre nie im Winter in den Urlaub. Ich bevorzuge den Sommer.',
       explain:'non … mai = nie. non vado mai.' },
 
-    { id:'m14-lt-02', type:'LT',
+    { id:'m14-lt-02', type:'LT', stufe:2,
       text:'Non ho {0} finito i compiti, devo ancora lavorarci.',
       blanks:[ { accept:['ancora'] } ],
       translation:'Ich habe die Hausaufgaben noch nicht fertig, ich muss noch daran arbeiten.',
       explain:'non ho ancora finito = ich habe noch nicht fertig gemacht.' },
 
-    { id:'m14-lt-03', type:'LT',
+    { id:'m14-lt-03', type:'LT', stufe:3,
       text:'Non voglio {0} lavorare {1} studiare stasera. Voglio riposarmi.',
       blanks:[ { accept:['né'] }, { accept:['né'] } ],
       translation:'Ich will heute Abend weder arbeiten noch lernen. Ich will mich ausruhen.',
       explain:'non … né … né = weder … noch.' },
 
-    { id:'m14-lt-04', type:'LT',
+    { id:'m14-lt-04', type:'LT', stufe:3,
       text:'{0} è venuto alla festa, eravamo solo io e Marco.',
       blanks:[ { accept:['Nessuno'] } ],
       translation:'Niemand ist zur Party gekommen, wir waren nur ich und Marco.',
       explain:'Nessuno vor dem Verb (ohne non): betont, dass niemand da war.' },
 
-    { id:'m14-lt-05', type:'LT',
+    { id:'m14-lt-05', type:'LT', stufe:3,
       text:'Non mi piace {0} questo tipo di musica.',
       blanks:[ { accept:['affatto'] } ],
       translation:'Diese Art von Musik gefällt mir überhaupt nicht.',
       explain:'non … affatto = überhaupt nicht. Steht nach dem Verb.' },
 
     /* === FT 2 === */
-    { id:'m14-ft-01', type:'FT',
+    { id:'m14-ft-01', type:'FT', stufe:2,
       prompt:'Negiere den Satz mit dem passenden Ausdruck:',
       rows:[
         { label:'Vado spesso al cinema. (nie)',    accept:['Non vado mai al cinema.'] },
@@ -416,7 +416,7 @@ const MODULE = {
         { label:'Mi piace molto. (überhaupt nicht)',accept:['Non mi piace affatto.']  },
       ] },
 
-    { id:'m14-ft-02', type:'FT',
+    { id:'m14-ft-02', type:'FT', stufe:3,
       prompt:'nessuno als Adjektiv — richtige Form:',
       rows:[
         { label:'___ problema (m)',       accept:['nessun problema']     },
@@ -428,7 +428,7 @@ const MODULE = {
       ] },
 
     /* === FK 3 === */
-    { id:'m14-fk-01', type:'FK',
+    { id:'m14-fk-01', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Non ho visto nessuno non.',
       solution:'Non ho visto nessuno.',
@@ -436,7 +436,7 @@ const MODULE = {
       translation:'Ich habe niemanden gesehen.',
       explain:'non steht nur einmal, vor dem Verb. Ein zweites non am Ende ist falsch.' },
 
-    { id:'m14-fk-02', type:'FK',
+    { id:'m14-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Nessuno non è venuto.',
       solution:'Nessuno è venuto.',
@@ -444,7 +444,7 @@ const MODULE = {
       translation:'Niemand ist gekommen.',
       explain:'Wenn nessuno vor dem Verb steht, entfällt non. Entweder: "Nessuno è venuto" oder "Non è venuto nessuno".' },
 
-    { id:'m14-fk-03', type:'FK',
+    { id:'m14-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Non mangio né carne o pesce.',
       solution:'Non mangio né carne né pesce.',
@@ -453,7 +453,7 @@ const MODULE = {
       explain:'weder … noch: né … né. Nie né … o.' },
 
     /* === KA 2 === */
-    { id:'m14-ka-01', type:'KA',
+    { id:'m14-ka-01', type:'KA', stufe:3,
       prompt:'Kategorisiere: Ausdruck mit oder ohne zusätzliches non?',
       categories:['braucht non vor dem Verb', 'kann ohne non stehen (Voranstellung)'],
       items:[
@@ -465,7 +465,7 @@ const MODULE = {
         { text:'Niente è cambiato.',   cat:1 },
       ] },
 
-    { id:'m14-ka-02', type:'KA',
+    { id:'m14-ka-02', type:'KA', stufe:2,
       prompt:'Kategorisiere: ancora oder più?',
       categories:['ancora (noch / noch nicht)', 'più (nicht mehr / kein … mehr)'],
       items:[
@@ -478,40 +478,40 @@ const MODULE = {
       ] },
 
     /* === KO 1 === */
-    { id:'m14-ko-01', type:'KO',
+    { id:'m14-ko-01', type:'KO', stufe:3,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Non è venuto nessuno.', tag:'non + nessuno nach dem Verb' },
       b:{ sentence:'Nessuno è venuto.', tag:'Nessuno vor dem Verb (betont)' },
       reveal:'Beide bedeuten "Niemand ist gekommen", aber mit unterschiedlicher Betonung. "Non è venuto nessuno" ist die neutrale Version. "Nessuno è venuto" betont die Tatsache, dass absolut niemand da war — expressiver und häufig in der gesprochenen Sprache.' },
 
     /* === DE 3 === */
-    { id:'m14-de-01', type:'DE',
+    { id:'m14-de-01', type:'DE', stufe:3,
       prompt:'"Ich esse weder Fleisch noch Fisch, und ich trinke nie Alkohol."',
       solutions:['Non mangio né carne né pesce e non bevo mai alcol.','Non mangio né carne né pesce e non bevo mai alcolici.'],
       note:'né … né für weder/noch; non … mai für nie.' },
 
-    { id:'m14-de-02', type:'DE',
+    { id:'m14-de-02', type:'DE', stufe:3,
       prompt:'"Ich habe dir noch nie gesagt, dass ich dich nicht mehr liebe."',
       solutions:['Non ti ho mai detto che non ti amo più.','Non ti ho mai detto che non ti voglio più bene.'],
       note:'non … mai (nie); non … più (nicht mehr). Zwei separate Verneinungen in einem Satz.' },
 
-    { id:'m14-de-03', type:'DE',
+    { id:'m14-de-03', type:'DE', stufe:2,
       prompt:'"Niemand hat angerufen und es ist nichts passiert."',
       solutions:['Nessuno ha chiamato e non è successo niente.','Non ha chiamato nessuno e non è successo nulla.'],
       note:'Nessuno vor Verb (ohne non); non è successo niente (mit non, nach Verb).' },
 
     /* === IT 3 === */
-    { id:'m14-it-01', type:'IT',
+    { id:'m14-it-01', type:'IT', stufe:2,
       prompt:'"Non ho ancora deciso dove andare in vacanza."',
       solutions:['Ich habe noch nicht entschieden, wohin ich in den Urlaub fahre.','Ich habe noch nicht beschlossen, wohin ich in Urlaub gehe.'],
       note:'non ho ancora deciso = ich habe noch nicht entschieden. ancora zwischen Hilfsverb und Partizip.' },
 
-    { id:'m14-it-02', type:'IT',
+    { id:'m14-it-02', type:'IT', stufe:3,
       prompt:'"Mai avrei pensato di vivere in Italia."',
       solutions:['Ich hätte nie gedacht, in Italien zu leben.','Dass ich in Italien leben würde, hätte ich nie gedacht.'],
       note:'Mai vorangestellt (ohne non) für starke Betonung. Condizionale Passato: avrei pensato.' },
 
-    { id:'m14-it-03', type:'IT',
+    { id:'m14-it-03', type:'IT', stufe:3,
       prompt:'"Non mi piace affatto questa città: non c\'è niente da fare e non conosco nessuno."',
       solutions:['Diese Stadt gefällt mir überhaupt nicht: es gibt nichts zu tun und ich kenne niemanden.'],
       note:'affatto (überhaupt nicht); niente da fare (nichts zu tun); nessuno (niemanden).' },
@@ -519,7 +519,7 @@ const MODULE = {
     /* =========================================================
        LÜCKENWAHL (EL) — Negation: non + Negationswort
        ========================================================= */
-    { id:'m14-el-01', type:'EL',
+    { id:'m14-el-01', type:'EL', stufe:3,
       prompt:'Negation — weder … noch (né … né):',
       sentence:'Non mangio {0} la pizza {1} la pasta.',
       blanks:[{ accept:'né', distractors:['non', 'neanche', 'niente'] }, { accept:'né', distractors:['non', 'neanche', 'niente'] }],
@@ -529,7 +529,7 @@ const MODULE = {
       sentence:'Non ho visto {0} e non ho sentito {1}.',
       blanks:[{ accept:'niente', distractors:['nessuno', 'né', 'mai'] }, { accept:'nessuno', distractors:['niente', 'né', 'mai'] }],
       explain:'niente = nichts; nessuno = niemand.' },
-    { id:'m14-el-03', type:'EL',
+    { id:'m14-el-03', type:'EL', stufe:3,
       prompt:'Negation — weder … noch (né … né):',
       sentence:'Non vado {0} a Roma e non vado {1} a Milano.',
       blanks:[{ accept:'né', distractors:['non', 'mai', 'niente'] }, { accept:'né', distractors:['non', 'mai', 'niente'] }],
@@ -539,17 +539,17 @@ const MODULE = {
       sentence:'Non studio {0} e non lavoro {1}.',
       blanks:[{ accept:'mai', distractors:['niente', 'nessuno', 'né'] }, { accept:'mai', distractors:['niente', 'nessuno', 'né'] }],
       explain:'non … mai = niemals / nie.' },
-    { id:'m14-el-05', type:'EL',
+    { id:'m14-el-05', type:'EL', stufe:3,
       prompt:'Negation — Nessuno (niemand) am Satzanfang:',
-      sentence:'{0} viene alla festa e {1} porta qualcosa.',
-      blanks:[{ accept:'Nessuno', distractors:['Niente', 'Non', 'Mai'] }, { accept:'non', distractors:['nessuno', 'niente', 'mai'] }],
-      explain:'Nessuno am Satzanfang ohne non; zweiter Satz braucht non.' },
-    { id:'m14-el-06', type:'EL',
+      sentence:'{0} viene alla festa e io non porto {1}.',
+      blanks:[{ accept:'Nessuno', distractors:['Niente', 'Non', 'Mai'] }, { accept:'niente', distractors:['nessuno', 'mai', 'non'] }],
+      explain:'Nessuno am Satzanfang steht ohne non. Nach dem Verb: non … niente (nichts).' },
+    { id:'m14-el-06', type:'EL', stufe:2,
       prompt:'Negation — nichts und niemals:',
       sentence:'Non ho {0} capito e non ho {1} risposto.',
       blanks:[{ accept:'niente', distractors:['mai', 'nessuno', 'né'] }, { accept:'mai', distractors:['niente', 'nessuno', 'né'] }],
       explain:'non ho niente capito = ich habe nichts verstanden; non ho mai risposto = niemals geantwortet.' },
-    { id:'m14-el-07', type:'EL',
+    { id:'m14-el-07', type:'EL', stufe:3,
       prompt:'Negation — né … né (weder … noch):',
       sentence:'Non voglio {0} caffè {1} tè.',
       blanks:[{ accept:'né', distractors:['non', 'niente', 'mai'] }, { accept:'né', distractors:['non', 'niente', 'mai'] }],
@@ -559,12 +559,12 @@ const MODULE = {
       sentence:'Marco non chiama {0} e non scrive {1}.',
       blanks:[{ accept:'nessuno', distractors:['niente', 'mai', 'né'] }, { accept:'mai', distractors:['nessuno', 'niente', 'né'] }],
       explain:'non chiama nessuno = ruft niemanden an; non scrive mai = schreibt nie.' },
-    { id:'m14-el-09', type:'EL',
+    { id:'m14-el-09', type:'EL', stufe:2,
       prompt:'Negation — nichts und niemals:',
       sentence:'Non ho {0} mangiato e non ho {1} bevuto.',
       blanks:[{ accept:'niente', distractors:['mai', 'nessuno', 'né'] }, { accept:'niente', distractors:['mai', 'nessuno', 'né'] }],
       explain:'non ho niente mangiato / non ho niente bevuto = nichts gegessen/getrunken.' },
-    { id:'m14-el-10', type:'EL',
+    { id:'m14-el-10', type:'EL', stufe:3,
       prompt:'Negation — né … né (weder … noch):',
       sentence:'Non parla {0} italiano {1} spagnolo.',
       blanks:[{ accept:'né', distractors:['non', 'mai', 'niente'] }, { accept:'né', distractors:['non', 'mai', 'niente'] }],
@@ -574,41 +574,41 @@ const MODULE = {
     /* =========================================================
        NACHSPRECHEN (SR) — 10 Aufgaben
        ========================================================= */
-    { id:'m14-sr-01', type:'SR',
+    { id:'m14-sr-01', type:'SR', stufe:2,
       it:'Non ho ancora finito i compiti.',
       de:'Ich habe die Hausaufgaben noch nicht fertig.' },
     { id:'m14-sr-02', type:'SR',
       it:'Non vedo mai Marco al bar.',
       de:'Ich sehe Marco nie an der Bar.' },
-    { id:'m14-sr-03', type:'SR',
+    { id:'m14-sr-03', type:'SR', stufe:2,
       it:'Non ho detto niente a nessuno.',
       de:'Ich habe niemandem etwas gesagt.' },
-    { id:'m14-sr-04', type:'SR',
+    { id:'m14-sr-04', type:'SR', stufe:3,
       it:'Non è venuto né Marco né Luigi.',
       de:'Weder Marco noch Luigi ist gekommen.' },
     { id:'m14-sr-05', type:'SR',
       it:'Non capisco niente di questo argomento.',
       de:'Ich verstehe nichts von diesem Thema.' },
-    { id:'m14-sr-06', type:'SR',
+    { id:'m14-sr-06', type:'SR', stufe:2,
       it:'Non ho ancora mangiato stamattina.',
       de:'Ich habe heute Morgen noch nicht gegessen.' },
-    { id:'m14-sr-07', type:'SR',
+    { id:'m14-sr-07', type:'SR', stufe:2,
       it:'Non mi piace nessuno in questa classe.',
       de:'Ich mag niemanden in dieser Klasse.' },
     { id:'m14-sr-08', type:'SR',
       it:'Non vado mai al cinema da solo.',
       de:'Ich gehe nie allein ins Kino.' },
-    { id:'m14-sr-09', type:'SR',
+    { id:'m14-sr-09', type:'SR', stufe:2,
       it:'Non ho ancora deciso dove andare.',
       de:'Ich habe noch nicht entschieden, wohin ich fahre.' },
-    { id:'m14-sr-10', type:'SR',
+    { id:'m14-sr-10', type:'SR', stufe:3,
       it:'Non voglio né il caffè né il tè.',
       de:'Ich möchte weder den Kaffee noch den Tee.' },
 
     /* =========================================================
        FREI SPRECHEN (ST) — 10 Aufgaben
        ========================================================= */
-    { id:'m14-st-01', type:'ST',
+    { id:'m14-st-01', type:'ST', stufe:2,
       de:'Ich habe das noch nie gemacht.',
       solutions:['Non l\'ho mai fatto.', 'Non ho mai fatto questo.'],
       note:'non ... mai: non + Verb + mai' },
@@ -620,11 +620,11 @@ const MODULE = {
       de:'Er kennt niemanden hier.',
       solutions:['Non conosce nessuno qui.', 'Qui non conosce nessuno.'],
       note:'non ... nessuno: niemanden (nach dem Verb)' },
-    { id:'m14-st-04', type:'ST',
+    { id:'m14-st-04', type:'ST', stufe:2,
       de:'Sie isst noch nicht.',
       solutions:['Non mangia ancora.', 'Non ha ancora mangiato.'],
       note:'non ... ancora: noch nicht' },
-    { id:'m14-st-05', type:'ST',
+    { id:'m14-st-05', type:'ST', stufe:3,
       de:'Weder er noch sie kommt.',
       solutions:['Né lui né lei viene.', 'Non viene né lui né lei.'],
       note:'né ... né: weder ... noch' },
@@ -632,19 +632,19 @@ const MODULE = {
       de:'Ich arbeite nie am Wochenende.',
       solutions:['Non lavoro mai nel weekend.', 'Non lavoro mai il weekend.'],
       note:'non ... mai: non + Verb + mai' },
-    { id:'m14-st-07', type:'ST',
+    { id:'m14-st-07', type:'ST', stufe:2,
       de:'Niemand hat die Frage beantwortet.',
       solutions:['Nessuno ha risposto alla domanda.', 'Non ha risposto nessuno alla domanda.'],
       note:'nessuno als Subjekt: am Satzanfang ohne non' },
-    { id:'m14-st-08', type:'ST',
+    { id:'m14-st-08', type:'ST', stufe:2,
       de:'Er hat mir noch nichts geschickt.',
       solutions:['Non mi ha ancora mandato niente.', 'Non mi ha ancora inviato nulla.'],
       note:'Mehrfachnegation: non ... ancora ... niente' },
-    { id:'m14-st-09', type:'ST',
+    { id:'m14-st-09', type:'ST', stufe:3,
       de:'Ich mag weder Spinat noch Brokkoli.',
       solutions:['Non mi piacciono né gli spinaci né i broccoli.', 'Non mi piace né lo spinacio né il broccolo.'],
       note:'piacere: Subjekt gli spinaci (Pl.) → piacciono' },
-    { id:'m14-st-10', type:'ST',
+    { id:'m14-st-10', type:'ST', stufe:2,
       de:'Er hat noch nie Italienisch gelernt.',
       solutions:['Non ha mai studiato italiano.', 'Non ha mai imparato l\'italiano.'],
       note:'non ... mai + Partizip im PP' },

@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Essere &amp; Avere</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
   <div id="daily-goal-mount"></div>
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -112,7 +112,7 @@ const MODULE = {
       translation:'Ich bin aus Rom und bin Lehrer.',
       explain:'sono kann als 1. Sg. zweimal auftreten (io sono... e sono...). siamo wäre 1. Pl. (wir sind). Beruf nach essere ohne Artikel.' },
 
-    { id:'m21-so-02', type:'SO',
+    { id:'m21-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['hanno', 'anni', 'venti', 'tutti', 'e', 'molta', 'molto', 'voglia', 'hanno', 'di', 'studiare', 'moltissima'],
       solution:['hanno', 'tutti', 'venti', 'anni', 'e', 'hanno', 'molta', 'voglia', 'di', 'studiare'],
@@ -140,7 +140,7 @@ const MODULE = {
       translation:'Marco ist Arzt.',
       explain:'è = 3. Sg. von essere (er ist). sono wäre 1. Sg. (ich bin) oder 3. Pl. — Subjekt ist Marco (3. Sg.). Beruf ohne Artikel.' },
 
-    { id:'m21-so-06', type:'SO',
+    { id:'m21-so-06', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['hai', 'ho', 'tu', 'fame', 'adesso', 'ha'],
       solution:['tu', 'hai', 'fame', 'adesso'],
@@ -154,7 +154,7 @@ const MODULE = {
       translation:'Wir sind zu Hause.',
       explain:'siamo = 1. Pl. von essere (wir sind). sono wäre 3. Pl. (sie sind) oder 1. Sg. (ich bin) — Subjekt ist noi.' },
 
-    { id:'m21-so-08', type:'SO',
+    { id:'m21-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['ha', 'ho', 'lei', 'sete', 'hai'],
       solution:['lei', 'ha', 'sete'],
@@ -177,7 +177,7 @@ const MODULE = {
 
 
     /* === EL 10 === */
-    { id:'m21-el-01', type:'EL',
+    { id:'m21-el-01', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Io {0} stanca e {1} fame.',
       blanks:[{accept:'sono', distractors:['ho', 'siamo', 'hai']}, {accept:'ho', distractors:['sono', 'hai', 'ha']}],
@@ -212,14 +212,14 @@ const MODULE = {
       translation:'Ihr seid Schüler und habt viele Hausaufgaben.',
       explain:'essere (Rolle) → siete. avere → avete.' },
 
-    { id:'m21-el-06', type:'EL',
+    { id:'m21-el-06', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Loro {0} in ritardo e {1} fretta.',
       blanks:[{accept:'sono', distractors:['hanno', 'siamo', 'è']}, {accept:'hanno', distractors:['sono', 'ha', 'abbiamo']}],
       translation:'Sie sind spät dran und haben Eile.',
       explain:'essere (Zustand) → sono. avere fretta → hanno.' },
 
-    { id:'m21-el-07', type:'EL',
+    { id:'m21-el-07', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Io {0} freddo e {1} stanco.',
       blanks:[{accept:'ho', distractors:['sono', 'hai', 'ha']}, {accept:'sono', distractors:['ho', 'sei', 'siamo']}],
@@ -233,14 +233,14 @@ const MODULE = {
       translation:'Sie ist achtzehn Jahre alt und ist Studentin.',
       explain:'avere anni → ha. essere (Beruf) → è (ohne Artikel!).' },
 
-    { id:'m21-el-09', type:'EL',
+    { id:'m21-el-09', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Tu {0} sete? Sì, {1} molto caldo.',
       blanks:[{accept:'hai', distractors:['sei', 'ho', 'ha']}, {accept:'ho', distractors:['sono', 'sei', 'hai']}],
       translation:'Hast du Durst? Ja, mir ist sehr heiß.',
       explain:'avere sete → hai. avere caldo (1. Sg.) → ho.' },
 
-    { id:'m21-el-10', type:'EL',
+    { id:'m21-el-10', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Il gatto {0} sul divano e {1} fame.',
       blanks:[{accept:'è', distractors:['ha', 'sono', 'sei']}, {accept:'ha', distractors:['è', 'ho', 'hai']}],
@@ -270,10 +270,10 @@ const MODULE = {
         { de:'sie haben',   it:'hanno'   },
       ] },
 
-    { id:'m21-zo-03', type:'ZO',
+    { id:'m21-zo-03', type:'ZO', stufe:2,
       prompt:'Ordne zu: essere oder avere?',
       pairs:[
-        { de:'Ich bin aus Italien.',    it:'Sono di Italia.'      },
+        { de:'Ich bin Italiener.',    it:'Sono italiano.'      },
         { de:'Ich habe Hunger.',        it:'Ho fame.'             },
         { de:'Er ist Arzt.',            it:'È medico.'            },
         { de:'Sie hat ein Auto.',       it:'Ha una macchina.'     },
@@ -281,7 +281,7 @@ const MODULE = {
         { de:'Ihr habt Durst.',         it:'Avete sete.'          },
       ] },
 
-    { id:'m21-zo-04', type:'ZO',
+    { id:'m21-zo-04', type:'ZO', stufe:2,
       prompt:'Ordne zu: avere + Körperzustand',
       pairs:[
         { de:'Hunger haben',      it:'avere fame'    },
@@ -292,7 +292,7 @@ const MODULE = {
         { de:'es eilig haben',    it:'avere fretta'  },
       ] },
 
-    { id:'m21-zo-05', type:'ZO',
+    { id:'m21-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu: essere-Verwendung',
       pairs:[
         { de:'Sono le nove.',         it:'Uhrzeit'      },
@@ -303,7 +303,7 @@ const MODULE = {
         { de:'È mio fratello.',       it:'Identität'    },
       ] },
 
-    { id:'m21-zo-06', type:'ZO',
+    { id:'m21-zo-06', type:'ZO', stufe:3,
       prompt:"Ordne zu: Subjekt → c'è oder ci sono?",
       pairs:[
         { de:'un problema',      it:"c'è"      },
@@ -314,7 +314,7 @@ const MODULE = {
         { de:'delle domande',    it:'ci sono'  },
       ] },
 
-    { id:'m21-zo-07', type:'ZO',
+    { id:'m21-zo-07', type:'ZO', stufe:2,
       prompt:'Ordne zu: Satz → Deutsch',
       pairs:[
         { de:'Quanti anni hai?',           it:'Wie alt bist du?'               },
@@ -325,7 +325,7 @@ const MODULE = {
         { de:'Hai ragione.',               it:'Du hast recht.'                  },
       ] },
 
-    { id:'m21-zo-08', type:'ZO',
+    { id:'m21-zo-08', type:'ZO', stufe:2,
       prompt:'Ordne zu: avere-Ausdrücke',
       pairs:[
         { de:'recht haben',       it:'avere ragione'     },
@@ -336,7 +336,7 @@ const MODULE = {
         { de:'es eilig haben',    it:'avere fretta'      },
       ] },
 
-    { id:'m21-zo-09', type:'ZO',
+    { id:'m21-zo-09', type:'ZO', stufe:3,
       prompt:'Ordne zu: deutsches Verb → Hilfsverb im Passato Prossimo (essere oder avere?)',
       pairs:[
         { de:'gehen',       it:'essere: sono andato'   },
@@ -354,13 +354,13 @@ const MODULE = {
       correctValue:'sono',
       explain:'essere 1. Pers. Sg.: sono.' },
 
-    { id:'m21-mc-02', type:'MC',
+    { id:'m21-mc-02', type:'MC', stufe:2,
       prompt:'Welche Form? "Tu ___ fame?" (avere)',
       options:['sei','hai','ho','ha'],
       correctValue:'hai',
       explain:'avere 2. Pers. Sg.: hai.' },
 
-    { id:'m21-mc-03', type:'MC',
+    { id:'m21-mc-03', type:'MC', stufe:2,
       prompt:'Welche Form? "Marco ___ trent\'anni." (avere)',
       options:['è','sei','ha','sono'],
       correctValue:'ha',
@@ -372,7 +372,7 @@ const MODULE = {
       correctValue:'siamo',
       explain:'essere 1. Pers. Pl.: siamo.' },
 
-    { id:'m21-mc-05', type:'MC',
+    { id:'m21-mc-05', type:'MC', stufe:3,
       prompt:'"Sono le tre." Was bedeutet das?',
       options:['Es sind drei (Leute).','Es ist drei Uhr.','Ich bin drei.','Sie sind drei.'],
       correctValue:'Es ist drei Uhr.',
@@ -384,13 +384,13 @@ const MODULE = {
       correctValue:'hanno',
       explain:'avere 3. Pers. Pl.: hanno (mit h!).' },
 
-    { id:'m21-mc-07', type:'MC',
+    { id:'m21-mc-07', type:'MC', stufe:2,
       prompt:'"Ho caldo." Was bedeutet das?',
       options:['Es ist kalt.','Ich bin kalt.','Mir ist warm.','Ich habe es kalt.'],
       correctValue:'Mir ist warm.',
       explain:'avere caldo = mir ist warm (wörtl.: ich habe Wärme). Körperzustand mit avere.' },
 
-    { id:'m21-mc-08', type:'MC',
+    { id:'m21-mc-08', type:'MC', stufe:3,
       prompt:'"___ un ristorante vicino?" (es gibt)',
       options:["C'è",'Ci sono','È','Sono'],
       correctValue:"C'è",
@@ -402,19 +402,19 @@ const MODULE = {
       correctValue:'siete',
       explain:'essere 2. Pers. Pl.: siete.' },
 
-    { id:'m21-mc-10', type:'MC',
+    { id:'m21-mc-10', type:'MC', stufe:2,
       prompt:'"Hai ragione." Was bedeutet das?',
       options:['Du hast eine Reihe.','Du hast recht.','Du hast eine Linie.','Du bist richtig.'],
       correctValue:'Du hast recht.',
       explain:'avere ragione = recht haben. Ein fester Ausdruck mit avere.' },
 
-    { id:'m21-mc-11', type:'MC',
+    { id:'m21-mc-11', type:'MC', stufe:3,
       prompt:'Welche Form? "___ molte domande." (ci sono/c\'è, Pl.)',
       options:["C'è",'Ci sono','Sono','È'],
       correctValue:'Ci sono',
       explain:'ci sono + Plural: Ci sono molte domande = Es gibt viele Fragen.' },
 
-    { id:'m21-mc-12', type:'MC',
+    { id:'m21-mc-12', type:'MC', stufe:3,
       prompt:'"È l\'una." Was bedeutet das?',
       options:['Sie ist eine.','Es ist eine.','Es ist ein Uhr.','Es ist Montag.'],
       correctValue:'Es ist ein Uhr.',
@@ -428,28 +428,28 @@ const MODULE = {
       translation:'Sie ist Lehrerin und ist sehr gut.',
       explain:'Beruf (è professoressa) + Eigenschaft (è brava): beide Male essere.' },
 
-    { id:'m21-mcl-02', type:'MC',
+    { id:'m21-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "Marco ___ venticinque anni e ___ gli occhi azzurri."',
       options:['è / ha','ha / ha','ha / è','è / è'],
       correctValue:'ha / ha',
       translation:'Marco ist fünfundzwanzig Jahre alt und hat blaue Augen.',
       explain:'Alter (ha anni) + Aussehen (ha gli occhi): beide Male avere.' },
 
-    { id:'m21-mcl-03', type:'MC',
+    { id:'m21-mcl-03', type:'MC', stufe:3,
       prompt:'Wähle: "___ molte persone in piazza oggi."',
       options:["C'è",'Ci sono','Sono','C\'erano'],
       correctValue:'Ci sono',
       translation:'Heute sind viele Leute auf dem Platz.',
       explain:'ci sono + Plural (molte persone).' },
 
-    { id:'m21-mcl-04', type:'MC',
+    { id:'m21-mcl-04', type:'MC', stufe:2,
       prompt:'Wähle: "Non ___ tempo — ___ fretta!"',
       options:['ho / ho','sono / sono','ho / sono','sono / ho'],
       correctValue:'ho / ho',
       translation:'Ich habe keine Zeit — ich habe es eilig!',
       explain:'Non ho tempo (avere Zeit); ho fretta (avere fretta = es eilig haben).' },
 
-    { id:'m21-mcl-05', type:'MC',
+    { id:'m21-mcl-05', type:'MC', stufe:3,
       prompt:'Wähle: "___ le due e mezzo. ___ in ritardo!"',
       options:['Sono / Siamo','È / Siamo','Sono / Sono','È / Sono'],
       correctValue:'Sono / Siamo',
@@ -457,7 +457,7 @@ const MODULE = {
       explain:'Sono le due e mezzo (Uhrzeit, Plural le ore); Siamo in ritardo (essere, 1. Pl.).' },
 
     /* === LT 5 === */
-    { id:'m21-lt-01', type:'LT',
+    { id:'m21-lt-01', type:'LT', stufe:2,
       text:'Io {0} italiano e {1} trentacinque anni.',
       blanks:[ { accept:['sono'] }, { accept:['ho'] } ],
       translation:'Ich bin Italiener und bin fünfunddreißig Jahre alt.',
@@ -469,19 +469,19 @@ const MODULE = {
       translation:'Marco ist nicht zu Hause — er ist bei der Arbeit.',
       explain:'essere 3. Sg.: è (beide Lücken).' },
 
-    { id:'m21-lt-03', type:'LT',
+    { id:'m21-lt-03', type:'LT', stufe:2,
       text:'{0} fame? — Sì, {1} molta fame!',
       blanks:[ { accept:['Hai'] }, { accept:['ho'] } ],
       translation:'Hast du Hunger? — Ja, ich habe großen Hunger!',
       explain:'avere: hai (2. Sg.); ho (1. Sg.). fame = Hunger (kein Artikel).' },
 
-    { id:'m21-lt-04', type:'LT',
+    { id:'m21-lt-04', type:'LT', stufe:3,
       text:'In questa città {0} molti musei e {1} anche un bellissimo parco.',
       blanks:[ { accept:['ci sono'] }, { accept:["c'è"] } ],
       translation:'In dieser Stadt gibt es viele Museen und es gibt auch einen wunderschönen Park.',
       explain:'ci sono (Plural: molti musei); c\'è (Singular: un parco).' },
 
-    { id:'m21-lt-05', type:'LT',
+    { id:'m21-lt-05', type:'LT', stufe:2,
       text:'Noi {0} stanchi ma {1} molta voglia di uscire.',
       blanks:[ { accept:['siamo'] }, { accept:['abbiamo'] } ],
       translation:'Wir sind müde, aber wir haben viel Lust auszugehen.',
@@ -519,7 +519,7 @@ const MODULE = {
       translation:'Ich habe Hunger.',
       explain:'avere 1. Pers. Sg.: ho (mit h!). "o" bedeutet "oder".' },
 
-    { id:'m21-fk-02', type:'FK',
+    { id:'m21-fk-02', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Marco è trent\'anni.',
       solution:'Marco ha trent\'anni.',
@@ -527,7 +527,7 @@ const MODULE = {
       translation:'Marco ist dreißig Jahre alt.',
       explain:'Alter: avere + anni (nicht essere). Marco ha trent\'anni.' },
 
-    { id:'m21-fk-03', type:'FK',
+    { id:'m21-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Ci è molte persone alla festa.',
       solution:'Ci sono molte persone alla festa.',
@@ -536,7 +536,7 @@ const MODULE = {
       explain:'ci sono + Plural. molte persone ist Plural → ci sono (nicht ci è).' },
 
     /* === KA 3 === */
-    { id:'m21-ka-01', type:'KA',
+    { id:'m21-ka-01', type:'KA', stufe:2,
       prompt:'Kategorisiere: essere oder avere?',
       categories:['essere (sein)', 'avere (haben)'],
       items:[
@@ -548,7 +548,7 @@ const MODULE = {
         { text:'Hanno paura.',       cat:1 },
       ] },
 
-    { id:'m21-ka-02', type:'KA',
+    { id:'m21-ka-02', type:'KA', stufe:3,
       prompt:"Kategorisiere: c'è oder ci sono?",
       categories:["c'è (Singular)", 'ci sono (Plural)'],
       items:[
@@ -560,7 +560,7 @@ const MODULE = {
         { text:'delle domande',     cat:1 },
       ] },
 
-    { id:'m21-ka-03', type:'KA',
+    { id:'m21-ka-03', type:'KA', stufe:3,
       prompt:'Kategorisiere: Uhrzeit — sono le oder è l\'?',
       categories:["è l' / è (Einzahl: una, mezzogiorno)", 'sono le (alle anderen Stunden)'],
       items:[
@@ -573,7 +573,7 @@ const MODULE = {
       ] },
 
     /* === KO 1 === */
-    { id:'m21-ko-01', type:'KO',
+    { id:'m21-ko-01', type:'KO', stufe:2,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Sono stanco.', tag:'essere: Zustand / Eigenschaft' },
       b:{ sentence:'Ho sonno.', tag:'avere: Körperzustand als Substantiv' },
@@ -585,28 +585,28 @@ const MODULE = {
       solutions:['Sono insegnante, sono di Berlino e ho quarant\'anni.'],
       note:'sono insegnante (Beruf, kein Artikel); sono di Berlino (Herkunft); ho quarant\'anni (Alter mit avere).' },
 
-    { id:'m21-de-02', type:'DE',
+    { id:'m21-de-02', type:'DE', stufe:3,
       prompt:'"Gibt es ein freies Zimmer? — Ja, es gibt noch zwei."',
       solutions:["C'è una camera libera? — Sì, ci sono ancora due camere.",'C\'è una stanza libera? — Sì, ci sono ancora due.'],
       note:"c'è (Singular); ci sono (Plural, due camere)." },
 
-    { id:'m21-de-03', type:'DE',
+    { id:'m21-de-03', type:'DE', stufe:2,
       prompt:'"Wir haben Hunger und Durst, aber keine Zeit zu essen."',
       solutions:['Abbiamo fame e sete, ma non abbiamo tempo di mangiare.','Abbiamo fame e sete ma non abbiamo tempo per mangiare.'],
       note:'abbiamo (avere, 1. Pl.); fame / sete / tempo ohne Artikel.' },
 
     /* === IT 3 === */
-    { id:'m21-it-01', type:'IT',
+    { id:'m21-it-01', type:'IT', stufe:2,
       prompt:'"Quanti anni hai? — Ho ventisei anni e sono studentessa."',
       solutions:['Wie alt bist du? — Ich bin sechsundzwanzig und bin Studentin.'],
       note:'avere + anni (Alter); sono studentessa (essere + Beruf/Status, kein Artikel).' },
 
-    { id:'m21-it-02', type:'IT',
+    { id:'m21-it-02', type:'IT', stufe:3,
       prompt:'"Hai ragione — c\'è sempre qualcosa da imparare."',
       solutions:['Du hast recht — es gibt immer etwas zu lernen.','Du hast recht, es gibt immer etwas zu lernen.'],
       note:"avere ragione (recht haben); c'è (es gibt, Singular); qualcosa da + Infinitiv." },
 
-    { id:'m21-it-03', type:'IT',
+    { id:'m21-it-03', type:'IT', stufe:3,
       prompt:'"Sono le undici e mezza e ho ancora molto da fare."',
       solutions:['Es ist halb zwölf und ich habe noch viel zu tun.','Es ist elf Uhr dreißig und ich habe noch viel zu erledigen.'],
       note:'Sono le undici e mezza (Uhrzeit); ho ancora molto da fare (avere da + Infinitiv).' },
@@ -616,16 +616,16 @@ const MODULE = {
     { id:'m21-sr-01', type:'SR',
       it:'Sono italiano e abito a Napoli.',
       de:'Ich bin Italiener und wohne in Neapel.' },
-    { id:'m21-sr-02', type:'SR',
+    { id:'m21-sr-02', type:'SR', stufe:2,
       it:"Hai fame? Anch'io ho molta fame.",
       de:'Hast du Hunger? Ich habe auch großen Hunger.' },
     { id:'m21-sr-03', type:'SR',
       it:'Siamo stanchi dopo una lunga giornata.',
       de:'Wir sind müde nach einem langen Tag.' },
-    { id:'m21-sr-04', type:'SR',
+    { id:'m21-sr-04', type:'SR', stufe:2,
       it:'Mia madre ha quarantadue anni.',
       de:'Meine Mutter ist zweiundvierzig Jahre alt.' },
-    { id:'m21-sr-05', type:'SR',
+    { id:'m21-sr-05', type:'SR', stufe:2,
       it:'Voi avete ragione, è una bella idea.',
       de:'Ihr habt recht, das ist eine gute Idee.' },
     { id:'m21-sr-06', type:'SR',
@@ -634,7 +634,7 @@ const MODULE = {
     { id:'m21-sr-07', type:'SR',
       it:'Tu sei molto bravo in matematica.',
       de:'Du bist sehr gut in Mathematik.' },
-    { id:'m21-sr-08', type:'SR',
+    { id:'m21-sr-08', type:'SR', stufe:2,
       it:'Ho paura dei ragni, sono terribili!',
       de:'Ich habe Angst vor Spinnen, die sind schrecklich!' },
     { id:'m21-sr-09', type:'SR',
@@ -644,7 +644,7 @@ const MODULE = {
       it:'Avete tempo per un caffè insieme?',
       de:'Habt ihr Zeit für einen gemeinsamen Kaffee?' },
 
-    { id:'m21-st-01', type:'ST',
+    { id:'m21-st-01', type:'ST', stufe:2,
       de:'Ich bin zwanzig Jahre alt.',
       solutions:["Ho vent'anni."],
       note:'Alter: avere + anni (nicht essere!)' },
@@ -652,11 +652,11 @@ const MODULE = {
       de:'Sie ist Lehrerin.',
       solutions:['È insegnante.','È professoressa.','Lei è insegnante.'],
       note:'Berufe: essere + Berufsbezeichnung (kein Artikel!)' },
-    { id:'m21-st-03', type:'ST',
+    { id:'m21-st-03', type:'ST', stufe:2,
       de:'Wir haben Durst.',
       solutions:['Abbiamo sete.'],
       note:'Durst/Hunger/Angst: avere + sete/fame/paura' },
-    { id:'m21-st-04', type:'ST',
+    { id:'m21-st-04', type:'ST', stufe:2,
       de:'Du hast Recht.',
       solutions:['Hai ragione.'],
       note:'avere ragione = Recht haben (feste Redewendung)' },
@@ -674,13 +674,13 @@ const MODULE = {
       note:'avere: lui non ha (3. Ps. Sg., Verneinung: non davanti al verbo)' },
     { id:'m21-st-08', type:'ST',
       de:'Wir sind aus Deutschland.',
-      solutions:['Siamo della Germania.','Siamo tedeschi.','Veniamo dalla Germania.'],
-      note:'Herkunft: essere di + Land / essere + Nationalität' },
-    { id:'m21-st-09', type:'ST',
+      solutions:['Siamo tedeschi.','Veniamo dalla Germania.'],
+      note:'Herkunft: essere + Nationalität (siamo tedeschi) oder venire da + Land mit Artikel (veniamo dalla Germania). Bei Städten: siamo di Berlino.' },
+    { id:'m21-st-09', type:'ST', stufe:2,
       de:'Sie haben Angst vor der Prüfung.',
       solutions:["Hanno paura dell'esame."],
       note:"avere paura = Angst haben; avere: loro hanno (6. Ps.)" },
-    { id:'m21-st-10', type:'ST',
+    { id:'m21-st-10', type:'ST', stufe:2,
       de:'Ich bin müde und habe Kopfschmerzen.',
       solutions:['Sono stanco e ho mal di testa.','Sono stanca e ho mal di testa.'],
       note:'essere + aggettivo; avere + mal di testa' },

@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due 2014 Präposition SU</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -29,7 +28,7 @@
   <h2 class="exercises-heading">Übungen</h2>
 <div id="daily-goal-mount"></div>   <!-- NEU -->
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 70</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -40,6 +39,7 @@
 
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -106,7 +106,7 @@ const MODULE = {
       translation:'Das Buch liegt auf dem Tisch.',
       explain:'sul = su + il (tavolo ist m/Sg.). sulla = su + la (feminin) — falsch bei tavolo. sullo = su + lo (vor s+Kons. oder z) — falsch bei tavolo.' },
 
-    { id:'m07-so-02', type:'SO',
+    { id:'m07-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['clima', 'articolo', 'ho', 'sul', 'sulla', 'sugli', 'letto', 'un'],
       solution:['ho', 'letto', 'un', 'articolo', 'sul', 'clima'],
@@ -120,25 +120,25 @@ const MODULE = {
       translation:'Die Tasche liegt auf dem Stuhl.',
       explain:'sulla = su + la (sedia ist f/Sg.). sul = su + il (m/Sg.) — falsch bei sedia. sulle = su + le (f/Pl.) — sedia ist Singular.' },
 
-    { id:'m07-so-04', type:'SO',
+    { id:'m07-so-04', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['sullo','sul','sulla','schermo','cosa','c\'è','lo'],
       solution:['cosa','c\'è','sullo','schermo'],
       translation:'Was ist auf dem Bildschirm?',
       explain:'sullo = su + lo (schermo beginnt mit sch- → s+Kons. → lo). sul = su + il (vor normalem Kons.) — falsch bei schermo. sulla = su + la (f/Sg.) — schermo ist maskulin.' },
 
-    { id:'m07-so-05', type:'SO',
+    { id:'m07-so-05', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['sui','sugli','sulle','scaffali','i','libri','sono'],
       solution:['i','libri','sono','sugli','scaffali'],
       translation:'Die Bücher stehen auf den Regalen.',
       explain:'sugli = su + gli (scaffali ist m/Pl., beginnt mit sc- → gli). sui = su + i (m/Pl. vor normalem Kons.) — falsch bei scaffali. sulle = su + le (f/Pl.) — scaffali ist maskulin.' },
 
-    { id:'m07-so-06', type:'SO',
+    { id:'m07-so-06', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
-      tokens:['sul','sulla','sull\'','lavoro','parlo','mio'],
-      solution:['parlo','sul','mio','lavoro'],
-      translation:'Ich spreche über meine Arbeit.',
+      tokens:['sul','sulla','sull\'','lavoro','leggo','un','articolo','mio'],
+      solution:['leggo','un','articolo','sul','mio','lavoro'],
+      translation:'Ich lese einen Artikel über meine Arbeit.',
       explain:'sul = su + il (lavoro ist m/Sg., beginnt mit l). sull\' = su + l\' (vor Vokal) — falsch vor Kons. sulla = su + la (f/Sg.) — lavoro ist maskulin.' },
 
     { id:'m07-so-07', type:'SO',
@@ -148,21 +148,21 @@ const MODULE = {
       translation:'Die Schuhe liegen auf den Stühlen.',
       explain:'sulle = su + le (sedie ist f/Pl.). sui = su + i (m/Pl.) — sedie ist feminin. sul = su + il (m/Sg.) — sedie ist Plural.' },
 
-    { id:'m07-so-08', type:'SO',
+    { id:'m07-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['sull\'','sul','sulla','albero','un','uccello','c\'è'],
       solution:['c\'è','un','uccello','sull\'','albero'],
       translation:'Auf dem Baum sitzt ein Vogel.',
       explain:'sull\' = su + l\' (albero beginnt mit Vokal → Elision). sul = su + il (vor Kons.) — falsch vor Vokal. sulla = su + la (f/Sg.) — albero ist maskulin.' },
 
-    { id:'m07-so-09', type:'SO',
+    { id:'m07-so-09', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['sul','sulla','sui','treno','faccio','un','viaggio'],
       solution:['sul','treno','faccio','un','viaggio'],
       translation:'Ich mache eine Reise mit dem Zug.',
       explain:'sul = su + il (treno ist m/Sg.). sulla = su + la (f/Sg.) — treno ist maskulin. nel = in + il — für sul/treno (Transportmittel) wird su verwendet, nicht in.' },
 
-    { id:'m07-so-10', type:'SO',
+    { id:'m07-so-10', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['sul','sulla','sugli','mappa','cerco','del','telefono'],
       solution:['cerco','sulla','mappa','del','telefono'],
@@ -181,7 +181,7 @@ const MODULE = {
         { de:'su + le',   it:'sulle'  }
       ] },
 
-    { id:'m07-zo-02', type:'ZO',
+    { id:'m07-zo-02', type:'ZO', stufe:2,
       prompt:'Ordne zu: Substantiv → richtige SU-Artikelform',
       pairs:[
         { de:'il tavolo (m/Sg., Konsonant)',      it:'sul'    },
@@ -192,7 +192,7 @@ const MODULE = {
         { de:'le scale (f/Pl.)',                  it:'sulle'  }
       ] },
 
-    { id:'m07-zo-03', type:'ZO',
+    { id:'m07-zo-03', type:'ZO', stufe:3,
       prompt:'Ordne zu: Funktion von SU',
       pairs:[
         { de:'Il gatto è sul tetto.',      it:'Lage auf Fläche'    },
@@ -214,7 +214,7 @@ const MODULE = {
         { de:'Die Katze ist im Garten.',       it:'nel giardino'   }
       ] },
 
-    { id:'m07-zo-05', type:'ZO',
+    { id:'m07-zo-05', type:'ZO', stufe:2,
       prompt:'Ordne zu: Thema-Ausdruck mit SU -> Deutsch',
       pairs:[
         { de:'un libro sul clima',        it:'ein Buch über das Klima'       },
@@ -225,7 +225,7 @@ const MODULE = {
         { de:'un corso sul vino',         it:'ein Kurs über den Wein'        }
       ] },
 
-    { id:'m07-zo-06', type:'ZO',
+    { id:'m07-zo-06', type:'ZO', stufe:3,
       prompt:'Ordne zu: ungefähre Angabe mit SUI -> Deutsch',
       pairs:[
         { de:'Costa sui 10 euro.',        it:'Es kostet ungefähr 10 Euro.'   },
@@ -236,7 +236,7 @@ const MODULE = {
         { de:'Saranno sui 5 km.',         it:'Es werden ungefähr 5 km sein.' }
       ] },
 
-    { id:'m07-zo-07', type:'ZO',
+    { id:'m07-zo-07', type:'ZO', stufe:2,
       prompt:'Ordne zu: Medium / Kanal mit SU -> Deutsch',
       pairs:[
         { de:'sul giornale',     it:'in der Zeitung'       },
@@ -247,7 +247,7 @@ const MODULE = {
         { de:'sui social',       it:'in den sozialen Medien'}
       ] },
 
-    { id:'m07-zo-08', type:'ZO',
+    { id:'m07-zo-08', type:'ZO', stufe:3,
       prompt:'Ordne zu: Lage am Gewässer / Gelände mit SU -> Deutsch',
       pairs:[
         { de:'una casa sul mare',         it:'ein Haus am Meer'       },
@@ -277,25 +277,25 @@ const MODULE = {
       correctValue:'sulla',
       explain:'la sedia (f/Sg.) -> su + la = sulla.' },
 
-    { id:'m07-mc-04', type:'MC',
+    { id:'m07-mc-04', type:'MC', stufe:2,
       prompt:'Welche Form? "Ho visto l\'articolo ___ giornale." (il giornale)',
       options:['sul','sullo','sulla','sui'],
       correctValue:'sul',
       explain:'il giornale (m/Sg.) -> sul.' },
 
-    { id:'m07-mc-05', type:'MC',
+    { id:'m07-mc-05', type:'MC', stufe:2,
       prompt:'Welche Form? "Ho letto un libro ___ storia." (Thema)',
       options:['sul','della','sulla','di'],
       correctValue:'sulla',
       explain:'la storia (f/Sg.) -> su + la = sulla. Thema mit bestimmtem Artikel.' },
 
-    { id:'m07-mc-06', type:'MC',
+    { id:'m07-mc-06', type:'MC', stufe:3,
       prompt:'"Costa ___ 50 euro." Was bedeutet das?',
       options:['Es kostet 50 Euro genau.','Es kostet ungefähr 50 Euro.','Es kostet über 50 Euro.','Es kostet unter 50 Euro.'],
       correctValue:'Es kostet ungefähr 50 Euro.',
       explain:'sui + Zahl = ungefähre Angabe. sui 50 euro = um die 50 Euro.' },
 
-    { id:'m07-mc-07', type:'MC',
+    { id:'m07-mc-07', type:'MC', stufe:2,
       prompt:'Welche Form? "I libri sono ___ scaffali." (gli scaffali)',
       options:['sul','sullo','sui','sugli'],
       correctValue:'sugli',
@@ -307,7 +307,7 @@ const MODULE = {
       correctValue:'sul',
       explain:'il tavolo (m/Sg.) -> sul.' },
 
-    { id:'m07-mc-09', type:'MC',
+    { id:'m07-mc-09', type:'MC', stufe:3,
       prompt:'"Ho una casa ___ mare." Welche Funktion hat SU hier?',
       options:['Lage auf einer Fläche','Thema','Lage am Gewässer / Gelände','ungefähre Zahl'],
       correctValue:'Lage am Gewässer / Gelände',
@@ -319,13 +319,13 @@ const MODULE = {
       correctValue:'sul',
       explain:'il ripiano (m/Sg.) -> sul.' },
 
-    { id:'m07-mc-11', type:'MC',
+    { id:'m07-mc-11', type:'MC', stufe:3,
       prompt:'"Avrà ___ quarant\'anni." Welche Form?',
       options:['su','sul','sui','sulla'],
       correctValue:'sui',
       explain:'sui + Zahl = ungefähre Angabe (Alter). sui quarant\'anni = um die vierzig.' },
 
-    { id:'m07-mc-12', type:'MC',
+    { id:'m07-mc-12', type:'MC', stufe:2,
       prompt:'Welche Form? "Ho trovato queste informazioni ___ web."',
       options:['sul','sullo','sulla','sui'],
       correctValue:'sul',
@@ -339,7 +339,7 @@ const MODULE = {
       translation:'Die Vase steht auf dem Tisch.',
       explain:'il tavolo (m/Sg.) -> sul.' },
 
-    { id:'m07-mcl-02', type:'MC',
+    { id:'m07-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "Ho visto questo film ___ televisione."',
       options:['sulla','sul','sullo','sulle'],
       correctValue:'sulla',
@@ -353,14 +353,14 @@ const MODULE = {
       translation:'Die Schuhe sind auf der Treppe.',
       explain:'le scale (f/Pl.) -> su + le = sulle.' },
 
-    { id:'m07-mcl-04', type:'MC',
+    { id:'m07-mcl-04', type:'MC', stufe:2,
       prompt:'Wähle: "Stanno lavorando ___ nuovo progetto."',
       options:['sul','sulla','sullo','sui'],
       correctValue:'sul',
       translation:'Sie arbeiten an dem neuen Projekt.',
       explain:'il progetto (m/Sg.) -> sul. SU drückt hier "sich mit etwas befassen" aus.' },
 
-    { id:'m07-mcl-05', type:'MC',
+    { id:'m07-mcl-05', type:'MC', stufe:3,
       prompt:'Wähle: "Ho comprato ___ 20 euro di benzina."',
       options:['su','sui','sul','sulle'],
       correctValue:'sui',
@@ -381,21 +381,21 @@ const MODULE = {
       translation:'Wir haben auf der Terrasse gegessen.',
       explain:'la terrazza (f/Sg.) -> sulla.' },
 
-    { id:'m07-mcl-08', type:'MC',
+    { id:'m07-mcl-08', type:'MC', stufe:2,
       prompt:'Wähle: "Ho visto l\'annuncio ___ social."',
       options:['sui','sul','sulla','sulle'],
       correctValue:'sui',
       translation:'Ich habe die Ankündigung in den sozialen Medien gesehen.',
       explain:'i social (m/Pl.) -> sui social.' },
 
-    { id:'m07-mcl-09', type:'MC',
+    { id:'m07-mcl-09', type:'MC', stufe:2,
       prompt:'Wähle: "Il gatto dorme ___ zaino." (lo zaino)',
       options:['sul','sullo','sulla','sui'],
       correctValue:'sullo',
       translation:'Die Katze schläft auf dem Rucksack.',
       explain:'lo zaino (s-Anlaut) -> su + lo = sullo.' },
 
-    { id:'m07-mcl-10', type:'MC',
+    { id:'m07-mcl-10', type:'MC', stufe:2,
       prompt:'Wähle: "Ci siamo seduti ___ erba." (l\'erba)',
       options:["sull'","sulla","sullo","sul"],
       correctValue:"sull'",
@@ -409,32 +409,32 @@ const MODULE = {
       translation:'Mein Telefon liegt auf dem Tisch.',
       explain:'il tavolo (m/Sg.) -> sul.' },
 
-    { id:'m07-lt-02', type:'LT',
+    { id:'m07-lt-02', type:'LT', stufe:2,
       text:'Ho letto un articolo {0} cambiamento climatico {1} giornale.',
       blanks:[ { accept:['sul'] }, { accept:['sul'] } ],
       translation:'Ich habe einen Artikel über den Klimawandel in der Zeitung gelesen.',
       explain:'sul cambiamento (m/Sg., Thema); sul giornale (m/Sg., Medium).' },
 
-    { id:'m07-lt-03', type:'LT',
+    { id:'m07-lt-03', type:'LT', stufe:3,
       text:'Costa {0} cento euro, forse di più.',
       blanks:[ { accept:['sui'] } ],
       translation:'Es kostet ungefähr hundert Euro, vielleicht mehr.',
       explain:'sui + Zahl = ungefähre Angabe.' },
 
-    { id:'m07-lt-04', type:'LT',
+    { id:'m07-lt-04', type:'LT', stufe:2,
       text:'Metti i libri {0} scaffali e le chiavi {1} tavolo.',
       blanks:[ { accept:['sugli'] }, { accept:['sul'] } ],
       translation:'Leg die Bücher auf die Regale und die Schlüssel auf den Tisch.',
       explain:'gli scaffali (m/Pl., Vokal) -> sugli; il tavolo (m/Sg.) -> sul.' },
 
-    { id:'m07-lt-05', type:'LT',
+    { id:'m07-lt-05', type:'LT', stufe:3,
       text:'Ho una casa {0} lago. Avrà {1} vent\'anni.',
       blanks:[ { accept:['sul'] }, { accept:['sui'] } ],
       translation:'Ich habe ein Haus am See. Er ist wohl um die zwanzig.',
       explain:'sul lago (Lage am Gewässer); sui vent\'anni (ungefähres Alter).' },
 
     /* === FT 2 === */
-    { id:'m07-ft-01', type:'FT',
+    { id:'m07-ft-01', type:'FT', stufe:2,
       prompt:'Bilde die Artikelpräposition: su + ...',
       rows:[
         { label:'su + il',   accept:['sul']    },
@@ -446,7 +446,7 @@ const MODULE = {
       ],
       explain:'sulle fehlt: su + le = sulle (f/Pl.).' },
 
-    { id:'m07-ft-02', type:'FT',
+    { id:'m07-ft-02', type:'FT', stufe:2,
       prompt:'Ergänze die richtige SU-Form für diese Ortsangaben:',
       rows:[
         { label:'Il libro [su + il tavolo]',       accept:['sul tavolo']    },
@@ -466,7 +466,7 @@ const MODULE = {
       translation:'Das Buch liegt auf dem Tisch.',
       explain:'su + il verschmilzt immer zu sul. "su il" getrennt ist falsch.' },
 
-    { id:'m07-fk-02', type:'FK',
+    { id:'m07-fk-02', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
       sentence:'Ho letto un libro in clima.',
       solution:'Ho letto un libro sul clima.',
@@ -474,7 +474,7 @@ const MODULE = {
       translation:'Ich habe ein Buch über das Klima gelesen.',
       explain:'Thema: su (sul/sulla...), nicht in. Ho letto un libro sul clima.' },
 
-    { id:'m07-fk-03', type:'FK',
+    { id:'m07-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
       sentence:'Costa sulle 50 euro.',
       solution:'Costa sui 50 euro.',
@@ -483,7 +483,7 @@ const MODULE = {
       explain:'Ungefähre Zahlenangabe: sui (m/Pl., da euro maskulin Plural). sulle wäre feminin Plural.' },
 
     /* === KA 3 === */
-    { id:'m07-ka-01', type:'KA',
+    { id:'m07-ka-01', type:'KA', stufe:2,
       prompt:'Kategorisiere: SU oder IN?',
       categories:['SU (auf / über / am)', 'IN (in / drin / nach)'],
       items:[
@@ -495,7 +495,7 @@ const MODULE = {
         { text:'Il vaso è sulla mensola.',    cat:0 }
       ] },
 
-    { id:'m07-ka-02', type:'KA',
+    { id:'m07-ka-02', type:'KA', stufe:3,
       prompt:'Kategorisiere: Funktion von SU',
       categories:['Lage auf Fläche / am Gewässer', 'Thema oder ungefähre Angabe'],
       items:[
@@ -507,7 +507,7 @@ const MODULE = {
         { text:'Avrà sui 40 anni.',           cat:1 }
       ] },
 
-    { id:'m07-ka-03', type:'KA',
+    { id:'m07-ka-03', type:'KA', stufe:2,
       prompt:'Kategorisiere: sul/sullo oder sulla/sulle?',
       categories:['sul / sullo / sui / sugli (maskulin)', 'sulla / sulle (feminin)'],
       items:[
@@ -520,7 +520,7 @@ const MODULE = {
       ] },
 
     /* === KO 1 === */
-    { id:'m07-ko-01', type:'KO',
+    { id:'m07-ko-01', type:'KO', stufe:2,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Ho letto un libro sul clima.', tag:'SU: Thema' },
       b:{ sentence:'Ho letto un libro in italiano.', tag:'IN: Sprache / Medium' },
@@ -532,12 +532,12 @@ const MODULE = {
       solutions:['Il gatto dorme sul divano.','La gatta dorme sul divano.'],
       note:'sul divano = su + il (il divano, m/Sg.).' },
 
-    { id:'m07-de-02', type:'DE',
+    { id:'m07-de-02', type:'DE', stufe:2,
       prompt:'"Ich habe einen Artikel über die Umwelt in der Zeitung gelesen."',
       solutions:["Ho letto un articolo sull'ambiente sul giornale.",'Ho letto sul giornale un articolo sull\'ambiente.'],
       note:"sull'ambiente: su + l' (l'ambiente, m, Vokal); sul giornale: su + il." },
 
-    { id:'m07-de-03', type:'DE',
+    { id:'m07-de-03', type:'DE', stufe:3,
       prompt:'"Das kostet ungefähr dreißig Euro."',
       solutions:['Costa sui trenta euro.','Costa sui 30 euro.'],
       note:'sui + Zahl = ungefähre Angabe (euro ist maskulin Plural -> sui).' },
@@ -548,12 +548,12 @@ const MODULE = {
       solutions:['Die Blumenvase steht auf dem Regal.','Die Vase mit Blumen ist auf dem Regal.'],
       note:'sulla mensola = su + la (la mensola, f/Sg.).' },
 
-    { id:'m07-it-02', type:'IT',
+    { id:'m07-it-02', type:'IT', stufe:2,
       prompt:'"Ho visto una conferenza sulle energie rinnovabili."',
       solutions:['Ich habe einen Vortrag über erneuerbare Energien gesehen.','Ich habe eine Konferenz über erneuerbare Energien gesehen.'],
       note:'sulle energie = su + le (le energie, f/Pl.). Thema.' },
 
-    { id:'m07-it-03', type:'IT',
+    { id:'m07-it-03', type:'IT', stufe:3,
       prompt:'"Avrà sui cinquant\'anni, ma sembra più giovane."',
       solutions:['Er/Sie ist wohl um die fünfzig, sieht aber jünger aus.','Er ist wohl um die 50, wirkt aber jünger.'],
       note:"sui + Zahl = ungefähres Alter. sembra = er/sie scheint / sieht aus." },
@@ -576,7 +576,7 @@ const MODULE = {
       sentence:'Metto il piatto {0} tavolo e il bicchiere {1} mensola.',
       blanks:[{ accept:'sul', distractors:['sulla', 'sullo', 'sull\''] }, { accept:'sulla', distractors:['sul', 'sullo', 'sull\''] }],
       explain:'tavolo (m/Sg.) → sul; mensola (f/Sg.) → sulla.' },
-    { id:'m07-el-04', type:'EL',
+    { id:'m07-el-04', type:'EL', stufe:2,
       prompt:'Präposition SU + Artikel — Informationsquellen:',
       sentence:'Ho letto la notizia {0} giornale e {1} telefono.',
       blanks:[{ accept:'sul', distractors:['sulla', 'sullo', 'nel'] }, { accept:'sul', distractors:['sulla', 'sullo', 'nel'] }],
@@ -589,9 +589,9 @@ const MODULE = {
     { id:'m07-el-06', type:'EL',
       prompt:'Präposition SU + Artikel:',
       sentence:'I bambini giocano {0} prato e i gatti dormono {1} tetto.',
-      blanks:[{ accept:'sul', distractors:['sulla', 'sullo', 'sul'] }, { accept:'sul', distractors:['sulla', 'sullo', 'sull\''] }],
+      blanks:[{ accept:'sul', distractors:['sulla', 'sullo', 'sui'] }, { accept:'sul', distractors:['sulla', 'sullo', 'sull\''] }],
       explain:'prato und tetto sind m/Sg. → sul.' },
-    { id:'m07-el-07', type:'EL',
+    { id:'m07-el-07', type:'EL', stufe:2,
       prompt:'Präposition SU + Artikel:',
       sentence:'Ho trovato la ricetta {0} internet e l\'ho letta {1} schermo.',
       blanks:[{ accept:'su', distractors:['sul', 'sullo', 'sulla'] }, { accept:'sullo', distractors:['sul', 'sulla', 'su'] }],
@@ -601,12 +601,12 @@ const MODULE = {
       sentence:'Ho messo le chiavi {0} tavolo e la borsa {1} sedia.',
       blanks:[{ accept:'sul', distractors:['sulla', 'sugli', 'sulle'] }, { accept:'sulla', distractors:['sul', 'sugli', 'sulle'] }],
       explain:'tavolo (m/Sg.) → sul; sedia (f/Sg.) → sulla.' },
-    { id:'m07-el-09', type:'EL',
+    { id:'m07-el-09', type:'EL', stufe:2,
       prompt:'Präposition SU + Artikel:',
       sentence:'Il libro è {0} scaffale e i quaderni sono {1} scrivania.',
       blanks:[{ accept:'sullo', distractors:['sul', 'sulla', 'sull\''] }, { accept:'sulla', distractors:['sul', 'sullo', 'sull\''] }],
       explain:'scaffale (m/Sg., sc-Anlaut) → sullo; scrivania (f/Sg.) → sulla.' },
-    { id:'m07-el-10', type:'EL',
+    { id:'m07-el-10', type:'EL', stufe:2,
       prompt:'Präposition SU + Artikel:',
       sentence:'Ho visto il film {0} schermo grande e ho letto la critica {1} rivista.',
       blanks:[{ accept:'sullo', distractors:['sul', 'sulla', 'sull\''] }, { accept:'sulla', distractors:['sul', 'sullo', 'sull\''] }],
@@ -622,28 +622,28 @@ const MODULE = {
     { id:'m07-sr-02', type:'SR',
       it:'I libri sono sulla scrivania.',
       de:'Die Bücher liegen auf dem Schreibtisch.' },
-    { id:'m07-sr-03', type:'SR',
+    { id:'m07-sr-03', type:'SR', stufe:2,
       it:'Ho letto la notizia sul giornale.',
       de:'Ich habe die Nachricht in der Zeitung gelesen.' },
     { id:'m07-sr-04', type:'SR',
       it:'Metti il cappello sulla testa.',
       de:'Setz den Hut auf den Kopf.' },
-    { id:'m07-sr-05', type:'SR',
+    { id:'m07-sr-05', type:'SR', stufe:2,
       it:'Sull\'aereo ci sono duecento passeggeri.',
       de:'Im Flugzeug sind zweihundert Passagiere.' },
     { id:'m07-sr-06', type:'SR',
       it:'Le nuvole sono sulle montagne.',
       de:'Die Wolken sind über den Bergen.' },
-    { id:'m07-sr-07', type:'SR',
+    { id:'m07-sr-07', type:'SR', stufe:2,
       it:'Il prezzo è scritto sull\'etichetta.',
       de:'Der Preis steht auf dem Etikett.' },
-    { id:'m07-sr-08', type:'SR',
+    { id:'m07-sr-08', type:'SR', stufe:2,
       it:'Sui muri ci sono molti graffiti.',
       de:'An den Wänden gibt es viele Graffiti.' },
     { id:'m07-sr-09', type:'SR',
       it:'La lampada è sul tavolo rotondo.',
       de:'Die Lampe ist auf dem runden Tisch.' },
-    { id:'m07-sr-10', type:'SR',
+    { id:'m07-sr-10', type:'SR', stufe:2,
       it:'Sugli scaffali ci sono molti libri.',
       de:'In den Regalen gibt es viele Bücher.' },
 
@@ -662,19 +662,19 @@ const MODULE = {
       de:'Das Foto ist auf dem Schreibtisch.',
       solutions:['La foto è sulla scrivania.', 'La fotografia è sulla scrivania.'],
       note:'scrivania (f/Sg.) → sulla scrivania' },
-    { id:'m07-st-04', type:'ST',
+    { id:'m07-st-04', type:'ST', stufe:2,
       de:'Ich habe es im Internet gelesen.',
       solutions:['L\'ho letto su Internet.', 'L\'ho letto in Internet.'],
       note:'su Internet (ohne Art.) = gängige Wendung' },
-    { id:'m07-st-05', type:'ST',
+    { id:'m07-st-05', type:'ST', stufe:2,
       de:'Die Kinder klettern auf die Bäume.',
       solutions:['I bambini salgono sugli alberi.', 'I bambini si arrampicano sugli alberi.'],
       note:'alberi (m/Pl., Vokal) → sugli alberi' },
-    { id:'m07-st-06', type:'ST',
+    { id:'m07-st-06', type:'ST', stufe:2,
       de:'Das steht im Vertrag.',
       solutions:['È scritto sul contratto.', 'Sta nel contratto.', 'Sta sul contratto.'],
       note:'contratto (m/Sg.) → sul; nel ebenfalls möglich' },
-    { id:'m07-st-07', type:'ST',
+    { id:'m07-st-07', type:'ST', stufe:2,
       de:'Die Tassen stehen auf den Regalen.',
       solutions:['Le tazze sono sugli scaffali.', 'Le tazze si trovano sugli scaffali.'],
       note:'scaffali (m/Pl., sc-Anlaut) → sugli scaffali' },

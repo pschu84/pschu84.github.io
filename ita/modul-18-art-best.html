@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Bestimmter Artikel</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
   <div id="daily-goal-mount"></div>
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -91,14 +91,14 @@ const MODULE = {
   exercises: [
 
     /* === SO 2 === */
-    { id:'m18-so-01', type:'SO',
+    { id:'m18-so-01', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['lo', 'il', "l'", 'zaino', 'è', 'pesante'],
       solution:['lo', 'zaino', 'è', 'pesante'],
       translation:'Der Rucksack ist schwer.',
       explain:"zaino beginnt mit z → lo zaino. il wäre falsch vor z (nur vor einfachem Konsonant). l' nur vor Vokal." },
 
-    { id:'m18-so-02', type:'SO',
+    { id:'m18-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['gli', 'i', 'lo', 'amici', 'di', 'Marco', 'simpatici', 'sono'],
       solution:['gli', 'amici', 'di', 'Marco', 'sono', 'simpatici'],
@@ -112,14 +112,14 @@ const MODULE = {
       translation:'Die Katze ist auf dem Sofa.',
       explain:"gatto beginnt mit normalem Konsonant g → il gatto. lo wäre falsch (nur vor z, s+K, gn...). l' nur vor Vokal." },
 
-    { id:'m18-so-04', type:'SO',
+    { id:'m18-so-04', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:["l'", 'la', 'lo', 'amica', 'di', 'Maria', 'è', 'alta'],
       solution:["l'", 'amica', 'di', 'Maria', 'è', 'alta'],
       translation:'Marias Freundin ist groß.',
       explain:"amica beginnt mit Vokal, f/Sg. → l'amica (Elision). la steht nur vor Konsonant (la casa). lo ist maskulin." },
 
-    { id:'m18-so-05', type:'SO',
+    { id:'m18-so-05', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['lo', 'il', "l'", 'studente', 'studia', 'in', 'biblioteca'],
       solution:['lo', 'studente', 'studia', 'in', 'biblioteca'],
@@ -133,14 +133,14 @@ const MODULE = {
       translation:'Die Tür ist offen.',
       explain:"porta beginnt mit p (Konsonant), f/Sg. → la porta. l' nur vor Vokal. lo ist maskulin." },
 
-    { id:'m18-so-07', type:'SO',
+    { id:'m18-so-07', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:["l'", 'lo', 'la', 'orologio', 'è', 'sul', 'tavolo'],
       solution:["l'", 'orologio', 'è', 'sul', 'tavolo'],
       translation:'Die Uhr liegt auf dem Tisch.',
       explain:"orologio beginnt mit Vokal, m/Sg. → l'orologio. lo steht nur vor Konsonant (z, s+K, gn...). la ist feminin." },
 
-    { id:'m18-so-08', type:'SO',
+    { id:'m18-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['lo', 'il', "l'", 'gnomo', 'è', 'piccolo'],
       solution:['lo', 'gnomo', 'è', 'piccolo'],
@@ -170,42 +170,42 @@ const MODULE = {
       translation:'Die Katze und die Mutter essen zusammen.',
       explain:'gatto (m, Kons.) → il. madre (f, Kons.) → la.' },
 
-    { id:'m18-el-02', type:'EL',
+    { id:'m18-el-02', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'{0} zaino è pesante e {1} scuola è lontana.',
       blanks:[{accept:'Lo', distractors:['Il', 'La', 'L\'']}, {accept:'la', distractors:['lo', 'il', 'l\'']}],
       translation:'Der Rucksack ist schwer und die Schule ist weit.',
       explain:'zaino (m, z) → lo. scuola (f, Kons.) → la.' },
 
-    { id:'m18-el-03', type:'EL',
+    { id:'m18-el-03', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Ho comprato {0} pane e {1} acqua.',
       blanks:[{accept:'il', distractors:['lo', 'la', 'l\'']}, {accept:'l\'', distractors:['la', 'il', 'lo']}],
       translation:'Ich habe das Brot und das Wasser gekauft.',
       explain:'pane (m, Kons.) → il. acqua (f, Vokal) → l\'.' },
 
-    { id:'m18-el-04', type:'EL',
+    { id:'m18-el-04', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'{0} studente studia e {1} professoressa spiega.',
       blanks:[{accept:'Lo', distractors:['Il', 'La', 'L\'']}, {accept:'la', distractors:['lo', 'il', 'l\'']}],
       translation:'Der Student lernt und die Professorin erklärt.',
       explain:'studente (m, st=s+K) → lo. professoressa (f, Kons.) → la.' },
 
-    { id:'m18-el-05', type:'EL',
+    { id:'m18-el-05', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Dove è {0} fermata? È vicino a {1} ufficio.',
       blanks:[{accept:'la', distractors:['il', 'lo', 'l\'']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
       translation:'Wo ist die Haltestelle? Sie ist nah am Büro.',
       explain:'fermata (f, Kons.) → la. ufficio (m, Vokal) → l\'.' },
 
-    { id:'m18-el-06', type:'EL',
+    { id:'m18-el-06', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'{0} amica di Maria e {1} amico di Luca sono qui.',
       blanks:[{accept:'L\'', distractors:['La', 'Il', 'Lo']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
       translation:'Marias Freundin und Lukas Freund sind hier.',
       explain:'amica (f, Vokal) → l\'. amico (m, Vokal) → l\'.' },
 
-    { id:'m18-el-07', type:'EL',
+    { id:'m18-el-07', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Prendo {0} treno e poi {1} autobus.',
       blanks:[{accept:'il', distractors:['lo', 'la', 'l\'']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
@@ -219,7 +219,7 @@ const MODULE = {
       translation:'Ich lese das Buch und höre die Musik.',
       explain:'libro (m, Kons.) → il. musica (f, Kons.) → la.' },
 
-    { id:'m18-el-09', type:'EL',
+    { id:'m18-el-09', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'{0} gnomo è piccolo e {1} elefante è grande.',
       blanks:[{accept:'Lo', distractors:['Il', 'La', 'L\'']}, {accept:'l\'', distractors:['il', 'lo', 'la']}],
@@ -234,7 +234,7 @@ const MODULE = {
       explain:'sole (m, Kons.) → il. vento (m, Kons.) → il.' },
 
     /* === ZO 9 === */
-    { id:'m18-zo-01', type:'ZO',
+    { id:'m18-zo-01', type:'ZO', stufe:2,
       prompt:'Ordne zu: Artikel → Verwendung',
       pairs:[
         { de:'il',   it:'m/Sg. vor normalem Konsonant'       },
@@ -245,7 +245,7 @@ const MODULE = {
         { de:'le',   it:'f/Pl. (immer)'                      },
       ] },
 
-    { id:'m18-zo-02', type:'ZO',
+    { id:'m18-zo-02', type:'ZO', stufe:2,
       prompt:'Ordne zu: il oder lo? (maskulin Singular)',
       pairs:[
         { de:'libro (normaler Konsonant)',   it:'il'  },
@@ -256,7 +256,7 @@ const MODULE = {
         { de:'psicologo (ps)',               it:'lo'  },
       ] },
 
-    { id:'m18-zo-03', type:'ZO',
+    { id:'m18-zo-03', type:'ZO', stufe:2,
       prompt:"Ordne zu: l' oder la? (feminin Singular)",
       pairs:[
         { de:'amica (Vokal)',               it:"l'"  },
@@ -267,7 +267,7 @@ const MODULE = {
         { de:'notte (normaler Konsonant)',   it:'la'  },
       ] },
 
-    { id:'m18-zo-04', type:'ZO',
+    { id:'m18-zo-04', type:'ZO', stufe:2,
       prompt:'Ordne zu: i oder gli? (maskulin Plural)',
       pairs:[
         { de:'libri (normaler Konsonant)',   it:'i'    },
@@ -278,7 +278,7 @@ const MODULE = {
         { de:'ragazzi (normaler Konsonant)', it:'i'    },
       ] },
 
-    { id:'m18-zo-05', type:'ZO',
+    { id:'m18-zo-05', type:'ZO', stufe:2,
       prompt:'Ordne zu: Satz → richtiger Artikel',
       pairs:[
         { de:'___ madre di Marco è gentile.',    it:'La'  },
@@ -289,7 +289,7 @@ const MODULE = {
         { de:'___ cane di Marco si chiama Rex.', it:'Il'  },
       ] },
 
-    { id:'m18-zo-06', type:'ZO',
+    { id:'m18-zo-06', type:'ZO', stufe:3,
       prompt:'Ordne zu: Artikel bei Ländern und Kontinenten',
       pairs:[
         { de:'Italia (f)',          it:"l'Italia"    },
@@ -300,7 +300,7 @@ const MODULE = {
         { de:'Europa (f)',          it:"l'Europa"    },
       ] },
 
-    { id:'m18-zo-07', type:'ZO',
+    { id:'m18-zo-07', type:'ZO', stufe:3,
       prompt:'Ordne zu: Artikel oder kein Artikel?',
       pairs:[
         { de:'Städtenamen (Vado a ...)',              it:'kein Artikel: a Roma, a Milano'      },
@@ -311,7 +311,7 @@ const MODULE = {
         { de:'Wochentage einmalig (Vengo ...)',        it:'kein Artikel: Vengo martedì.'        },
       ] },
 
-    { id:'m18-zo-08', type:'ZO',
+    { id:'m18-zo-08', type:'ZO', stufe:2,
       prompt:'Ordne zu: welcher Anlaut → welcher Artikel?',
       pairs:[
         { de:'Wort beginnt mit: s + Konsonant (m)',   it:'lo / gli'  },
@@ -322,7 +322,7 @@ const MODULE = {
         { de:'Wort beginnt mit: normalem Konsonant (f)',it:'la / le'  },
       ] },
 
-    { id:'m18-zo-09', type:'ZO',
+    { id:'m18-zo-09', type:'ZO', stufe:3,
       prompt:'Ordne zu: Körperteile mit Artikel (statt Possessiv)',
       pairs:[
         { de:'Ich wasche mir die Hände.',    it:'Mi lavo le mani.'      },
@@ -334,55 +334,55 @@ const MODULE = {
       ] },
 
     /* === MC 12 === */
-    { id:'m18-mc-01', type:'MC',
+    { id:'m18-mc-01', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ zaino è pesante."',
       options:['Il','Lo','La','L\''],
       correctValue:'Lo',
       explain:'zaino beginnt mit z → lo (m/Sg. vor z).' },
 
-    { id:'m18-mc-02', type:'MC',
+    { id:'m18-mc-02', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ studenti sono bravi."',
       options:['I','Gli','Le','Li'],
       correctValue:'Gli',
       explain:'studenti beginnt mit s+t → gli (m/Pl. vor s+Konsonant).' },
 
-    { id:'m18-mc-03', type:'MC',
+    { id:'m18-mc-03', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ amica di Marco si chiama Sara."',
       options:['La','Lo','L\'','Il'],
       correctValue:"L'",
       explain:'amica beginnt mit Vokal → l\' (f/Sg. vor Vokal).' },
 
-    { id:'m18-mc-04', type:'MC',
+    { id:'m18-mc-04', type:'MC', stufe:3,
       prompt:'Welcher Artikel? "Studio ___ italiano da due anni."',
       options:['il','lo','l\'','la'],
       correctValue:"l'",
       explain:'italiano beginnt mit Vokal (i) → l\'. Sprachen nehmen den bestimmten Artikel.' },
 
-    { id:'m18-mc-05', type:'MC',
+    { id:'m18-mc-05', type:'MC', stufe:3,
       prompt:'Welcher Artikel? "___ lunedì vado sempre in palestra." (regelmäßig)',
       options:['Kein Artikel','Il','Lo','L\''],
       correctValue:'Il',
       explain:'Wochentage bei regelmäßiger Wiederholung: il lunedì (= jeden Montag).' },
 
-    { id:'m18-mc-06', type:'MC',
+    { id:'m18-mc-06', type:'MC', stufe:3,
       prompt:'"Vado a ___ Roma domani." Welche Form?',
       options:['la','il','l\'','kein Artikel'],
       correctValue:'kein Artikel',
       explain:'Städtenamen: kein Artikel. Vado a Roma (nicht alla Roma).' },
 
-    { id:'m18-mc-07', type:'MC',
+    { id:'m18-mc-07', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ gnocchi sono buoni."',
       options:['I','Gli','Le','Il'],
       correctValue:'Gli',
       explain:'gnocchi beginnt mit gn → gli (m/Pl. vor gn).' },
 
-    { id:'m18-mc-08', type:'MC',
+    { id:'m18-mc-08', type:'MC', stufe:3,
       prompt:'"___ mia madre è gentile." Welche Form?',
       options:['La','L\'','kein Artikel','Il'],
       correctValue:'kein Artikel',
       explain:'Verwandte im Singular + Possessiv: kein Artikel. mia madre (nicht la mia madre).' },
 
-    { id:'m18-mc-09', type:'MC',
+    { id:'m18-mc-09', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ psicologo parla con i pazienti."',
       options:['Il','Lo','L\'','La'],
       correctValue:'Lo',
@@ -394,87 +394,87 @@ const MODULE = {
       correctValue:'Le',
       explain:'ore ist f/Pl. → le. (Auch: l\'ora beginnt mit Vokal → l\'ora im Singular.) Plural von f: immer le.' },
 
-    { id:'m18-mc-11', type:'MC',
+    { id:'m18-mc-11', type:'MC', stufe:3,
       prompt:'"Mi lavo ___ mani prima di mangiare." Welche Form?',
       options:['mie','le','la','gli'],
       correctValue:'le',
       explain:'Körperteile: Artikel statt Possessiv. le mani (le wegen f/Pl.).' },
 
-    { id:'m18-mc-12', type:'MC',
+    { id:'m18-mc-12', type:'MC', stufe:3,
       prompt:'Welcher Artikel? "___ Italia è un paese molto bello."',
       options:['La','L\'','Il','Lo'],
       correctValue:"L'",
       explain:'Italia beginnt mit Vokal → l\'. Länder nehmen den bestimmten Artikel.' },
 
     /* === MCL 5 === */
-    { id:'m18-mcl-01', type:'MC',
+    { id:'m18-mcl-01', type:'MC', stufe:2,
       prompt:'Wähle: "___ sport preferito di Marco è il calcio."',
       options:['Il','Lo','L\'','La'],
       correctValue:'Lo',
       translation:'Marcos Lieblingssport ist Fußball.',
       explain:'sport beginnt mit sp (s+p = s+Konsonant) → lo sport.' },
 
-    { id:'m18-mcl-02', type:'MC',
+    { id:'m18-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "___ zii di Maria abitano a Napoli."',
       options:['I','Gli','Le','L\''],
       correctValue:'Gli',
       translation:'Marias Onkel wohnen in Neapel.',
       explain:'zii beginnt mit z → gli (m/Pl. vor z).' },
 
-    { id:'m18-mcl-03', type:'MC',
+    { id:'m18-mcl-03', type:'MC', stufe:3,
       prompt:'Wähle: "Vengo ___ venerdì." (einmalig, nicht regelmäßig)',
       options:['il','lo','kein Artikel','l\''],
       correctValue:'kein Artikel',
       translation:'Ich komme am Freitag.',
       explain:'Einmaliger Wochentag ohne Regelmäßigkeit: kein Artikel. Vengo venerdì.' },
 
-    { id:'m18-mcl-04', type:'MC',
+    { id:'m18-mcl-04', type:'MC', stufe:3,
       prompt:'Wähle: "Ho parlato con ___ signor Bianchi."',
       options:['il','lo','l\'','kein Artikel'],
       correctValue:'il',
       translation:'Ich habe mit Herrn Bianchi gesprochen.',
       explain:'Titel + Nachname: Artikel. il signor Bianchi (s+B wäre s+Konsonant aber signor beginnt mit s+i = Vokal nach s? Nein: signor → si = s+Vokal → il signor). Hier: il.' },
 
-    { id:'m18-mcl-05', type:'MC',
+    { id:'m18-mcl-05', type:'MC', stufe:3,
       prompt:'Wähle: "Studio ___ tedesco e ___ francese."',
-      options:["il / il","il / la","il / il","lo / la"],
+      options:["il / il","il / la","lo / il","lo / la"],
       correctValue:'il / il',
       translation:'Ich lerne Deutsch und Französisch.',
       explain:'Sprachen: bestimmter Artikel. tedesco (m) → il tedesco; francese (m) → il francese.' },
 
     /* === LT 5 === */
-    { id:'m18-lt-01', type:'LT',
+    { id:'m18-lt-01', type:'LT', stufe:2,
       text:'{0} libro è sul tavolo e {1} zaino è per terra.',
       blanks:[ { accept:['Il'] }, { accept:['lo'] } ],
       translation:'Das Buch liegt auf dem Tisch und der Rucksack liegt auf dem Boden.',
       explain:'Il libro (normaler Konsonant); lo zaino (z).' },
 
-    { id:'m18-lt-02', type:'LT',
+    { id:'m18-lt-02', type:'LT', stufe:2,
       text:'{0} studenti di questa scuola parlano {1} italiano molto bene.',
       blanks:[ { accept:['Gli'] }, { accept:["l'"] } ],
       translation:'Die Schüler dieser Schule sprechen Italienisch sehr gut.',
       explain:'Gli studenti (m/Pl., s+Konsonant); l\'italiano (Sprache, vor Vokal).' },
 
-    { id:'m18-lt-03', type:'LT',
+    { id:'m18-lt-03', type:'LT', stufe:3,
       text:'{0} domenica vado sempre a trovare {1} mia nonna.',
       blanks:[ { accept:['La'] }, { accept:['kein Artikel',''] } ],
       translation:'Sonntags besuche ich immer meine Oma.',
       explain:'La domenica (regelmäßiger Wochentag); mia nonna (Verwandte Sg. + Possessiv = kein Artikel).' },
 
-    { id:'m18-lt-04', type:'LT',
+    { id:'m18-lt-04', type:'LT', stufe:3,
       text:'{0} amiche di Sara vengono da {1} Germania.',
       blanks:[ { accept:['Le'] }, { accept:['la'] } ],
       translation:'Saras Freundinnen kommen aus Deutschland.',
       explain:'Le amiche (f/Pl.); la Germania (Land, f).' },
 
-    { id:'m18-lt-05', type:'LT',
+    { id:'m18-lt-05', type:'LT', stufe:3,
       text:'Mi lavo {0} denti e poi mi pettino {1} capelli.',
       blanks:[ { accept:['i'] }, { accept:['i'] } ],
       translation:'Ich putze mir die Zähne und kämme mir dann die Haare.',
       explain:'Körperteile: Artikel statt Possessiv. i denti / i capelli (m/Pl.).' },
 
     /* === FT 3 === */
-    { id:'m18-ft-01', type:'FT',
+    { id:'m18-ft-01', type:'FT', stufe:2,
       prompt:'Welcher bestimmte Artikel — Singular?',
       rows:[
         { label:'libro (m)',          accept:['il']   },
@@ -485,7 +485,7 @@ const MODULE = {
         { label:'amica (f, Vokal)',   accept:["l'"]   },
       ] },
 
-    { id:'m18-ft-02', type:'FT',
+    { id:'m18-ft-02', type:'FT', stufe:2,
       prompt:'Welcher bestimmte Artikel — Plural?',
       rows:[
         { label:'libri (m)',           accept:['i']    },
@@ -496,7 +496,7 @@ const MODULE = {
         { label:'amiche (f)',          accept:['le']   },
       ] },
 
-    { id:'m18-ft-03', type:'FT',
+    { id:'m18-ft-03', type:'FT', stufe:3,
       prompt:'Artikel oder kein Artikel? Schreibe den Artikel oder "—":',
       rows:[
         { label:'Vado a Roma.',               accept:['—','kein Artikel'] },
@@ -508,7 +508,7 @@ const MODULE = {
       ] },
 
     /* === FK 3 === */
-    { id:'m18-fk-01', type:'FK',
+    { id:'m18-fk-01', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Il zaino di Marco è pesante.',
       solution:'Lo zaino di Marco è pesante.',
@@ -516,7 +516,7 @@ const MODULE = {
       translation:'Marcos Rucksack ist schwer.',
       explain:'zaino beginnt mit z → lo (nicht il). il gilt nur vor normalem Konsonant.' },
 
-    { id:'m18-fk-02', type:'FK',
+    { id:'m18-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Vado alla Roma domani.',
       solution:'Vado a Roma domani.',
@@ -524,7 +524,7 @@ const MODULE = {
       translation:'Ich fahre morgen nach Rom.',
       explain:'Städtenamen: kein Artikel. Vado a Roma (nie alla Roma).' },
 
-    { id:'m18-fk-03', type:'FK',
+    { id:'m18-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'La mia madre lavora a Milano.',
       solution:'Mia madre lavora a Milano.',
@@ -533,7 +533,7 @@ const MODULE = {
       explain:'Verwandte Sg. + Possessiv: kein Artikel. mia madre (nicht la mia madre).' },
 
     /* === KA 3 === */
-    { id:'m18-ka-01', type:'KA',
+    { id:'m18-ka-01', type:'KA', stufe:2,
       prompt:'Kategorisiere: il oder lo?',
       categories:['il (normaler Konsonant)', 'lo (s+K, z, gn, ps, x, y)'],
       items:[
@@ -545,7 +545,7 @@ const MODULE = {
         { text:'psicologo',  cat:1 },
       ] },
 
-    { id:'m18-ka-02', type:'KA',
+    { id:'m18-ka-02', type:'KA', stufe:2,
       prompt:'Kategorisiere: i oder gli?',
       categories:['i (normaler Konsonant)', 'gli (Vokal, s+K, z, gn...)'],
       items:[
@@ -557,7 +557,7 @@ const MODULE = {
         { text:'zaini',      cat:1 },
       ] },
 
-    { id:'m18-ka-03', type:'KA',
+    { id:'m18-ka-03', type:'KA', stufe:3,
       prompt:'Kategorisiere: Artikel oder kein Artikel?',
       categories:['mit Artikel', 'ohne Artikel'],
       items:[
@@ -570,46 +570,46 @@ const MODULE = {
       ] },
 
     /* === KO 2 === */
-    { id:'m18-ko-01', type:'KO',
+    { id:'m18-ko-01', type:'KO', stufe:3,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Il lunedì vado in palestra.', tag:'Artikel: regelmäßige Wiederholung' },
       b:{ sentence:'Vengo lunedì.', tag:'Kein Artikel: einmaliger Tag' },
       reveal:'"Il lunedì" (mit Artikel) = jeden Montag, regelmäßig. "Lunedì" (ohne Artikel) = am (kommenden) Montag, einmalig. Dieselbe Regel gilt für alle Wochentage: il martedì = jeden Dienstag; martedì = am Dienstag.' },
 
-    { id:'m18-ko-02', type:'KO',
+    { id:'m18-ko-02', type:'KO', stufe:2,
       prompt:'Worin unterscheiden sich diese Formen?',
       a:{ sentence:'lo studente', tag:'lo: s + Konsonant' },
       b:{ sentence:"l'uomo", tag:"l': Vokal" },
       reveal:'"lo" steht vor maskulinen Substantiven, die mit s+Konsonant, z, gn, ps, x oder y beginnen. "l\'" steht vor maskulinen (und femininen) Substantiven, die mit einem Vokal beginnen. lo niemals vor einem Vokal — dort immer l\'.' },
 
     /* === DE 3 === */
-    { id:'m18-de-01', type:'DE',
+    { id:'m18-de-01', type:'DE', stufe:3,
       prompt:'"Die Schüler meiner Klasse lernen Italienisch jeden Montag."',
       solutions:["Gli studenti della mia classe studiano l'italiano il lunedì.","Gli studenti della mia classe imparano l'italiano il lunedì."],
       note:"Gli studenti (m/Pl., s+K); l'italiano (Sprache, Vokal); il lunedì (regelmäßig)." },
 
-    { id:'m18-de-02', type:'DE',
+    { id:'m18-de-02', type:'DE', stufe:2,
       prompt:'"Der Rucksack und die Bücher sind auf dem Tisch."',
       solutions:['Lo zaino e i libri sono sul tavolo.'],
       note:'Lo zaino (z); i libri (m/Pl., normaler Konsonant).' },
 
-    { id:'m18-de-03', type:'DE',
+    { id:'m18-de-03', type:'DE', stufe:3,
       prompt:'"Meine Mutter und meine Schwester wohnen in Italien."',
       solutions:["Mia madre e mia sorella abitano in Italia.","Mia madre e mia sorella vivono in Italia."],
       note:'mia madre / mia sorella (Verwandte Sg. + Possessiv = kein Artikel); in Italia (Land, kein Artikel nach in f-Land).' },
 
     /* === IT 3 === */
-    { id:'m18-it-01', type:'IT',
+    { id:'m18-it-01', type:'IT', stufe:2,
       prompt:'"Lo psicologo parla con gli studenti ogni venerdì."',
       solutions:['Der Psychologe spricht jeden Freitag mit den Schülern.'],
       note:'lo psicologo (ps); gli studenti (s+K, m/Pl.); ogni venerdì = jeden Freitag.' },
 
-    { id:'m18-it-02', type:'IT',
+    { id:'m18-it-02', type:'IT', stufe:3,
       prompt:'"L\'Italia è famosa per la pizza e il caffè."',
       solutions:['Italien ist berühmt für die Pizza und den Kaffee.','Italien ist bekannt für Pizza und Kaffee.'],
       note:"l'Italia (Vokal, Land); la pizza (f); il caffè (m, unveränderlich)." },
 
-    { id:'m18-it-03', type:'IT',
+    { id:'m18-it-03', type:'IT', stufe:3,
       prompt:'"Gli occhi di mia sorella sono verdi."',
       solutions:['Die Augen meiner Schwester sind grün.','Meine Schwester hat grüne Augen.'],
       note:'Gli occhi (m/Pl., Vokal); mia sorella (Verwandte Sg., kein Artikel).' },
@@ -619,13 +619,13 @@ const MODULE = {
     { id:'m18-sr-01', type:'SR',
       it:'Il gatto dorme sul divano tutto il giorno.',
       de:'Die Katze schläft den ganzen Tag auf dem Sofa.' },
-    { id:'m18-sr-02', type:'SR',
+    { id:'m18-sr-02', type:'SR', stufe:2,
       it:'Lo studente studia in biblioteca.',
       de:'Der Student lernt in der Bibliothek.' },
-    { id:'m18-sr-03', type:'SR',
+    { id:'m18-sr-03', type:'SR', stufe:2,
       it:"L'amica di Giulia abita a Milano.",
       de:'Giulias Freundin wohnt in Mailand.' },
-    { id:'m18-sr-04', type:'SR',
+    { id:'m18-sr-04', type:'SR', stufe:2,
       it:'Gli zaini sono sotto il banco.',
       de:'Die Rucksäcke sind unter der Schulbank.' },
     { id:'m18-sr-05', type:'SR',
@@ -634,10 +634,10 @@ const MODULE = {
     { id:'m18-sr-06', type:'SR',
       it:'Il professore spiega la lezione lentamente.',
       de:'Der Lehrer erklärt die Lektion langsam.' },
-    { id:'m18-sr-07', type:'SR',
+    { id:'m18-sr-07', type:'SR', stufe:2,
       it:'Lo zio di Marco lavora in centro.',
       de:'Marcos Onkel arbeitet in der Innenstadt.' },
-    { id:'m18-sr-08', type:'SR',
+    { id:'m18-sr-08', type:'SR', stufe:2,
       it:"L'albero in giardino è molto alto.",
       de:'Der Baum im Garten ist sehr hoch.' },
     { id:'m18-sr-09', type:'SR',
@@ -651,15 +651,15 @@ const MODULE = {
       de:'Der Hund schläft unter dem Tisch.',
       solutions:['Il cane dorme sotto il tavolo.'],
       note:'il → vor normalem maskulinen Konsonant (cane)' },
-    { id:'m18-st-02', type:'ST',
+    { id:'m18-st-02', type:'ST', stufe:2,
       de:'Der Student trinkt einen Kaffee.',
       solutions:['Lo studente beve un caffè.','Lo studente beve il caffè.'],
       note:'lo → vor s + Konsonant (studente)' },
-    { id:'m18-st-03', type:'ST',
+    { id:'m18-st-03', type:'ST', stufe:2,
       de:'Die Freundin von Paolo ist sehr nett.',
       solutions:["L'amica di Paolo è molto simpatica."],
       note:"l' → vor Vokal (amica beginnt mit a)" },
-    { id:'m18-st-04', type:'ST',
+    { id:'m18-st-04', type:'ST', stufe:2,
       de:'Die Rucksäcke der Schüler sind schwer.',
       solutions:['Gli zaini degli studenti sono pesanti.'],
       note:'gli → vor z (zaini) und vor s+Konsonant im Plural' },
@@ -671,7 +671,7 @@ const MODULE = {
       de:'Das Fenster ist geschlossen.',
       solutions:['La finestra è chiusa.'],
       note:'la → feminines Substantiv (finestra)' },
-    { id:'m18-st-07', type:'ST',
+    { id:'m18-st-07', type:'ST', stufe:2,
       de:'Der Onkel kommt morgen.',
       solutions:['Lo zio arriva domani.'],
       note:'lo → vor z (zio)' },
@@ -679,7 +679,7 @@ const MODULE = {
       de:'Die Frauen arbeiten zusammen.',
       solutions:['Le donne lavorano insieme.'],
       note:'le → Plural femininer Substantive' },
-    { id:'m18-st-09', type:'ST',
+    { id:'m18-st-09', type:'ST', stufe:2,
       de:'Der Baum ist sehr groß.',
       solutions:["L'albero è molto grande.","L'albero è grandissimo."],
       note:"l' → vor Vokal (albero beginnt mit a)" },

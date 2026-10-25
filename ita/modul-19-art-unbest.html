@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Unbestimmter Artikel</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
   <div id="daily-goal-mount"></div>
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -96,14 +96,14 @@ const MODULE = {
   exercises: [
 
     /* === SO 2 === */
-    { id:'m19-so-01', type:'SO',
+    { id:'m19-so-01', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['un', 'uno', 'una', "un'", 'ho', 'comprato', 'zaino', 'nuovo'],
       solution:['ho', 'comprato', 'uno', 'zaino', 'nuovo'],
       translation:'Ich habe einen neuen Rucksack gekauft.',
       explain:'zaino beginnt mit z → uno zaino. un wäre falsch (nur vor normalem Konsonant/Vokal m.), una und un\' sind feminin.' },
 
-    { id:'m19-so-02', type:'SO',
+    { id:'m19-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['un', 'una', "un'", 'bella', 'ho', 'amica'],
       solution:["ho", "un'", 'amica', 'bella'],
@@ -117,7 +117,7 @@ const MODULE = {
       translation:'Ich habe einen kleinen Hund.',
       explain:'cane beginnt mit c (einfacher Konsonant), maskulin → un cane. uno steht vor z, s+K, gn, ps. una und una\' sind feminin.' },
 
-    { id:'m19-so-04', type:'SO',
+    { id:'m19-so-04', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:["c'è", 'un', 'uno', "un'", 'ombrello', 'sul', 'tavolo'],
       solution:["c'è", 'un', 'ombrello', 'sul', 'tavolo'],
@@ -131,26 +131,26 @@ const MODULE = {
       translation:'Hier in der Nähe gibt es eine Schule.',
       explain:"scuola beginnt mit sc (s+K), feminin → una scuola. un wäre maskulin, un' nur vor Vokal feminin." },
 
-    { id:'m19-so-06', type:'SO',
+    { id:'m19-so-06', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['un', 'uno', 'una', 'studente', 'ho', 'incontrato'],
-      solution:['ho', 'uno', 'studente', 'incontrato'],
+      solution:['ho', 'incontrato', 'uno', 'studente'],
       translation:'Ich habe einen Studenten getroffen.',
       explain:'studente beginnt mit st (s + Konsonant), maskulin → uno studente. un wäre nur vor einfachem Konsonant korrekt.' },
 
-    { id:'m19-so-07', type:'SO',
+    { id:'m19-so-07', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['un', "un'", 'una', 'arancia', 'vorrei'],
       solution:['vorrei', "un'", 'arancia'],
       translation:'Ich möchte eine Orange.',
       explain:'arancia beginnt mit Vokal, feminin → un\' arancia. un wäre maskulin, una steht vor Konsonant.' },
 
-    { id:'m19-so-08', type:'SO',
+    { id:'m19-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
-      tokens:['un', 'uno', 'una', 'zucchero', 'vorrei'],
-      solution:['vorrei', 'uno', 'zucchero'],
-      translation:'Ich möchte einen Zucker (Würfel).',
-      explain:'zucchero beginnt mit z, maskulin → uno zucchero. un wäre falsch vor z (Sonderregel). una ist feminin.' },
+      tokens:['un', 'uno', 'una', 'spuntino', 'vorrei'],
+      solution:['vorrei', 'uno', 'spuntino'],
+      translation:'Ich möchte einen Snack.',
+      explain:'spuntino beginnt mit sp (s + Konsonant), maskulin → uno spuntino. un wäre hier falsch, una ist feminin.' },
 
     { id:'m19-so-09', type:'SO',
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
@@ -168,28 +168,28 @@ const MODULE = {
 
 
     /* === EL 10 === */
-    { id:'m19-el-01', type:'EL',
+    { id:'m19-el-01', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Ho {0} cane e {1} amica.',
       blanks:[{accept:'un', distractors:['uno', 'una', 'un\'']}, {accept:'un\'', distractors:['un', 'uno', 'una']}],
       translation:'Ich habe einen Hund und eine Freundin.',
       explain:'cane (m, Kons.) → un. amica (f, Vokal) → un\'.' },
 
-    { id:'m19-el-02', type:'EL',
+    { id:'m19-el-02', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Vorrei {0} caffè e {1} acqua.',
       blanks:[{accept:'un', distractors:['uno', 'una', 'un\'']}, {accept:'un\'', distractors:['un', 'uno', 'una']}],
       translation:'Ich möchte einen Kaffee und ein Wasser.',
       explain:'caffè (m, Kons.) → un. acqua (f, Vokal) → un\'.' },
 
-    { id:'m19-el-03', type:'EL',
+    { id:'m19-el-03', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Ho trovato {0} zaino e {1} borsa.',
       blanks:[{accept:'uno', distractors:['un', 'una', 'un\'']}, {accept:'una', distractors:['un', 'uno', 'un\'']}],
       translation:'Ich habe einen Rucksack und eine Tasche gefunden.',
       explain:'zaino (m, z) → uno. borsa (f, Kons.) → una.' },
 
-    { id:'m19-el-04', type:'EL',
+    { id:'m19-el-04', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'C\'è {0} studente e {1} studentessa.',
       blanks:[{accept:'uno', distractors:['un', 'una', 'un\'']}, {accept:'una', distractors:['un', 'uno', 'un\'']}],
@@ -217,7 +217,7 @@ const MODULE = {
       translation:'Ich habe eine Schwester und einen Bruder.',
       explain:'sorella (f, Kons.) → una. fratello (m, Kons.) → un.' },
 
-    { id:'m19-el-08', type:'EL',
+    { id:'m19-el-08', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'C\'è {0} ombrello e {1} giacca.',
       blanks:[{accept:'un', distractors:['uno', 'una', 'un\'']}, {accept:'una', distractors:['un', 'uno', 'un\'']}],
@@ -231,7 +231,7 @@ const MODULE = {
       translation:'Ich habe ein Buch und eine Zeitschrift gelesen.',
       explain:'libro (m, Kons.) → un. rivista (f, Kons.) → una.' },
 
-    { id:'m19-el-10', type:'EL',
+    { id:'m19-el-10', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Ho incontrato {0} amico e {1} professoressa.',
       blanks:[{accept:'un', distractors:['uno', 'una', 'un\'']}, {accept:'una', distractors:['un', 'uno', 'un\'']}],
@@ -239,7 +239,7 @@ const MODULE = {
       explain:'amico (m, Vokal) → un (kein Apostroph!). professoressa (f, Kons.) → una.' },
 
     /* === ZO 9 === */
-    { id:'m19-zo-01', type:'ZO',
+    { id:'m19-zo-01', type:'ZO', stufe:2,
       prompt:'Ordne zu: Artikel → Verwendung',
       pairs:[
         { de:'un',   it:'m/Sg. (auch vor Vokal)'      },
@@ -250,7 +250,7 @@ const MODULE = {
         { de:'degli',it:'m/Pl. vor Vokal / s+K / z...' },
       ] },
 
-    { id:'m19-zo-02', type:'ZO',
+    { id:'m19-zo-02', type:'ZO', stufe:2,
       prompt:'Ordne zu: Welcher Artikel passt? (un oder uno)',
       pairs:[
         { de:'libro (m)',          it:'un'  },
@@ -261,7 +261,7 @@ const MODULE = {
         { de:'zio (m, z)',         it:'uno' },
       ] },
 
-    { id:'m19-zo-03', type:'ZO',
+    { id:'m19-zo-03', type:'ZO', stufe:2,
       prompt:"Ordne zu: Welcher Artikel passt? (una oder un')",
       pairs:[
         { de:'casa (f, Konsonant)',   it:'una'  },
@@ -272,7 +272,7 @@ const MODULE = {
         { de:'estate (f, Vokal)',     it:"un'"  },
       ] },
 
-    { id:'m19-zo-04', type:'ZO',
+    { id:'m19-zo-04', type:'ZO', stufe:2,
       prompt:'Ordne zu: Satz mit richtigem unbestimmtem Artikel',
       pairs:[
         { de:'___ libro interessante',      it:'un libro'      },
@@ -283,7 +283,7 @@ const MODULE = {
         { de:'___ casa grande',             it:'una casa'      },
       ] },
 
-    { id:'m19-zo-05', type:'ZO',
+    { id:'m19-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu: Welcher Teilungsartikel (Plural) passt?',
       pairs:[
         { de:'un libro (m, Konsonant)',    it:'dei'    },
@@ -294,7 +294,7 @@ const MODULE = {
         { de:'un amico (m, Vokal)',        it:'degli'  },
       ] },
 
-    { id:'m19-zo-06', type:'ZO',
+    { id:'m19-zo-06', type:'ZO', stufe:3,
       prompt:'Ordne zu: Beruf / Nationalität — Artikel oder keiner?',
       pairs:[
         { de:'Sono medico.',            it:'kein Artikel (Beruf, kein Adj.)'   },
@@ -305,7 +305,7 @@ const MODULE = {
         { de:'È un avvocato famoso.',   it:'un (Adjektiv)'                     },
       ] },
 
-    { id:'m19-zo-07', type:'ZO',
+    { id:'m19-zo-07', type:'ZO', stufe:3,
       prompt:'Ordne zu: bestimmter vs. unbestimmter Artikel',
       pairs:[
         { de:'il libro (bestimmt, m/Sg.)',   it:'Ich meine ein bestimmtes Buch.'    },
@@ -316,7 +316,7 @@ const MODULE = {
         { de:'degli amici (unbestimmt, Pl.)',it:'Einige (unbekannte) Freunde.'      },
       ] },
 
-    { id:'m19-zo-08', type:'ZO',
+    { id:'m19-zo-08', type:'ZO', stufe:3,
       prompt:'Ordne zu: Satz → Deutsch',
       pairs:[
         { de:'Ho comprato uno zaino.',        it:'Ich habe einen Rucksack gekauft.'    },
@@ -327,7 +327,7 @@ const MODULE = {
         { de:'Cerco un appartamento.',        it:'Ich suche eine Wohnung.'             },
       ] },
 
-    { id:'m19-zo-09', type:'ZO',
+    { id:'m19-zo-09', type:'ZO', stufe:2,
       prompt:'Ordne zu: un oder un\'? (maskulin vs. feminin vor Vokal)',
       pairs:[
         { de:'amico (m)',    it:'un amico'     },
@@ -339,73 +339,73 @@ const MODULE = {
       ] },
 
     /* === MC 12 === */
-    { id:'m19-mc-01', type:'MC',
+    { id:'m19-mc-01', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ zaino nuovo."',
       options:['Un','Uno','Una','Un\''],
       correctValue:'Uno',
       explain:'zaino beginnt mit z → uno (m/Sg. vor z).' },
 
-    { id:'m19-mc-02', type:'MC',
+    { id:'m19-mc-02', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ amica di Marco."',
       options:['Un','Uno','Una','Un\''],
       correctValue:'Un\'',
       explain:'amica beginnt mit Vokal, feminin → un\' (mit Apostroph).' },
 
-    { id:'m19-mc-03', type:'MC',
+    { id:'m19-mc-03', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ amico di Marco."',
       options:['Un','Uno','Una','Un\''],
       correctValue:'Un',
       explain:'amico beginnt mit Vokal, maskulin → un (kein Apostroph!).' },
 
-    { id:'m19-mc-04', type:'MC',
+    { id:'m19-mc-04', type:'MC', stufe:3,
       prompt:'"Sono ___." (Beruf: medico, ohne Adjektiv)',
       options:['un medico','uno medico','medico','una medico'],
       correctValue:'medico',
       explain:'Berufe nach essere ohne Adjektiv: kein Artikel. Sono medico.' },
 
-    { id:'m19-mc-05', type:'MC',
+    { id:'m19-mc-05', type:'MC', stufe:3,
       prompt:'"Sono ___ medico molto bravo." (mit Adjektiv)',
       options:['un','uno','una','kein Artikel'],
       correctValue:'un',
       explain:'Mit Adjektiv kommt der Artikel: un medico bravo. medico beginnt mit m → un.' },
 
-    { id:'m19-mc-06', type:'MC',
+    { id:'m19-mc-06', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ studente straniero."',
       options:['Un','Uno','Una','Un\''],
       correctValue:'Uno',
       explain:'studente beginnt mit s+t (s+Konsonant) → uno (m/Sg. vor s+K).' },
 
-    { id:'m19-mc-07', type:'MC',
+    { id:'m19-mc-07', type:'MC', stufe:3,
       prompt:'Welcher Plural? "un libro → ___"',
       options:['un libri','dei libri','delle libri','degli libri'],
       correctValue:'dei libri',
       explain:'Plural des unbestimmten Artikels m/Sg. normalem Konsonant: dei. libro → dei libri.' },
 
-    { id:'m19-mc-08', type:'MC',
+    { id:'m19-mc-08', type:'MC', stufe:3,
       prompt:'Welcher Plural? "uno zaino → ___"',
       options:['uni zaini','dei zaini','degli zaini','delle zaini'],
       correctValue:'degli zaini',
       explain:'zaini beginnt mit z → degli (m/Pl. vor z).' },
 
-    { id:'m19-mc-09', type:'MC',
+    { id:'m19-mc-09', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ ora di tempo libero."',
       options:['Un','Uno','Una','Un\''],
       correctValue:'Un\'',
       explain:'ora beginnt mit Vokal, feminin → un\'. un\'ora di tempo libero.' },
 
-    { id:'m19-mc-10', type:'MC',
+    { id:'m19-mc-10', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ psicologo esperto."',
       options:['Un','Uno','Una','Un\''],
       correctValue:'Uno',
       explain:'psicologo beginnt mit ps → uno (m/Sg. vor ps).' },
 
-    { id:'m19-mc-11', type:'MC',
+    { id:'m19-mc-11', type:'MC', stufe:3,
       prompt:'"È ___ italiana." Welche Form?',
       options:['una','un','kein Artikel','un\''],
       correctValue:'kein Artikel',
       explain:'Nationalität nach essere: kein Artikel. È italiana. (Sie ist Italienerin.)' },
 
-    { id:'m19-mc-12', type:'MC',
+    { id:'m19-mc-12', type:'MC', stufe:2,
       prompt:'Welcher Artikel? "___ errore grave."',
       options:['Un\'','Una','Un','Uno'],
       correctValue:'Un',
@@ -419,28 +419,28 @@ const MODULE = {
       translation:'Ich habe einen Rock und einen Hut gekauft.',
       explain:'gonna (f/Sg., g = normaler Konsonant) → una. cappello (m/Sg., c = normaler Konsonant) → un.' },
 
-    { id:'m19-mcl-02', type:'MC',
+    { id:'m19-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "C\'è ___ studente straniero in classe."',
       options:['un','uno','una','un\''],
       correctValue:'uno',
       translation:'Es gibt einen ausländischen Studenten in der Klasse.',
       explain:'studente beginnt mit s+t → uno.' },
 
-    { id:'m19-mcl-03', type:'MC',
+    { id:'m19-mcl-03', type:'MC', stufe:3,
       prompt:'Wähle: "Mio fratello fa ___ ingegnere." (Beruf)',
       options:['un','kein Artikel','uno','una'],
       correctValue:'kein Artikel',
       explain:'Fare + Beruf ohne Adjektiv: kein Artikel. Fa l\'ingegnere (alternativ mit Artikel möglich).',
       translation:'Mein Bruder ist Ingenieur.' },
 
-    { id:'m19-mcl-04', type:'MC',
+    { id:'m19-mcl-04', type:'MC', stufe:3,
       prompt:'Wähle: "Ho visto ___ amici ieri." (einige Freunde)',
-      options:['dei','degli','un','degli'],
+      options:['dei','degli','un','delle'],
       correctValue:'degli',
       translation:'Ich habe gestern einige Freunde gesehen.',
       explain:'amici beginnt mit Vokal → degli (m/Pl. Teilungsartikel vor Vokal).' },
 
-    { id:'m19-mcl-05', type:'MC',
+    { id:'m19-mcl-05', type:'MC', stufe:2,
       prompt:'Wähle: "Cerco ___ appartamento con ___ terrazza."',
       options:['un / una','uno / una','un / un\'','uno / un\''],
       correctValue:'un / una',
@@ -448,38 +448,38 @@ const MODULE = {
       explain:'appartamento (m, p = normaler Konsonant) → un; terrazza (f, t = normaler Konsonant) → una.' },
 
     /* === LT 5 === */
-    { id:'m19-lt-01', type:'LT',
+    { id:'m19-lt-01', type:'LT', stufe:2,
       text:'Ho comprato {0} libro e {1} zaino al mercato.',
       blanks:[ { accept:['un'] }, { accept:['uno'] } ],
       translation:'Ich habe auf dem Markt ein Buch und einen Rucksack gekauft.',
       explain:'libro (m, normaler Konsonant) → un; zaino (z) → uno.' },
 
-    { id:'m19-lt-02', type:'LT',
+    { id:'m19-lt-02', type:'LT', stufe:2,
       text:'Ho {0} idea per il fine settimana: andiamo a {1} pizzeria.',
       blanks:[ { accept:["un'"] }, { accept:['una'] } ],
       translation:'Ich habe eine Idee fürs Wochenende: gehen wir in eine Pizzeria.',
       explain:"idea (f, Vokal) → un'; pizzeria (f, p = normaler Konsonant) → una." },
 
-    { id:'m19-lt-03', type:'LT',
+    { id:'m19-lt-03', type:'LT', stufe:3,
       text:'Mio fratello è {0} avvocato. È {1} avvocato molto bravo.',
       blanks:[ { accept:['kein Artikel',''] }, { accept:['un'] } ],
       translation:'Mein Bruder ist Rechtsanwalt. Er ist ein sehr guter Rechtsanwalt.',
       explain:'Beruf ohne Adjektiv: kein Artikel. Beruf mit Adjektiv: un. avvocato (m, Vokal) → un.' },
 
-    { id:'m19-lt-04', type:'LT',
+    { id:'m19-lt-04', type:'LT', stufe:3,
       text:'Ho incontrato {0} amici di Sara e {1} sue colleghe.',
       blanks:[ { accept:['degli'] }, { accept:['delle'] } ],
       translation:'Ich habe einige Freunde von Sara und einige ihrer Kolleginnen getroffen.',
       explain:'degli amici (m/Pl., Vokal); delle colleghe (f/Pl.).' },
 
-    { id:'m19-lt-05', type:'LT',
+    { id:'m19-lt-05', type:'LT', stufe:2,
       text:'{0} studente intelligente deve avere {1} buona strategia di studio.',
       blanks:[ { accept:['Uno'] }, { accept:['una'] } ],
       translation:'Ein intelligenter Student muss eine gute Lernstrategie haben.',
       explain:'studente (m, s+K) → Uno; strategia (f, normaler Konsonant) → una.' },
 
     /* === FT 3 === */
-    { id:'m19-ft-01', type:'FT',
+    { id:'m19-ft-01', type:'FT', stufe:2,
       prompt:'Unbestimmter Artikel — welche Form?',
       rows:[
         { label:'libro (m)',         accept:['un']   },
@@ -490,7 +490,7 @@ const MODULE = {
         { label:'amica (f, Vokal)',  accept:["un'"]  },
       ] },
 
-    { id:'m19-ft-02', type:'FT',
+    { id:'m19-ft-02', type:'FT', stufe:3,
       prompt:'Teilungsartikel (Plural des unbestimmten Artikels):',
       rows:[
         { label:'un libro → ___',      accept:['dei libri']     },
@@ -501,7 +501,7 @@ const MODULE = {
         { label:'uno studente → ___',  accept:['degli studenti']},
       ] },
 
-    { id:'m19-ft-03', type:'FT',
+    { id:'m19-ft-03', type:'FT', stufe:3,
       prompt:'Artikel oder kein Artikel? (Berufe/Nationalitäten nach essere)',
       rows:[
         { label:'Sono ___ medico.',               accept:['kein Artikel','—','']    },
@@ -513,7 +513,7 @@ const MODULE = {
       ] },
 
     /* === FK 3 === */
-    { id:'m19-fk-01', type:'FK',
+    { id:'m19-fk-01', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Ho incontrato un amica di Marco.',
       solution:"Ho incontrato un'amica di Marco.",
@@ -521,7 +521,7 @@ const MODULE = {
       translation:'Ich habe eine Freundin von Marco getroffen.',
       explain:'amica ist feminin und beginnt mit Vokal → un\' (mit Apostroph). un ist maskulin.' },
 
-    { id:'m19-fk-02', type:'FK',
+    { id:'m19-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Sono un medico.',
       solution:'Sono medico.',
@@ -529,7 +529,7 @@ const MODULE = {
       translation:'Ich bin Arzt.',
       explain:'Beruf nach essere ohne Adjektiv: kein Artikel. Sono medico (nicht un medico).' },
 
-    { id:'m19-fk-03', type:'FK',
+    { id:'m19-fk-03', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Ho comprato un zaino nuovo.',
       solution:'Ho comprato uno zaino nuovo.',
@@ -538,7 +538,7 @@ const MODULE = {
       explain:'zaino beginnt mit z → uno zaino (nicht un zaino).' },
 
     /* === KA 3 === */
-    { id:'m19-ka-01', type:'KA',
+    { id:'m19-ka-01', type:'KA', stufe:2,
       prompt:'Kategorisiere: un oder uno?',
       categories:['un (auch vor Vokal)', 'uno (s+K, z, gn, ps...)'],
       items:[
@@ -550,7 +550,7 @@ const MODULE = {
         { text:'psicologo', cat:1 },
       ] },
 
-    { id:'m19-ka-02', type:'KA',
+    { id:'m19-ka-02', type:'KA', stufe:2,
       prompt:"Kategorisiere: una oder un'?",
       categories:["una (vor Konsonant)", "un' (vor Vokal)"],
       items:[
@@ -562,7 +562,7 @@ const MODULE = {
         { text:'ora',     cat:1 },
       ] },
 
-    { id:'m19-ka-03', type:'KA',
+    { id:'m19-ka-03', type:'KA', stufe:3,
       prompt:'Kategorisiere: mit oder ohne Artikel (essere + Beruf)?',
       categories:['mit Artikel (+ Adjektiv)', 'ohne Artikel (allein)'],
       items:[
@@ -575,46 +575,46 @@ const MODULE = {
       ] },
 
     /* === KO 2 === */
-    { id:'m19-ko-01', type:'KO',
+    { id:'m19-ko-01', type:'KO', stufe:2,
       prompt:'Worin unterscheiden sich diese Formen?',
       a:{ sentence:'un amico', tag:'maskulin vor Vokal: un (kein Apostroph)' },
       b:{ sentence:"un'amica", tag:'feminin vor Vokal: un\' (mit Apostroph)' },
       reveal:'"un amico" — maskulin, Vokal → un (kein Apostroph, Artikel bleibt vollständig). "un\'amica" — feminin, Vokal → un\' (mit Apostroph, Elision). Das ist einer der häufigsten Fehler: un wird nie zu un\' — nur una wird zu un\'.' },
 
-    { id:'m19-ko-02', type:'KO',
+    { id:'m19-ko-02', type:'KO', stufe:3,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Sono medico.', tag:'Beruf ohne Adjektiv: kein Artikel' },
       b:{ sentence:'Sono un medico bravo.', tag:'Beruf mit Adjektiv: Artikel' },
       reveal:'"Sono medico" — Beruf nach essere ohne weiteres Attribut: kein Artikel. Dies gilt auch für Nationalitäten (Sono italiano.) und religiöse Zugehörigkeit. Sobald ein Adjektiv hinzukommt, muss der Artikel stehen: "Sono un medico molto bravo." Dies entspricht dem französischen System, ist aber anders als im Deutschen.' },
 
     /* === DE 3 === */
-    { id:'m19-de-01', type:'DE',
+    { id:'m19-de-01', type:'DE', stufe:2,
       prompt:'"Ich habe einen Rucksack, eine Kamera und ein Buch gekauft."',
       solutions:['Ho comprato uno zaino, una macchina fotografica e un libro.'],
       note:'zaino (z) → uno; macchina fotografica (f, m = normaler Konsonant) → una; libro (m) → un.' },
 
-    { id:'m19-de-02', type:'DE',
+    { id:'m19-de-02', type:'DE', stufe:3,
       prompt:'"Meine Schwester ist Ärztin. Sie ist eine sehr gute Ärztin."',
       solutions:['Mia sorella è medico. È una medica molto brava.','Mia sorella è medico. È una brava medica.'],
       note:'Beruf ohne Adjektiv: è medico (kein Artikel). Mit Adjektiv: è una medica brava.' },
 
-    { id:'m19-de-03', type:'DE',
+    { id:'m19-de-03', type:'DE', stufe:3,
       prompt:'"Ich habe eine Idee: Wir kaufen einige Bücher und einige Zeitschriften."',
       solutions:["Ho un'idea: compriamo dei libri e delle riviste.",'Ho una bella idea: compriamo dei libri e alcune riviste.'],
       note:"idea (f, Vokal) → un'; dei libri (m/Pl.); delle riviste (f/Pl.)." },
 
     /* === IT 3 === */
-    { id:'m19-it-01', type:'IT',
+    { id:'m19-it-01', type:'IT', stufe:2,
       prompt:'"Ho incontrato uno studente interessante e un\'insegnante bravissima."',
       solutions:['Ich habe einen interessanten Studenten und eine sehr gute Lehrerin getroffen.'],
       note:"studente (s+K) → uno; insegnante (f, Vokal) → un'. bravissima = Superlativ von brava." },
 
-    { id:'m19-it-02', type:'IT',
+    { id:'m19-it-02', type:'IT', stufe:2,
       prompt:'"Cerco un appartamento con una stanza grande e un\'ottima posizione."',
       solutions:['Ich suche eine Wohnung mit einem großen Zimmer und einer sehr guten Lage.'],
       note:"appartamento (m) → un; stanza (f) → una; ottima (f, Vokal) → un'." },
 
-    { id:'m19-it-03', type:'IT',
+    { id:'m19-it-03', type:'IT', stufe:3,
       prompt:'"Sono un\'italiana che vive all\'estero da dieci anni."',
       solutions:['Ich bin eine Italienerin, die seit zehn Jahren im Ausland lebt.'],
       note:"un'italiana (f, Vokal) mit Adjektiv/Relativsatz → Artikel. all'estero = im Ausland." },
@@ -624,31 +624,31 @@ const MODULE = {
     { id:'m19-sr-01', type:'SR',
       it:'Ho comprato un libro interessante ieri.',
       de:'Ich habe gestern ein interessantes Buch gekauft.' },
-    { id:'m19-sr-02', type:'SR',
+    { id:'m19-sr-02', type:'SR', stufe:2,
       it:"C'è uno studente nuovo in classe.",
       de:'Es gibt einen neuen Schüler in der Klasse.' },
-    { id:'m19-sr-03', type:'SR',
+    { id:'m19-sr-03', type:'SR', stufe:2,
       it:"Vorrei un'aranciata fredda, per favore.",
       de:'Ich hätte gerne eine kalte Orangenlimonade, bitte.' },
     { id:'m19-sr-04', type:'SR',
       it:'Ho una sorella e un fratello.',
       de:'Ich habe eine Schwester und einen Bruder.' },
-    { id:'m19-sr-05', type:'SR',
+    { id:'m19-sr-05', type:'SR', stufe:2,
       it:'Cerca uno zaino per la scuola.',
       de:'Er sucht einen Schulrucksack.' },
     { id:'m19-sr-06', type:'SR',
       it:"C'è una farmacia vicino alla stazione?",
       de:'Gibt es eine Apotheke in der Nähe des Bahnhofs?' },
-    { id:'m19-sr-07', type:'SR',
+    { id:'m19-sr-07', type:'SR', stufe:2,
       it:"È un'ottima idea, sono d'accordo.",
       de:'Das ist eine ausgezeichnete Idee, ich bin einverstanden.' },
-    { id:'m19-sr-08', type:'SR',
+    { id:'m19-sr-08', type:'SR', stufe:2,
       it:'Ho visto uno spettacolo bellissimo ieri sera.',
       de:'Ich habe gestern Abend eine wunderschöne Aufführung gesehen.' },
     { id:'m19-sr-09', type:'SR',
       it:'Voglio comprare un gelato al cioccolato.',
       de:'Ich möchte ein Schokoladeneis kaufen.' },
-    { id:'m19-sr-10', type:'SR',
+    { id:'m19-sr-10', type:'SR', stufe:2,
       it:"C'è un autobus diretto per il centro.",
       de:'Es gibt einen Direktbus zur Innenstadt.' },
 
@@ -656,7 +656,7 @@ const MODULE = {
       de:'Ich habe einen Hund.',
       solutions:['Ho un cane.'],
       note:'un → maskulin, beginnt mit normalem Konsonanten' },
-    { id:'m19-st-02', type:'ST',
+    { id:'m19-st-02', type:'ST', stufe:2,
       de:'Es gibt einen Studenten vor der Tür.',
       solutions:["C'è uno studente davanti alla porta."],
       note:'uno → vor s + Konsonant (studente)' },
@@ -664,11 +664,11 @@ const MODULE = {
       de:'Ich möchte eine Pizza bestellen.',
       solutions:['Vorrei ordinare una pizza.','Voglio ordinare una pizza.'],
       note:'una → feminines Substantiv (pizza beginnt mit Konsonant)' },
-    { id:'m19-st-04', type:'ST',
+    { id:'m19-st-04', type:'ST', stufe:2,
       de:'Sie hat eine Freundin in Rom.',
       solutions:["Ha un'amica a Roma."],
       note:"un' → feminines Substantiv, beginnt mit Vokal (amica)" },
-    { id:'m19-st-05', type:'ST',
+    { id:'m19-st-05', type:'ST', stufe:2,
       de:'Ich suche einen Rucksack.',
       solutions:['Cerco uno zaino.'],
       note:'uno → vor z (zaino)' },
@@ -684,7 +684,7 @@ const MODULE = {
       de:'Das ist eine wichtige Frage.',
       solutions:['È una domanda importante.'],
       note:'una → feminines Substantiv (domanda)' },
-    { id:'m19-st-09', type:'ST',
+    { id:'m19-st-09', type:'ST', stufe:2,
       de:'Es gibt ein Hotel in der Nähe.',
       solutions:["C'è un hotel vicino.","C'è un albergo vicino."],
       note:'un → maskulin; vor h (stummem Buchstaben) steht un, nicht uno' },

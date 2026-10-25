@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GrammaticaViva — Futuro Semplice</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -29,7 +28,7 @@
   <h2 class="exercises-heading">&Uuml;bungen</h2>
 <div id="daily-goal-mount"></div>   <!-- NEU -->
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 67</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -40,6 +39,7 @@
 
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -106,14 +106,14 @@ const MODULE = {
   exercises: [
 
     /* === SORTIERAUFGABEN (SO) 2 === */
-    { id:'m02-so-01', type:'SO',
+    { id:'m02-so-01', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['domani','pizza','manger&ograve;','manger&agrave;','mangio','la'],
       solution:['domani','manger&ograve;','la','pizza'],
       translation:'Morgen werde ich die Pizza essen.',
       explain:'manger&ograve; = Futuro 1. Sg. (ich werde essen). manger&agrave; = 3. Sg. (er/sie wird essen). mangio = Präsens 1. Sg. — hier ist Futuro gefragt.' },
 
-    { id:'m02-so-02', type:'SO',
+    { id:'m02-so-02', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['insieme','verr&agrave;','verr&ograve;','viene','lui','domani'],
       solution:['lui','verr&agrave;','insieme','domani'],
@@ -127,21 +127,21 @@ const MODULE = {
       translation:'Sie wird gut Italienisch sprechen.',
       explain:'parler&agrave; = Futuro 3. Sg. (er/sie wird sprechen). parler&ograve; = 1. Sg. (ich werde sprechen) — Subjekt ist lei. parlava = Imperfetto 3. Sg. — falsche Zeitform.' },
 
-    { id:'m02-so-04', type:'SO',
+    { id:'m02-so-04', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['andr&ograve;','andr&agrave;','vado','al','mercato','domani'],
       solution:['domani','andr&ograve;','al','mercato'],
       translation:'Morgen werde ich auf den Markt gehen.',
       explain:'andr&ograve; = Futuro 1. Sg. (ich werde gehen). andr&agrave; = 3. Sg. (er/sie wird gehen) — Subjekt ist ich. vado = Präsens 1. Sg. — falsche Zeitform.' },
 
-    { id:'m02-so-05', type:'SO',
+    { id:'m02-so-05', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['studieranno','studierete','studier&ograve;','i','ragazzi','insieme'],
       solution:['i','ragazzi','studieranno','insieme'],
       translation:'Die Jugendlichen werden zusammen lernen.',
       explain:'studieranno = Futuro 3. Pl. (sie werden lernen). studierete = 2. Pl. (ihr werdet lernen) — Subjekt ist i ragazzi. studier&ograve; = 1. Sg. (ich werde lernen) — falsche Person.' },
 
-    { id:'m02-so-06', type:'SO',
+    { id:'m02-so-06', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['far&agrave;','far&ograve;','faceva','caldo','domani'],
       solution:['domani','far&agrave;','caldo'],
@@ -155,7 +155,7 @@ const MODULE = {
       translation:'Heute Abend werde ich ein Buch lesen.',
       explain:'legger&ograve; = Futuro 1. Sg. (ich werde lesen). legger&agrave; = 3. Sg. (er/sie wird lesen) — Subjekt ist ich. leggevo = Imperfetto 1. Sg. — falsche Zeitform.' },
 
-    { id:'m02-so-08', type:'SO',
+    { id:'m02-so-08', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['sar&agrave;','sar&ograve;','era','a','casa','Maria'],
       solution:['Maria','sar&agrave;','a','casa'],
@@ -177,7 +177,7 @@ const MODULE = {
       explain:'scriver&agrave; = Futuro 3. Sg. (er/sie wird schreiben). scriver&ograve; = 1. Sg. (ich werde schreiben) — Subjekt ist lui. scriveva = Imperfetto — falsche Zeitform.' },
 
     /* === ZUORDNUNG (ZO) 10 === */
-    { id:'m02-zo-01', type:'ZO',
+    { id:'m02-zo-01', type:'ZO', stufe:2,
       prompt:'Ordne zu: Deutsches Verb &rarr; Futuro-Form (1. Pers. Sg.)',
       pairs:[
         { de:'essen',    it:'manger&ograve;' },
@@ -188,7 +188,7 @@ const MODULE = {
         { de:'warten',   it:'aspetter&ograve;' }
       ] },
 
-    { id:'m02-zo-02', type:'ZO',
+    { id:'m02-zo-02', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; unregelm&auml;&szlig;ige Futuro-St&auml;mme (1. Pers. Sg.):',
       pairs:[
         { de:'sein',    it:'sar&ograve;'  },
@@ -199,7 +199,7 @@ const MODULE = {
         { de:'wollen',  it:'vorr&ograve;' }
       ] },
 
-    { id:'m02-zo-03', type:'ZO',
+    { id:'m02-zo-03', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; weitere unregelm&auml;&szlig;ige Verben:',
       pairs:[
         { de:'k&ouml;nnen',  it:'potr&ograve;'  },
@@ -221,7 +221,7 @@ const MODULE = {
         { de:'sie werden sprechen', it:'parleranno'}
       ] },
 
-    { id:'m02-zo-05', type:'ZO',
+    { id:'m02-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; Futuro-Formen von ESSERE:',
       pairs:[
         { de:'ich werde sein',  it:'sar&ograve;'   },
@@ -232,7 +232,7 @@ const MODULE = {
         { de:'sie werden sein', it:'saranno' }
       ] },
 
-    { id:'m02-zo-06', type:'ZO',
+    { id:'m02-zo-06', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; Futuro-Formen von AVERE:',
       pairs:[
         { de:'ich werde haben',  it:'avr&ograve;'   },
@@ -243,7 +243,7 @@ const MODULE = {
         { de:'sie werden haben', it:'avranno' }
       ] },
 
-    { id:'m02-zo-07', type:'ZO',
+    { id:'m02-zo-07', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; Futuro-Formen von VENIRE:',
       pairs:[
         { de:'ich werde kommen',  it:'verr&ograve;'   },
@@ -254,7 +254,7 @@ const MODULE = {
         { de:'sie werden kommen', it:'verranno' }
       ] },
 
-    { id:'m02-zo-08', type:'ZO',
+    { id:'m02-zo-08', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; Futuro-Formen von ANDARE:',
       pairs:[
         { de:'ich werde gehen',  it:'andr&ograve;'   },
@@ -265,7 +265,7 @@ const MODULE = {
         { de:'sie werden gehen', it:'andranno' }
       ] },
 
-    { id:'m02-zo-09', type:'ZO',
+    { id:'m02-zo-09', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; Futuro-Formen von FARE:',
       pairs:[
         { de:'ich werde machen',  it:'far&ograve;'   },
@@ -276,7 +276,7 @@ const MODULE = {
         { de:'sie werden machen', it:'faranno' }
       ] },
 
-    { id:'m02-zo-10', type:'ZO',
+    { id:'m02-zo-10', type:'ZO', stufe:3,
       prompt:'Ordne zu &mdash; Futuro-Formen von POTERE:',
       pairs:[
         { de:'ich werde k&ouml;nnen',  it:'potr&ograve;'   },
@@ -288,7 +288,7 @@ const MODULE = {
       ] },
 
     /* === MULTIPLE CHOICE Basis (12) === */
-    { id:'m02-mc-01', type:'MC',
+    { id:'m02-mc-01', type:'MC', stufe:3,
       prompt:'Welche Form ist korrekt? "Domani io ___ a Roma." (andare)',
       options:['vado','andato','andr&ograve;','sono andato'],
       correctValue:'andr&ograve;',
@@ -300,89 +300,89 @@ const MODULE = {
       correctValue:'legger&agrave;',
       explain:'Futuro 3. Pers. Sg. von leggere: legger&agrave;.' },
 
-    { id:'m02-mc-03', type:'MC',
+    { id:'m02-mc-03', type:'MC', stufe:3,
       prompt:'Welche Form? "Noi ___ insieme." (venire, Zukunft)',
       options:['siamo venuti','venivamo','verremo','veniamo'],
       correctValue:'verremo',
       explain:'venire ist unregelm&auml;&szlig;ig im Futuro: verr- + -emo = verremo.' },
 
-    { id:'m02-mc-04', type:'MC',
+    { id:'m02-mc-04', type:'MC', stufe:2,
       prompt:'Welche Form? "Loro ___ la pizza." (mangiare, Zukunft)',
       options:['mangiano','hanno mangiato','mangeranno','mangiavano'],
       correctValue:'mangeranno',
       explain:'Futuro Plural 3. Pers.: mangeranno. Die Endung -ranno.' },
 
-    { id:'m02-mc-05', type:'MC',
+    { id:'m02-mc-05', type:'MC', stufe:3,
       prompt:'Welches ist die Futuro-Form von "essere" f&uuml;r "tu"?',
       options:['sei','eri','sarai','siete'],
       correctValue:'sarai',
       explain:'essere im Futuro: sar- + -ai = sarai.' },
 
-    { id:'m02-mc-06', type:'MC',
+    { id:'m02-mc-06', type:'MC', stufe:3,
       prompt:'Was bedeutet "Sar&agrave; stanco" in diesem Kontext: "Non risponde al telefono. Sar&agrave; stanco."?',
       options:['Er war m&uuml;de.','Er ist m&uuml;de.','Er ist wohl m&uuml;de. (Vermutung)','Er wird m&uuml;de sein. (Vorhersage)'],
       correctValue:'Er ist wohl m&uuml;de. (Vermutung)',
       explain:'Das Futuro dr&uuml;ckt hier eine Vermutung &uuml;ber die Gegenwart aus, nicht eine Zukunft.' },
 
-    { id:'m02-mc-07', type:'MC',
+    { id:'m02-mc-07', type:'MC', stufe:3,
       prompt:'Welche Form? "Voi ___ a casa." (rimanere, Zukunft)',
       options:['rimanete','siete rimasti','rimarrete','rimanerete'],
       correctValue:'rimarrete',
       explain:'rimanere ist unregelm&auml;&szlig;ig: rimarr- + -ete = rimarrete.' },
 
-    { id:'m02-mc-08', type:'MC',
+    { id:'m02-mc-08', type:'MC', stufe:3,
       prompt:'Welche Form? "Tu ___ la verit&agrave;." (sapere = wissen, Zukunft)',
       options:['sai','saprai','sapevi','hai saputo'],
       correctValue:'saprai',
       explain:'sapere im Futuro: sapr- + -ai = saprai.' },
 
-    { id:'m02-mc-09', type:'MC',
+    { id:'m02-mc-09', type:'MC', stufe:2,
       prompt:'Welche Form ist korrekt f&uuml;r "cercare" (suchen) im Futuro, 1. Pers. Sg.?',
       options:['cercar&ograve;','cercher&ograve;','cercar&agrave;','cercher&agrave;'],
       correctValue:'cercher&ograve;',
       explain:'Bei -care wird h eingef&uuml;gt: cerch- + er&ograve; = cercher&ograve;.' },
 
-    { id:'m02-mc-10', type:'MC',
+    { id:'m02-mc-10', type:'MC', stufe:3,
       prompt:'Welche Form? "Io ___ un caff&egrave;." (bere, Zukunft)',
       options:['ho bevuto','bevo','berr&ograve;','bevevo'],
       correctValue:'berr&ograve;',
       explain:'bere ist unregelm&auml;&szlig;ig: berr- + -&ograve; = berr&ograve;.' },
 
-    { id:'m02-mc-11', type:'MC',
+    { id:'m02-mc-11', type:'MC', stufe:3,
       prompt:'Welche Form? "Domani ___ bel tempo." (fare, unpersonal)',
       options:['fa','ha fatto','far&agrave;','faceva'],
       correctValue:'far&agrave;',
       explain:'fare im Futuro 3. Pers. Sg.: far&agrave;. "Far&agrave; bello" = Es wird sch&ouml;n sein.' },
 
-    { id:'m02-mc-12', type:'MC',
+    { id:'m02-mc-12', type:'MC', stufe:3,
       prompt:'Welche Form? "Loro ___ molto." (dovere = m&uuml;ssen, Zukunft)',
       options:['devono','dovevano','hanno dovuto','dovranno'],
       correctValue:'dovranno',
       explain:'dovere im Futuro: dovr- + -anno = dovranno.' },
 
     /* === MULTIPLE CHOICE LÜCKE (MCL) 10 === */
-    { id:'m02-mcl-01', type:'MC',
+    { id:'m02-mcl-01', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Domani Marco ___ a scuola."',
       options:['va','&egrave; andato','andr&agrave;','andava'],
       correctValue:'andr&agrave;',
       translation:'Morgen wird Marco zur Schule gehen.',
       explain:'Futuro: andr&agrave; (3. Pers. Sg. von andare).' },
 
-    { id:'m02-mcl-02', type:'MC',
+    { id:'m02-mcl-02', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Noi ___ la verit&agrave;."',
       options:['abbiamo detto','diremo','diciamo','dicevamo'],
       correctValue:'diremo',
       translation:'Wir werden die Wahrheit sagen.',
       explain:'dire im Futuro (dir-): diremo (1. Pers. Pl.).' },
 
-    { id:'m02-mcl-03', type:'MC',
+    { id:'m02-mcl-03', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Tu ___ a casa mia domani?"',
       options:['sei venuto','venivi','verrai','vieni'],
       correctValue:'verrai',
       translation:'Wirst du morgen zu mir nach Hause kommen?',
       explain:'venire im Futuro: verr- + -ai = verrai.' },
 
-    { id:'m02-mcl-04', type:'MC',
+    { id:'m02-mcl-04', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Loro ___ molto stanchi." (sein)',
       options:['sono','erano','saranno','siano'],
       correctValue:'saranno',
@@ -396,21 +396,21 @@ const MODULE = {
       translation:'Ich werde den ganzen Tag arbeiten.',
       explain:'lavorare im Futuro, 1. Pers. Sg.: lavorer&ograve;.' },
 
-    { id:'m02-mcl-06', type:'MC',
+    { id:'m02-mcl-06', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Voi ___ il compito?" (fare)',
       options:['avete fatto','fate','farete','facevate'],
       correctValue:'farete',
       translation:'Werdet ihr die Aufgabe machen?',
       explain:'fare im Futuro, 2. Pers. Pl.: farete.' },
 
-    { id:'m02-mcl-07', type:'MC',
+    { id:'m02-mcl-07', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Lei ___ a casa." (rimanere)',
       options:['\u00e8 rimasta','rimane','rimarr&agrave;','rimaneva'],
       correctValue:'rimarr\u00e0',
       translation:'Sie wird zu Hause bleiben.',
       explain:'rimanere im Futuro, 3. Pers. Sg.: rimarr&agrave;.' },
 
-    { id:'m02-mcl-08', type:'MC',
+    { id:'m02-mcl-08', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Domani ___ freddo." (fare, Wetter)',
       options:['fa','faceva','far&agrave;','ha fatto'],
       correctValue:'far\u00e0',
@@ -432,37 +432,37 @@ const MODULE = {
       explain:'costare im Futuro, 3. Pers. Sg.: coster&agrave;.' },
 
     /* === LÜCKENTEXT (LT) 5 === */
-    { id:'m02-lt-01', type:'LT',
+    { id:'m02-lt-01', type:'LT', stufe:3,
       text:'Domani io {0} una pizza e {1} del vino.',
       blanks:[ { accept:['manger\u00f2'] }, { accept:['berr\u00f2'] } ],
       translation:'Morgen werde ich eine Pizza essen und Wein trinken.',
       explain:'mangiare \u2192 manger\u00f2; bere (unregelm&auml;&szlig;ig) \u2192 berr\u00f2.' },
 
-    { id:'m02-lt-02', type:'LT',
+    { id:'m02-lt-02', type:'LT', stufe:3,
       prompt:'Erg&auml;nze die Futuro-Form:',
       text:'Noi {0} insieme a Roma la settimana prossima.',
       blanks:[ { accept:['saremo'] } ],
       translation:'Wir werden n&auml;chste Woche zusammen in Rom sein.',
       explain:'essere im Futuro, 1. Pers. Pl.: saremo.' },
 
-    { id:'m02-lt-03', type:'LT',
+    { id:'m02-lt-03', type:'LT', stufe:3,
       prompt:'Setze die richtige Form ein:',
       text:'Lei {0} molto presto.',
       blanks:[ { accept:['verr\u00e0','verr\u00e0 presto'] } ],
       translation:'Sie wird sehr bald kommen.',
       explain:'venire im Futuro, 3. Pers. Sg.: verr&agrave;.' },
 
-    { id:'m02-lt-04', type:'LT',
+    { id:'m02-lt-04', type:'LT', stufe:2,
       prompt:'Erg&auml;nze beide Formen:',
       text:'Tu {0} il pane e io {1} il vino.',
-      blanks:[ { accept:['comprer\u00e0i','comprerai'] }, { accept:['porter\u00f2','porter\u00f2'] } ],
+      blanks:[ { accept:['comprerai'] }, { accept:['porter\u00f2'] } ],
       translation:'Du wirst das Brot kaufen und ich werde den Wein mitbringen.',
       explain:'comprare \u2192 comprerai; portare \u2192 porter\u00f2.' },
 
-    { id:'m02-lt-05', type:'LT',
+    { id:'m02-lt-05', type:'LT', stufe:2,
       prompt:'Erg&auml;nze die Futuro-Form:',
       text:'Loro {0} molto, ma non {1} tutto.',
-      blanks:[ { accept:['studi\u00e0ranno','studieranno'] }, { accept:['capir\u00e0nno','capiranno'] } ],
+      blanks:[ { accept:['studieranno'] }, { accept:['capiranno'] } ],
       translation:'Sie werden viel lernen, aber nicht alles verstehen.',
       explain:'studiare \u2192 studieranno; capire \u2192 capiranno.' },
 
@@ -478,7 +478,7 @@ const MODULE = {
         { label:'loro',     accept:['parleranno'] }
       ] },
 
-    { id:'m02-ft-02', type:'FT',
+    { id:'m02-ft-02', type:'FT', stufe:3,
       prompt:'Konjugiere "essere" (unregelm&auml;&szlig;ig) im Futuro Semplice:',
       rows:[
         { label:'io',       accept:['sar\u00f2'] },
@@ -489,7 +489,7 @@ const MODULE = {
         { label:'loro',     accept:['saranno'] }
       ] },
 
-    { id:'m02-ft-03', type:'FT',
+    { id:'m02-ft-03', type:'FT', stufe:3,
       prompt:'Konjugiere "venire" (unregelm&auml;&szlig;ig) im Futuro Semplice:',
       rows:[
         { label:'io',       accept:['verr\u00f2'] },
@@ -510,15 +510,15 @@ const MODULE = {
       translation:'Morgen werde ich mit meinem Freund nach Rom gehen.',
       explain:'Vor einem Beziehungsbegriff mit Artikel: il mio amico.' },
 
-    { id:'m02-fk-02', type:'FK',
+    { id:'m02-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
-      sentence:'Loro staranno a casa domani.',
+      sentence:'Loro steranno a casa domani.',
       solution:'Loro staranno a casa domani.',
-      errorToken:null,
+      errorToken:'steranno',
       translation:'Sie werden morgen zu Hause bleiben.',
-      explain:'Dieser Satz ist korrekt! stare im Futuro, 3. Pers. Pl.: staranno.' },
+      explain:'stare behält im Futuro das -a-: starò, starai, starà … staranno (nicht steranno).' },
 
-    { id:'m02-fk-03', type:'FK',
+    { id:'m02-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
       sentence:'Domani io sar\u00f2 andare al mercato.',
       solution:'Domani io andr\u00f2 al mercato.',
@@ -532,12 +532,12 @@ const MODULE = {
       solutions:['Domani dormir\u00f2.','Dormir\u00f2 domani.'],
       note:'dormire \u2192 Futuro: dormir\u00f2 (regelm\u00e4\u00dfig: -ire)' },
 
-    { id:'m02-de-02', type:'DE',
+    { id:'m02-de-02', type:'DE', stufe:2,
       prompt:'"Wir werden zusammen essen."',
       solutions:['Mangeremo insieme.','Insieme mangeremo.'],
       note:'mangiare \u2192 Futuro: mangeremo (1. Pers. Pl.)' },
 
-    { id:'m02-de-03', type:'DE',
+    { id:'m02-de-03', type:'DE', stufe:3,
       prompt:'"Er wird sehr m\u00fcde sein." (Vermutung)',
       solutions:['Sar\u00e0 molto stanco.','Sar\u00e0 stanco.'],
       note:'essere im Futuro als Vermutung: sar\u00e0 \u2014 kein "wohl" auf Italienisch n\u00f6tig' },
@@ -548,17 +548,17 @@ const MODULE = {
       note:'tornare \u2192 torneranno; venire (unregelm.) \u2192 verranno' },
 
     /* === ITALIANO -> DEUTSCH (IT) 3 === */
-    { id:'m02-it-01', type:'IT',
+    { id:'m02-it-01', type:'IT', stufe:3,
       prompt:'"Verr\u00f2 da te domani."',
       solutions:['Ich werde morgen zu dir kommen.','Morgen komme ich zu dir.'],
       note:'venire (unregelm.): verr\u00f2 \u2014 1. Pers. Sg.' },
 
-    { id:'m02-it-02', type:'IT',
+    { id:'m02-it-02', type:'IT', stufe:3,
       prompt:'"Non sapranno la risposta."',
       solutions:['Sie werden die Antwort nicht wissen.','Sie wissen die Antwort wohl nicht.'],
       note:'sapere im Futuro: sapr\u00e0 (Sg.), sapranno (Pl.)' },
 
-    { id:'m02-it-03', type:'IT',
+    { id:'m02-it-03', type:'IT', stufe:3,
       prompt:'"Dove saranno adesso?" (Vermutung)',
       solutions:['Wo sind sie wohl jetzt?','Wo werden sie jetzt sein?'],
       note:'saranno als Vermutung \u00fcber Gegenwart: "wohl" im Deutschen' },
@@ -566,17 +566,17 @@ const MODULE = {
     /* =========================================================
        LÜCKENWAHL (EL) — Futuro Semplice: richtige Endung
        ========================================================= */
-    { id:'m02-el-01', type:'EL',
+    { id:'m02-el-01', type:'EL', stufe:2,
       prompt:'Futuro Semplice — wähle die richtige Form:',
       sentence:'Domani io {0} al mercato e {1} la frutta.',
-      blanks:[{ accept:'andrò', distractors:['andrò', 'vado', 'vai', 'andrai'] }, { accept:'comprerò', distractors:['compro', 'compri', 'comprerà'] }],
+      blanks:[{ accept:'andrò', distractors:['vado', 'vai', 'andrai'] }, { accept:'comprerò', distractors:['compro', 'compri', 'comprerà'] }],
       explain:'andare → Futuro io: andrò; comprare → io: comprerò.' },
-    { id:'m02-el-02', type:'EL',
+    { id:'m02-el-02', type:'EL', stufe:2,
       prompt:'Futuro Semplice — wähle die richtige Form:',
       sentence:'Tu {0} a Roma e {1} molte cose.',
       blanks:[{ accept:'andrai', distractors:['andrò', 'andrà', 'andate'] }, { accept:'vedrai', distractors:['vedrò', 'vede', 'vedete'] }],
       explain:'andare → tu: andrai; vedere → tu: vedrai.' },
-    { id:'m02-el-03', type:'EL',
+    { id:'m02-el-03', type:'EL', stufe:2,
       prompt:'Futuro Semplice — wähle die richtige Form:',
       sentence:'Marco {0} a casa e {1} la pizza.',
       blanks:[{ accept:'starà', distractors:['starò', 'starai', 'stanno'] }, { accept:'mangerà', distractors:['mangio', 'mangi', 'mangerò'] }],
@@ -586,15 +586,15 @@ const MODULE = {
       sentence:'Noi {0} presto e {1} insieme.',
       blanks:[{ accept:'partiremo', distractors:['partiamo', 'partirò', 'partirete'] }, { accept:'lavoreremo', distractors:['lavoriamo', 'lavorerò', 'lavorerete'] }],
       explain:'partire → noi: partiremo; lavorare → noi: lavoreremo.' },
-    { id:'m02-el-05', type:'EL',
+    { id:'m02-el-05', type:'EL', stufe:2,
       prompt:'Futuro Semplice — wähle die richtige Form:',
       sentence:'Voi {0} il film e poi {1} a casa.',
       blanks:[{ accept:'vedrete', distractors:['vedremo', 'vedranno', 'vederete'] }, { accept:'tornerete', distractors:['tornate', 'torneremo', 'torneranno'] }],
       explain:'vedere → voi: vedrete; tornare → voi: tornerete.' },
-    { id:'m02-el-06', type:'EL',
+    { id:'m02-el-06', type:'EL', stufe:2,
       prompt:'Futuro Semplice — wähle die richtige Form:',
       sentence:'Loro {0} in Italia e {1} l\'italiano.',
-      blanks:[{ accept:'vivranno', distractors:['vivremo', 'vivrete', 'vivono'] }, { accept:'impareranno', distractors:['impariamo', 'impareranno', 'impareremo'] }],
+      blanks:[{ accept:'vivranno', distractors:['vivremo', 'vivrete', 'vivono'] }, { accept:'impareranno', distractors:['impariamo', 'imparano', 'impareremo'] }],
       explain:'vivere → loro: vivranno; imparare → loro: impareranno.' },
     { id:'m02-el-07', type:'EL',
       prompt:'Futuro Semplice — wähle die richtige Form:',
@@ -621,31 +621,31 @@ const MODULE = {
     /* =========================================================
        NACHSPRECHEN (SR) — 10 Aufgaben
        ========================================================= */
-    { id:'m02-sr-01', type:'SR',
+    { id:'m02-sr-01', type:'SR', stufe:3,
       it:'Domani andrò al mercato con mia madre.',
       de:'Morgen gehe ich mit meiner Mutter auf den Markt.' },
-    { id:'m02-sr-02', type:'SR',
+    { id:'m02-sr-02', type:'SR', stufe:2,
       it:'L\'anno prossimo studieremo in Italia.',
       de:'Nächstes Jahr werden wir in Italien studieren.' },
-    { id:'m02-sr-03', type:'SR',
+    { id:'m02-sr-03', type:'SR', stufe:3,
       it:'Farai sport questo pomeriggio?',
       de:'Wirst du heute Nachmittag Sport machen?' },
-    { id:'m02-sr-04', type:'SR',
+    { id:'m02-sr-04', type:'SR', stufe:3,
       it:'Verrà anche tuo fratello alla festa.',
       de:'Auch dein Bruder wird zur Party kommen.' },
-    { id:'m02-sr-05', type:'SR',
+    { id:'m02-sr-05', type:'SR', stufe:2,
       it:'Mangeremo insieme venerdì sera.',
       de:'Wir werden Freitagabend zusammen essen.' },
-    { id:'m02-sr-06', type:'SR',
+    { id:'m02-sr-06', type:'SR', stufe:3,
       it:'Potrò aiutarti con i compiti.',
       de:'Ich werde dir bei den Hausaufgaben helfen können.' },
-    { id:'m02-sr-07', type:'SR',
+    { id:'m02-sr-07', type:'SR', stufe:3,
       it:'Sapranno la risposta domani.',
       de:'Sie werden morgen die Antwort wissen.' },
     { id:'m02-sr-08', type:'SR',
       it:'Partiremo presto per le vacanze.',
       de:'Wir werden früh in den Urlaub aufbrechen.' },
-    { id:'m02-sr-09', type:'SR',
+    { id:'m02-sr-09', type:'SR', stufe:3,
       it:'Dovrai studiare di più per l\'esame.',
       de:'Du wirst für die Prüfung mehr lernen müssen.' },
     { id:'m02-sr-10', type:'SR',
@@ -655,11 +655,11 @@ const MODULE = {
     /* =========================================================
        FREI SPRECHEN (ST) — 10 Aufgaben
        ========================================================= */
-    { id:'m02-st-01', type:'ST',
+    { id:'m02-st-01', type:'ST', stufe:3,
       de:'Ich werde morgen früh aufstehen.',
       solutions:['Domani mi alzerò presto.', 'Mi alzerò presto domani.'],
       note:'alzarsi (reflexiv) → futuro: mi alzerò (io)' },
-    { id:'m02-st-02', type:'ST',
+    { id:'m02-st-02', type:'ST', stufe:3,
       de:'Er wird nächste Woche nach Berlin fliegen.',
       solutions:['La settimana prossima volerà a Berlino.', 'Volerà a Berlino la settimana prossima.'],
       note:'volare → futuro regelmäßig: volerà (lui, 3. Sg.)' },
@@ -667,27 +667,27 @@ const MODULE = {
       de:'Werdet ihr das Haus kaufen?',
       solutions:['Comprerete la casa?', 'Voi comprerete la casa?'],
       note:'comprare → futuro: comprerete (voi)' },
-    { id:'m02-st-04', type:'ST',
+    { id:'m02-st-04', type:'ST', stufe:3,
       de:'Sie wird die Wahrheit sagen.',
       solutions:['Dirà la verità.', 'Lei dirà la verità.'],
       note:'dire → futuro irregulär: dirà' },
-    { id:'m02-st-05', type:'ST',
+    { id:'m02-st-05', type:'ST', stufe:3,
       de:'Wir werden viel Geld brauchen.',
       solutions:['Avremo bisogno di molti soldi.', 'Ci vorranno molti soldi.'],
       note:'avere bisogno di → avremo (noi); avere irregulär im Futuro' },
-    { id:'m02-st-06', type:'ST',
+    { id:'m02-st-06', type:'ST', stufe:3,
       de:'Kannst du morgen kommen?',
       solutions:['Potrai venire domani?', 'Domani potrai venire?'],
       note:'potere → futuro irregulär: potrai (tu)' },
-    { id:'m02-st-07', type:'ST',
+    { id:'m02-st-07', type:'ST', stufe:3,
       de:'Sie werden in einem Hotel wohnen.',
-      solutions:['Starranno in un albergo.', 'Loro staranno in un albergo.'],
-      note:'stare → futuro irregulär: starranno (loro)' },
-    { id:'m02-st-08', type:'ST',
+      solutions:['Staranno in un albergo.', 'Loro staranno in un albergo.'],
+      note:'stare → Futuro mit Stamm star-: staranno (loro)' },
+    { id:'m02-st-08', type:'ST', stufe:2,
       de:'Ich werde es nicht vergessen.',
       solutions:['Non lo dimenticherò.', 'Non dimenticherò.'],
       note:'dimenticare → futuro: dimenticherò (io); lo = direktes Obj.-Pron.' },
-    { id:'m02-st-09', type:'ST',
+    { id:'m02-st-09', type:'ST', stufe:3,
       de:'Das Wetter wird schön sein.',
       solutions:['Il tempo sarà bello.', 'Farà bello.'],
       note:'essere → futuro irregulär: sarà; fare → farà' },

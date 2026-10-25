@@ -1,9 +1,9 @@
 /* GrammaticaViva — Design System
    Palette: Terracotta (primary), Oliva (success), Cielo (info)
-   Typography: Fraunces (display) + DM Sans (body) via Bunny Fonts
+   Typography: Fraunces (display) + DM Sans (body), lokal gehostet
    Aesthetic: warm paper, hard offset shadows, Italian warmth
 */
-@import url('https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700');
+/* Schriften: lokal über fonts/fonts.css (im HTML eingebunden) */
 
 /* ===== TOKENS ===== */
 :root {
@@ -656,4 +656,41 @@ button { font-family: var(--f-body); }
 }
 .daily-goal-banner--done .daily-goal-fill {
   background: var(--oliva);
+}
+
+/* ===== GRUNDTRAINING / MODUS-UMSCHALTER ===== */
+.mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1.1rem; }
+.mode-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
+  padding: 0.7rem 0.5rem; border: 2px solid var(--ink); border-radius: var(--r-md);
+  background: var(--paper); font-weight: 700; font-size: 0.98rem; cursor: pointer; color: var(--ink);
+  box-shadow: var(--shadow); transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+}
+.mode-tab span { font-size: 0.72rem; font-weight: 500; color: var(--ink-soft); }
+.mode-tab.active { background: var(--sun-soft); transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.drill-head { margin-bottom: 1rem; }
+.drill-intro { font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 0.7rem; line-height: 1.45; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.55rem; align-items: center; }
+.chip {
+  border: 2px solid var(--line); background: var(--paper); border-radius: 99px;
+  padding: 0.35rem 0.75rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--ink);
+}
+.chip.active { border-color: var(--oliva); background: var(--oliva-soft); color: var(--oliva-deep); }
+.chip-row-small .chip { padding: 0.25rem 0.6rem; font-size: 0.75rem; }
+.chip-label { font-size: 0.75rem; color: var(--ink-soft); font-weight: 600; margin-right: 0.1rem; }
+.drill-stats { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; font-size: 0.82rem; font-weight: 700; color: var(--ink-soft); margin-top: 0.3rem; }
+.drill-sentence { font-size: 1.25rem; line-height: 1.9; margin-bottom: 1.1rem; font-family: var(--f-display); }
+.drill-gap { display: inline-block; min-width: 3.2em; border-bottom: 3px solid var(--terra); text-align: center; font-weight: 700; color: var(--terra-deep); padding: 0 0.15em; }
+.drill-gap.ok { color: var(--oliva-deep); border-color: var(--oliva); }
+.drill-gap.bad { color: var(--terra-deep); }
+.drill-input { font-size: 1.1rem; margin: 0 0.2rem; vertical-align: baseline; max-width: 100%; }
+.drill-input-long { display: block; width: 100% !important; margin: 0.4rem 0; }
+.drill-solution { display: inline-block; margin-left: 0.4rem; font-weight: 700; color: var(--oliva-deep); font-family: var(--f-body); font-size: 1rem; }
+.drill-suggest {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.2rem 0 1rem;
+  padding: 0.8rem 1rem; border: 2px solid var(--oliva); background: var(--oliva-soft); border-radius: var(--r-md); color: var(--oliva-deep);
+}
+@media (max-width: 560px) {
+  .drill-sentence { font-size: 1.12rem; }
+  .mode-tab { font-size: 0.9rem; }
 }

@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GrammaticaViva &mdash; Präposition A</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -29,7 +28,7 @@
   <h2 class="exercises-heading">Übungen</h2>
 <div id="daily-goal-mount"></div>   <!-- NEU -->
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 70</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -40,6 +39,7 @@
 
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -110,7 +110,7 @@ const MODULE = {
       translation:'Morgen fahre ich nach Rom.',
       explain:'a + Stadtname (ohne Artikel). in + Ländername (in Italia). da = Bewegung weg von einem Ort (vengo da Roma). Roma ist eine Stadt → a Roma.' },
 
-    { id:'m08-so-02', type:'SO',
+    { id:'m08-so-02', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['alle', "all'una", 'al', 'ci', 'vediamo', 'tre'],
       solution:['ci', 'vediamo', 'alle', 'tre'],
@@ -124,7 +124,7 @@ const MODULE = {
       translation:'Ich gehe jeden Samstag in den Supermarkt.',
       explain:'al = a + il (supermercato ist m/Sg.). alla = a + la (f/Sg.) — supermercato ist maskulin. allo = a + lo (vor s+Kons. oder z) — falsch bei supermercato.' },
 
-    { id:'m08-so-04', type:'SO',
+    { id:'m08-so-04', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['alla','al','alle','stazione','aspetto','ti','te'],
       solution:['ti','aspetto','alla','stazione'],
@@ -138,35 +138,35 @@ const MODULE = {
       translation:'Sie wohnt in Neapel.',
       explain:'a + Stadtname (ohne Artikel). in = für Ländernamen (in Italia). da = Bewegung weg von einem Ort — nicht für Wohnort.' },
 
-    { id:'m08-so-06', type:'SO',
+    { id:'m08-so-06', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['allo','al','alla','zoo','andiamo','domani'],
       solution:['domani','andiamo','allo','zoo'],
       translation:'Morgen gehen wir in den Zoo.',
       explain:'allo = a + lo (zoo beginnt mit z → lo). al = a + il (vor normalem Kons.) — falsch bei zoo. alla = a + la (f/Sg.) — zoo ist maskulin.' },
 
-    { id:'m08-so-07', type:'SO',
+    { id:'m08-so-07', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['alle','all\'una','al','mezzogiorno','a','mangiamo'],
       solution:['mangiamo','a','mezzogiorno'],
       translation:'Wir essen zu Mittag.',
       explain:'a mezzogiorno = zu Mittag (feste Wendung, kein Artikel). all\'una = um ein Uhr. alle = a + le (Pl., für Uhrzeiten ab due) — mezzogiorno ist kein Uhrzeit-Plural.' },
 
-    { id:'m08-so-08', type:'SO',
+    { id:'m08-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['agli','ai','alle','studenti','professore','spiega','il'],
       solution:['il','professore','spiega','agli','studenti'],
       translation:'Der Lehrer erklärt den Schülern.',
       explain:'agli = a + gli (studenti ist m/Pl., beginnt mit st- → gli). ai = a + i (m/Pl. vor normalem Kons.) — falsch bei studenti. alle = a + le (f/Pl.) — studenti ist maskulin.' },
 
-    { id:'m08-so-09', type:'SO',
+    { id:'m08-so-09', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['all\'','al','alla','ospedale','lavora','mio','fratello'],
       solution:['mio','fratello','lavora','all\'','ospedale'],
       translation:'Mein Bruder arbeitet im Krankenhaus.',
       explain:'all\' = a + l\' (ospedale beginnt mit Vokal → Elision). al = a + il (vor Kons.) — falsch vor Vokal. alla = a + la (f/Sg.) — ospedale ist maskulin.' },
 
-    { id:'m08-so-10', type:'SO',
+    { id:'m08-so-10', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['ai','agli','alle','bambini','racconto','una','storia'],
       solution:['racconto','una','storia','ai','bambini'],
@@ -185,7 +185,7 @@ const MODULE = {
         { de:'a + le',   it:'alle'  }
       ] },
 
-    { id:'m08-zo-02', type:'ZO',
+    { id:'m08-zo-02', type:'ZO', stufe:2,
       prompt:'Ordne zu: Funktion von A',
       pairs:[
         { de:'Vado a Roma.',          it:'Richtung (Stadt)'         },
@@ -196,7 +196,7 @@ const MODULE = {
         { de:'Imparo a cucinare.',    it:'Verb + a + Infinitiv'     }
       ] },
 
-    { id:'m08-zo-03', type:'ZO',
+    { id:'m08-zo-03', type:'ZO', stufe:2,
       prompt:'Ordne zu: Stadt oder Land? — a oder in?',
       pairs:[
         { de:'Roma (Stadt)',         it:'a'   },
@@ -207,7 +207,7 @@ const MODULE = {
         { de:'Francia (Land, f)',    it:'in'  }
       ] },
 
-    { id:'m08-zo-04', type:'ZO',
+    { id:'m08-zo-04', type:'ZO', stufe:2,
       prompt:'Ordne zu: Welche A-Artikelpräposition? (al / alla / allo / all\' / agli / alle)',
       pairs:[
         { de:'il mercato (m/Sg.)',      it:'al'    },
@@ -218,7 +218,7 @@ const MODULE = {
         { de:'le tre (f/Pl.)',          it:'alle'  }
       ] },
 
-    { id:'m08-zo-05', type:'ZO',
+    { id:'m08-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu: Verb + A + Infinitiv -> Deutsch',
       pairs:[
         { de:'imparare a guidare',    it:'Auto fahren lernen'        },
@@ -229,7 +229,7 @@ const MODULE = {
         { de:'abituarsi a vivere',    it:'sich ans Leben gewöhnen'   }
       ] },
 
-    { id:'m08-zo-06', type:'ZO',
+    { id:'m08-zo-06', type:'ZO', stufe:2,
       prompt:'Ordne zu: A oder IN? (Ort)',
       pairs:[
         { de:'Ich wohne in Mailand.',    it:'Abito a Milano.'          },
@@ -240,7 +240,7 @@ const MODULE = {
         { de:'Ich fahre nach Florenz.',  it:'Vado a Firenze.'         }
       ] },
 
-    { id:'m08-zo-07', type:'ZO',
+    { id:'m08-zo-07', type:'ZO', stufe:2,
       prompt:'Ordne zu: Uhrzeit mit A -> Deutsch',
       pairs:[
         { de:'alle otto',       it:'um acht Uhr'        },
@@ -251,7 +251,7 @@ const MODULE = {
         { de:'alle diciassette',it:'um 17 Uhr'          }
       ] },
 
-    { id:'m08-zo-08', type:'ZO',
+    { id:'m08-zo-08', type:'ZO', stufe:3,
       prompt:'Ordne zu: feste Ausdrücke mit A -> Deutsch',
       pairs:[
         { de:'a piedi',       it:'zu Fuß'              },
@@ -269,19 +269,19 @@ const MODULE = {
       correctValue:'a',
       explain:'Städte: a ohne Artikel. Vado a Roma.' },
 
-    { id:'m08-mc-02', type:'MC',
+    { id:'m08-mc-02', type:'MC', stufe:2,
       prompt:'Welche Form? "Ci vediamo ___ tre." (Uhrzeit)',
       options:['a','al','alle','alla'],
       correctValue:'alle',
       explain:'Uhrzeit Plural: a + le = alle. Alle tre = um drei Uhr.' },
 
-    { id:'m08-mc-03', type:'MC',
+    { id:'m08-mc-03', type:'MC', stufe:2,
       prompt:'Welche Form? "Vado ___ stadio." (lo stadio)',
       options:['al','allo','alla','agli'],
       correctValue:'allo',
       explain:'lo stadio (s-Anlaut) -> a + lo = allo.' },
 
-    { id:'m08-mc-04', type:'MC',
+    { id:'m08-mc-04', type:'MC', stufe:2,
       prompt:'Welche Form? "Parlo ___ miei amici ogni giorno."',
       options:['a','al','agli','ai'],
       correctValue:'ai',
@@ -293,43 +293,43 @@ const MODULE = {
       correctValue:'Ort (Stadt)',
       explain:'Bei Städten: a + Stadtname (kein Artikel). Milano ist eine Stadt.' },
 
-    { id:'m08-mc-06', type:'MC',
+    { id:'m08-mc-06', type:'MC', stufe:2,
       prompt:'Welche Form? "Arrivo ___ aeroporto tra un\'ora."',
       options:['al','allo',"all'",'alla'],
       correctValue:"all'",
       explain:"l'aeroporto (m, Vokal) -> a + l' = all'." },
 
-    { id:'m08-mc-07', type:'MC',
+    { id:'m08-mc-07', type:'MC', stufe:3,
       prompt:'"Imparo ___ cucinare." Welche Form?',
       options:['di','per','a','in'],
       correctValue:'a',
       explain:'imparare a + Infinitiv: Ich lerne (etwas) zu tun. imparare verlangt a.' },
 
-    { id:'m08-mc-08', type:'MC',
+    { id:'m08-mc-08', type:'MC', stufe:3,
       prompt:'Welche Form? "Il supermercato è ___ 2 km da qui."',
       options:['in','di','per','a'],
       correctValue:'a',
       explain:'Entfernung: a + Zahl + km. Il supermercato è a 2 km da qui.' },
 
-    { id:'m08-mc-09', type:'MC',
+    { id:'m08-mc-09', type:'MC', stufe:3,
       prompt:'"Vado ___ piedi." Was bedeutet das?',
       options:['Ich gehe zum Fuß.','Ich gehe zu Fuß.','Ich gehe mit dem Fuß.','Ich gehe an den Füßen.'],
       correctValue:'Ich gehe zu Fuß.',
       explain:'a piedi ist ein fester Ausdruck: zu Fuß gehen.' },
 
-    { id:'m08-mc-10', type:'MC',
+    { id:'m08-mc-10', type:'MC', stufe:2,
       prompt:'Welche Form? "Do il libro ___ studente." (lo studente)',
       options:['al','allo','alla','agli'],
       correctValue:'allo',
       explain:'lo studente (s-Anlaut) -> a + lo = allo. dare a qualcuno = jemandem geben.' },
 
-    { id:'m08-mc-11', type:'MC',
+    { id:'m08-mc-11', type:'MC', stufe:2,
       prompt:'"A mezzogiorno mangiamo insieme." Was bedeutet das?',
       options:['Morgen essen wir zusammen.','Um Mittag essen wir zusammen.','Um Mitternacht essen wir zusammen.','Wir essen mittags getrennt.'],
       correctValue:'Um Mittag essen wir zusammen.',
       explain:'a mezzogiorno = um Mittag (fester Ausdruck, kein Artikel).' },
 
-    { id:'m08-mc-12', type:'MC',
+    { id:'m08-mc-12', type:'MC', stufe:2,
       prompt:'Welche Form? "Scrivo ___ mia amica." (la mia amica)',
       options:['a','alla','all\'','al'],
       correctValue:'alla',
@@ -343,7 +343,7 @@ const MODULE = {
       translation:'Ich gehe heute Abend ins Kino.',
       explain:'il cinema (m/Sg.) -> al.' },
 
-    { id:'m08-mcl-02', type:'MC',
+    { id:'m08-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "Il treno parte ___ sette."',
       options:['a','al','alle','alla'],
       correctValue:'alle',
@@ -357,7 +357,7 @@ const MODULE = {
       translation:'Ich muss zur Bank.',
       explain:'la banca (f/Sg.) -> alla.' },
 
-    { id:'m08-mcl-04', type:'MC',
+    { id:'m08-mcl-04', type:'MC', stufe:3,
       prompt:'Wähle: "Ho imparato ___ nuotare da piccolo."',
       options:['di','a','per','in'],
       correctValue:'a',
@@ -371,74 +371,74 @@ const MODULE = {
       translation:'Warst du schon mal in Venedig?',
       explain:'Venezia ist eine Stadt -> a Venezia (kein Artikel).' },
 
-    { id:'m08-mcl-06', type:'MC',
+    { id:'m08-mcl-06', type:'MC', stufe:2,
       prompt:'Wähle: "Parlo ___ professore dopo la lezione."',
       options:['a','al','alla','agli'],
       correctValue:'al',
       translation:'Ich spreche nach der Stunde mit dem Professor.',
       explain:'il professore (m/Sg.) -> al. parlare a qualcuno = mit jemandem sprechen.' },
 
-    { id:'m08-mcl-07', type:'MC',
+    { id:'m08-mcl-07', type:'MC', stufe:3,
       prompt:'Wähle: "Il ristorante è ___ 500 metri da qui."',
       options:['in','di','a','per'],
       correctValue:'a',
       translation:'Das Restaurant ist 500 Meter von hier.',
       explain:'Entfernung: a + Zahl + Einheit.' },
 
-    { id:'m08-mcl-08', type:'MC',
+    { id:'m08-mcl-08', type:'MC', stufe:2,
       prompt:'Wähle: "Ci vediamo ___ una." (um ein Uhr)',
       options:["all'","alla",'al','alle'],
       correctValue:"all'",
       translation:'Wir sehen uns um ein Uhr.',
       explain:"l'una (una = f, Vokal) -> a + l' = all'." },
 
-    { id:'m08-mcl-09', type:'MC',
+    { id:'m08-mcl-09', type:'MC', stufe:2,
       prompt:'Wähle: "Ho dato i fiori ___ ragazza."',
-      options:['a','alla','al','alla'],
+      options:['a','alla','al','della'],
       correctValue:'alla',
       translation:'Ich habe dem Mädchen die Blumen gegeben.',
       explain:'la ragazza (f/Sg.) -> alla.' },
 
-    { id:'m08-mcl-10', type:'MC',
-      prompt:'Wähle: "Ci vediamo ___ prossima settimana."',
+    { id:'m08-mcl-10', type:'MC', stufe:2,
+      prompt:'Wähle: "Ciao, ___ prossima settimana!" (bis nächste Woche)',
       options:['alla','a','nella','in'],
       correctValue:'alla',
-      translation:'Wir sehen uns nächste Woche.',
-      explain:'la settimana (f) -> alla. Alla prossima settimana = bis nächste Woche.' },
+      translation:'Tschüss, bis nächste Woche!',
+      explain:'la settimana (f) → alla. Als Abschiedsgruß: alla prossima settimana = bis nächste Woche. Aber: Ci vediamo la prossima settimana (ohne a).' },
 
     /* === LT 5 === */
-    { id:'m08-lt-01', type:'LT',
+    { id:'m08-lt-01', type:'LT', stufe:2,
       text:'Domani vado {0} Firenze e torno {1} sette di sera.',
       blanks:[ { accept:['a'] }, { accept:['alle'] } ],
       translation:'Morgen fahre ich nach Florenz und komme um sieben Uhr abends zurück.',
       explain:'a Firenze (Stadt); alle sette (Uhrzeit, a + le).' },
 
-    { id:'m08-lt-02', type:'LT',
+    { id:'m08-lt-02', type:'LT', stufe:2,
       text:'Ho dato il libro {0} mio amico {1} scuola.',
       blanks:[ { accept:['al'] }, { accept:['a'] } ],
       translation:'Ich habe meinem Freund das Buch in der Schule gegeben.',
       explain:'al mio amico (m/Sg.); a scuola (fester Ausdruck ohne Artikel).' },
 
-    { id:'m08-lt-03', type:'LT',
+    { id:'m08-lt-03', type:'LT', stufe:3,
       text:'La farmacia è {0} 200 metri {1} qui.',
       blanks:[ { accept:['a'] }, { accept:['da'] } ],
       translation:'Die Apotheke ist 200 Meter von hier.',
       explain:'Entfernung: a + Zahl; da qui = von hier.' },
 
-    { id:'m08-lt-04', type:'LT',
+    { id:'m08-lt-04', type:'LT', stufe:3,
       text:'Ho cominciato {0} studiare italiano due anni fa.',
       blanks:[ { accept:['a'] } ],
       translation:'Ich habe vor zwei Jahren angefangen, Italienisch zu lernen.',
       explain:'cominciare a + Infinitiv. Immer a, nie di.' },
 
-    { id:'m08-lt-05', type:'LT',
+    { id:'m08-lt-05', type:'LT', stufe:3,
       text:'Vado {0} lavoro {1} piedi perché abito vicino.',
       blanks:[ { accept:['al'] }, { accept:['a'] } ],
       translation:'Ich gehe zu Fuß zur Arbeit, weil ich in der Nähe wohne.',
       explain:'al lavoro (il lavoro, m/Sg.); a piedi (fester Ausdruck).' },
 
     /* === FT 2 === */
-    { id:'m08-ft-01', type:'FT',
+    { id:'m08-ft-01', type:'FT', stufe:2,
       prompt:'Bilde die Artikelpräposition: a + ...',
       rows:[
         { label:'a + il',   accept:['al']    },
@@ -450,7 +450,7 @@ const MODULE = {
       ],
       explain:'alle fehlt: a + le = alle (f/Pl.).' },
 
-    { id:'m08-ft-02', type:'FT',
+    { id:'m08-ft-02', type:'FT', stufe:2,
       prompt:'Ergänze: Uhrzeit mit A',
       rows:[
         { label:'um ein Uhr',      accept:["all'una"]           },
@@ -470,7 +470,7 @@ const MODULE = {
       translation:'Ich wohne seit drei Jahren in Rom.',
       explain:'Städte immer mit a, nie mit in. Abito a Roma.' },
 
-    { id:'m08-fk-02', type:'FK',
+    { id:'m08-fk-02', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
       sentence:'Ci vediamo a le cinque.',
       solution:'Ci vediamo alle cinque.',
@@ -478,7 +478,7 @@ const MODULE = {
       translation:'Wir sehen uns um fünf Uhr.',
       explain:'a + le verschmilzt immer zu alle. "a le" getrennt ist falsch.' },
 
-    { id:'m08-fk-03', type:'FK',
+    { id:'m08-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
       sentence:'Ho imparato di cucinare da mia madre.',
       solution:'Ho imparato a cucinare da mia madre.',
@@ -487,7 +487,7 @@ const MODULE = {
       explain:'imparare + a + Infinitiv (nicht di). imparare a cucinare.' },
 
     /* === KA 3 === */
-    { id:'m08-ka-01', type:'KA',
+    { id:'m08-ka-01', type:'KA', stufe:2,
       prompt:'Kategorisiere: A ohne Artikel oder mit Artikelpräposition?',
       categories:['a ohne Artikel', 'Artikelpräposition (al/alla...)'],
       items:[
@@ -499,7 +499,7 @@ const MODULE = {
         { text:'agli amici',      cat:1 }
       ] },
 
-    { id:'m08-ka-02', type:'KA',
+    { id:'m08-ka-02', type:'KA', stufe:2,
       prompt:'Kategorisiere: A oder IN?',
       categories:['A (Städte, Orte, Uhrzeit)', 'IN (Länder, Räume, Jahreszeiten)'],
       items:[
@@ -511,7 +511,7 @@ const MODULE = {
         { text:'in estate',            cat:1 }
       ] },
 
-    { id:'m08-ka-03', type:'KA',
+    { id:'m08-ka-03', type:'KA', stufe:3,
       prompt:'Kategorisiere: Verb + A + Infinitiv oder Verb + DI + Infinitiv?',
       categories:['Verb + A + Infinitiv', 'Verb + DI + Infinitiv'],
       items:[
@@ -531,33 +531,33 @@ const MODULE = {
       reveal:'Beide verwenden a + Stadtname -- sowohl für "wohin?" (Bewegung) als auch für "wo?" (Aufenthalt). Das Verb entscheidet: andare/venire/partire = Bewegung; abitare/essere/vivere/lavorare = Aufenthalt.' },
 
     /* === DE 3 === */
-    { id:'m08-de-01', type:'DE',
+    { id:'m08-de-01', type:'DE', stufe:2,
       prompt:'"Ich fahre morgen nach Neapel und komme um neun Uhr abends zurück."',
       solutions:['Domani vado a Napoli e torno alle nove di sera.'],
       note:'a Napoli (Stadt); alle nove (Uhrzeit, a + le).' },
 
-    { id:'m08-de-02', type:'DE',
+    { id:'m08-de-02', type:'DE', stufe:3,
       prompt:'"Ich habe angefangen Italienisch zu lernen."',
       solutions:['Ho cominciato a imparare l\'italiano.','Ho cominciato a studiare l\'italiano.'],
       note:'cominciare a + Infinitiv. imparare/studiare für "lernen".' },
 
-    { id:'m08-de-03', type:'DE',
+    { id:'m08-de-03', type:'DE', stufe:3,
       prompt:'"Das Hotel ist zwei Kilometer von hier."',
       solutions:["L'albergo è a due chilometri da qui.",'L\'hotel è a 2 km da qui.'],
       note:'Entfernung: a + Zahl + Einheit + da qui (von hier).' },
 
     /* === IT 3 === */
-    { id:'m08-it-01', type:'IT',
+    { id:'m08-it-01', type:'IT', stufe:2,
       prompt:'"Ci vediamo all\'una davanti al cinema."',
       solutions:['Wir sehen uns um ein Uhr vor dem Kino.'],
       note:"all'una = um ein Uhr (a + l'una); davanti al cinema = vor dem Kino." },
 
-    { id:'m08-it-02', type:'IT',
+    { id:'m08-it-02', type:'IT', stufe:3,
       prompt:'"Non riesco a dormire quando fa troppo caldo."',
       solutions:['Ich schaffe es nicht zu schlafen, wenn es zu heiß ist.','Ich kann nicht schlafen, wenn es zu warm ist.'],
       note:'riuscire a + Infinitiv = es schaffen zu; fare caldo = warm sein.' },
 
-    { id:'m08-it-03', type:'IT',
+    { id:'m08-it-03', type:'IT', stufe:2,
       prompt:'"Ho dato le chiavi agli studenti."',
       solutions:['Ich habe den Studenten die Schlüssel gegeben.','Ich gab den Studenten die Schlüssel.'],
       note:'agli studenti = a + gli (gli studenti, m/Pl. Vokal).' },
@@ -570,22 +570,22 @@ const MODULE = {
       sentence:'Vado {0} scuola e poi vado {1} mercato.',
       blanks:[{ accept:'a', distractors:['al', 'alla', 'in'] }, { accept:'al', distractors:['a', 'alla', 'in'] }],
       explain:'a scuola ohne Artikel; al = a + il (mercato m/Sg.).' },
-    { id:'m08-el-02', type:'EL',
+    { id:'m08-el-02', type:'EL', stufe:2,
       prompt:'Präposition A — Stadtname und Ort:',
       sentence:'Abito {0} Roma e lavoro {1} nord della città.',
       blanks:[{ accept:'a', distractors:['in', 'al', 'nella'] }, { accept:'al', distractors:['a', 'in', 'nel'] }],
       explain:'a + Stadtname; al = a + il (nord m/Sg.).' },
-    { id:'m08-el-03', type:'EL',
+    { id:'m08-el-03', type:'EL', stufe:2,
       prompt:'Präposition A + Artikel:',
       sentence:'Arrivo {0} stazione e vado {1} albergo.',
       blanks:[{ accept:'alla', distractors:['al', 'a', 'all\''] }, { accept:'all\'', distractors:['al', 'alla', 'a'] }],
       explain:'stazione (f/Sg.) → alla; albergo (m/Sg., Vokal) → all\'.' },
-    { id:'m08-el-04', type:'EL',
+    { id:'m08-el-04', type:'EL', stufe:2,
       prompt:'Präposition A — indirektes Objekt (zu/mit):',
       sentence:'Parlo {0} professore e poi {1} studentessa.',
       blanks:[{ accept:'al', distractors:['alla', 'all\'', 'a'] }, { accept:'alla', distractors:['al', 'all\'', 'a'] }],
       explain:'parlare a: al = a + il (professore m); alla = a + la (studentessa f).' },
-    { id:'m08-el-05', type:'EL',
+    { id:'m08-el-05', type:'EL', stufe:2,
       prompt:'Präposition A — Uhrzeiten:',
       sentence:'Mangio {0} mezzogiorno e ceno {0} sette di sera.',
       blanks:[{ accept:'a', distractors:['alle', 'al', 'di'] }, { accept:'alle', distractors:['a', 'al', 'di'] }],
@@ -595,14 +595,14 @@ const MODULE = {
       sentence:'Vado {0} cinema con Marco e poi {1} bar.',
       blanks:[{ accept:'al', distractors:['a', 'alla', 'all\''] }, { accept:'al', distractors:['a', 'alla', 'all\''] }],
       explain:'cinema und bar sind m/Sg. → al.' },
-    { id:'m08-el-07', type:'EL',
+    { id:'m08-el-07', type:'EL', stufe:2,
       prompt:'Präposition A — indirektes Objekt:',
       sentence:'Do il libro {0} ragazzo e la penna {1} ragazza.',
       blanks:[{ accept:'al', distractors:['alla', 'all\'', 'a'] }, { accept:'alla', distractors:['al', 'all\'', 'a'] }],
       explain:'ragazzo (m/Sg.) → al; ragazza (f/Sg.) → alla.' },
-    { id:'m08-el-08', type:'EL',
+    { id:'m08-el-08', type:'EL', stufe:3,
       prompt:'Präposition A — Fähigkeiten:',
-      sentence:'Sono bravo {0} matematica e bravo {1} sport.',
+      sentence:'Sono bravo {0} matematica, ma non {1} inglese.',
       blanks:[{ accept:'in', distractors:['a', 'al', 'nella'] }, { accept:'in', distractors:['a', 'al', 'nello'] }],
       explain:'essere bravo in (Fach/Disziplin) — hier ist in korrekt, nicht a.' },
     { id:'m08-el-09', type:'EL',
@@ -610,7 +610,7 @@ const MODULE = {
       sentence:'Vado {0} supermercato e poi {1} farmacia.',
       blanks:[{ accept:'al', distractors:['a', 'alla', 'all\''] }, { accept:'alla', distractors:['al', 'a', 'all\''] }],
       explain:'supermercato (m/Sg.) → al; farmacia (f/Sg.) → alla.' },
-    { id:'m08-el-10', type:'EL',
+    { id:'m08-el-10', type:'EL', stufe:2,
       prompt:'Präposition A + Artikel vor Vokal:',
       sentence:'Mando un messaggio {0} amico e scrivo una lettera {1} amica.',
       blanks:[{ accept:'all\'', distractors:['al', 'alla', 'a'] }, { accept:'all\'', distractors:['al', 'alla', 'a'] }],
@@ -623,31 +623,31 @@ const MODULE = {
     { id:'m08-sr-01', type:'SR',
       it:'Vado al supermercato ogni sabato.',
       de:'Ich gehe jeden Samstag in den Supermarkt.' },
-    { id:'m08-sr-02', type:'SR',
+    { id:'m08-sr-02', type:'SR', stufe:2,
       it:'Scrivo una lettera alla mia amica.',
       de:'Ich schreibe meiner Freundin einen Brief.' },
-    { id:'m08-sr-03', type:'SR',
+    { id:'m08-sr-03', type:'SR', stufe:2,
       it:'Arriviamo a Roma alle dieci.',
       de:'Wir kommen um zehn Uhr in Rom an.' },
-    { id:'m08-sr-04', type:'SR',
+    { id:'m08-sr-04', type:'SR', stufe:2,
       it:'Parla agli studenti con calma.',
       de:'Er/Sie spricht ruhig mit den Schülern.' },
-    { id:'m08-sr-05', type:'SR',
+    { id:'m08-sr-05', type:'SR', stufe:2,
       it:'A che ora parti domani?',
       de:'Um wie viel Uhr reist du morgen ab?' },
-    { id:'m08-sr-06', type:'SR',
+    { id:'m08-sr-06', type:'SR', stufe:3,
       it:'All\'improvviso è arrivata la pioggia.',
       de:'Plötzlich setzte der Regen ein.' },
-    { id:'m08-sr-07', type:'SR',
+    { id:'m08-sr-07', type:'SR', stufe:3,
       it:'Mi piace giocare ai videogiochi.',
       de:'Ich spiele gerne Videospiele.' },
-    { id:'m08-sr-08', type:'SR',
+    { id:'m08-sr-08', type:'SR', stufe:2,
       it:'Andiamo alle terme questo weekend.',
       de:'Wir gehen dieses Wochenende in die Therme.' },
     { id:'m08-sr-09', type:'SR',
       it:'Il treno arriva a Milano in ritardo.',
       de:'Der Zug kommt verspätet in Mailand an.' },
-    { id:'m08-sr-10', type:'SR',
+    { id:'m08-sr-10', type:'SR', stufe:2,
       it:'Manda un messaggio all\'amico.',
       de:'Schick dem Freund eine Nachricht.' },
 
@@ -658,11 +658,11 @@ const MODULE = {
       de:'Ich gehe ins Kino.',
       solutions:['Vado al cinema.', 'Vado al film.'],
       note:'cinema (m/Sg.) → al cinema' },
-    { id:'m08-st-02', type:'ST',
+    { id:'m08-st-02', type:'ST', stufe:2,
       de:'Er kommt um acht Uhr an.',
       solutions:['Arriva alle otto.', 'Lui arriva alle otto.'],
       note:'alle + Uhrzeit (Pl.): alle otto; bei 1 Uhr: all\'una' },
-    { id:'m08-st-03', type:'ST',
+    { id:'m08-st-03', type:'ST', stufe:2,
       de:'Sie schreibt der Lehrerin eine E-Mail.',
       solutions:['Scrive un\'e-mail all\'insegnante.', 'Scrive all\'insegnante un\'e-mail.'],
       note:'insegnante (Vokal) → all\'insegnante' },
@@ -682,15 +682,15 @@ const MODULE = {
       de:'Ich gehe samstags auf den Markt.',
       solutions:['Il sabato vado al mercato.', 'Di sabato vado al mercato.'],
       note:'al mercato (m/Sg.); il sabato / di sabato = jeden Samstag' },
-    { id:'m08-st-08', type:'ST',
+    { id:'m08-st-08', type:'ST', stufe:3,
       de:'Sie spielen Fußball.',
       solutions:['Giocano a calcio.', 'Loro giocano a calcio.'],
       note:'giocare a calcio (Sportart mit \'a\')' },
-    { id:'m08-st-09', type:'ST',
+    { id:'m08-st-09', type:'ST', stufe:2,
       de:'Er gibt den Kindern Bonbons.',
       solutions:['Dà le caramelle ai bambini.', 'Dà ai bambini le caramelle.'],
       note:'bambini (m/Pl.) → ai bambini' },
-    { id:'m08-st-10', type:'ST',
+    { id:'m08-st-10', type:'ST', stufe:2,
       de:'Ich schreibe meinem Bruder.',
       solutions:['Scrivo a mio fratello.', 'Scrivo al mio fratello.'],
       note:'Verwandtschaftsnamen ohne Artikel: a mio fratello' },

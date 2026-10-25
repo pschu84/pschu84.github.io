@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Präposition DA</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -29,7 +28,7 @@
   <h2 class="exercises-heading">Übungen</h2>
 <div id="daily-goal-mount"></div>   <!-- NEU -->
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 70</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -40,6 +39,7 @@
 
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -127,14 +127,14 @@ const MODULE = {
       translation:'Ich komme gerade aus der Apotheke.',
       explain:'dalla = da + la (farmacia ist f/Sg.). dal = da + il (m/Sg.) — farmacia ist feminin. dall\' = da + l\' (vor Vokal) — falsch bei farmacia.' },
 
-    { id:'m09-so-05', type:'SO',
+    { id:'m09-so-05', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['dalla','a','di','Germania','vengo','io'],
       solution:['io','vengo','dalla','Germania'],
       translation:'Ich komme aus Deutschland.',
       explain:'dalla = da + la (Germania ist f, landet mit -a). a = Aufenthaltsort oder Ziel — nicht für Herkunft. di = Herkunft bei Städten (sono di Roma) — bei Ländern verwendet man da.' },
 
-    { id:'m09-so-06', type:'SO',
+    { id:'m09-so-06', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['dallo','dal','dalla','psicologo','torno','io'],
       solution:['io','torno','dallo','psicologo'],
@@ -148,19 +148,19 @@ const MODULE = {
       translation:'Ich warte seit zwei Stunden.',
       explain:'da + Präsens = seit (Handlung läuft noch). per = für (abgeschlossene Dauer, z.B. ho aspettato per due ore). aspettavo = Imperfetto — mit da kein Imperfetto für laufende Handlung.' },
 
-    { id:'m09-so-08', type:'SO',
+    { id:'m09-so-08', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['dall\'','dal','dalla','ospedale','uscita','è','lei'],
       solution:['lei','è','uscita','dall\'','ospedale'],
       translation:'Sie ist aus dem Krankenhaus entlassen worden.',
       explain:'dall\' = da + l\' (ospedale beginnt mit Vokal → Elision). dal = da + il (vor Kons.) — falsch vor Vokal. dalla = da + la (f/Sg.) — ospedale ist maskulin.' },
 
-    { id:'m09-so-09', type:'SO',
+    { id:'m09-so-09', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['dagli','dai','dalle','amici','torno','miei'],
-      solution:['torno','dagli','miei','amici'],
+      solution:['torno','dai','miei','amici'],
       translation:'Ich komme gerade von meinen Freunden.',
-      explain:'dagli = da + gli (amici ist m/Pl., beginnt mit Vokal → gli). dai = da + i (m/Pl. vor normalem Kons.) — falsch vor Vokal. dalle = da + le (f/Pl.) — amici ist maskulin.' },
+      explain:'Der Artikel richtet sich nach dem Wort direkt dahinter: i miei amici (miei beginnt mit Konsonant) → da + i = dai. Ohne miei hieße es gli amici → dagli amici. dalle wäre feminin.' },
 
     { id:'m09-so-10', type:'SO',
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
@@ -170,7 +170,7 @@ const MODULE = {
       explain:'da + Präsens = seit (Handlung dauert an). per = für (abgeschlossene Dauer, z.B. ha lavorato per cinque anni). in = drückt keine Zeitdauer aus.' },
 
     /* === ZO 8 === */
-    { id:'m09-zo-01', type:'ZO',
+    { id:'m09-zo-01', type:'ZO', stufe:2,
       prompt:'Ordne zu: da + Artikel = Artikelpräposition',
       pairs:[
         { de:'da + il',   it:'dal'    },
@@ -181,7 +181,7 @@ const MODULE = {
         { de:'da + le',   it:'dalle'  }
       ] },
 
-    { id:'m09-zo-02', type:'ZO',
+    { id:'m09-zo-02', type:'ZO', stufe:3,
       prompt:'Ordne zu: Funktion von DA',
       pairs:[
         { de:'Vengo da Roma.',              it:'Herkunft (Bewegung)'    },
@@ -192,7 +192,7 @@ const MODULE = {
         { de:'dalle tre alle cinque',       it:'Zeitraum von-bis'       }
       ] },
 
-    { id:'m09-zo-03', type:'ZO',
+    { id:'m09-zo-03', type:'ZO', stufe:3,
       prompt:'Ordne zu: DI oder DA? (Herkunft)',
       pairs:[
         { de:'Geburtsort / Wohnort',       it:'Sono di Roma.'          },
@@ -203,7 +203,7 @@ const MODULE = {
         { de:'von Berlin reisen',          it:'venire da Berlino'      }
       ] },
 
-    { id:'m09-zo-04', type:'ZO',
+    { id:'m09-zo-04', type:'ZO', stufe:2,
       prompt:'Ordne zu: DA + Zeitdauer -> Deutsch',
       pairs:[
         { de:'da un\'ora',      it:'seit einer Stunde'      },
@@ -214,7 +214,7 @@ const MODULE = {
         { de:'da un anno',      it:'seit einem Jahr'        }
       ] },
 
-    { id:'m09-zo-05', type:'ZO',
+    { id:'m09-zo-05', type:'ZO', stufe:2,
       prompt:'Ordne zu: "Bei jemandem" oder "von jemandem weg"?',
       pairs:[
         { de:'Sono da Marco.',         it:'Ich bin bei Marco.'          },
@@ -225,7 +225,7 @@ const MODULE = {
         { de:'Vengo dalla nonna.',     it:'Ich komme von der Oma.'      }
       ] },
 
-    { id:'m09-zo-06', type:'ZO',
+    { id:'m09-zo-06', type:'ZO', stufe:3,
       prompt:'Ordne zu: Zweck / Funktion mit DA -> Deutsch',
       pairs:[
         { de:'una tazza da caffè',    it:'eine Kaffeetasse'           },
@@ -236,7 +236,7 @@ const MODULE = {
         { de:'una scarpa da ginnastica',it:'ein Sportschuh'           }
       ] },
 
-    { id:'m09-zo-07', type:'ZO',
+    { id:'m09-zo-07', type:'ZO', stufe:2,
       prompt:'Ordne zu: Zeitraum DA...A -> Deutsch',
       pairs:[
         { de:'dalle tre alle sei',         it:'von drei bis sechs Uhr'  },
@@ -247,7 +247,7 @@ const MODULE = {
         { de:'dalle otto alle diciassette',it:'von 8 bis 17 Uhr'       }
       ] },
 
-    { id:'m09-zo-08', type:'ZO',
+    { id:'m09-zo-08', type:'ZO', stufe:2,
       prompt:'Ordne zu: Substantiv → richtige DA-Artikelform',
       pairs:[
         { de:'il medico (m/Sg., Konsonant)',     it:'dal'    },
@@ -260,10 +260,10 @@ const MODULE = {
 
     /* === MC Basis 12 === */
     { id:'m09-mc-01', type:'MC',
-      prompt:'"Sono ___ Roma." (Ich komme gerade aus Rom.) Welche Form?',
+      prompt:'"Vengo ___ Roma." (Ich komme gerade aus Rom.) Welche Form?',
       options:['di','da','dalla','dal'],
       correctValue:'da',
-      explain:'Herkunft als Bewegung: da + Stadtname. Vengo da Roma / Sono da Roma (gerade von dort).' },
+      explain:'Bewegung von einem Ort weg: venire da + Stadt. Aber Herkunft/Heimatstadt: sono di Roma.' },
 
     { id:'m09-mc-02', type:'MC',
       prompt:'"Studio italiano ___ due anni." Welche Form?',
@@ -273,23 +273,23 @@ const MODULE = {
 
     { id:'m09-mc-03', type:'MC',
       prompt:'"Sono ___ medico." Welche Form?',
-      options:['da','dal','al','dal'],
+      options:['da','dal','al','dallo'],
       correctValue:'dal',
       explain:'Bei jemandem: da + il medico = dal. Sono dal medico = Ich bin beim Arzt.' },
 
-    { id:'m09-mc-04', type:'MC',
+    { id:'m09-mc-04', type:'MC', stufe:3,
       prompt:'Was bedeutet "una tazza da caffè"?',
       options:['eine Tasse mit Kaffee','eine Kaffeetasse (Zweck)','eine Tasse aus Kaffee','eine große Tasse'],
       correctValue:'eine Kaffeetasse (Zweck)',
       explain:'DA + Substantiv drückt den Zweck aus. una tazza da caffè = Tasse zum Kaffeetrinken.' },
 
-    { id:'m09-mc-05', type:'MC',
+    { id:'m09-mc-05', type:'MC', stufe:3,
       prompt:'"Il libro è stato scritto ___ Umberto Eco." Welche Form?',
       options:['di','a','da','per'],
       correctValue:'da',
       explain:'Passiv-Agens: scritto da = von jemandem geschrieben. da + Urheber.' },
 
-    { id:'m09-mc-06', type:'MC',
+    { id:'m09-mc-06', type:'MC', stufe:2,
       prompt:'"Lavoro ___ mattina ___ sera." Welche Formen?',
       options:['da / da','dalla / alla','da / a','dalla / dalla'],
       correctValue:'dalla / alla',
@@ -301,13 +301,13 @@ const MODULE = {
       correctValue:'dalla',
       explain:'Richtung zu jemandem: da + la nonna = dalla. Vado dalla nonna = Ich gehe zur Oma.' },
 
-    { id:'m09-mc-08', type:'MC',
+    { id:'m09-mc-08', type:'MC', stufe:3,
       prompt:'"Sono ___ tre ore che aspetto." Was bedeutet das?',
       options:['Ich warte seit drei Stunden.','Ich warte für drei Stunden.','Ich habe drei Stunden gewartet.','Ich werde drei Stunden warten.'],
       correctValue:'Ich warte seit drei Stunden.',
       explain:'da + Zeitdauer im Präsens = seit. Sono da tre ore che = Es ist seit drei Stunden, dass ich ...' },
 
-    { id:'m09-mc-09', type:'MC',
+    { id:'m09-mc-09', type:'MC', stufe:3,
       prompt:'"Qual è la differenza tra DI e DA?" (Herkunft) Welche Aussage ist korrekt?',
       options:[
         'DI und DA sind immer austauschbar.',
@@ -318,7 +318,7 @@ const MODULE = {
       correctValue:'DI = Geburtsort/Wohnort. DA = Bewegung von einem Ort weg.',
       explain:'Sono di Roma = Ich bin aus Rom (Herkunft/Wohnort). Vengo da Roma = Ich komme gerade aus Rom (Bewegung).' },
 
-    { id:'m09-mc-10', type:'MC',
+    { id:'m09-mc-10', type:'MC', stufe:3,
       prompt:'"La ragazza ___ capelli neri è mia sorella." Welche Form?',
       options:['di','con','dai','dei'],
       correctValue:'dai',
@@ -344,49 +344,49 @@ const MODULE = {
       translation:'Ich wohne seit fünf Jahren hier.',
       explain:'Seit (andauernd): da + Zeitangabe. Präsens + da.' },
 
-    { id:'m09-mcl-02', type:'MC',
+    { id:'m09-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "Vengo ___ Germania."',
       options:['di','da','della','dalla'],
       correctValue:'dalla',
       translation:'Ich komme aus Deutschland.',
       explain:'Herkunft als Bewegung + f-Land mit Artikel: dalla Germania.' },
 
-    { id:'m09-mcl-03', type:'MC',
+    { id:'m09-mcl-03', type:'MC', stufe:3,
       prompt:'Wähle: "Il romanzo è stato scritto ___ un giovane autore."',
       options:['di','a','da','per'],
       correctValue:'da',
       translation:'Der Roman wurde von einem jungen Autor geschrieben.',
       explain:'Passiv-Agens: da + Urheber.' },
 
-    { id:'m09-mcl-04', type:'MC',
+    { id:'m09-mcl-04', type:'MC', stufe:2,
       prompt:'Wähle: "Sono ___ miei genitori questo weekend."',
-      options:['da','dai','dai','con i'],
+      options:['da','dai','dagli','con i'],
       correctValue:'dai',
       translation:'Ich bin dieses Wochenende bei meinen Eltern.',
       explain:'i miei genitori (m/Pl.) -> da + i = dai. Ort: bei jemandem.' },
 
-    { id:'m09-mcl-05', type:'MC',
+    { id:'m09-mcl-05', type:'MC', stufe:3,
       prompt:'Wähle: "Ho un vestito ___ sera per la cena."',
       options:['di','da','a','per'],
       correctValue:'da',
       translation:'Ich habe ein Abendkleid für das Dinner.',
       explain:'Zweck: da + Substanz. un vestito da sera = ein Kleid zum Abendessen.' },
 
-    { id:'m09-mcl-06', type:'MC',
+    { id:'m09-mcl-06', type:'MC', stufe:2,
       prompt:'Wähle: "___ dove vieni?" (Woher kommst du?)',
       options:['Di','Da','A','In'],
       correctValue:'Da',
       translation:'Woher kommst du?',
       explain:'Herkunft als Bewegung: Da dove vieni? = Von wo kommst du?' },
 
-    { id:'m09-mcl-07', type:'MC',
+    { id:'m09-mcl-07', type:'MC', stufe:2,
       prompt:'Wähle: "Il negozio è aperto ___ nove ___ tredici."',
       options:['da / a','dalle / alle','di / di','da / da'],
       correctValue:'dalle / alle',
       translation:'Das Geschäft ist von neun bis dreizehn Uhr geöffnet.',
       explain:'Zeitraum: dalle nove (da + le) alle tredici (a + le).' },
 
-    { id:'m09-mcl-08', type:'MC',
+    { id:'m09-mcl-08', type:'MC', stufe:3,
       prompt:'Wähle: "Il bambino ___ occhi azzurri è mio figlio."',
       options:['di','con','dai','degli'],
       correctValue:'dai',
@@ -400,9 +400,9 @@ const MODULE = {
       translation:'Ich sehe sie seit einer Woche nicht.',
       explain:'Zeitdauer seit (andauernd): da + Zeitangabe.' },
 
-    { id:'m09-mcl-10', type:'MC',
+    { id:'m09-mcl-10', type:'MC', stufe:2,
       prompt:'Wähle: "Torno ___ ufficio alle sei."',
-      options:['da','dall\'','dal',"dall'"],
+      options:['da','dall\'','dal','dallo'],
       correctValue:"dall'",
       translation:'Ich komme um sechs Uhr vom Büro zurück.',
       explain:"l'ufficio (m, Vokal) -> da + l' = dall'. Herkunft: tornare da = zurückkommen von." },
@@ -414,32 +414,32 @@ const MODULE = {
       translation:'Ich lerne seit drei Jahren Italienisch und lebe seit einem Jahr in Italien.',
       explain:'da + Zeitdauer (Handlung dauert noch an, Präsens).' },
 
-    { id:'m09-lt-02', type:'LT',
+    { id:'m09-lt-02', type:'LT', stufe:2,
       text:'La libreria è aperta {0} nove {1} otto di sera.',
       blanks:[ { accept:['dalle'] }, { accept:['alle'] } ],
       translation:'Die Buchhandlung ist von neun bis acht Uhr abends geöffnet.',
       explain:'dalle nove (da + le); alle otto (a + le). Zeitraum von-bis.' },
 
-    { id:'m09-lt-03', type:'LT',
+    { id:'m09-lt-03', type:'LT', stufe:2,
       text:'Vengo {0} lavoro e poi vado {1} medico.',
       blanks:[ { accept:['dal'] }, { accept:['dal'] } ],
       translation:'Ich komme von der Arbeit und gehe dann zum Arzt.',
       explain:'dal lavoro (da + il); dal medico (da + il). Herkunft und Richtung.' },
 
-    { id:'m09-lt-04', type:'LT',
+    { id:'m09-lt-04', type:'LT', stufe:3,
       text:'"La Divina Commedia" è stata scritta {0} Dante Alighieri.',
       blanks:[ { accept:['da'] } ],
       translation:'Die Göttliche Komödie wurde von Dante Alighieri geschrieben.',
       explain:'Passiv-Agens: da + Urheber (Dante = Eigenname, kein Artikel).' },
 
-    { id:'m09-lt-05', type:'LT',
+    { id:'m09-lt-05', type:'LT', stufe:3,
       text:'La donna {0} capelli lunghi e {1} occhi verdi è mia madre.',
       blanks:[ { accept:['dai'] }, { accept:['dagli'] } ],
       translation:'Die Frau mit den langen Haaren und den grünen Augen ist meine Mutter.',
       explain:'dai capelli (da + i); dagli occhi (da + gli, Vokal). Charakteristikum.' },
 
     /* === FT 2 === */
-    { id:'m09-ft-01', type:'FT',
+    { id:'m09-ft-01', type:'FT', stufe:2,
       prompt:'Bilde die Artikelpräposition: da + ...',
       rows:[
         { label:'da + il',   accept:['dal']    },
@@ -471,7 +471,7 @@ const MODULE = {
       translation:'Ich lerne seit drei Jahren Italienisch.',
       explain:'Seit (andauernd, bis jetzt): da. PER drückt geplante Dauer aus, nicht "seit". Studio (Präsens) + da drei anni.' },
 
-    { id:'m09-fk-02', type:'FK',
+    { id:'m09-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
       sentence:'Sono di Milano, ma vengo di Roma.',
       solution:'Sono di Milano, ma vengo da Roma.',
@@ -479,7 +479,7 @@ const MODULE = {
       translation:'Ich bin aus Mailand, aber ich komme gerade aus Rom.',
       explain:'Sono di Milano (Herkunft/Wohnort: DI). Vengo da Roma (Bewegung von: DA). Die zwei Präpositionen haben verschiedene Bedeutungen.' },
 
-    { id:'m09-fk-03', type:'FK',
+    { id:'m09-fk-03', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler -- schreibe den ganzen korrekten Satz:',
       sentence:'Il museo è aperto di lunedì al sabato.',
       solution:'Il museo è aperto dal lunedì al sabato.',
@@ -500,7 +500,7 @@ const MODULE = {
         { text:'Sono dalla nonna.',          cat:1 }
       ] },
 
-    { id:'m09-ka-02', type:'KA',
+    { id:'m09-ka-02', type:'KA', stufe:3,
       prompt:'Kategorisiere: DI oder DA? (Herkunft)',
       categories:['DI (Geburtsort / Herkunft)', 'DA (Bewegung von einem Ort)'],
       items:[
@@ -512,7 +512,7 @@ const MODULE = {
         { text:'venire da qui',          cat:1 }
       ] },
 
-    { id:'m09-ka-03', type:'KA',
+    { id:'m09-ka-03', type:'KA', stufe:3,
       prompt:'Kategorisiere: DA als Zweck oder DA als Charakteristikum?',
       categories:['Zweck / Funktion', 'Charakteristikum (mit ...)'],
       items:[
@@ -525,7 +525,7 @@ const MODULE = {
       ] },
 
     /* === KO 1 === */
-    { id:'m09-ko-01', type:'KO',
+    { id:'m09-ko-01', type:'KO', stufe:3,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Ho studiato per tre anni.', tag:'PER: abgeschlossene Dauer' },
       b:{ sentence:'Studio da tre anni.', tag:'DA: andauernde Dauer seit' },
@@ -542,7 +542,7 @@ const MODULE = {
       solutions:['Vengo dal medico. Mi ha detto di bere molta acqua.','Torno dal medico. Mi ha detto che devo bere molta acqua.'],
       note:'dal medico (da + il); dire di + Infinitiv.' },
 
-    { id:'m09-de-03', type:'DE',
+    { id:'m09-de-03', type:'DE', stufe:2,
       prompt:'"Das Museum ist von Dienstag bis Sonntag geöffnet."',
       solutions:['Il museo è aperto dal martedì alla domenica.','Il museo è aperto dal martedì alla domenica inclusa.'],
       note:'dal martedì (da + il); alla domenica (a + la). Zeitraum von-bis.' },
@@ -553,12 +553,12 @@ const MODULE = {
       solutions:['Seit wie langer Zeit lernst du Italienisch?','Wie lange lernst du schon Italienisch?'],
       note:'Da quanto tempo = Seit wie langer Zeit. Fragt nach andauernder Handlung.' },
 
-    { id:'m09-it-02', type:'IT',
+    { id:'m09-it-02', type:'IT', stufe:2,
       prompt:'"Sono dalla mia amica dalle due alle sei."',
       solutions:['Ich bin von zwei bis sechs Uhr bei meiner Freundin.'],
       note:'dalla mia amica (bei ihr); dalle due alle sei (Zeitraum von-bis).' },
 
-    { id:'m09-it-03', type:'IT',
+    { id:'m09-it-03', type:'IT', stufe:3,
       prompt:'"Il bambino dai capelli rossi non mangia da ieri."',
       solutions:['Das Kind mit den roten Haaren isst seit gestern nicht.','Das rothaarige Kind isst seit gestern nichts.'],
       note:'dai capelli rossi (Charakteristikum); da ieri (seit gestern, Zeitdauer).' },
@@ -566,7 +566,7 @@ const MODULE = {
     /* =========================================================
        LÜCKENWAHL (EL) — Präposition DA und ihre Bedeutungen
        ========================================================= */
-    { id:'m09-el-01', type:'EL',
+    { id:'m09-el-01', type:'EL', stufe:2,
       prompt:'Präposition DA — Herkunft und Dauer:',
       sentence:'Vengo {0} Italia e abito qui {1} tre anni.',
       blanks:[{ accept:'dall\'', distractors:['da', 'dalla', 'del'] }, { accept:'da', distractors:['dall\'', 'dalla', 'per'] }],
@@ -576,22 +576,22 @@ const MODULE = {
       sentence:'Arrivo {0} Roma e vado {1} Marco.',
       blanks:[{ accept:'da', distractors:['di', 'in', 'a'] }, { accept:'da', distractors:['di', 'a', 'in'] }],
       explain:'da Roma = aus Rom; andare da Marco = zu Marco (gehen).' },
-    { id:'m09-el-03', type:'EL',
+    { id:'m09-el-03', type:'EL', stufe:2,
       prompt:'Präposition DA — Zeitspanne:',
-      sentence:'Studio {0} mattina e lavoro {1} sera.',
-      blanks:[{ accept:'dalla', distractors:['da', 'dalla', 'della'] }, { accept:'dalla', distractors:['da', 'della', 'nella'] }],
-      explain:'dalla mattina / dalla sera — bestimmter Artikel bei dalla.' },
-    { id:'m09-el-04', type:'EL',
+      sentence:'Lavoro {0} mattina {1} sera.',
+      blanks:[{ accept:'dalla', distractors:['da', 'della', 'nella'] }, { accept:'alla', distractors:['a', 'della', 'nella'] }],
+      explain:'dalla mattina alla sera = von morgens bis abends (da … a mit Artikel).' },
+    { id:'m09-el-04', type:'EL', stufe:2,
       prompt:'Präposition DA — Ursache (von etwas müde/erschöpft):',
       sentence:'Sono stanco {0} lavoro e {1} viaggio.',
       blanks:[{ accept:'dal', distractors:['da', 'del', 'al'] }, { accept:'dal', distractors:['da', 'del', 'al'] }],
       explain:'stanco dal lavoro / dal viaggio — dal = da + il.' },
-    { id:'m09-el-05', type:'EL',
+    { id:'m09-el-05', type:'EL', stufe:2,
       prompt:'Präposition DA — beim Händler/Arzt:',
       sentence:'Passo {0} panettiere e poi {1} farmacista.',
       blanks:[{ accept:'dal', distractors:['dalla', 'da', 'al'] }, { accept:'dalla', distractors:['dal', 'da', 'alla'] }],
       explain:'passare dal panettiere (m); dalla farmacista (f).' },
-    { id:'m09-el-06', type:'EL',
+    { id:'m09-el-06', type:'EL', stufe:2,
       prompt:'Präposition DA — Herkunft (von):',
       sentence:'Questo regalo è {0} nonna e questa lettera è {1} papà.',
       blanks:[{ accept:'dalla', distractors:['da', 'della', 'alla'] }, { accept:'dal', distractors:['da', 'del', 'al'] }],
@@ -606,12 +606,12 @@ const MODULE = {
       sentence:'Vengo {0} dottore e poi vado {1} dentista.',
       blanks:[{ accept:'dal', distractors:['da', 'del', 'al'] }, { accept:'dal', distractors:['da', 'del', 'al'] }],
       explain:'dal dottore / dal dentista — dal = da + il.' },
-    { id:'m09-el-09', type:'EL',
+    { id:'m09-el-09', type:'EL', stufe:2,
       prompt:'Präposition DA — Ausgangspunkt:',
       sentence:'Il treno parte {0} Milano e arriva {1} Roma.',
       blanks:[{ accept:'da', distractors:['di', 'a', 'in'] }, { accept:'a', distractors:['da', 'di', 'in'] }],
       explain:'partire da (von/aus); arrivare a (nach/in).' },
-    { id:'m09-el-10', type:'EL',
+    { id:'m09-el-10', type:'EL', stufe:2,
       prompt:'Präposition DA und PER — Dauer:',
       sentence:'Ho aspettato {0} un\'ora e poi sono partito {1} casa.',
       blanks:[{ accept:'per', distractors:['da', 'di', 'a'] }, { accept:'da', distractors:['per', 'di', 'a'] }],
@@ -627,28 +627,28 @@ const MODULE = {
     { id:'m09-sr-02', type:'SR',
       it:'Studio italiano da tre anni.',
       de:'Ich lerne seit drei Jahren Italienisch.' },
-    { id:'m09-sr-03', type:'SR',
+    { id:'m09-sr-03', type:'SR', stufe:2,
       it:'Dalla finestra si vede il mare.',
       de:'Vom Fenster aus sieht man das Meer.' },
     { id:'m09-sr-04', type:'SR',
       it:'Vado dal dentista domani mattina.',
       de:'Ich gehe morgen Früh zum Zahnarzt.' },
-    { id:'m09-sr-05', type:'SR',
+    { id:'m09-sr-05', type:'SR', stufe:3,
       it:'L\'appartamento è affittato da una coppia.',
       de:'Die Wohnung ist von einem Paar gemietet.' },
-    { id:'m09-sr-06', type:'SR',
+    { id:'m09-sr-06', type:'SR', stufe:3,
       it:'Da bambino vivevo in campagna.',
       de:'Als Kind lebte ich auf dem Land.' },
-    { id:'m09-sr-07', type:'SR',
+    { id:'m09-sr-07', type:'SR', stufe:3,
       it:'Dagli anni novanta le cose sono cambiate.',
       de:'Seit den neunziger Jahren hat sich vieles geändert.' },
-    { id:'m09-sr-08', type:'SR',
+    { id:'m09-sr-08', type:'SR', stufe:3,
       it:'La lettera è stata scritta da mio padre.',
       de:'Der Brief wurde von meinem Vater geschrieben.' },
-    { id:'m09-sr-09', type:'SR',
+    { id:'m09-sr-09', type:'SR', stufe:2,
       it:'Abito qui da quando ero piccolo.',
       de:'Ich wohne hier, seit ich klein war.' },
-    { id:'m09-sr-10', type:'SR',
+    { id:'m09-sr-10', type:'SR', stufe:2,
       it:'Dalle tre alle cinque ho lezione.',
       de:'Von drei bis fünf Uhr habe ich Unterricht.' },
 
@@ -663,35 +663,35 @@ const MODULE = {
       de:'Er arbeitet seit zehn Jahren hier.',
       solutions:['Lavora qui da dieci anni.', 'Qui lavora da dieci anni.'],
       note:'da + Zeitspanne = seit (Dauer bis in die Gegenwart)' },
-    { id:'m09-st-03', type:'ST',
+    { id:'m09-st-03', type:'ST', stufe:2,
       de:'Das Paket kommt von meiner Tante.',
-      solutions:['Il pacco viene dalla mia zia.', 'Il pacco è della mia zia.'],
-      note:'da (Herkunft) → dal/dalla; viene da = kommt von' },
+      solutions:['Il pacco viene da mia zia.', 'Il pacco arriva da mia zia.'],
+      note:'venire da = kommen von. Verwandte im Singular mit Possessiv stehen ohne Artikel: da mia zia (nicht dalla mia zia).' },
     { id:'m09-st-04', type:'ST',
       de:'Sie geht zum Arzt.',
       solutions:['Va dal medico.', 'Va dal dottore.'],
       note:'dal + Person = zu jemandem gehen' },
-    { id:'m09-st-05', type:'ST',
+    { id:'m09-st-05', type:'ST', stufe:3,
       de:'Das Bild wurde von einem Künstler gemalt.',
       solutions:['Il quadro è stato dipinto da un artista.', 'Il quadro fu dipinto da un artista.'],
       note:'Passiv mit da: dipinto da un artista' },
-    { id:'m09-st-06', type:'ST',
+    { id:'m09-st-06', type:'ST', stufe:2,
       de:'Von hier bis zum Meer sind es fünf Minuten.',
       solutions:['Da qui al mare ci sono cinque minuti.', 'Da qui al mare ci vogliono cinque minuti.'],
       note:'da qui = von hier; ci vogliono = es dauern' },
-    { id:'m09-st-07', type:'ST',
+    { id:'m09-st-07', type:'ST', stufe:2,
       de:'Ich wohne hier seit meiner Kindheit.',
       solutions:['Abito qui dall\'infanzia.', 'Vivo qui sin dall\'infanzia.'],
       note:'infanzia (f/Sg., Vokal) → dall\'infanzia' },
-    { id:'m09-st-08', type:'ST',
+    { id:'m09-st-08', type:'ST', stufe:3,
       de:'Der Brief ist von meinem Freund.',
       solutions:['La lettera è del mio amico.', 'La lettera viene dal mio amico.'],
       note:'di/da beide möglich je nach Nuance (Besitz / Herkunft)' },
-    { id:'m09-st-09', type:'ST',
+    { id:'m09-st-09', type:'ST', stufe:2,
       de:'Von dienstags bis donnerstags habe ich Schule.',
       solutions:['Dal martedì al giovedì ho scuola.', 'Dal martedì al giovedì ho lezione.'],
       note:'dal ... al ... = von ... bis ...' },
-    { id:'m09-st-10', type:'ST',
+    { id:'m09-st-10', type:'ST', stufe:3,
       de:'Das Glas ist aus Glas.',
       solutions:['Il bicchiere è di vetro.', 'Il bicchiere è fatto di vetro.'],
       note:'Material: di vetro (kein Artikel); da wäre Zweck: una tazza da tè' },

@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Condizionale Presente</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
   <h2 class="exercises-heading">Übungen</h2>
   <div id="daily-goal-mount"></div>
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 47</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -34,6 +33,7 @@
   <div class="exercise-nav" id="exercise-nav"></div>
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -597,7 +597,7 @@ const MODULE = {
     { id:'m16-de-04', type:'DE',
       prompt:'"Es würde mir gefallen, eines Tages nach Japan zu reisen."',
       solutions:['Mi piacerebbe viaggiare in Giappone un giorno.','Un giorno mi piacerebbe andare in Giappone.'],
-      note:'mi piacerebbe (Condizionale von piacere); in Giappone (Land m, nel Giappone auch möglich).' },
+      note:'mi piacerebbe (Condizionale von piacere); in Giappone (Länder im Singular stehen nach in ohne Artikel).' },
 
     /* === IT 3 === */
     { id:'m16-it-01', type:'IT',

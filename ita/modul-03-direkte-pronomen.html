@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Don Due — Direkte Objektpronomen</title>
-<link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=fraunces:400,700,900|dm-sans:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -29,7 +28,7 @@
   <h2 class="exercises-heading">&Uuml;bungen</h2>
 <div id="daily-goal-mount"></div>   <!-- NEU -->
   <div class="exercise-progress">
-    <span class="exercise-progress-text" id="ex-text">Aufgabe 1 von 67</span>
+    <span class="exercise-progress-text" id="ex-text"></span>
     <div class="exercise-progress-track">
       <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
     </div>
@@ -40,6 +39,7 @@
 
 </div>
 <script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
 <script>
 'use strict';
 
@@ -110,12 +110,12 @@ const MODULE = {
       translation:'Ich rufe ihn morgen an.',
       explain:'lo = ihn (m/Sg. direkt). la = sie/es (f/Sg.). li = sie (m/Pl.) — hier ist nur eine Person gemeint. Pronomen steht vor dem konjugierten Verb.' },
 
-    { id:'m03-so-02', type:'SO',
-      prompt:'Wähle die richtigen W&ouml;rter und bringe sie in die richtige Reihenfolge:',
-      tokens:['visto','ho','la','lo','le'],
-      solution:['la','ho','visto'],
-      translation:'Ich habe sie gesehen. (la = lei oder la cosa)',
-      explain:'la = sie/es (f/Sg. direkt). lo = ihn/es (m/Sg.). le = sie (f/Pl.) — hier ist Singular gemeint. Pronomen steht vor dem Hilfsverb ho.' },
+    { id:'m03-so-02', type:'SO', stufe:3,
+      prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
+      tokens:['visti','visto','ho','li','lo','le'],
+      solution:['li','ho','visti'],
+      translation:'Ich habe sie (mehrere Männer/Dinge, m.) gesehen.',
+      explain:'li = sie (m/Pl. direkt). Das Pronomen steht vor ho, das Partizip passt sich an: visti. lo und la würden vor ho zu l\' (l\'ho visto / l\'ho vista).' },
 
     { id:'m03-so-03', type:'SO',
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
@@ -138,12 +138,12 @@ const MODULE = {
       translation:'Kennst du sie — die Jungen?',
       explain:'li = sie (m/Pl. direkt, bezieht sich auf i ragazzi). lo = ihn (m/Sg.) — i ragazzi ist Plural. le = sie (f/Pl.) — i ragazzi ist maskulin.' },
 
-    { id:'m03-so-06', type:'SO',
+    { id:'m03-so-06', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
-      tokens:['ho','la','lo','li','comprata','comprato'],
-      solution:['la','ho','comprata'],
-      translation:'Ich habe sie (f) gekauft.',
-      explain:'la = sie (f/Sg. direkt). lo = ihn (m/Sg.). li = sie (m/Pl.) — hier ein einzelnes weibliches Objekt. comprata = f/Sg., PP kongruiert mit dem direkten Pronomen la. comprato = m/Sg. — falsch bei f-Pronomen.' },
+      tokens:['ho','le','lo','li','comprate','comprato'],
+      solution:['le','ho','comprate'],
+      translation:'Ich habe sie (mehrere, f.) gekauft.',
+      explain:'le = sie (f/Pl. direkt). Das Partizip passt sich dem Pronomen an: comprate. Bei lo/la wird elidiert: l\'ho comprato / l\'ho comprata.' },
 
     { id:'m03-so-07', type:'SO',
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
@@ -159,7 +159,7 @@ const MODULE = {
       translation:'Ich rufe ihn morgen an.',
       explain:'lo = ihn (m/Sg. direkt). la = sie (f/Sg.). li = sie (m/Pl.) — hier eine einzelne männliche Person gemeint. Pronomen steht vor dem konjugierten Verb.' },
 
-    { id:'m03-so-09', type:'SO',
+    { id:'m03-so-09', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['viste','le','li','ho','visto','le','amiche'],
       solution:['le','ho','viste','le','amiche'],
@@ -196,7 +196,7 @@ const MODULE = {
         { de:'Apro [la porta].',       it:'la apro'     }
       ] },
 
-    { id:'m03-zo-03', type:'ZO',
+    { id:'m03-zo-03', type:'ZO', stufe:2,
       prompt:'Ordne zu: Person &rarr; Pronomen (direkt)',
       pairs:[
         { de:'ich (Akkusativ)',  it:'mi' },
@@ -207,7 +207,7 @@ const MODULE = {
         { de:'sie/es (f)',       it:'la' }
       ] },
 
-    { id:'m03-zo-04', type:'ZO',
+    { id:'m03-zo-04', type:'ZO', stufe:3,
       prompt:'Ordne zu: Satz mit Modalverb &rarr; beide m&ouml;gliche Formen',
       pairs:[
         { de:'Ich will ihn sehen. (vor Verb)',    it:'lo voglio vedere'     },
@@ -218,7 +218,7 @@ const MODULE = {
         { de:'Er kann uns helfen. (an Inf.)',      it:'pu\u00f2 aiutarci'   }
       ] },
 
-    { id:'m03-zo-05', type:'ZO',
+    { id:'m03-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu: Passieres Pronomen + korrektes Partizip im Passato Prossimo',
       pairs:[
         { de:'il libro (m/Sg.)',   it:'l\'ho letto'  },
@@ -229,7 +229,7 @@ const MODULE = {
         { de:'la lettera (f/Sg.)',it:'l\'ho scritta' }
       ] },
 
-    { id:'m03-zo-06', type:'ZO',
+    { id:'m03-zo-06', type:'ZO', stufe:2,
       prompt:'Ordne zu: deutsches Pronomen &rarr; italienisches Direktpronomen',
       pairs:[
         { de:'mich',  it:'mi' },
@@ -262,7 +262,7 @@ const MODULE = {
         { de:'Aiuti noi?',      it:'S\u00ec, vi aiuto.'   }
       ] },
 
-    { id:'m03-zo-09', type:'ZO',
+    { id:'m03-zo-09', type:'ZO', stufe:3,
       prompt:'Ordne zu: deutschen Satz &rarr; Passato Prossimo mit Pronomen (Genus beachten!)',
       pairs:[
         { de:'Ich esse die Pasta (la pasta, f/Sg.).',         it:"L'ho mangiata."  },
@@ -273,7 +273,7 @@ const MODULE = {
         { de:'Ich nehme die Schirme (gli ombrelli, m/Pl.).', it:'Li ho presi.'     }
       ] },
 
-    { id:'m03-zo-10', type:'ZO',
+    { id:'m03-zo-10', type:'ZO', stufe:3,
       prompt:'Ordne zu: Elision &mdash; Pronomen vor Vokal?',
       pairs:[
         { de:'lo + aspetto',    it:'l\'aspetto'   },
@@ -315,19 +315,19 @@ const MODULE = {
       correctValue:'La vedo ogni giorno.',
       explain:'Das direkte Objektpronomen steht unmittelbar VOR dem konjugierten Verb.' },
 
-    { id:'m03-mc-06', type:'MC',
+    { id:'m03-mc-06', type:'MC', stufe:3,
       prompt:'"Ho mangiato la pizza." &rarr; Mit Pronomen + Kongruenz?',
       options:['Lo ho mangiato.','La ho mangiata.','L\'ho mangiata.','L\'ho mangiato.'],
       correctValue:'L\'ho mangiata.',
       explain:'la pizza (f/Sg.) &rarr; la &rarr; vor Vokal l\' &rarr; Partizip kongruiert: mangiata.' },
 
-    { id:'m03-mc-07', type:'MC',
+    { id:'m03-mc-07', type:'MC', stufe:3,
       prompt:'"Ho visto i film." &rarr; Mit Pronomen + Kongruenz?',
       options:['Lo ho visto.','Li ho visti.','Le ho viste.','L\'ho visto.'],
       correctValue:'Li ho visti.',
       explain:'i film (m/Pl.) &rarr; li &rarr; Partizip: visti (m/Pl.).' },
 
-    { id:'m03-mc-08', type:'MC',
+    { id:'m03-mc-08', type:'MC', stufe:3,
       prompt:'Mit Modalverb &mdash; welche Form ist NICHT m&ouml;glich? "Ich will die Pizza essen."',
       options:['La voglio mangiare.','Voglio mangiarla.','Voglio la mangiare.','Alle drei sind falsch.'],
       correctValue:'Voglio la mangiare.',
@@ -339,7 +339,7 @@ const MODULE = {
       correctValue:'Ich warte auf ihn.',
       explain:'lo = maskulin Singular (ersetzt ein m&auml;nnliches Subjekt oder Objekt). aspettare = warten auf.' },
 
-    { id:'m03-mc-10', type:'MC',
+    { id:'m03-mc-10', type:'MC', stufe:3,
       prompt:'"L\'aspetto." Was bedeutet das?',
       options:['Ich warte auf sie (Pl.).','Ich warte auf ihn oder sie (Sg.).','Ich warte auf euch.','Ich warte auf uns.'],
       correctValue:'Ich warte auf ihn oder sie (Sg.).',
@@ -365,7 +365,7 @@ const MODULE = {
       translation:'Das Buch? Ich lese es jeden Abend.',
       explain:'il libro (m/Sg.) &rarr; lo.' },
 
-    { id:'m03-mcl-02', type:'MC',
+    { id:'m03-mcl-02', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form: "Le scarpe? ___ ho comprate ieri."',
       options:['Lo','La','Li','Le'],
       correctValue:'Le',
@@ -386,14 +386,14 @@ const MODULE = {
       translation:'Die Hausaufgaben? Ich mache sie nach dem Abendessen.',
       explain:'i compiti (m/Pl.) &rarr; li.' },
 
-    { id:'m03-mcl-05', type:'MC',
+    { id:'m03-mcl-05', type:'MC', stufe:3,
       prompt:'W&auml;hle: "Il film? Voglio ___." (vederlo oder vederla?)',
       options:['vederlo','vederla','vederli','vederle'],
       correctValue:'vederlo',
       translation:'Den Film? Ich will ihn sehen.',
       explain:'il film (m/Sg.) &rarr; lo &rarr; an Infinitiv: vederlo.' },
 
-    { id:'m03-mcl-06', type:'MC',
+    { id:'m03-mcl-06', type:'MC', stufe:3,
       prompt:'W&auml;hle: "Ho visto le ragazze. ___ ho vist_."',
       options:['Li ho visti.','Le ho viste.','La ho vista.','Lo ho visto.'],
       correctValue:'Le ho viste.',
@@ -407,7 +407,7 @@ const MODULE = {
       translation:'Ich warte auf ihn vor der Schule.',
       explain:'Maskulin Singular &rarr; lo. Vor Konsonant kein Apostroph.' },
 
-    { id:'m03-mcl-08', type:'MC',
+    { id:'m03-mcl-08', type:'MC', stufe:3,
       prompt:'W&auml;hle: "Sai dove sono le chiavi? &mdash; S\u00ec, ___ ho trovate."',
       options:['lo','la','li','le'],
       correctValue:'le',
@@ -421,7 +421,7 @@ const MODULE = {
       translation:'Marco? Ich kenne ihn seit Jahren.',
       explain:'Marco ist maskulin Singular &rarr; lo.' },
 
-    { id:'m03-mcl-10', type:'MC',
+    { id:'m03-mcl-10', type:'MC', stufe:3,
       prompt:'W&auml;hle die richtige Form mit Elision: "L\'\u2014 [ihn/es] aspetto." Warum Apostroph?',
       options:['Weil aspetto mit Vokal beginnt.','Weil lo vor Konsonant steht.','Weil li elidiert wird.','Weil la ver&auml;ndert wird.'],
       correctValue:'Weil aspetto mit Vokal beginnt.',
@@ -429,7 +429,7 @@ const MODULE = {
       explain:'lo und la verlieren ihren Vokal vor einem Verb, das mit Vokal beginnt: l\'aspetto.' },
 
     /* === LÜCKENTEXT (LT) 5 === */
-    { id:'m03-lt-01', type:'LT',
+    { id:'m03-lt-01', type:'LT', stufe:3,
       text:'Ho comprato la pizza. {0} ho mangiata subito.',
       blanks:[ { accept:['La','la'] } ],
       translation:'Ich habe die Pizza gekauft. Ich habe sie sofort gegessen.',
@@ -441,21 +441,21 @@ const MODULE = {
       translation:'Siehst du die Kinder? &mdash; Ja, ich sehe sie.',
       explain:'i bambini (m/Pl.) &rarr; li.' },
 
-    { id:'m03-lt-03', type:'LT',
+    { id:'m03-lt-03', type:'LT', stufe:3,
       prompt:'Erg&auml;nze Pronomen und kongruiertes Partizip:',
       text:'Ho perso le chiavi. {0} ho {1}.',
       blanks:[ { accept:['Le','le'] }, { accept:['perse'] } ],
       translation:'Ich habe die Schl&uuml;ssel verloren. Ich habe sie verloren.',
       explain:'le chiavi (f/Pl.) &rarr; le; perdere &rarr; perso, kongruiert: perse.' },
 
-    { id:'m03-lt-04', type:'LT',
+    { id:'m03-lt-04', type:'LT', stufe:3,
       prompt:'Setze die richtige Form mit Modalverb ein:',
       text:'Devo chiamare Maria. {0} devo chiamare.',
       blanks:[ { accept:['La','la'] } ],
       translation:'Ich muss Maria anrufen. Ich muss sie anrufen.',
       explain:'Maria (f/Sg.) &rarr; La. Das Pronomen steht vor dem Modalverb.' },
 
-    { id:'m03-lt-05', type:'LT',
+    { id:'m03-lt-05', type:'LT', stufe:2,
       prompt:'Erg&auml;nze beide Pronomen:',
       text:'Lui {0} vede ogni giorno, ma noi non {1} vediamo spesso.',
       blanks:[ { accept:['ti'] }, { accept:['lo','la'] } ],
@@ -488,7 +488,7 @@ const MODULE = {
       explain:'Maskulin Plural &rarr; li; feminin Plural &rarr; le.' },
 
     /* === FEHLERKORREKTUR (FK) 3 === */
-    { id:'m03-fk-01', type:'FK',
+    { id:'m03-fk-01', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
       sentence:'Ho mangiato la pizza. Lo ho mangiato.',
       solution:'Ho mangiato la pizza. L\'ho mangiata.',
@@ -496,7 +496,7 @@ const MODULE = {
       translation:'Ich habe die Pizza gegessen.',
       explain:'la pizza (f) &rarr; la (nicht lo); vor h Elision: l\'; Partizip kongruiert: mangiata.' },
 
-    { id:'m03-fk-02', type:'FK',
+    { id:'m03-fk-02', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
       sentence:'Voglio la vedere.',
       solution:'La voglio vedere.',
@@ -504,7 +504,7 @@ const MODULE = {
       translation:'Ich will sie sehen.',
       explain:'Das Pronomen steht VOR dem Modalverb, nicht zwischen Modalverb und Infinitiv.' },
 
-    { id:'m03-fk-03', type:'FK',
+    { id:'m03-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler &mdash; schreibe den ganzen korrekten Satz:',
       sentence:'Ho visto i bambini. Li ho viste.',
       solution:'Ho visto i bambini. Li ho visti.',
@@ -513,7 +513,7 @@ const MODULE = {
       explain:'i bambini ist maskulin Plural &rarr; li; Partizip maskulin Plural: visti (nicht viste).' },
 
     /* === KONTRAST (KO) 1 === */
-    { id:'m03-ko-01', type:'KO',
+    { id:'m03-ko-01', type:'KO', stufe:3,
       prompt:'Worin unterscheiden sich diese S&auml;tze?',
       a:{ sentence:'La voglio vedere.', tag:'Pronomen vor Modalverb' },
       b:{ sentence:'Voglio vederla.', tag:'Pronomen am Infinitiv' },
@@ -525,12 +525,12 @@ const MODULE = {
       solutions:['Lo vedo ogni giorno.','Ogni giorno lo vedo.'],
       note:'maskulin Singular &rarr; lo; Position vor dem Verb.' },
 
-    { id:'m03-de-02', type:'DE',
+    { id:'m03-de-02', type:'DE', stufe:3,
       prompt:'"Ich habe die B&uuml;cher gekauft. Ich habe sie gekauft."',
       solutions:['Ho comprato i libri. Li ho comprati.','Li ho comprati.'],
       note:'i libri (m/Pl.) &rarr; li; Partizip komprati kongruiert mit li.' },
 
-    { id:'m03-de-03', type:'DE',
+    { id:'m03-de-03', type:'DE', stufe:3,
       prompt:'"Ich muss es (= das Buch) lesen."',
       solutions:['Lo devo leggere.','Devo leggerlo.'],
       note:'il libro (m/Sg.) &rarr; lo; beide Positionen korrekt.' },
@@ -541,12 +541,12 @@ const MODULE = {
       solutions:['Ich sehe sie jeden Tag.','Jeden Tag sehe ich sie.'],
       note:'la = feminin Singular Objekt (hier: Maria)' },
 
-    { id:'m03-it-02', type:'IT',
+    { id:'m03-it-02', type:'IT', stufe:3,
       prompt:'"Li ho visti ieri."',
       solutions:['Ich habe sie gestern gesehen.','Gestern habe ich sie gesehen.'],
       note:'li = maskulin Plural; visti = Partizip kongruiert (m/Pl.)' },
 
-    { id:'m03-it-03', type:'IT',
+    { id:'m03-it-03', type:'IT', stufe:3,
       prompt:'"Non riesco a trovarle." (le = le chiavi)',
       solutions:['Ich kann sie nicht finden.','Es gelingt mir nicht, sie zu finden.'],
       note:'le = feminin Plural; riuscire a + infinitivo = es gelingt (jemandem) zu' },
@@ -615,28 +615,28 @@ const MODULE = {
     { id:'m03-sr-02', type:'SR',
       it:'La chiamo stasera, non preoccuparti.',
       de:'Ich rufe sie heute Abend an, mach dir keine Sorgen.' },
-    { id:'m03-sr-03', type:'SR',
+    { id:'m03-sr-03', type:'SR', stufe:3,
       it:'Li ho incontrati al cinema ieri.',
       de:'Ich habe sie (m/Pl.) gestern im Kino getroffen.' },
-    { id:'m03-sr-04', type:'SR',
+    { id:'m03-sr-04', type:'SR', stufe:2,
       it:'Mi ami ancora?',
       de:'Liebst du mich noch?' },
     { id:'m03-sr-05', type:'SR',
       it:'Le ragazze? Non le conosco.',
       de:'Die Mädchen? Ich kenne sie nicht.' },
-    { id:'m03-sr-06', type:'SR',
+    { id:'m03-sr-06', type:'SR', stufe:2,
       it:'Ti aspetto davanti alla scuola.',
       de:'Ich warte vor der Schule auf dich.' },
     { id:'m03-sr-07', type:'SR',
       it:'Il libro è interessante, lo leggo ogni sera.',
       de:'Das Buch ist interessant, ich lese es jeden Abend.' },
-    { id:'m03-sr-08', type:'SR',
+    { id:'m03-sr-08', type:'SR', stufe:2,
       it:'Ci vedete spesso?',
       de:'Seht ihr uns oft?' },
     { id:'m03-sr-09', type:'SR',
       it:'La torta è buona, la mangio volentieri.',
       de:'Der Kuchen ist gut, ich esse ihn gerne.' },
-    { id:'m03-sr-10', type:'SR',
+    { id:'m03-sr-10', type:'SR', stufe:2,
       it:'Vi chiamo domani mattina.',
       de:'Ich rufe euch morgen früh an.' },
 
@@ -651,15 +651,15 @@ const MODULE = {
       de:'Sie ruft sie (die Freundin) jeden Tag an.',
       solutions:['La chiama ogni giorno.', 'Lei la chiama ogni giorno.'],
       note:'sie/f/Sg. → la; chiama (3. Sg. von chiamare)' },
-    { id:'m03-st-03', type:'ST',
+    { id:'m03-st-03', type:'ST', stufe:3,
       de:'Hast du sie (die Bücher) gesehen?',
       solutions:['Li hai visti?', 'Li hai visti tu?'],
       note:'sie/m/Pl. (libri) → li; bei avere + direktes Pron. optional Kongruenz' },
-    { id:'m03-st-04', type:'ST',
+    { id:'m03-st-04', type:'ST', stufe:2,
       de:'Er liebt uns sehr.',
       solutions:['Ci vuole molto bene.', 'Ci ama molto.'],
       note:'uns → ci; volere bene = mögen/lieben' },
-    { id:'m03-st-05', type:'ST',
+    { id:'m03-st-05', type:'ST', stufe:2,
       de:'Ich verstehe euch nicht.',
       solutions:['Non vi capisco.', 'Non vi capisco affatto.'],
       note:'euch → vi; steht direkt vor dem Verb' },
@@ -667,7 +667,7 @@ const MODULE = {
       de:'Kaufst du das Hemd? Ich kaufe es.',
       solutions:['Lo compri? Lo compro.', 'Lo compri? Sì, lo compro.'],
       note:'es (m/Sg., camicia → la, aber il vestito → lo) → lo' },
-    { id:'m03-st-07', type:'ST',
+    { id:'m03-st-07', type:'ST', stufe:2,
       de:'Sie sehen mich jeden Morgen.',
       solutions:['Mi vedono ogni mattina.', 'Loro mi vedono ogni mattina.'],
       note:'mich → mi; ogni mattina = jeden Morgen' },
@@ -675,11 +675,11 @@ const MODULE = {
       de:'Ich esse die Pizza gern, ich esse sie jeden Freitag.',
       solutions:['Mangio volentieri la pizza, la mangio ogni venerdì.', 'La pizza mi piace, la mangio ogni venerdì.'],
       note:'sie (pizza, f/Sg.) → la' },
-    { id:'m03-st-09', type:'ST',
+    { id:'m03-st-09', type:'ST', stufe:2,
       de:'Er wartet auf dich.',
       solutions:['Ti aspetta.', 'Lui ti aspetta.'],
       note:'dich → ti; aspettare nimmt direktes Objekt' },
-    { id:'m03-st-10', type:'ST',
+    { id:'m03-st-10', type:'ST', stufe:2,
       de:'Wir rufen euch morgen an.',
       solutions:['Vi chiamiamo domani.', 'Domani vi chiamiamo.'],
       note:'euch → vi; chiamare → avere-Verb' },
