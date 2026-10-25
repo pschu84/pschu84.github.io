@@ -222,6 +222,10 @@ const GEN = (() => {
   // Formtabelle
   const TAB = (prompt, rows) => ({ prompt, rows: rows.map(([label, acc]) => ({ label, accept: Array.isArray(acc) ? acc : [acc] })) });
 
+  const shuf = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+  // Zuordnung mit EINEM Verb: man muss die Person erkennen, nicht den Wortstamm
+  const zoConj = (title, fn) => ({ prompt: `Ordne zu: ${title}`, pairs: shuf([0, 1, 2, 3, 4, 5]).slice(0, 5).map(p => ({ de: PRON[p] + ' …', it: fn(p) })) });
+
   function register(id, def) { reg[id] = def; }
   function get(id) { return reg[id] || null; }
 
@@ -235,7 +239,7 @@ const GEN = (() => {
     if (v.cls === 'isc') wrong.push(stem(v) + ['o', 'i', 'e', 'iamo', 'ite', 'ono'][p]);
     const c = R.pick(v.c);
     return spec({
-      key: 'pres-' + v.inf + p,
+      key: 'pres-' + v.inf + p, cue: v.inf,
       prompt: `Setze ${v.inf} (${v.de}) ins Präsens:`,
       text: `${cap(s[0])} ___ ${c}.`, so: SO(null, s[0], c),
       accept: form, distractors: wrong,
@@ -247,6 +251,7 @@ const GEN = (() => {
   register('m20', {
     levels: ['Grundregel: -are, -ere, -ire', '+ -isc- und -care/-gare/-iare'],
     table(level) { return conjTable(R.pick(presPool(level)), presente, 'Konjugiere im Präsens'); },
+    zo(level) { const v = R.pick(presPool(level)); return zoConj(`${v.inf} (${v.de}) im Präsens`, p => presente(v, p)); },
     make(level) {
       if (level === 0) return presTask(ALL_REG);
       return presTask(R.chance(0.5) ? VERBS.isc : VERBS.spell);
@@ -298,6 +303,11 @@ const GEN = (() => {
       }
       const v = R.pick([...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc].filter(x => !x.pp && x.aux === 'a'));
       return TAB(`Passato prossimo: ${v.inf} (${v.de})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], AVERE[p] + ' ' + part(v)]));
+    },
+    zo(level) {
+      if (level >= 2 && R.chance(0.5)) { const e = R.pick(PP_IRR_AVERE); return zoConj(`${e[0]} (${e[1]}) im Passato prossimo`, p => AVERE[p] + ' ' + e[2]); }
+      const v = R.pick([...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc].filter(x => !x.pp && x.aux === 'a'));
+      return zoConj(`${v.inf} (${v.de}) im Passato prossimo`, p => AVERE[p] + ' ' + part(v));
     },
     make(level) {
       const t = R.pick(TIME_PAST);
@@ -358,7 +368,7 @@ const GEN = (() => {
     if (v.cls === 'irr') wrong.push(v.inf.slice(0, -1) + FUT_E[p]);
     if (v.cls === 'spell') wrong.push(stem(v) + 'er' + FUT_E[p]);
     const t = R.pick(TIME_FUT), c = R.pick(v.c);
-    return spec({ key: 'fut-' + v.inf + p, prompt: `Futuro von ${v.inf} (${v.de}):`,
+    return spec({ key: 'fut-' + v.inf + p, cue: v.inf, prompt: `Futuro von ${v.inf} (${v.de}):`,
       text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0], c), accept: form, distractors: wrong,
       explain: `${v.inf} → Stamm ${st}- + Endung ${FUT_E[p]} = ${form}.` + (note ? ' ' + note(v) : '') });
   }
@@ -368,6 +378,11 @@ const GEN = (() => {
       const pool = level >= 2 && R.chance(0.5) ? FUT_IRR_V : level >= 1 && R.chance(0.5) ? VERBS.spell.filter(v => v.inf !== 'studiare')
         : [...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc].filter(v => !FUT_IRR[v.inf]);
       return conjTable(R.pick(pool), futuro, 'Konjugiere im Futuro');
+    },
+    zo(level) {
+      const pool = level >= 2 && R.chance(0.5) ? FUT_IRR_V : level >= 1 && R.chance(0.5) ? VERBS.spell.filter(v => v.inf !== 'studiare')
+        : [...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc].filter(v => !FUT_IRR[v.inf]);
+      const v = R.pick(pool); return zoConj(`${v.inf} (${v.de}) im Futuro`, p => futuro(v, p));
     },
     make(level) {
       if (level >= 2 && R.chance(0.5)) return futTask(FUT_IRR_V, () => 'Unregelmäßiger Stamm.');
@@ -389,6 +404,7 @@ const GEN = (() => {
   register('m22', {
     levels: ['Grundregel: -avo / -evo / -ivo', '+ essere, fare, bere, dire'],
     table(level) { return conjTable(R.pick(level >= 1 && R.chance(0.5) ? IMPF_IRR_V : [...ALL_REG, ...VERBS.isc, ...VERBS.spell]), imperfetto, 'Konjugiere im Imperfetto'); },
+    zo(level) { const v = R.pick(level >= 1 && R.chance(0.5) ? IMPF_IRR_V : [...ALL_REG, ...VERBS.isc, ...VERBS.spell]); return zoConj(`${v.inf} (${v.de}) im Imperfetto`, p => imperfetto(v, p)); },
     make(level) {
       const irr = level >= 1 && R.chance(0.5);
       const pool = irr ? IMPF_IRR_V : [...ALL_REG, ...VERBS.isc, ...VERBS.spell];
@@ -400,7 +416,7 @@ const GEN = (() => {
       if (v.inf === 'bere') wrong.push('be' + ['vo', 'vi', 'va', 'vamo', 'vate', 'vano'][p]);
       if (v.inf === 'dire') wrong.push('di' + ['vo', 'vi', 'va', 'vamo', 'vate', 'vano'][p]);
       const t = R.pick(TIME_IMPF), c = R.pick(v.c);
-      return spec({ key: 'impf-' + v.inf + p, prompt: `Imperfetto von ${v.inf} (${v.de}):`,
+      return spec({ key: 'impf-' + v.inf + p, cue: v.inf, prompt: `Imperfetto von ${v.inf} (${v.de}):`,
         text: `${t} ${s[0]} ___ ${c}.`, so: SO(t, s[0], c), accept: form, distractors: wrong,
         explain: irr ? `${v.inf} ist im Imperfetto unregelmäßig: ${PRON[p]} ${form}.` :
           `Infinitiv ohne -re + -vo, -vi, -va, -vamo, -vate, -vano: ${v.inf.slice(0, -2)} + ${form.slice(v.inf.length - 2)} = ${form}.` });
@@ -415,6 +431,10 @@ const GEN = (() => {
     table(level) {
       const v = R.pick(level >= 1 && R.chance(0.5) ? IMPF_IRR_V.filter(x => x.inf !== 'essere') : [...ALL_REG.filter(x => x.aux === 'a'), ...VERBS.isc]);
       return conjTable(v, (vv, p) => STARE[p] + ' ' + gerundio(vv), 'Verlaufsform (gerade)');
+    },
+    zo(level) {
+      const v = R.pick(level >= 1 && R.chance(0.5) ? IMPF_IRR_V.filter(x => x.inf !== 'essere') : [...ALL_REG.filter(x => x.aux === 'a'), ...VERBS.isc]);
+      return zoConj(`stare + Gerundio von ${v.inf} (${v.de})`, p => STARE[p] + ' ' + gerundio(v));
     },
     make(level) {
       const irr = level >= 1 && R.chance(0.45);
@@ -442,6 +462,7 @@ const GEN = (() => {
     levels: ['Grundregel: Formen von essere und avere', '+ essere oder avere? (ho fame …)', "+ c'è / ci sono"],
     ka: true,
     table() { const e = R.chance(0.5); return TAB(`Konjugiere ${e ? 'essere (sein)' : 'avere (haben)'}`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], (e ? ESSERE : AVERE)[p]])); },
+    zo() { const e = R.chance(0.5); return zoConj(e ? 'essere (sein)' : 'avere (haben)', p => (e ? ESSERE : AVERE)[p]); },
     make(level) {
       const r = Math.random();
       if (level >= 2 && r < 0.33) {
@@ -477,6 +498,7 @@ const GEN = (() => {
   register('m12', {
     levels: ['Grundregel: Formen von dovere, potere, volere', '+ im Satz mit Infinitiv'],
     table() { const m = R.pick(Object.keys(MOD)); return TAB(`Konjugiere ${m} (${MOD[m][0]})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], MOD[m][1][p]])); },
+    zo() { const m = R.pick(Object.keys(MOD)); return zoConj(`${m} (${MOD[m][0]})`, p => MOD[m][1][p]); },
     make(level) {
       const m = R.pick(Object.keys(MOD)), [de, f] = MOD[m];
       const s = R.pick(SUBJ), p = s[1];
@@ -779,6 +801,10 @@ const GEN = (() => {
       }
       return TAB(`Konjugiere im Präsens: ${rv[0]} (${rv[1]})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], RP[p] + ' ' + presente(v, p)]));
     },
+    zo() {
+      const rv = R.pick(RIF.filter(r => r[0] !== 'chiamarsi')), v = { inf: rv[0].slice(0, -2) + 'e', cls: 'x' };
+      return zoConj(`${rv[0]} (${rv[1]}) im Präsens`, p => RP[p] + ' ' + presente(v, p));
+    },
     make(level) {
       const rv = R.pick(RIF), inf = rv[0].slice(0, -2) + 'e';   // alzarsi → alzare
       const v = { inf, cls: inf.endsWith('ire') ? 'ire' : inf.endsWith('ere') ? 'ere' : 'are' };
@@ -854,11 +880,12 @@ const GEN = (() => {
       const v = level > 0 && R.chance(0.6) ? R.pick(IRR_LV[level]) : R.pick(irrPool(level));
       return TAB(`Konjugiere ${v} (${IRR[v][0]})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], IRR[v][1][p]]));
     },
+    zo(level) { const v = level > 0 && R.chance(0.6) ? R.pick(IRR_LV[level]) : R.pick(irrPool(level)); return zoConj(`${v} (${IRR[v][0]})`, p => IRR[v][1][p]); },
     make(level) {
       const v = level > 0 && R.chance(0.6) ? R.pick(IRR_LV[level]) : R.pick(irrPool(level));
       const [de, f, cs, wrong] = IRR[v];
       const s = R.pick(SUBJ), p = s[1], c = R.pick(cs);
-      return spec({ key: 'irr-' + v + p, prompt: `Setze ${v} (${de}) ins Präsens:`, text: `${cap(s[0])} ___ ${c}.`, so: SO(null, s[0], c),
+      return spec({ key: 'irr-' + v + p, cue: v, prompt: `Setze ${v} (${de}) ins Präsens:`, text: `${cap(s[0])} ___ ${c}.`, so: SO(null, s[0], c),
         accept: f[p], distractors: [...others(i => f[i], p).slice(0, 3), R.pick(wrong)],
         explain: `${v}: ${f.join(', ')}.` });
     },
@@ -907,6 +934,16 @@ const GEN = (() => {
       const a = R.pick(adjPool(level).filter(x => x[2] !== 'inv')), f = adjForms(a);
       return TAB(`Bilde die Formen von ${a[0]} (${a[1]})`, [['m Sg.', f[0]], ['f Sg.', f[1]], ['m Pl.', f[2]], ['f Pl.', f[3]]]);
     },
+    zo(level) {
+      const a = R.pick(adjPool(level).filter(x => x[2] === 'o' || x[2] === 'co')), f = adjForms(a);
+      const ns = a[3].map(k => NX[k]).filter(Boolean);
+      const pairs = [];
+      [[false, 'm'], [false, 'f'], [true, 'm'], [true, 'f']].forEach(([pl, g]) => {
+        const c = shuf(ns.filter(n => n.g === g));
+        if (c.length) pairs.push({ de: withArt(artDet(c[0], pl), pl ? c[0].pl : c[0].it) + ' …', it: f[(pl ? 2 : 0) + (g === 'f' ? 1 : 0)] });
+      });
+      return pairs.length >= 4 ? { prompt: `Ordne die passende Form von ${a[0]} (${a[1]}) zu:`, pairs } : null;
+    },
     make(level) {
       if (level >= 2 && R.chance(0.3)) {
         const n = R.pick(N), pl = R.chance(0.4), word = pl ? n.pl : n.it, form = pl ? BELLI(n) : BELLO(n);
@@ -927,7 +964,7 @@ const GEN = (() => {
       const wrong = uniq([...f, base.slice(0, -1) + 'a', base.slice(0, -1) + 'i', base.slice(0, -1) + 'e', base + 's']);
       const exp = a[2] === 'inv' ? `${base} ist unveränderlich.` : a[2] === 'e' ? `Adjektive auf -e: Singular -e, Plural -i → ${f[idx]}.`
         : a[2] === 'co' ? `${base}: ${f.join(', ')}.` : `${['m Sg. -o', 'f Sg. -a', 'm Pl. -i', 'f Pl. -e'][idx]} → ${f[idx]}.`;
-      return spec({ key: 'adj-' + base + subj, prompt: `Setze ${base} (${a[1]}) in der richtigen Form ein:`, text: `${subj} ${verb} ___.`, so: SO(null, subj + ' ' + verb, ''),
+      return spec({ key: 'adj-' + base + subj, cue: base, prompt: `Setze ${base} (${a[1]}) in der richtigen Form ein:`, text: `${subj} ${verb} ___.`, so: SO(null, subj + ' ' + verb, ''),
         accept: f[idx], distractors: wrong, explain: exp + (mixed ? ' Gemischte Gruppe → maskulin Plural.' : '') });
     },
   });
@@ -949,6 +986,14 @@ const GEN = (() => {
     table(level) {
       const p = level === 0 ? R.pick([0, 1]) : R.pick([2, 3, 4, 5]);
       return TAB(`Setze „${POSS[p][0]}“ mit Artikel ein`, [['… libro', possForm(p, 0)], ['… casa', possForm(p, 1)], ['… libri', possForm(p, 2)], ['… case', possForm(p, 3)]]);
+    },
+    zo(level) {
+      const p = level === 0 ? R.pick([0, 1]) : R.pick([2, 3, 4]);
+      const m = shuf(N.filter(n => n.g === 'm')), f = shuf(N.filter(n => n.g === 'f'));
+      const pairs = [[m[0], false, 0], [f[0], false, 1], [m[1], true, 2], [f[1], true, 3], [m[2], R.chance(0.5), -1]].map(([n, pl, idx]) => {
+        const i = idx < 0 ? (pl ? 2 : 0) : idx; return { de: `… ${pl || i >= 2 ? n.pl : n.it}`, it: possForm(p, i) };
+      });
+      return { prompt: `Ordne zu: „${POSS[p][0]}“`, pairs };
     },
     make(level) {
       if (level >= 2 && R.chance(0.5)) {
@@ -1006,7 +1051,7 @@ const GEN = (() => {
       const acc = QW_ALT[qw] || [qw];
       const dis = qw === 'A che' ? ['A quale', 'Che', 'A quando'] : qw === 'Con chi' ? ['Con che', 'Chi', 'Con come'] : qw === 'Per chi' ? ['Per che', 'Chi', 'Per cosa']
         : qw === 'Da' ? ['Di', 'A', 'In'] : qw === 'Qual' ? ["Qual'", 'Come', 'Che'] : QW.filter(w => !acc.includes(w));
-      return spec({ key: 'q-' + rest, prompt: `Welches Fragewort passt? Antwort: „${ans}“`, text: `___ ${rest}`, so: SO(null, '', rest),
+      return spec({ key: 'q-' + rest, prompt: `Welches Fragewort passt? Antwort: „${ans}“`, text: `___ ${rest}`, zl: `___ ${rest} – ${ans}`, so: SO(null, '', rest),
         accept: acc, distractors: dis, explain: `${acc[0]} ${rest} – ${ans}` });
     },
   });

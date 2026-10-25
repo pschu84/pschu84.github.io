@@ -716,3 +716,17 @@ button { font-family: var(--f-body); }
 .find-word.err.fixed { text-decoration: none; border-color: var(--oliva); background: var(--oliva-soft); }
 .find-word.miss { border-color: var(--sun-deep); background: var(--sun-soft); }
 .drill-find-hint { font-size: 0.85rem; color: var(--ink-soft); margin: -0.6rem 0 0.6rem; }
+/* ===== Trainer ===== */
+.trainer-bar { margin: -0.4rem 0 1rem; }
+.stufe-tag { display: inline-block; margin: 0 0 0.6rem 0.4rem; font-size: 0.72rem; font-weight: 700; color: var(--ink-soft); background: var(--paper-2); border-radius: 99px; padding: 0.2rem 0.6rem; vertical-align: top; }
+.exercise-box.auto-next { box-shadow: 4px 4px 0 var(--oliva); transition: box-shadow 0.3s; }
+.rf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.rf-btn { text-align: center; font-weight: 700; }
+.rf-struck { text-decoration: line-through; text-decoration-color: var(--terra); }
+.rf-correct { font-family: var(--f-display); font-size: 1.1rem; color: var(--oliva-deep); margin: -0.6rem 0 1rem; }
+.bu-tiles { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.6rem; }
+.bu-tile { min-width: 2.6rem; height: 2.8rem; font-size: 1.25rem; font-weight: 700; border: 2px solid var(--ink); border-radius: var(--r-sm); background: var(--paper); box-shadow: 2px 2px 0 var(--ink); cursor: pointer; color: var(--ink); }
+.bu-tile.used { opacity: 0.25; box-shadow: none; }
+.bu-undo { background: var(--paper-2); }
+.bu-pre { color: var(--ink-soft); }
+.au-play { margin-bottom: 1rem; }

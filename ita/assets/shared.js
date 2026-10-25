@@ -1431,122 +1431,185 @@ function _renderST(ex, box, onDone) {
 
 
 /* ================================================================
-   GRUNDTRAINING (Generator-Aufgaben) + Umschalter zu den Übungen
+   TRAINER: ein Aufgabenstrom aus Generator-Aufgaben und festen Übungen.
+   Aufgaben 1–10: jede 10. aus den Übungen, 11–20: jede 3., danach jede 2.
+   Die Generator-Stufen werden mit wachsendem Lernstand zugemischt.
    ================================================================ */
-function setupModuleModes(session) {
-  const gen = (typeof GEN !== 'undefined') ? GEN.get(session.mod.id) : null;
-  if (!gen) return;
-  const mod = session.mod;
-  const progressEl = session.fillEl.closest('.exercise-progress');
-  const exEls = [progressEl, session.boxEl, session.navEl].filter(Boolean);
-
-  const tabs = document.createElement('div');
-  tabs.className = 'mode-tabs';
-  tabs.innerHTML = `
-    <button type="button" class="mode-tab" data-mode="drill">🌱 Grundtraining<span>unbegrenzt</span></button>
-    <button type="button" class="mode-tab" data-mode="ex">📚 Übungen<span>${mod.exercises.length} Aufgaben</span></button>`;
-  const drillMount = document.createElement('div');
-  drillMount.className = 'drill-wrap';
-  progressEl.parentNode.insertBefore(tabs, progressEl);
-  progressEl.parentNode.insertBefore(drillMount, progressEl);
-
-  const state = Store.load();
-  const mState = Store.getModule(state, mod.id);
-  const d = mState.drill || {};
-  let mode = d.tab || ((mState.attempts || 0) === 0 && (d.correct || 0) < 15 ? 'drill' : 'ex');
-  let drill = null;
-
-  function apply(m, scroll) {
-    mode = m;
-    tabs.querySelectorAll('.mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
-    exEls.forEach(el => { el.style.display = m === 'ex' ? '' : 'none'; });
-    drillMount.style.display = m === 'drill' ? '' : 'none';
-    if (m === 'drill' && !drill) drill = new DrillSession(mod, gen, drillMount, () => apply('ex', true));
-    Store.setDrillPrefs(mod.id, { tab: m });
-    if (scroll) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-  tabs.addEventListener('click', e => {
-    const b = e.target.closest('.mode-tab');
-    if (b) apply(b.dataset.mode, false);
-  });
-  apply(mode, false);
-  // Wie früher: beim Öffnen direkt zu den Aufgaben springen (Erklärung bleibt oben erreichbar)
-  if (mode === 'drill') requestAnimationFrame(() => tabs.scrollIntoView({ block: 'start' }));
-}
-
-/* Formate im Grundtraining (Gewichte je Antwort-Modus) */
+const TAP_TYPES = new Set(['SO', 'ZO', 'MC', 'EL', 'KA', 'KO', 'SR', 'ST']);
+const TYPE_TYPES = new Set(['LT', 'FT', 'FK', 'DE', 'IT']);
+const LEVEL_TAG = ['🌱 Grundregel', '🌿 Erweiterung', '🌳 Sonderfall'];
 const DRILL_FORMATS = {
-  mix:  { mc: 22, lt: 18, so: 14, find: 12, zo: 10, ka: 8, ft: 8, fk: 4, sr: 4 },
-  tap:  { mc: 30, so: 22, find: 20, zo: 14, ka: 10, sr: 4 },
-  type: { lt: 55, ft: 25, fk: 20 },
+  mix:  { mc: 15, lt: 13, so: 9, find: 9, zo: 8, ka: 6, ft: 6, fk: 4, sr: 3, rf: 10, bu: 7, au: 6 },
+  tap:  { mc: 18, so: 13, find: 13, zo: 10, ka: 8, sr: 3, rf: 14, bu: 11, au: 8 },
+  type: { lt: 50, ft: 25, fk: 25 },
 };
 
-class DrillSession {
-  constructor(mod, gen, mount, gotoExercises) {
-    this.mod = mod; this.gen = gen; this.mount = mount; this.gotoExercises = gotoExercises;
-    const st = Store.getModule(Store.load(), mod.id).drill || {};
-    this.level = Math.min(st.level || 0, gen.levels.length - 1);
-    this.answerMode = ({ mc: 'tap', lt: 'type' })[st.answerMode] || st.answerMode || 'mix';
+function setupModuleModes(session) {
+  const gen = (typeof GEN !== 'undefined') ? GEN.get(session.mod.id) : null;
+  if (!gen) return false;
+  new ModuleTrainer(session, gen);
+  return true;
+}
+
+let _itVoice = null;
+function _italianVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  if (_itVoice) return _itVoice;
+  const vs = speechSynthesis.getVoices();
+  _itVoice = vs.find(v => /^it(-|_|$)/i.test(v.lang)) || null;
+  return _itVoice;
+}
+if ('speechSynthesis' in window) { try { speechSynthesis.onvoiceschanged = () => { _itVoice = null; _italianVoice(); }; _italianVoice(); } catch (e) { /* */ } }
+function _speakIt(text, rate) {
+  const v = _italianVoice(); if (!v) return false;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = rate || 0.9;
+    speechSynthesis.speak(u); return true;
+  } catch (e) { return false; }
+}
+
+class ModuleTrainer {
+  constructor(session, gen) {
+    this.s = session; this.mod = session.mod; this.gen = gen;
+    this.box = session.boxEl; this.textEl = session.textEl; this.fillEl = session.fillEl; this.navEl = session.navEl;
+    const st = Store.getModule(Store.load(), this.mod.id);
+    const d = st.drill || {};
+    this.answerMode = ({ mc: 'tap', lt: 'type' })[d.answerMode] || d.answerMode || 'mix';
     if (!DRILL_FORMATS[this.answerMode]) this.answerMode = 'mix';
-    this.recent = [];
-    this.retry = [];
-    this.count = 0;
-    this.sessionCorrect = 0;
-    this.sessionTotal = 0;
-    this.streak = 0;
-    this.suggested = false;
-    this.lastFmt = null;
-    this._build();
+    this.n = 0; this.recent = []; this.retry = []; this.lastFmt = null; this.timer = null;
+    this.sessionCorrect = 0; this.sessionTotal = 0; this.streak = 0;
+    this.byId = new Map(this.mod.exercises.map(e => [e.id, e]));
+    window._donDueTrainer = this;
+    this._initRun();
+    this._buildUI();
     this.next(true);
+    requestAnimationFrame(() => (this.progressWrap || this.box).scrollIntoView({ block: 'start' }));
   }
 
-  _build() {
-    const lv = this.gen.levels.map((l, i) =>
-      `<button type="button" class="chip${i === this.level ? ' active' : ''}" data-lv="${i}">${i === 0 ? '🌱' : i === 1 ? '🌿' : '🌳'} ${escHtml(l)}</button>`).join('');
+  /* ---------- Durchgang durch die festen Übungen ---------- */
+  _initRun() {
+    const st = Store.getModule(Store.load(), this.mod.id);
+    let run = st.run;
+    const ok = run && Array.isArray(run.order) && run.order.length === this.mod.exercises.length && run.order.every(id => this.byId.has(id));
+    if (!ok) run = { order: buildExerciseSequence(this.mod.exercises).map(e => e.id), done: {} };
+    this.run = run; this._saveRun();
+  }
+  _saveRun() {
+    const state = Store.load(); Store.getModule(state, this.mod.id).run = this.run; Store.save(state);
+  }
+  _nextFixed() {
+    const allow = this.answerMode === 'tap' ? TAP_TYPES : this.answerMode === 'type' ? TYPE_TYPES : null;
+    const open = this.run.order.filter(id => !(id in this.run.done));
+    const id = open.find(i => !allow || allow.has(this.byId.get(i).type));
+    return id ? this.byId.get(id) : null;
+  }
+
+  /* ---------- Oberfläche ---------- */
+  _buildUI() {
+    this.progressWrap = this.fillEl.closest('.exercise-progress');
+    const bar = document.createElement('div'); bar.className = 'trainer-bar';
     const am = [['mix', 'Gemischt'], ['tap', 'Ohne Tippen'], ['type', 'Nur Tippen']].map(([k, t]) =>
       `<button type="button" class="chip${k === this.answerMode ? ' active' : ''}" data-am="${k}">${t}</button>`).join('');
-    this.mount.innerHTML = `
-      <div class="drill-head">
-        <p class="drill-intro">Neue Aufgaben ohne Ende in wechselnden Formaten. Fang mit der Grundregel an und schalte erst weiter, wenn sie sitzt.</p>
-        <div class="chip-row" data-row="lv">${lv}</div>
-        <div class="chip-row chip-row-small" data-row="am"><span class="chip-label">Formate:</span>${am}</div>
-        <div class="drill-stats"></div>
-      </div>
-      <div class="exercise-box drill-box"></div>
-      <div class="drill-hint"></div>
-      <div class="exercise-nav"><button type="button" class="btn btn-primary drill-next" style="margin-left:auto" disabled>Nächste Aufgabe →</button></div>`;
-    this.box = this.mount.querySelector('.drill-box');
-    this.statsEl = this.mount.querySelector('.drill-stats');
-    this.hintEl = this.mount.querySelector('.drill-hint');
-    this.nextBtn = this.mount.querySelector('.drill-next');
-    this.nextBtn.addEventListener('click', () => this.next());
-    this.mount.querySelector('[data-row="lv"]').addEventListener('click', e => {
-      const b = e.target.closest('[data-lv]'); if (!b) return;
-      this.level = +b.dataset.lv; this.retry = []; this.recent = [];
-      this.mount.querySelectorAll('[data-lv]').forEach(x => x.classList.toggle('active', x === b));
-      Store.setDrillPrefs(this.mod.id, { level: this.level });
-      this.next(true);
-    });
-    this.mount.querySelector('[data-row="am"]').addEventListener('click', e => {
+    bar.innerHTML = `<div class="chip-row chip-row-small"><span class="chip-label">Aufgaben:</span>${am}</div><div class="drill-stats"></div>`;
+    this.progressWrap.parentNode.insertBefore(bar, this.progressWrap.nextSibling);
+    this.statsEl = bar.querySelector('.drill-stats');
+    bar.querySelector('.chip-row').addEventListener('click', e => {
       const b = e.target.closest('[data-am]'); if (!b) return;
       this.answerMode = b.dataset.am;
-      this.mount.querySelectorAll('[data-am]').forEach(x => x.classList.toggle('active', x === b));
+      bar.querySelectorAll('[data-am]').forEach(x => x.classList.toggle('active', x === b));
       Store.setDrillPrefs(this.mod.id, { answerMode: this.answerMode });
-      if (!this.answered) this.next(true);
+      if (!this.answered) { this.n--; this.next(); }
     });
-    this._stats();
+    this.navEl.innerHTML = '';
+    const home = document.createElement('a'); home.href = 'index.html'; home.className = 'btn btn-ghost btn-sm'; home.textContent = '🏠 Übersicht';
+    this.nextBtn = document.createElement('button'); this.nextBtn.className = 'btn btn-primary'; this.nextBtn.textContent = 'Weiter →';
+    this.nextBtn.style.marginLeft = 'auto'; this.nextBtn.disabled = true;
+    this.nextBtn.addEventListener('click', () => this.next());
+    this.navEl.appendChild(home); this.navEl.appendChild(this.nextBtn);
+    this.hintEl = document.createElement('div'); this.hintEl.className = 'drill-hint';
+    this.navEl.parentNode.insertBefore(this.hintEl, this.navEl);
+    this._progress();
   }
-
-  _stats() {
-    const d = Store.getModule(Store.load(), this.mod.id).drill || { correct: 0 };
+  _progress(tag) {
+    const total = this.run.order.length, done = Object.keys(this.run.done).length;
+    this.fillEl.style.width = `${Math.round(done / total * 100)}%`;
+    this.textEl.textContent = `Übungen ${done} / ${total}`;
     const pct = this.sessionTotal ? Math.round(this.sessionCorrect / this.sessionTotal * 100) : null;
-    this.statsEl.innerHTML =
-      `<span>✅ ${this.sessionCorrect} von ${this.sessionTotal}${pct !== null ? ` (${pct} %)` : ''}</span>` +
-      `<span>🔥 Serie ${this.streak}</span>` +
-      `<span title="Alle bisher im Grundtraining dieses Moduls richtig gelösten Aufgaben">🏅 gesamt ${d.correct || 0}</span>`;
+    this.statsEl.innerHTML = `<span>✅ ${this.sessionCorrect} von ${this.sessionTotal}${pct !== null ? ` (${pct} %)` : ''}</span><span>🔥 Serie ${this.streak}</span>`;
   }
 
-  /* ---------- Aufgaben erzeugen ---------- */
+  /* ---------- Steuerung ---------- */
+  _useFixed(n) {
+    if (n <= 10) return n % 10 === 0;
+    if (n <= 20) return (n - 10) % 3 === 0;
+    return n % 2 === 0;
+  }
+  _level() {
+    const L = this.gen.levels.length;
+    if (L === 1) return 0;
+    const c = (Store.getModule(Store.load(), this.mod.id).drill || {}).correct || 0;
+    const w = [this.n <= 8 ? 2 : 1];
+    if (L > 1) w.push(Math.max(0, Math.min(1, (c - 8) / 20)) * 0.8);
+    if (L > 2) w.push(Math.max(0, Math.min(1, (c - 25) / 25)) * 0.7);
+    const t = w.reduce((a, b) => a + b, 0);
+    let r = Math.random() * t;
+    for (let i = 0; i < w.length; i++) { r -= w[i]; if (r <= 0) return i; }
+    return 0;
+  }
+
+  next(first) {
+    clearTimeout(this.timer);
+    this.n++;
+    this.answered = false;
+    this.nextBtn.disabled = true;
+    this.hintEl.innerHTML = '';
+    if (this._useFixed(this.n)) {
+      const ex = this._nextFixed();
+      if (ex) { this._renderFixed(ex); return this._scroll(first); }
+    }
+    this.level = this._level();
+    let item = null;
+    const due = this.retry.findIndex(r => r.due <= this.n);
+    if (due >= 0) {
+      const r = this.retry.splice(due, 1)[0];
+      this.level = r.level;
+      const s = r.spec, mc = s.mode !== 'lt' && s.distractors.length >= 2;
+      if (this.answerMode === 'type' || !mc) item = this.answerMode === 'tap' ? null : { fmt: 'lt', specs: [s] };
+      else item = { fmt: R2.pick(['mc', 'rf']), specs: [s] };
+    }
+    for (let t = 0; !item && t < 10; t++) item = this._make(this._pickFormat());
+    if (!item) item = this._make(this.answerMode === 'type' ? 'lt' : 'mc') || this._make('lt');
+    this.lastFmt = item.fmt;
+    this.current = item;
+    this._renderGen(item);
+    this._scroll(first);
+  }
+  _scroll(first) {
+    if (first) return;
+    const r = this.box.getBoundingClientRect();
+    if (r.top < 0 || r.top > window.innerHeight * 0.4) this.box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  _tag(text) {
+    const t = document.createElement('span'); t.className = 'stufe-tag'; t.textContent = text;
+    const badge = this.box.querySelector('.ex-type-badge');
+    if (badge) badge.insertAdjacentElement('afterend', t); else this.box.prepend(t);
+  }
+
+  /* ---------- feste Übung ---------- */
+  _renderFixed(ex) {
+    this.box.innerHTML = '';
+    renderExercise(ex, this.box, (status, auto) => {
+      if (this.answered) return;
+      const val = { correct: 1, 'self-ok': 1, 'self-mid': 0.5, revealed: 0.4, 'self-no': 0, wrong: 0 }[status] ?? 0;
+      Store.recordAnswer(this.mod.id, ex.id, status);
+      this.run.done[ex.id] = val; this._saveRun();
+      this._after(val === 1, true, null);
+    });
+    this._tag((LEVEL_TAG[(ex.stufe || 1) - 1] || LEVEL_TAG[0]) + ' · Übung');
+  }
+
+  /* ---------- Generator-Aufgaben ---------- */
   _spec(filter) {
     let spec = null;
     for (let i = 0; i < 30; i++) {
@@ -1558,201 +1621,188 @@ class DrillSession {
     if (spec) { this.recent.push(spec.key); if (this.recent.length > 14) this.recent.shift(); }
     return spec;
   }
-
   _pickFormat() {
     const w = Object.assign({}, DRILL_FORMATS[this.answerMode]);
     if (!this.gen.table) delete w.ft;
     if (!this.gen.ka) delete w.ka;
+    if (!_italianVoice()) delete w.au;
     if (this.lastFmt && Object.keys(w).length > 2) delete w[this.lastFmt];
     const keys = Object.keys(w), total = keys.reduce((a, k) => a + w[k], 0);
     let r = Math.random() * total;
     for (const k of keys) { r -= w[k]; if (r <= 0) return k; }
     return keys[0];
   }
-
   _make(fmt) {
     const canMC = s => s.mode !== 'lt' && s.distractors.length >= 2;
     const full = s => s.text.replace('___', s.accept[0]);
-    if (fmt === 'mc' || fmt === 'lt') {
-      const s = this._spec();
-      let f = fmt;
-      if (f === 'mc' && !canMC(s)) f = this.answerMode === 'tap' ? null : 'lt';
-      if (f === 'lt' && s.mode === 'mc') f = 'mc';
-      return f ? { fmt: f, specs: [s] } : null;
-    }
-    if (fmt === 'so') {
-      const s = this._spec(x => x.so && !/→/.test(x.text));
-      if (!s) return null;
-      const before = s.text.split('___')[0].trim();
-      const post = s.so.words.slice(s.so.words.indexOf('@') + 1);
-      const solution = [...s.accept[0].split(' '), ...post];
-      if (solution.length < 3) return null;
-      const extra = [];
-      shuffle(s.distractors).forEach(d => d.split(' ').forEach(w => {
-        if (extra.length < 2 && !solution.includes(w) && !extra.includes(w)) extra.push(w);
-      }));
-      return { fmt, specs: [s], ex: {
-        type: 'SO', prompt: s.prompt + (before ? ` Ergänze den Satz: „${before} …“` : ' Bilde den Satz:'),
-        tokens: [...solution, ...extra], solution,
-        explain: `${s.explain} Ganzer Satz: ${full(s)}` } };
-    }
-    if (fmt === 'find' || fmt === 'fk') {
-      for (let t = 0; t < 12; t++) {
-        const s = this._spec(x => x.so && !/→/.test(x.text) && x.distractors.length);
+    const sentence = s => s.so && !/→/.test(s.text);
+    switch (fmt) {
+      case 'mc': case 'lt': {
+        const s = this._spec(); let f = fmt;
+        if (f === 'mc' && !canMC(s)) f = this.answerMode === 'tap' ? null : 'lt';
+        if (f === 'lt' && s.mode === 'mc') f = 'mc';
+        return f ? { fmt: f, specs: [s] } : null;
+      }
+      case 'rf': {
+        const s = this._spec(x => x.distractors.length >= 1 && x.mode !== 'lt');
         if (!s) return null;
-        const ans = s.accept[0].split(' ');
-        const cands = shuffle(s.distractors).map(d => d.split(' ')).filter(dw => dw.length === ans.length &&
-          dw.filter((w, i) => w !== ans[i]).length === 1);
-        if (!cands.length) continue;
-        // Kandidat wählen, für dessen Fehlerstelle es die meisten Auswahlwörter gibt
-        const allD = s.distractors.map(d => d.split(' ')).filter(c => c.length === ans.length);
-        const optsFor = (dw0, di0) => [...new Set([ans[di0], ...allD.map(c => c[di0])])].filter(w => w && w !== dw0[di0]);
-        const scored = cands.map(c => { const i0 = c.findIndex((w, i) => w !== ans[i]); return { c, i0, n: optsFor(c, i0).length }; })
-          .sort((x, y) => y.n - x.n);
-        if (scored[0].n < 2) continue;
-        const dw = scored[0].c, di = scored[0].i0;
-        const [b, a] = s.text.split('___');
-        const bw = b.trim() ? b.trim().split(' ') : [];
-        const aw = a.trim() ? a.trim().split(' ') : [];
-        const wrongWords = [...bw, ...dw, ...aw];
-        const errIdx = bw.length + di;
-        if (fmt === 'fk') {
-          return { fmt, specs: [s], ex: { type: 'FK', prompt: 'Ein Wort ist falsch. Schreibe den ganzen Satz richtig:',
-            sentence: wrongWords.join(' '), solution: full(s), errorToken: null, explain: `${s.explain} Richtig: ${full(s)}` } };
+        const right = Math.random() < 0.5;
+        return { fmt, specs: [s], right, shown: s.text.replace('___', right ? s.accept[0] : R2.pick(s.distractors)), full: full(s) };
+      }
+      case 'bu': {
+        const s = this._spec(x => /^[a-zàèéìòù']{2,13}$/i.test(x.accept[0]));
+        if (!s) return null;
+        const ans = s.accept[0];
+        let pre = '';
+        const words = (s.text + ' ' + (s.cue || '')).toLowerCase().split(/[^a-zàèéìòù']+/);
+        for (const w of words) { let k = 0; while (k < w.length && k < ans.length && w[k] === ans[k].toLowerCase()) k++; if (k >= 3 && k > pre.length) pre = ans.slice(0, k); }
+        if (ans.length - pre.length < 2) pre = ans.slice(0, Math.max(0, ans.length - 2));
+        const rest = ans.slice(pre.length).split('');
+        const pool = 'aeiouhcgilnrst'.split('').filter(c => !rest.includes(c));
+        const tiles = shuffle([...rest, ...shuffle(pool).slice(0, Math.min(3, Math.max(2, 6 - rest.length)))]);
+        return { fmt, specs: [s], pre, rest, tiles };
+      }
+      case 'au': {
+        const s = this._spec(x => sentence(x) && canMC(x));
+        return s ? { fmt, specs: [s], full: full(s) } : null;
+      }
+      case 'so': {
+        const s = this._spec(sentence);
+        if (!s) return null;
+        const before = s.text.split('___')[0].trim();
+        const post = s.so.words.slice(s.so.words.indexOf('@') + 1);
+        const solution = [...s.accept[0].split(' '), ...post];
+        if (solution.length < 3) return null;
+        const extra = [];
+        shuffle(s.distractors).forEach(d => d.split(' ').forEach(w => { if (extra.length < 2 && !solution.includes(w) && !extra.includes(w)) extra.push(w); }));
+        return { fmt, specs: [s], ex: { type: 'SO', prompt: s.prompt + (before ? ` Ergänze den Satz: „${before} …“` : ' Bilde den Satz:'),
+          tokens: [...solution, ...extra], solution, explain: `${s.explain} Ganzer Satz: ${full(s)}` } };
+      }
+      case 'find': case 'fk': {
+        for (let t = 0; t < 12; t++) {
+          const s = this._spec(x => sentence(x) && x.distractors.length);
+          if (!s) return null;
+          const ans = s.accept[0].split(' ');
+          const allD = s.distractors.map(d => d.split(' ')).filter(c => c.length === ans.length);
+          const cands = allD.filter(dw => dw.filter((w, i) => w !== ans[i]).length === 1);
+          if (!cands.length) continue;
+          const optsFor = (dw0, i0) => [...new Set([ans[i0], ...allD.map(c => c[i0])])].filter(w => w && w !== dw0[i0]);
+          const sc = cands.map(c => { const i0 = c.findIndex((w, i) => w !== ans[i]); return { c, i0, n: optsFor(c, i0).length }; }).sort((x, y) => y.n - x.n)[0];
+          if (fmt === 'find' && sc.n < 2) continue;
+          const [b, a] = s.text.split('___');
+          const bw = b.trim() ? b.trim().split(' ') : [], aw = a.trim() ? a.trim().split(' ') : [];
+          const words = [...bw, ...sc.c, ...aw];
+          if (fmt === 'fk') return { fmt, specs: [s], ex: { type: 'FK', prompt: 'Ein Wort ist falsch. Schreibe den ganzen Satz richtig:', sentence: words.join(' '), solution: full(s), errorToken: null, explain: `${s.explain} Richtig: ${full(s)}` } };
+          const opts = [ans[sc.i0], ...shuffle(optsFor(sc.c, sc.i0).filter(w => w !== ans[sc.i0])).slice(0, 2)];
+          return { fmt, specs: [s], words, errIdx: bw.length + sc.i0, opts, correct: ans[sc.i0], full: full(s) };
         }
-        const opts = [ans[di], ...shuffle(optsFor(dw, di).filter(w => w !== ans[di])).slice(0, 2)];
-        return { fmt, specs: [s], words: wrongWords, errIdx, opts, correct: ans[di], full: full(s) };
+        return null;
       }
-      return null;
-    }
-    if (fmt === 'zo') {
-      const picks = [], seenA = new Set();
-      for (let i = 0; i < 40 && picks.length < 5; i++) {
-        const s = this._spec(x => x.accept[0].length <= 24 && x.text.length <= 70);
-        if (s && !seenA.has(s.accept[0])) { seenA.add(s.accept[0]); picks.push(s); }
+      case 'zo': {
+        if (this.gen.zo) {
+          const z = this.gen.zo(this.level);
+          if (z && z.pairs.length >= 4) return { fmt, specs: [], ex: { type: 'ZO', prompt: z.prompt, pairs: z.pairs } };
+        }
+        const picks = [], seen = new Set();
+        for (let i = 0; i < 40 && picks.length < 5; i++) {
+          const s = this._spec(x => x.accept[0].length <= 24 && x.text.length <= 70);
+          if (s && !seen.has(s.accept[0])) { seen.add(s.accept[0]); picks.push(s); }
+        }
+        if (picks.length < 4) return null;
+        // Wortstamm nicht verraten: gemeinsamen Anfang mit einem Wort der Aufgabe abschneiden
+        const shown = s => {
+          const ans = s.accept[0], left = (s.zl || s.text).toLowerCase();
+          let best = 0;
+          left.split(/[^a-zàèéìòù']+/).forEach(w => { let k = 0; while (k < w.length && k < ans.length && w[k] === ans[k].toLowerCase()) k++; if (k >= 3) best = Math.max(best, k); });
+          if (!best) return ans;
+          return best >= ans.length ? '(bleibt gleich)' : '-' + ans.slice(best);
+        };
+        return { fmt, specs: picks, ex: { type: 'ZO', prompt: 'Ordne jeder Aufgabe die passende Lösung zu:', pairs: picks.map(s => ({ de: s.zl || s.text, it: shown(s) })) } };
       }
-      if (picks.length < 4) return null;
-      return { fmt, specs: picks, ex: { type: 'ZO', prompt: 'Ordne jeder Aufgabe die passende Lösung zu:',
-        pairs: picks.map(s => ({ de: s.text, it: s.accept[0] })) } };
-    }
-    if (fmt === 'ka') {
-      const groups = {};
-      for (let i = 0; i < 50; i++) {
-        const s = this.gen.make(this.level);
-        if (s.accept[0].length > 14) continue;
-        const g = groups[s.accept[0]] || (groups[s.accept[0]] = []);
-        if (!g.some(x => x.text === s.text)) g.push(s);
+      case 'ka': {
+        const groups = {};
+        for (let i = 0; i < 50; i++) {
+          const s = this.gen.make(this.level);
+          if (s.accept[0].length > 14) continue;
+          const g = groups[s.accept[0]] || (groups[s.accept[0]] = []);
+          if (!g.some(x => x.text === s.text)) g.push(s);
+        }
+        let keys = shuffle(Object.keys(groups).filter(k => groups[k].length >= 2));
+        if (keys.length < 2) return null;
+        keys = keys.slice(0, keys.length >= 3 && Math.random() < 0.4 ? 3 : 2);
+        const per = keys.length === 3 ? 2 : 3;
+        const items = shuffle(keys.flatMap((k, ci) => groups[k].slice(0, per).map(s => ({ text: s.zl || s.text, cat: ci }))));
+        return { fmt, specs: [groups[keys[0]][0]], ex: { type: 'KA', prompt: 'Welche Lösung gehört in die Lücke? Ordne jede Zeile zu:', categories: keys, items } };
       }
-      let keys = shuffle(Object.keys(groups).filter(k => groups[k].length >= 2));
-      if (keys.length < 2) return null;
-      keys = keys.slice(0, keys.length >= 3 && Math.random() < 0.4 ? 3 : 2);
-      const per = keys.length === 3 ? 2 : 3;
-      const items = shuffle(keys.flatMap((k, ci) => groups[k].slice(0, per).map(s => ({ text: s.text, cat: ci }))));
-      return { fmt, specs: [groups[keys[0]][0]], ex: { type: 'KA', prompt: 'Welche Lösung gehört in die Lücke? Ordne jede Zeile zu:',
-        categories: keys, items } };
-    }
-    if (fmt === 'ft') {
-      const t = this.gen.table(this.level);
-      if (!t || !t.rows.length) return null;
-      return { fmt, specs: [], ex: { type: 'FT', prompt: t.prompt, rows: t.rows } };
-    }
-    if (fmt === 'sr') {
-      const s = this._spec(x => x.so && !/→/.test(x.text));
-      if (!s) return null;
-      return { fmt, specs: [s], ex: { type: 'SR', prompt: 'Sprich den Satz laut nach:', it: full(s), de: '' } };
+      case 'ft': {
+        const t = this.gen.table(this.level);
+        return t && t.rows.length ? { fmt, specs: [], ex: { type: 'FT', prompt: t.prompt, rows: t.rows } } : null;
+      }
+      case 'sr': {
+        const s = this._spec(sentence);
+        return s ? { fmt, specs: [s], ex: { type: 'SR', prompt: 'Sprich den Satz laut nach:', it: full(s), de: '' } } : null;
+      }
     }
     return null;
   }
 
-  next(first) {
-    this.count++;
-    let item = null;
-    const due = this.retry.findIndex(r => r.due <= this.count);
-    if (due >= 0) {
-      const s = this.retry.splice(due, 1)[0].spec;
-      const mc = s.mode !== 'lt' && s.distractors.length >= 2;
-      item = { fmt: this.answerMode === 'type' || !mc ? 'lt' : 'mc', specs: [s], retry: true };
-      if (this.answerMode === 'tap' && !mc) item = null;
-    }
-    for (let t = 0; !item && t < 8; t++) item = this._make(this._pickFormat());
-    if (!item) item = this._make('lt');
-    this.lastFmt = item.fmt;
-    this.current = item;
-    this._render(item);
-    if (!first) this.box.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  /* ---------- Darstellung ---------- */
-  _render(item) {
-    this.answered = false;
-    this.nextBtn.disabled = true;
+  _renderGen(item) {
     const box = this.box;
     box.innerHTML = '';
-    if (item.ex) {
-      renderExercise(item.ex, box, status => this._done(item, status === 'correct' || status === 'self-ok', true));
-      return;
-    }
-    if (item.fmt === 'find') { this._renderFind(item); return; }
-    this._renderSingle(item, item.fmt === 'mc');
+    if (item.ex) renderExercise(item.ex, box, status => this._done(item, status === 'correct' || status === 'self-ok', true));
+    else ({ mc: () => this._single(item, true), lt: () => this._single(item, false), find: () => this._find(item),
+      rf: () => this._rf(item), bu: () => this._bu(item), au: () => this._au(item) })[item.fmt]();
+    this._tag(LEVEL_TAG[this.level] || LEVEL_TAG[0]);
+  }
+  _badge(text) { const b = document.createElement('div'); b.className = 'ex-type-badge'; b.textContent = text; this.box.appendChild(b); }
+  _gapSentence(spec, gapHtml) {
+    const [before, after] = spec.text.split('___');
+    const d = document.createElement('div'); d.className = 'drill-sentence';
+    d.innerHTML = `${escHtml(before)}${gapHtml}${escHtml(after || '')}`;
+    this.box.appendChild(d); return d;
+  }
+  _choiceGrid(options, correctSet, onPick) {
+    const grid = document.createElement('div'); grid.className = 'mc-grid';
+    options.forEach(opt => {
+      const b = document.createElement('button'); b.className = 'mc-btn'; b.textContent = opt;
+      b.addEventListener('click', () => {
+        const ok = correctSet.includes(opt);
+        grid.querySelectorAll('.mc-btn').forEach(x => {
+          x.disabled = true;
+          if (correctSet.includes(x.textContent)) x.classList.add('correct'); else if (x === b) x.classList.add('wrong');
+        });
+        onPick(ok);
+      });
+      grid.appendChild(b);
+    });
+    this.box.appendChild(grid); return grid;
   }
 
-  _badge(text) {
-    const b = document.createElement('div');
-    b.className = 'ex-type-badge'; b.textContent = text;
-    this.box.appendChild(b);
-  }
-
-  _renderSingle(item, useMC) {
+  _single(item, useMC) {
     const box = this.box, spec = item.specs[0];
     this._badge(useMC ? 'Multiple Choice' : 'Lückentext');
     _prompt(box, spec.prompt);
-    const sent = document.createElement('div');
-    sent.className = 'drill-sentence';
-    const [before, after] = spec.text.split('___');
-    const done = ok => this._done(item, ok, false);
     if (useMC) {
-      sent.innerHTML = `${escHtml(before)}<span class="drill-gap">&nbsp;?&nbsp;</span>${escHtml(after || '')}`;
-      box.appendChild(sent);
-      const opts = shuffle([spec.accept[0], ...shuffle(spec.distractors).slice(0, 3)]);
-      const grid = document.createElement('div'); grid.className = 'mc-grid';
-      opts.forEach(opt => {
-        const b = document.createElement('button'); b.className = 'mc-btn'; b.textContent = opt;
-        b.addEventListener('click', () => {
-          const ok = spec.accept.includes(opt);
-          grid.querySelectorAll('.mc-btn').forEach(x => {
-            x.disabled = true;
-            if (spec.accept.includes(x.textContent)) x.classList.add('correct');
-            else if (x === b) x.classList.add('wrong');
-          });
-          const gap = sent.querySelector('.drill-gap');
-          gap.textContent = spec.accept[0]; gap.classList.add(ok ? 'ok' : 'bad');
-          done(ok);
-        });
-        grid.appendChild(b);
+      const sent = this._gapSentence(spec, '<span class="drill-gap">&nbsp;?&nbsp;</span>');
+      this._choiceGrid(shuffle([spec.accept[0], ...shuffle(spec.distractors).slice(0, 3)]), spec.accept, ok => {
+        const gap = sent.querySelector('.drill-gap'); gap.textContent = spec.accept[0]; gap.classList.add(ok ? 'ok' : 'bad');
+        this._done(item, ok, false);
       });
-      box.appendChild(grid);
     } else {
-      sent.innerHTML = `${escHtml(before)}<input class="lt-input drill-input" autocomplete="off" autocapitalize="off" spellcheck="false">${escHtml(after || '')}`;
-      box.appendChild(sent);
+      const sent = this._gapSentence(spec, '<input class="lt-input drill-input" autocomplete="off" autocapitalize="off" spellcheck="false">');
       const inp = sent.querySelector('input');
       const longAns = spec.accept[0].length > 14;
       inp.style.width = Math.max(5, Math.min(longAns ? 30 : 16, spec.accept[0].length + 2)) + 'ch';
       if (longAns) inp.classList.add('drill-input-long');
       box.appendChild(buildAccentHelper(box));
-      const check = document.createElement('button');
-      check.className = 'btn btn-primary'; check.style.marginTop = '0.9rem'; check.textContent = 'Prüfen';
+      const check = document.createElement('button'); check.className = 'btn btn-primary'; check.style.marginTop = '0.9rem'; check.textContent = 'Prüfen';
       const doCheck = () => {
         if (this.answered) { this.next(); return; }
         if (!inp.value.trim()) { inp.focus(); return; }
         const ok = compareAnswer(inp.value, spec.accept);
-        inp.readOnly = true; check.disabled = true;
-        inp.classList.add(ok ? 'correct' : 'wrong');
-        if (!ok) {
-          const sol = document.createElement('span');
-          sol.className = 'drill-solution'; sol.textContent = spec.accept[0];
-          inp.insertAdjacentElement('afterend', sol);
-        }
-        done(ok);
+        inp.readOnly = true; check.disabled = true; inp.classList.add(ok ? 'correct' : 'wrong');
+        if (!ok) { const sol = document.createElement('span'); sol.className = 'drill-solution'; sol.textContent = spec.accept[0]; inp.insertAdjacentElement('afterend', sol); }
+        this._done(item, ok, false);
       };
       check.addEventListener('click', doCheck);
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doCheck(); } });
@@ -1762,26 +1812,97 @@ class DrillSession {
     addFeedbackArea(box);
   }
 
-  // Fehlersuche: falsches Wort antippen, dann richtiges Wort wählen
-  _renderFind(item) {
+  // Richtig oder falsch?
+  _rf(item) {
+    const box = this.box, spec = item.specs[0];
+    this._badge('Richtig oder falsch?');
+    _prompt(box, 'Ist dieser Satz richtig?');
+    const hint = document.createElement('p'); hint.className = 'drill-find-hint'; hint.textContent = spec.prompt; box.appendChild(hint);
+    const d = document.createElement('div'); d.className = 'drill-sentence rf-sentence'; d.textContent = item.shown; box.appendChild(d);
+    const row = document.createElement('div'); row.className = 'rf-row';
+    [['✔ richtig', true], ['✘ falsch', false]].forEach(([label, val]) => {
+      const b = document.createElement('button'); b.className = 'mc-btn rf-btn'; b.textContent = label;
+      b.addEventListener('click', () => {
+        const ok = val === item.right;
+        row.querySelectorAll('button').forEach(x => { x.disabled = true; });
+        b.classList.add(ok ? 'correct' : 'wrong');
+        if (!item.right) { const c = document.createElement('div'); c.className = 'rf-correct'; c.textContent = '✔ ' + item.full; d.insertAdjacentElement('afterend', c); d.classList.add('rf-struck'); }
+        this._done(item, ok, false, item.right ? spec.explain : `${spec.explain} Richtig: ${item.full}`);
+      });
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+    addFeedbackArea(box);
+  }
+
+  // Buchstaben legen
+  _bu(item) {
+    const box = this.box, spec = item.specs[0];
+    this._badge('Buchstaben legen');
+    _prompt(box, spec.prompt);
+    const sent = this._gapSentence(spec, `<span class="drill-gap bu-gap"><span class="bu-pre">${escHtml(item.pre)}</span><span class="bu-built"></span></span>`);
+    const built = sent.querySelector('.bu-built');
+    const tilesWrap = document.createElement('div'); tilesWrap.className = 'bu-tiles';
+    const picked = [];
+    const check = () => {
+      const word = item.pre + picked.map(p => p.ch).join('');
+      const ok = compareAnswer(word, spec.accept, { strictAccents: true });
+      tilesWrap.querySelectorAll('button').forEach(b => { b.disabled = true; });
+      const gap = sent.querySelector('.drill-gap'); gap.classList.add(ok ? 'ok' : 'bad');
+      if (!ok) { const sol = document.createElement('span'); sol.className = 'drill-solution'; sol.textContent = spec.accept[0]; gap.insertAdjacentElement('afterend', sol); }
+      this._done(item, ok, false);
+    };
+    const render = () => { built.textContent = picked.map(p => p.ch).join('') + (picked.length < item.rest.length ? '…' : ''); };
+    item.tiles.forEach(ch => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'bu-tile'; b.textContent = ch;
+      b.addEventListener('click', () => {
+        if (this.answered || b.classList.contains('used')) return;
+        b.classList.add('used'); picked.push({ ch, b }); render();
+        if (picked.length === item.rest.length) check();
+      });
+      tilesWrap.appendChild(b);
+    });
+    const undo = document.createElement('button'); undo.type = 'button'; undo.className = 'bu-tile bu-undo'; undo.textContent = '⌫';
+    undo.addEventListener('click', () => { if (this.answered) return; const p = picked.pop(); if (p) { p.b.classList.remove('used'); render(); } });
+    tilesWrap.appendChild(undo);
+    box.appendChild(tilesWrap);
+    render();
+    addFeedbackArea(box);
+  }
+
+  // Hören: Satz wird vorgelesen, welche Form war es?
+  _au(item) {
+    const box = this.box, spec = item.specs[0];
+    this._badge('Hören');
+    _prompt(box, 'Hör zu: Welche Form hörst du?');
+    const play = document.createElement('button'); play.type = 'button'; play.className = 'btn btn-cielo au-play'; play.textContent = '🔊 Anhören';
+    let slow = false;
+    play.addEventListener('click', () => { _speakIt(item.full, slow ? 0.65 : 0.9); slow = !slow; play.textContent = slow ? '🐢 Langsamer anhören' : '🔊 Anhören'; });
+    box.appendChild(play);
+    const sent = this._gapSentence(spec, '<span class="drill-gap">&nbsp;?&nbsp;</span>');
+    this._choiceGrid(shuffle([spec.accept[0], ...shuffle(spec.distractors).slice(0, 3)]), spec.accept, ok => {
+      const gap = sent.querySelector('.drill-gap'); gap.textContent = spec.accept[0]; gap.classList.add(ok ? 'ok' : 'bad');
+      this._done(item, ok, false);
+    });
+    addFeedbackArea(box);
+    setTimeout(() => _speakIt(item.full, 0.9), 300);
+  }
+
+  // Fehlersuche
+  _find(item) {
     const box = this.box, spec = item.specs[0];
     this._badge('Fehlersuche');
     _prompt(box, 'Ein Wort ist falsch. Tippe es an.');
-    const hint = document.createElement('p'); hint.className = 'drill-find-hint'; hint.textContent = spec.prompt;
-    box.appendChild(hint);
+    const hint = document.createElement('p'); hint.className = 'drill-find-hint'; hint.textContent = spec.prompt; box.appendChild(hint);
     const line = document.createElement('div'); line.className = 'drill-find';
-    let tappedOk = null;
     const optsWrap = document.createElement('div');
+    let tappedOk = null;
     item.words.forEach((w, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'find-word'; b.textContent = w;
       b.addEventListener('click', () => {
         if (tappedOk !== null) return;
         tappedOk = i === item.errIdx;
-        line.querySelectorAll('.find-word').forEach((x, j) => {
-          x.disabled = true;
-          if (j === item.errIdx) x.classList.add('err');
-          else if (x === b) x.classList.add('miss');
-        });
+        line.querySelectorAll('.find-word').forEach((x, j) => { x.disabled = true; if (j === item.errIdx) x.classList.add('err'); else if (x === b) x.classList.add('miss'); });
         const p = document.createElement('p'); p.className = 'ex-prompt'; p.style.margin = '1rem 0 0.6rem';
         p.textContent = tappedOk ? 'Richtig gefunden! Welches Wort gehört dorthin?' : 'Das falsche Wort ist markiert. Welches Wort gehört dorthin?';
         optsWrap.appendChild(p);
@@ -1790,13 +1911,8 @@ class DrillSession {
           const ob = document.createElement('button'); ob.className = 'mc-btn'; ob.textContent = o;
           ob.addEventListener('click', () => {
             const ok = o === item.correct;
-            grid.querySelectorAll('.mc-btn').forEach(x => {
-              x.disabled = true;
-              if (x.textContent === item.correct) x.classList.add('correct');
-              else if (x === ob) x.classList.add('wrong');
-            });
-            const errBtn = line.querySelectorAll('.find-word')[item.errIdx];
-            errBtn.textContent = item.correct; errBtn.classList.add('fixed');
+            grid.querySelectorAll('.mc-btn').forEach(x => { x.disabled = true; if (x.textContent === item.correct) x.classList.add('correct'); else if (x === ob) x.classList.add('wrong'); });
+            const eb = line.querySelectorAll('.find-word')[item.errIdx]; eb.textContent = item.correct; eb.classList.add('fixed');
             this._done(item, ok && tappedOk, false, `${spec.explain} Richtig: ${item.full}`);
           });
           grid.appendChild(ob);
@@ -1805,47 +1921,57 @@ class DrillSession {
       });
       line.appendChild(b);
     });
-    box.appendChild(line);
-    box.appendChild(optsWrap);
+    box.appendChild(line); box.appendChild(optsWrap);
     addFeedbackArea(box);
   }
 
   _done(item, ok, composite, explainOverride) {
     if (this.answered) return;
-    this.answered = true;
-    this.sessionTotal++;
-    if (ok) { this.sessionCorrect++; this.streak++; } else {
-      this.streak = 0;
-      if (item.specs[0]) this.retry.push({ spec: item.specs[0], due: this.count + 3 });
-    }
     if (!composite) {
-      const ex = explainOverride || item.specs[0].explain || '';
+      const ex = explainOverride || (item.specs[0] && item.specs[0].explain) || '';
       showFeedback(this.box, ok, ok ? ex : ex + (item.specs[0] ? ' Die Aufgabe kommt gleich noch einmal.' : ''));
     }
+    if (!ok && item.specs[0]) this.retry.push({ spec: item.specs[0], due: this.n + 3, level: this.level });
     Store.recordDrill(this.mod.id, ok, this.level);
+    this._after(ok, false, item);
+  }
+
+  _after(ok, fixed) {
+    this.answered = true;
+    this.sessionTotal++;
+    if (ok) { this.sessionCorrect++; this.streak++; } else this.streak = 0;
     const act = Store.getActivityStats();
     if (window._updateDailyGoalBanner) window._updateDailyGoalBanner(act.todayCorrect);
     checkMilestones(this.sessionTotal, act.todayTotal, act.todayCorrect);
-    this._stats();
+    this._progress();
     this.nextBtn.disabled = false;
-    if (!item.ex) this.nextBtn.focus({ preventScroll: true });
-    const rate = this.sessionCorrect / this.sessionTotal;
-    if (!this.suggested && this.sessionTotal >= 15 && rate >= 0.8) {
-      this.suggested = true;
-      const hasNext = this.level < this.gen.levels.length - 1;
-      this.hintEl.innerHTML = `<div class="drill-suggest"><strong>Das sitzt! 🎉</strong> ${Math.round(rate * 100)} % richtig.
-        ${hasNext ? '<button type="button" class="btn btn-ghost btn-sm" data-act="up">Nächste Stufe</button>' : ''}
-        <button type="button" class="btn btn-oliva btn-sm" data-act="ex">Zu den Übungen →</button></div>`;
-      this.hintEl.onclick = e => {
-        const a = e.target.closest('[data-act]'); if (!a) return;
-        this.hintEl.innerHTML = '';
-        if (a.dataset.act === 'ex') this.gotoExercises();
-        else this.mount.querySelector(`[data-lv="${this.level + 1}"]`).click();
-        this.suggested = false; this.sessionCorrect = 0; this.sessionTotal = 0; this._stats();
-      };
+    // Durchgang durch alle Übungen abgeschlossen?
+    if (fixed && Object.keys(this.run.done).length >= this.run.order.length) { this._finishRun(); return; }
+    if (ok) {
+      // richtig: nach kurzer Pause automatisch weiter
+      const fb = this.box.querySelector('.feedback-area');
+      const delay = fb && fb.textContent.length > 120 ? 2600 : 1500;
+      this.box.classList.add('auto-next');
+      this.timer = setTimeout(() => { this.box.classList.remove('auto-next'); this.next(); }, delay);
+    } else {
+      this.nextBtn.focus({ preventScroll: true });
     }
   }
+
+  _finishRun() {
+    const vals = Object.values(this.run.done);
+    const score = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+    Store.recordRun(this.mod.id, score);
+    const pct = Math.round(score * 100), passed = score >= (this.mod.passThreshold || 0.6);
+    this.run = { order: buildExerciseSequence(this.mod.exercises).map(e => e.id), done: {} };
+    this._saveRun();
+    this.hintEl.innerHTML = `<div class="drill-suggest"><strong>${passed ? '🏆' : '📚'} Alle Übungen dieses Moduls geschafft: ${pct} %.</strong>
+      ${passed ? 'Modul bestanden!' : 'Ab 60 % gilt das Modul als bestanden.'} Es geht mit einem neuen Durchgang weiter.</div>`;
+    if (passed) confetti(70);
+    this._progress();
+  }
 }
+const R2 = { pick: a => a[Math.floor(Math.random() * a.length)] };
 
 /* ================================================================
    AUFGABEN-REIHENFOLGE: erst Stufe 1 (Grundregel), dann 2, dann 3.
@@ -1954,7 +2080,7 @@ class ExerciseSession {
 
   start() {
     Store.updateStreak();
-    if (!this._modesDone) { this._modesDone = true; setupModuleModes(this); }
+    if (!this._modesDone) { this._modesDone = true; if (setupModuleModes(this)) return; }
     const state = Store.load();
     const mState = Store.getModule(state, this.mod.id);
 
