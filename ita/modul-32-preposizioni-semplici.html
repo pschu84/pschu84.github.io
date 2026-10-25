@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — Einfache Präpositionen</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Präpositionen (A1) · Modul 32</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>🧭 Einfache Präpositionen</h1>
+    <p>a, in, di, da, con, per, tra: wann welche?</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m32",
+ "block": "praepos-a1",
+ "title": "Einfache Präpositionen",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "Präpositionen sind im Italienischen oft anders als im Deutschen. Hier geht es um die Grundbedeutungen der <strong>einfachen Präpositionen</strong> (ohne Artikel). Die Verschmelzung mit dem Artikel (al, nel, dal …) übst du in den Modulen 5 bis 10."
+  },
+  {
+   "type": "table",
+   "head": [
+    "Präposition",
+    "wofür?",
+    "Beispiel"
+   ],
+   "rows": [
+    [
+     "a",
+     "Städte, nach Hause, Schule",
+     "Abito a Roma. Vado a casa. Vado a scuola."
+    ],
+    [
+     "in",
+     "Länder, Regionen, Verkehrsmittel",
+     "Vivo in Italia. Vado in treno."
+    ],
+    [
+     "di",
+     "Herkunft (Stadt), Besitz",
+     "Sono di Napoli. Il libro di Marco."
+    ],
+    [
+     "con",
+     "mit",
+     "Esco con Anna."
+    ],
+    [
+     "per",
+     "für",
+     "Questo è per te."
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Merke:</strong> Stadt → <strong>a</strong>, Land → <strong>in</strong>. Das gilt für „wo“ und „wohin“ gleich: <em>Abito a Roma / Vado a Roma. Abito in Italia / Vado in Italia.</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "table",
+   "head": [
+    "Präposition",
+    "wofür?",
+    "Beispiel"
+   ],
+   "rows": [
+    [
+     "da",
+     "zu / bei einer Person",
+     "Vado da Marco. Sono da Marco."
+    ],
+    [
+     "da",
+     "seit (dauert noch an)",
+     "Studio italiano da due anni."
+    ],
+    [
+     "da",
+     "von, aus (Bewegung)",
+     "Vengo da Roma."
+    ],
+    [
+     "in",
+     "viele Orte ohne Artikel",
+     "in ufficio, in banca, in cucina, in centro"
+    ],
+    [
+     "per",
+     "Dauer, Ziel einer Reise",
+     "per due ore, parto per Milano"
+    ],
+    [
+     "tra / fra",
+     "in (Zukunft), zwischen",
+     "tra dieci minuti, tra Roma e Napoli"
+    ],
+    [
+     "a",
+     "feste Wendungen",
+     "a piedi, a mezzanotte"
+    ]
+   ]
+  },
+  {
+   "type": "compare",
+   "left": {
+    "title": "Deutsch",
+    "body": "Ich lerne <strong>seit</strong> zwei Jahren.<br>Ich habe zwei Jahre <strong>lang</strong> gelernt.<br>Der Zug fährt <strong>in</strong> zehn Minuten."
+   },
+   "right": {
+    "title": "Italiano",
+    "body": "Studio <strong>da</strong> due anni.<br>Ho studiato <strong>per</strong> due anni.<br>Il treno parte <strong>tra</strong> dieci minuti."
+   }
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Verben mit a oder di + Infinitiv:</strong> Nach Bewegungsverben steht <strong>a</strong>: <em>vado a mangiare, vengo a trovarti</em>. Auch nach <em>cominciare, imparare, aiutare</em> folgt a. <strong>di</strong> steht für Material und Inhalt: <em>un tavolo di legno, un bicchiere di vino, un corso di italiano</em>."
+  },
+  {
+   "type": "example",
+   "it": "Stasera vado da Paolo a mangiare una pizza.",
+   "de": "Heute Abend gehe ich zu Paolo, um eine Pizza zu essen."
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m32-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "abito",
+    "a",
+    "Roma",
+    "in",
+    "di"
+   ],
+   "solution": [
+    "abito",
+    "a",
+    "Roma"
+   ],
+   "translation": "Ich wohne in Rom.",
+   "explain": "Städte → a."
+  },
+  {
+   "id": "m32-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "vado",
+    "in",
+    "Italia",
+    "a",
+    "da"
+   ],
+   "solution": [
+    "vado",
+    "in",
+    "Italia"
+   ],
+   "translation": "Ich fahre nach Italien.",
+   "explain": "Länder → in (ohne Artikel)."
+  },
+  {
+   "id": "m32-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "questo",
+    "è",
+    "il",
+    "libro",
+    "di",
+    "Marco",
+    "da",
+    "a"
+   ],
+   "solution": [
+    "questo",
+    "è",
+    "il",
+    "libro",
+    "di",
+    "Marco"
+   ],
+   "translation": "Das ist Marcos Buch.",
+   "explain": "Besitz mit Namen → di."
+  },
+  {
+   "id": "m32-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "stasera",
+    "vado",
+    "da",
+    "Giulia",
+    "a",
+    "in"
+   ],
+   "solution": [
+    "stasera",
+    "vado",
+    "da",
+    "Giulia"
+   ],
+   "translation": "Heute Abend gehe ich zu Giulia.",
+   "explain": "Zu einer Person → da."
+  },
+  {
+   "id": "m32-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "studio",
+    "italiano",
+    "da",
+    "due",
+    "anni",
+    "per",
+    "di"
+   ],
+   "solution": [
+    "studio",
+    "italiano",
+    "da",
+    "due",
+    "anni"
+   ],
+   "translation": "Ich lerne seit zwei Jahren Italienisch.",
+   "explain": "seit + Zeitdauer (dauert noch an) → da + Präsens."
+  },
+  {
+   "id": "m32-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "vado",
+    "al",
+    "bar",
+    "a",
+    "prendere",
+    "un",
+    "caffè",
+    "per",
+    "di"
+   ],
+   "solution": [
+    "vado",
+    "al",
+    "bar",
+    "a",
+    "prendere",
+    "un",
+    "caffè"
+   ],
+   "translation": "Ich gehe in die Bar, um einen Kaffee zu trinken.",
+   "explain": "andare a + Infinitiv = gehen, um etwas zu tun."
+  },
+  {
+   "id": "m32-el-01",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Marco abita {0} Milano, ma lavora {1} Svizzera.",
+   "blanks": [
+    {
+     "accept": "a",
+     "distractors": [
+      "in",
+      "di",
+      "da"
+     ]
+    },
+    {
+     "accept": "in",
+     "distractors": [
+      "a",
+      "di",
+      "da"
+     ]
+    }
+   ],
+   "explain": "Stadt → a, Land → in."
+  },
+  {
+   "id": "m32-el-02",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Sono {0} Napoli e vado al lavoro {1} macchina.",
+   "blanks": [
+    {
+     "accept": "di",
+     "distractors": [
+      "a",
+      "da",
+      "in"
+     ]
+    },
+    {
+     "accept": "in",
+     "distractors": [
+      "a",
+      "con",
+      "di"
+     ]
+    }
+   ],
+   "explain": "Herkunft (Stadt) → di; Verkehrsmittel → in."
+  },
+  {
+   "id": "m32-el-03",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Esco {0} Anna e compro un regalo {1} te.",
+   "blanks": [
+    {
+     "accept": "con",
+     "distractors": [
+      "di",
+      "da",
+      "per"
+     ]
+    },
+    {
+     "accept": "per",
+     "distractors": [
+      "a",
+      "con",
+      "da"
+     ]
+    }
+   ],
+   "explain": "con = mit, per = für."
+  },
+  {
+   "id": "m32-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Lavoro {0} ufficio e studio {1} biblioteca.",
+   "blanks": [
+    {
+     "accept": "in",
+     "distractors": [
+      "a",
+      "da",
+      "al"
+     ]
+    },
+    {
+     "accept": "in",
+     "distractors": [
+      "a",
+      "da",
+      "alla"
+     ]
+    }
+   ],
+   "explain": "Viele Orte ohne Artikel stehen mit in: in ufficio, in biblioteca, in banca."
+  },
+  {
+   "id": "m32-el-05",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Il treno parte {0} Roma {1} dieci minuti.",
+   "blanks": [
+    {
+     "accept": "per",
+     "distractors": [
+      "a",
+      "da",
+      "in"
+     ]
+    },
+    {
+     "accept": "tra",
+     "distractors": [
+      "in",
+      "da",
+      "per"
+     ]
+    }
+   ],
+   "explain": "partire per = abfahren nach; tra dieci minuti = in zehn Minuten."
+  },
+  {
+   "id": "m32-el-06",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Vado {0} scuola {1} piedi.",
+   "blanks": [
+    {
+     "accept": "a",
+     "distractors": [
+      "in",
+      "da",
+      "al"
+     ]
+    },
+    {
+     "accept": "a",
+     "distractors": [
+      "in",
+      "con",
+      "da"
+     ]
+    }
+   ],
+   "explain": "a scuola, a piedi (feste Wendungen)."
+  },
+  {
+   "id": "m32-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne die passende Präposition zu:",
+   "pairs": [
+    {
+     "de": "… Roma (wohnen)",
+     "it": "a"
+    },
+    {
+     "de": "… Italia (wohnen)",
+     "it": "in"
+    },
+    {
+     "de": "… treno (fahren)",
+     "it": "in"
+    },
+    {
+     "de": "… casa (gehen)",
+     "it": "a"
+    },
+    {
+     "de": "… Marco (mit)",
+     "it": "con"
+    },
+    {
+     "de": "… te (für)",
+     "it": "per"
+    }
+   ]
+  },
+  {
+   "id": "m32-zo-02",
+   "type": "ZO",
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "in Mailand",
+     "it": "a Milano"
+    },
+    {
+     "de": "in Spanien",
+     "it": "in Spagna"
+    },
+    {
+     "de": "mit dem Bus",
+     "it": "in autobus"
+    },
+    {
+     "de": "nach Hause",
+     "it": "a casa"
+    },
+    {
+     "de": "aus Turin (Herkunft)",
+     "it": "di Torino"
+    },
+    {
+     "de": "für dich",
+     "it": "per te"
+    }
+   ]
+  },
+  {
+   "id": "m32-zo-03",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "zu Marco",
+     "it": "da Marco"
+    },
+    {
+     "de": "seit drei Jahren",
+     "it": "da tre anni"
+    },
+    {
+     "de": "für drei Stunden",
+     "it": "per tre ore"
+    },
+    {
+     "de": "in zwei Tagen",
+     "it": "tra due giorni"
+    },
+    {
+     "de": "zu Fuß",
+     "it": "a piedi"
+    },
+    {
+     "de": "in der Küche",
+     "it": "in cucina"
+    }
+   ]
+  },
+  {
+   "id": "m32-zo-04",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: Wofür steht da?",
+   "pairs": [
+    {
+     "de": "Vado da Luca.",
+     "it": "zu einer Person"
+    },
+    {
+     "de": "Sono da Luca.",
+     "it": "bei einer Person"
+    },
+    {
+     "de": "Studio da un anno.",
+     "it": "seit"
+    },
+    {
+     "de": "Vengo da Roma.",
+     "it": "von, aus (Bewegung)"
+    },
+    {
+     "de": "Torno dal medico.",
+     "it": "vom Arzt"
+    },
+    {
+     "de": "Abito qui da poco.",
+     "it": "seit kurzem"
+    }
+   ]
+  },
+  {
+   "id": "m32-zo-05",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: Verb + a + Infinitiv",
+   "pairs": [
+    {
+     "de": "ich gehe essen",
+     "it": "vado a mangiare"
+    },
+    {
+     "de": "ich komme dich besuchen",
+     "it": "vengo a trovarti"
+    },
+    {
+     "de": "ich fange an zu arbeiten",
+     "it": "comincio a lavorare"
+    },
+    {
+     "de": "ich lerne schwimmen",
+     "it": "imparo a nuotare"
+    },
+    {
+     "de": "ich helfe dir kochen",
+     "it": "ti aiuto a cucinare"
+    },
+    {
+     "de": "ich bleibe zum Essen",
+     "it": "resto a cena"
+    }
+   ]
+  },
+  {
+   "id": "m32-mc-01",
+   "type": "MC",
+   "prompt": "\"Abito ___ Firenze.\"",
+   "options": [
+    "a",
+    "in",
+    "di",
+    "da"
+   ],
+   "correctValue": "a",
+   "explain": "Städte → a."
+  },
+  {
+   "id": "m32-mc-02",
+   "type": "MC",
+   "prompt": "\"Quest'anno andiamo ___ Grecia.\"",
+   "options": [
+    "in",
+    "a",
+    "da",
+    "di"
+   ],
+   "correctValue": "in",
+   "explain": "Länder → in."
+  },
+  {
+   "id": "m32-mc-03",
+   "type": "MC",
+   "prompt": "\"Vado in vacanza ___ i miei amici.\"",
+   "options": [
+    "con",
+    "di",
+    "per",
+    "da"
+   ],
+   "correctValue": "con",
+   "explain": "con = mit."
+  },
+  {
+   "id": "m32-mc-04",
+   "type": "MC",
+   "prompt": "\"Questo regalo è ___ te.\"",
+   "options": [
+    "per",
+    "a",
+    "con",
+    "di"
+   ],
+   "correctValue": "per",
+   "explain": "per = für."
+  },
+  {
+   "id": "m32-mc-05",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Domani vado ___ dentista.\"",
+   "options": [
+    "dal",
+    "al",
+    "nel",
+    "del"
+   ],
+   "correctValue": "dal",
+   "explain": "Zum Arzt, zum Zahnarzt → da + Artikel: dal dentista."
+  },
+  {
+   "id": "m32-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Aspetto l'autobus ___ venti minuti.\" (und warte immer noch)",
+   "options": [
+    "da",
+    "per",
+    "tra",
+    "in"
+   ],
+   "correctValue": "da",
+   "explain": "seit → da."
+  },
+  {
+   "id": "m32-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Ho lavorato ___ tre ore.\" (abgeschlossen)",
+   "options": [
+    "per",
+    "da",
+    "tra",
+    "a"
+   ],
+   "correctValue": "per",
+   "explain": "Abgeschlossene Dauer → per."
+  },
+  {
+   "id": "m32-mc-08",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Ci vediamo ___ una settimana.\" (in einer Woche)",
+   "options": [
+    "tra",
+    "in",
+    "da",
+    "per"
+   ],
+   "correctValue": "tra",
+   "explain": "in + Zeitraum (Zukunft) → tra oder fra."
+  },
+  {
+   "id": "m32-mc-09",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"Vengo ___ trovarti stasera.\"",
+   "options": [
+    "a",
+    "di",
+    "per",
+    "da"
+   ],
+   "correctValue": "a",
+   "explain": "venire a + Infinitiv."
+  },
+  {
+   "id": "m32-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"È un tavolo ___ legno.\"",
+   "options": [
+    "di",
+    "da",
+    "in",
+    "a"
+   ],
+   "correctValue": "di",
+   "explain": "Material → di."
+  },
+  {
+   "id": "m32-lt-01",
+   "type": "LT",
+   "text": "Vivo {0} Berlino, ma sono {1} Monaco.",
+   "blanks": [
+    {
+     "accept": [
+      "a"
+     ]
+    },
+    {
+     "accept": [
+      "di"
+     ]
+    }
+   ],
+   "explain": "Wohnort Stadt → a; Herkunft Stadt → di.",
+   "prompt": "Setze die passende Präposition ein:"
+  },
+  {
+   "id": "m32-lt-02",
+   "type": "LT",
+   "text": "In estate vado {0} Francia {1} aereo.",
+   "blanks": [
+    {
+     "accept": [
+      "in"
+     ]
+    },
+    {
+     "accept": [
+      "in"
+     ]
+    }
+   ],
+   "explain": "Land → in; Verkehrsmittel → in.",
+   "prompt": "Setze die passende Präposition ein:"
+  },
+  {
+   "id": "m32-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Stasera ceno {0} Paolo e torno a casa {1} mezzanotte.",
+   "blanks": [
+    {
+     "accept": [
+      "da"
+     ]
+    },
+    {
+     "accept": [
+      "a"
+     ]
+    }
+   ],
+   "explain": "da Paolo = bei Paolo; a mezzanotte = um Mitternacht.",
+   "prompt": "Setze die passende Präposition ein:"
+  },
+  {
+   "id": "m32-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "Vado {0} comprare il pane e poi passo {1} te.",
+   "blanks": [
+    {
+     "accept": [
+      "a"
+     ]
+    },
+    {
+     "accept": [
+      "da"
+     ]
+    }
+   ],
+   "explain": "andare a + Infinitiv; passare da qualcuno = bei jemandem vorbeischauen.",
+   "prompt": "Setze die passende Präposition ein:"
+  },
+  {
+   "id": "m32-ft-01",
+   "type": "FT",
+   "prompt": "Setze die Präposition ein:",
+   "rows": [
+    {
+     "label": "… Roma (wohnen)",
+     "accept": [
+      "a"
+     ]
+    },
+    {
+     "label": "… Germania (wohnen)",
+     "accept": [
+      "in"
+     ]
+    },
+    {
+     "label": "… bici (fahren)",
+     "accept": [
+      "in"
+     ]
+    },
+    {
+     "label": "… Anna (mit)",
+     "accept": [
+      "con"
+     ]
+    },
+    {
+     "label": "… voi (für)",
+     "accept": [
+      "per"
+     ]
+    },
+    {
+     "label": "… Napoli (Herkunft)",
+     "accept": [
+      "di"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m32-ft-02",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "Übersetze:",
+   "rows": [
+    {
+     "label": "zu Fuß",
+     "accept": [
+      "a piedi"
+     ]
+    },
+    {
+     "label": "seit einem Jahr",
+     "accept": [
+      "da un anno"
+     ]
+    },
+    {
+     "label": "in drei Tagen",
+     "accept": [
+      "tra tre giorni",
+      "fra tre giorni"
+     ]
+    },
+    {
+     "label": "zu Hause",
+     "accept": [
+      "a casa"
+     ]
+    },
+    {
+     "label": "im Büro",
+     "accept": [
+      "in ufficio"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m32-ft-03",
+   "type": "FT",
+   "stufe": 3,
+   "prompt": "a oder di?",
+   "rows": [
+    {
+     "label": "vado … mangiare",
+     "accept": [
+      "a"
+     ]
+    },
+    {
+     "label": "una giacca … pelle",
+     "accept": [
+      "di"
+     ]
+    },
+    {
+     "label": "comincio … capire",
+     "accept": [
+      "a"
+     ]
+    },
+    {
+     "label": "un corso … italiano",
+     "accept": [
+      "di"
+     ]
+    },
+    {
+     "label": "resto … casa",
+     "accept": [
+      "a"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m32-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Abito in Roma da due anni.",
+   "solution": "Abito a Roma da due anni.",
+   "errorToken": "in Roma",
+   "explain": "Städte → a."
+  },
+  {
+   "id": "m32-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Studio italiano per tre anni e continuo.",
+   "solution": "Studio italiano da tre anni e continuo.",
+   "errorToken": "per",
+   "explain": "Es dauert noch an → da."
+  },
+  {
+   "id": "m32-fk-03",
+   "type": "FK",
+   "stufe": 3,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Vado al lavoro in piedi.",
+   "solution": "Vado al lavoro a piedi.",
+   "errorToken": "in piedi",
+   "explain": "zu Fuß = a piedi (in piedi = im Stehen)."
+  },
+  {
+   "id": "m32-ka-01",
+   "type": "KA",
+   "prompt": "a oder in?",
+   "categories": [
+    "a",
+    "in"
+   ],
+   "items": [
+    {
+     "text": "… Venezia",
+     "cat": 0
+    },
+    {
+     "text": "… Spagna",
+     "cat": 1
+    },
+    {
+     "text": "… casa",
+     "cat": 0
+    },
+    {
+     "text": "… treno",
+     "cat": 1
+    },
+    {
+     "text": "… Parigi",
+     "cat": 0
+    },
+    {
+     "text": "… Austria",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m32-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "da oder per?",
+   "categories": [
+    "da (seit, andauernd)",
+    "per (für, abgeschlossen)"
+   ],
+   "items": [
+    {
+     "text": "Abito qui … anni.",
+     "cat": 0
+    },
+    {
+     "text": "Ho dormito … otto ore.",
+     "cat": 1
+    },
+    {
+     "text": "Non mangio … ieri.",
+     "cat": 0
+    },
+    {
+     "text": "Sono rimasto … una settimana.",
+     "cat": 1
+    },
+    {
+     "text": "Ti aspetto … un'ora!",
+     "cat": 0
+    },
+    {
+     "text": "Ho studiato … due ore.",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m32-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "Was bedeutet di hier?",
+   "categories": [
+    "Herkunft / Besitz",
+    "Material / Inhalt"
+   ],
+   "items": [
+    {
+     "text": "Sono di Bari.",
+     "cat": 0
+    },
+    {
+     "text": "un bicchiere di vino",
+     "cat": 1
+    },
+    {
+     "text": "la macchina di Luca",
+     "cat": 0
+    },
+    {
+     "text": "una borsa di pelle",
+     "cat": 1
+    },
+    {
+     "text": "un amico di Paolo",
+     "cat": 0
+    },
+    {
+     "text": "una tazza di tè",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m32-ko-01",
+   "type": "KO",
+   "stufe": 2,
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "Studio da due anni.",
+    "tag": "da: dauert noch an"
+   },
+   "b": {
+    "sentence": "Ho studiato per due anni.",
+    "tag": "per: abgeschlossen"
+   },
+   "reveal": "da + Präsens beschreibt etwas, das bis heute andauert (Deutsch: seit). per beschreibt eine abgeschlossene Dauer (Deutsch: … lang)."
+  },
+  {
+   "id": "m32-de-01",
+   "type": "DE",
+   "prompt": "\"Ich wohne in Mailand, aber ich komme aus Neapel.\"",
+   "solutions": [
+    "Abito a Milano, ma sono di Napoli.",
+    "Vivo a Milano, ma sono di Napoli."
+   ],
+   "note": "Wohnort → a, Herkunft (Stadt) → di."
+  },
+  {
+   "id": "m32-de-02",
+   "type": "DE",
+   "stufe": 2,
+   "prompt": "\"Heute Abend gehe ich zu Marco. Ich kenne ihn seit zehn Jahren.\"",
+   "solutions": [
+    "Stasera vado da Marco. Lo conosco da dieci anni."
+   ],
+   "note": "zu einer Person → da; seit → da."
+  },
+  {
+   "id": "m32-it-01",
+   "type": "IT",
+   "prompt": "\"Andiamo in Sicilia in macchina con i nostri amici.\"",
+   "solutions": [
+    "Wir fahren mit unseren Freunden mit dem Auto nach Sizilien."
+   ],
+   "note": "in Sicilia, in macchina, con i nostri amici."
+  },
+  {
+   "id": "m32-it-02",
+   "type": "IT",
+   "stufe": 2,
+   "prompt": "\"Il film comincia tra dieci minuti.\"",
+   "solutions": [
+    "Der Film beginnt in zehn Minuten."
+   ],
+   "note": "tra = in (Zeitpunkt in der Zukunft)."
+  },
+  {
+   "id": "m32-sr-01",
+   "type": "SR",
+   "it": "Abito a Roma, ma lavoro in Germania.",
+   "de": "Ich wohne in Rom, aber ich arbeite in Deutschland."
+  },
+  {
+   "id": "m32-sr-02",
+   "type": "SR",
+   "stufe": 2,
+   "it": "Stasera vado da Luca a cena.",
+   "de": "Heute Abend gehe ich zu Luca zum Abendessen."
+  },
+  {
+   "id": "m32-sr-03",
+   "type": "SR",
+   "stufe": 2,
+   "it": "Torno a casa tra un'ora.",
+   "de": "Ich komme in einer Stunde nach Hause."
+  },
+  {
+   "id": "m32-st-01",
+   "type": "ST",
+   "de": "Ich fahre mit dem Zug nach Florenz.",
+   "solutions": [
+    "Vado a Firenze in treno.",
+    "Vado in treno a Firenze."
+   ],
+   "note": "Stadt → a; Verkehrsmittel → in."
+  },
+  {
+   "id": "m32-st-02",
+   "type": "ST",
+   "stufe": 2,
+   "de": "Ich gehe zum Arzt.",
+   "solutions": [
+    "Vado dal medico.",
+    "Vado dal dottore."
+   ],
+   "note": "zu einer Person → da (+ Artikel bei Berufen)."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

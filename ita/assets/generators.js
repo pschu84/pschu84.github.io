@@ -1056,5 +1056,247 @@ const GEN = (() => {
     },
   });
 
+  /* ================================================================
+     M32  Einfache Präpositionen
+     ================================================================ */
+  const CITIES = ['Roma', 'Milano', 'Napoli', 'Torino', 'Firenze', 'Berlino', 'Vienna', 'Parigi'];
+  const LANDS = ['Italia', 'Spagna', 'Francia', 'Germania', 'Austria', 'Grecia', 'Svizzera', 'Inghilterra'];
+  const PEOPLE = ['Marco', 'Giulia', 'Luca', 'Sara', 'Paolo', 'Anna'];
+  const P32 = [
+    [0, () => { const c = R.pick(CITIES); return [`Abito ___ ${c}.`, 'a', 'Städte → a.']; }],
+    [0, () => { const c = R.pick(CITIES); return [`Domani vado ___ ${c}.`, 'a', 'Städte (auch als Ziel) → a.']; }],
+    [0, () => { const c = R.pick(LANDS); return [`Lavoro ___ ${c}.`, 'in', 'Länder → in.']; }],
+    [0, () => { const c = R.pick(LANDS); return [`In estate andiamo ___ ${c}.`, 'in', 'Länder (auch als Ziel) → in.']; }],
+    [0, () => { const t = R.pick(['treno', 'macchina', 'autobus', 'bici', 'aereo']); return [`Vado al lavoro ___ ${t}.`, 'in', 'Verkehrsmittel → in.']; }],
+    [0, () => { const p = R.pick(PEOPLE); return [`Esco ___ ${p} stasera.`, 'con', 'mit → con.']; }],
+    [0, () => { const p = R.pick(['te', 'Marco', 'mia madre', 'voi']); return [`Questo regalo è ___ ${p}.`, 'per', 'für → per.']; }],
+    [0, () => { const c = R.pick(CITIES); return [`Sono ___ ${c}, ma abito qui.`, 'di', 'Herkunft (Stadt) → di.']; }],
+    [0, () => { const p = R.pick(PEOPLE); return [`È la bici ___ ${p}.`, 'di', 'Besitz mit Namen → di.']; }],
+    [0, () => [`Stasera resto ___ casa.`, 'a', 'zu Hause / nach Hause → a casa.']],
+    [0, () => [`I bambini vanno ___ scuola.`, 'a', 'a scuola (feste Wendung).']],
+    [1, () => { const p = R.pick(PEOPLE); return [`Stasera ceno ___ ${p}.`, 'da', 'bei / zu einer Person → da.']; }],
+    [1, () => { const t = R.pick(['due anni', 'tre mesi', 'una settimana', 'molto tempo']); return [`Studio italiano ___ ${t}.`, 'da', 'seit (dauert noch an) → da.']; }],
+    [1, () => { const o = R.pick(['ufficio', 'banca', 'biblioteca', 'centro', 'farmacia']); return [`Lavoro ___ ${o}.`, 'in', 'Viele Orte ohne Artikel → in.']; }],
+    [1, () => { const o = R.pick(['cucina', 'giardino', 'camera', 'salotto']); return [`La mamma è ___ ${o}.`, 'in', 'Räume ohne Artikel → in.']; }],
+    [1, () => { const t = R.pick(['due ore', 'tre giorni', 'una settimana']); return [`Ho dormito ___ ${t}.`, 'per', 'abgeschlossene Dauer → per.']; }],
+    [1, () => { const t = R.pick(['dieci minuti', 'un\'ora', 'due giorni']); return [`Il treno parte ___ ${t}.`, 'tra', 'in + Zeitraum (Zukunft) → tra / fra.']; }],
+    [1, () => [`Vado al lavoro ___ piedi.`, 'a', 'zu Fuß = a piedi.']],
+    [1, () => { const c = R.pick(CITIES); return [`Domani parto ___ ${c}.`, 'per', 'partire per = abfahren nach.']; }],
+    [1, () => { const c = R.pick(CITIES); return [`Torno ora ___ ${c}.`, 'da', 'zurückkommen von (Bewegung) → da.']; }],
+    [2, () => { const v = R.pick(['mangiare', 'dormire', 'comprare il pane', 'prendere un caffè']); return [`Vado ___ ${v}.`, 'a', 'andare a + Infinitiv.']; }],
+    [2, () => { const v = R.pick(['nuotare', 'guidare', 'cucinare']); return [`Imparo ___ ${v}.`, 'a', 'imparare a + Infinitiv.']; }],
+    [2, () => { const x = R.pick(['legno', 'vetro', 'carta', 'pelle']); return [`È una borsa ___ ${x}.`, 'di', 'Material → di.']; }],
+    [2, () => { const x = R.pick(['vino', 'acqua', 'latte']); return [`Vorrei un bicchiere ___ ${x}.`, 'di', 'Menge/Inhalt → di.']; }],
+    [2, () => { const r = R.pick(['Sicilia', 'Toscana', 'Sardegna', 'Puglia']); return [`Abitiamo ___ ${r}.`, 'in', 'Regionen und große Inseln → in.']; }],
+  ];
+  register('m32', {
+    levels: ['Grundregel: a, in, di, con, per', '+ da, tra, Orte mit in', '+ a/di mit Infinitiv und Material'],
+    ka: true,
+    make(level) {
+      const pool = P32.filter(p => p[0] <= level && (level === 0 || p[0] === level || R.chance(0.45)));
+      const [text, ans, ex] = R.pick(pool.length ? pool : P32.filter(p => p[0] === 0))[1]();
+      const [pre, post] = text.split('___').map(x => x.trim());
+      return spec({ key: 'p32-' + text, prompt: 'Welche Präposition passt?', text, so: SO(null, pre, post), accept: ans,
+        distractors: ['a', 'in', 'di', 'da', 'con', 'per', 'tra'], explain: ex });
+    },
+  });
+
+  /* ================================================================
+     M33  piacere
+     ================================================================ */
+  const LIKE_SG = [['la pizza', 'f'], ['il calcio', 'm'], ['la musica', 'f'], ['il cinema', 'm'], ['il mare', 'm'], ['la montagna', 'f'], ['leggere', 'i'], ['viaggiare', 'i'], ['cucinare', 'i'], ['ballare', 'i']];
+  const LIKE_PL = [['i gatti', 'm'], ['gli spaghetti', 'm'], ['le lingue', 'f'], ['i film gialli', 'm'], ['le mele', 'f'], ['i dolci', 'm'], ['le feste', 'f'], ['le canzoni italiane', 'f']];
+  const LP = [['mir', 'mi'], ['dir', 'ti'], ['ihm', 'gli'], ['ihr', 'le'], ['uns', 'ci'], ['euch', 'vi']];
+  const LNAMES = [['A Marco', 'gli'], ['A Luca', 'gli'], ['Ad Anna', 'le'], ['A Giulia', 'le'], ['A mio padre', 'gli'], ['A mia madre', 'le'], ['Ai miei amici', 'gli']];
+  register('m33', {
+    levels: ['Grundregel: mi piace / mi piacciono', '+ gli, le, ci, vi und a + Person', '+ Passato: mi è piaciuto'],
+    ka: true,
+    table(level) {
+      if (level >= 2) return TAB('Passato: mi è / mi sono …', [['il film', 'mi è piaciuto'], ['la città', 'mi è piaciuta'], ['i musei', 'mi sono piaciuti'], ['le spiagge', 'mi sono piaciute']]);
+      return TAB('Setze das Pronomen ein: „… piace la pizza.“', LP.map(([d, p]) => [d, p]));
+    },
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.4) {
+        const pl = R.chance(0.5), [th, g] = R.pick(pl ? LIKE_PL : LIKE_SG.filter(x => x[1] !== 'i' || R.chance(0.3)));
+        const form = pl ? (g === 'f' ? 'sono piaciute' : 'sono piaciuti') : (g === 'f' ? 'è piaciuta' : 'è piaciuto');
+        return spec({ key: 'piacP-' + th, prompt: 'Passato prossimo von piacere:', text: `Ieri mi ___ ${th}.`, so: SO(null, 'Ieri mi', th), accept: form,
+          distractors: ['è piaciuto', 'è piaciuta', 'sono piaciuti', 'sono piaciute', 'ha piaciuto'],
+          explain: `piacere bildet das Passato mit essere; das Partizip richtet sich nach ${th} → ${form}.` });
+      }
+      if (level >= 1 && r < 0.75) {
+        const pl = R.chance(0.5), th = R.pick(pl ? LIKE_PL : LIKE_SG)[0];
+        if (R.chance(0.5)) {
+          const [nm, pr] = R.pick(LNAMES);
+          return spec({ key: 'piacN-' + nm + th, prompt: 'Welches Pronomen? (Die Person ist schon genannt.)', text: `${nm} ___ ${pl ? 'piacciono' : 'piace'} ${th}.`,
+            so: SO(null, nm, `${pl ? 'piacciono' : 'piace'} ${th}`), accept: pr, distractors: ['gli', 'le', 'lo', 'la', 'li'],
+            explain: `${nm.charAt(0).toLowerCase() + nm.slice(1)} → ${pr === 'gli' ? 'gli (ihm / ihnen)' : 'le (ihr)'}.` });
+        }
+        const [de, pr] = R.pick(LP.slice(2));
+        return spec({ key: 'piacL-' + pr + th, prompt: `„${cap(de)} gefällt / gefallen …“`, text: `___ ${pl ? 'piacciono' : 'piace'} ${th}.`,
+          so: SO(null, '', `${pl ? 'piacciono' : 'piace'} ${th}`), accept: cap(pr), distractors: ['Gli', 'Le', 'Ci', 'Vi', 'Lo', 'La', 'Noi', 'Voi'].filter(x => x !== cap(pr)),
+          explain: `${de} = ${pr}.` });
+      }
+      const pl = R.chance(0.5), th = R.pick(pl ? LIKE_PL : LIKE_SG)[0], [de, pr] = R.pick(LP.slice(0, 2));
+      if (R.chance(0.3)) {
+        return spec({ key: 'piacP0-' + pr + th, prompt: `„${cap(de)} gefällt / gefallen …“: welches Pronomen?`, text: `___ ${pl ? 'piacciono' : 'piace'} ${th}.`,
+          so: SO(null, '', `${pl ? 'piacciono' : 'piace'} ${th}`), accept: cap(pr), distractors: ['Mi', 'Ti', 'Io', 'Tu', 'Me', 'Te'].filter(x => x !== cap(pr)),
+          explain: `${de} = ${pr}. Nicht „io piace“: Die Person steht im Dativ.` });
+      }
+      const neg = R.chance(0.25);
+      return spec({ key: 'piac-' + pr + th, prompt: 'piace oder piacciono?', text: `${neg ? 'Non ' + pr : cap(pr)} ___ ${th}.`, so: SO(null, neg ? 'Non ' + pr : cap(pr), th),
+        accept: pl ? 'piacciono' : 'piace', distractors: pl ? ['piace', 'piaccio', 'piacete'] : ['piacciono', 'piaccio', 'piaci'],
+        explain: pl ? `${th} ist Plural → piacciono.` : (LIKE_SG.find(x => x[0] === th)[1] === 'i' ? 'Infinitiv → piace.' : `${th} ist Singular → piace.`) });
+    },
+  });
+
+  /* ================================================================
+     M34  Imperativ
+     ================================================================ */
+  const IMP_V = [...VERBS.are, ...VERBS.ere, ...VERBS.ire, ...VERBS.isc, ...VERBS.spell]
+    .filter(v => !['perdere', 'ricevere', 'conoscere', 'sentire', 'dimenticare', 'vivere', 'arrivare'].includes(v.inf));
+  const impTu = v => v.cls === 'isc' ? stem(v) + 'isci' : conj(v) === 'are' ? stem(v) + 'a' : stem(v) + 'i';
+  const impLei = v => v.cls === 'isc' ? stem(v) + 'isca' : conj(v) === 'are' ? (/[cg]$/.test(stem(v)) ? hard(stem(v), 'i') : joinI(stem(v), 'i')) : stem(v) + 'a';
+  const IMP_IRR = [
+    ['andare', 'gehen', 'vai', 'vada', ['a casa', 'a dormire']], ['fare', 'machen', 'fai', 'faccia', ['attenzione', 'i compiti']],
+    ['stare', 'sein, bleiben', 'stai', 'stia', ['tranquillo', 'zitto']], ['dire', 'sagen', "di'", 'dica', ['la verità', 'qualcosa']],
+    ['essere', 'sein', 'sii', 'sia', ['gentile', 'puntuale']], ['avere', 'haben', 'abbi', 'abbia', ['pazienza', 'coraggio']],
+    ['venire', 'kommen', 'vieni', 'venga', ['qui', 'con me']], ['uscire', 'hinausgehen', 'esci', 'esca', ['subito', 'dalla stanza']],
+    ['bere', 'trinken', 'bevi', 'beva', ["un po' d'acqua", 'il tè']],
+  ];
+  const TU_N = ['Marco', 'Anna', 'Luca', 'Sara'], LEI_N = ['Signora', 'Signor Rossi', 'Dottore'];
+  register('m34', {
+    levels: ['Grundregel: parla! prendi! parlate!', '+ Verbote und unregelmäßige Formen', '+ Höflichkeitsform (Lei)'],
+    table(level) {
+      const vs = shuf(IMP_V).slice(0, 6);
+      if (level >= 2) return TAB('Höflichkeitsform (Lei)', vs.map(v => [v.inf, impLei(v)]));
+      if (level >= 1 && R.chance(0.5)) return TAB('Verbiete es (tu)', vs.slice(0, 5).map(v => [impTu(v) + '!', 'non ' + v.inf]));
+      return TAB('Imperativ (tu)', vs.map(v => [v.inf, impTu(v)]));
+    },
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.45) {
+        if (R.chance(0.35)) {
+          const e = R.pick(IMP_IRR), c = R.pick(e[4]), n = R.pick(LEI_N);
+          return spec({ key: 'impLI-' + e[0], prompt: `Höflichkeitsform (Lei) von ${e[0]} (${e[1]}):`, text: `${n}, ___ ${c}!`, so: SO(null, n + ',', c),
+            accept: e[3], distractors: [e[2], e[0], R.pick(['vai', 'fai', 'vieni', 'dici'])], explain: `${e[0]}: Lei-Form ${e[3]} (tu: ${e[2]}).` });
+        }
+        const v = R.pick(IMP_V), c = R.pick(v.c), n = R.pick(LEI_N), f = impLei(v);
+        return spec({ key: 'impL-' + v.inf, cue: v.inf, prompt: `Höflichkeitsform (Lei) von ${v.inf} (${v.de}):`, text: `${n}, ___ ${c}!`, so: SO(null, n + ',', c),
+          accept: f, distractors: [impTu(v), presente(v, 4), v.inf, conj(v) === 'are' ? stem(v) + 'a' : stem(v) + 'i'],
+          explain: conj(v) === 'are' ? 'Lei-Form: -are → -i.' : 'Lei-Form: -ere/-ire → -a.' });
+      }
+      if (level >= 1 && r < 0.8) {
+        if (R.chance(0.5)) {
+          const e = R.pick(IMP_IRR), c = R.pick(e[4]), n = R.pick(TU_N);
+          return spec({ key: 'impI-' + e[0] + c, prompt: `Imperativ (tu) von ${e[0]} (${e[1]}):`, text: `${n}, ___ ${c}!`, so: SO(null, n + ',', c),
+            accept: e[0] === 'dire' ? ["di'", 'di'] : [e[2]].concat(['vai', 'fai', 'stai'].includes(e[2]) ? [e[2].slice(0, -1) + "'"] : []),
+            distractors: [e[3], e[0], { andare: 'andi', fare: 'fari', stare: 'stari', dire: 'dici', essere: 'sei', avere: 'hai', venire: 'viene', uscire: 'usci', bere: 'beve' }[e[0]]],
+            explain: `${e[0]}: tu → ${e[2]}${['vai', 'fai', 'stai'].includes(e[2]) ? ` (auch ${e[2].slice(0, -1)}')` : ''}.` });
+        }
+        const v = R.pick(IMP_V), c = R.pick(v.c), n = R.pick(TU_N);
+        return spec({ key: 'impN-' + v.inf, cue: v.inf, prompt: `Verbiete es (tu): ${v.inf} (${v.de})`, text: `${n}, non ___ ${c}!`, so: SO(null, n + ', non', c),
+          accept: v.inf, distractors: [impTu(v), presente(v, 1), presente(v, 4)], explain: 'Verbot bei tu: non + Infinitiv.' });
+      }
+      const v = R.pick(IMP_V), c = R.pick(v.c), voi = R.chance(0.35);
+      if (voi) {
+        return spec({ key: 'impV-' + v.inf, cue: v.inf, prompt: `Imperativ (voi) von ${v.inf} (${v.de}):`, text: `Ragazzi, ___ ${c}!`, so: SO(null, 'Ragazzi,', c),
+          accept: presente(v, 4), distractors: [impTu(v), v.inf, presente(v, 5)], explain: 'Imperativ voi = Präsensform.' });
+      }
+      const n = R.pick(TU_N);
+      return spec({ key: 'impT-' + v.inf, cue: v.inf, prompt: `Imperativ (tu) von ${v.inf} (${v.de}):`, text: `${n}, ___ ${c}!`, so: SO(null, n + ',', c),
+        accept: impTu(v), distractors: [presente(v, 1), presente(v, 2), v.inf, impLei(v)].filter(x => x !== impTu(v)),
+        explain: v.cls === 'isc' ? 'Verben mit -isc-: finisci!' : conj(v) === 'are' ? '-are → tu -a.' : '-ere/-ire → tu -i.' });
+    },
+  });
+
+  /* ================================================================
+     M35  Zahlen, Uhrzeit, Datum
+     ================================================================ */
+  const UNI = ['zero', 'uno', 'due', 'tre', 'quattro', 'cinque', 'sei', 'sette', 'otto', 'nove', 'dieci', 'undici', 'dodici', 'tredici', 'quattordici', 'quindici', 'sedici', 'diciassette', 'diciotto', 'diciannove'];
+  const DEC = ['', '', 'venti', 'trenta', 'quaranta', 'cinquanta', 'sessanta', 'settanta', 'ottanta', 'novanta'];
+  function numW(n) {
+    if (n < 20) return UNI[n];
+    if (n < 100) { const d = DEC[Math.floor(n / 10)], u = n % 10; if (!u) return d; return (u === 1 || u === 8 ? d.slice(0, -1) : d) + (u === 3 ? 'tré' : UNI[u]); }
+    if (n < 1000) { const h = Math.floor(n / 100), r = n % 100; return (h === 1 ? 'cento' : UNI[h] + 'cento') + (r ? numW(r) : ''); }
+    const t = Math.floor(n / 1000), r = n % 1000; return (t === 1 ? 'mille' : numW(t) + 'mila') + (r ? numW(r) : '');
+  }
+  const NUM_SP = { 11: 'unodici', 12: 'duedici', 13: 'tredicci', 14: 'quatordici', 15: 'cinquedici', 16: 'seidici', 17: 'settedici', 18: 'ottodici', 19: 'novedici', 0: 'nulla', 1: 'un', 2: 'dui' };
+  function numWrong(n, w) {
+    const d = Math.floor(n / 10) % 10, u = n % 10, sm = n % 100;
+    const out = [NUM_SP[n], w.includes('tré') ? w.replace('tré', 'tre') : null];
+    if (n >= 20 && n < 100) { out.push(DEC[d] + ' ' + UNI[u]); if (u === 1 || u === 8) out.push(DEC[d] + UNI[u]); }
+    if (n >= 100 && n < 200) out.push('uno' + w);
+    if (n >= 200 && n < 1000) out.push(w.replace('cento', 'centi'));
+    if (n >= 1000 && n < 2000) out.push(w.replace('mille', 'unomila'));
+    if (n >= 2000) out.push(w.replace('mila', 'mille'));
+    [n + 1, n - 1, n + 10, n - 10, n + 100].filter(x => x >= 0 && x < 3000 && x !== n).forEach(x => out.push(numW(x)));
+    return uniq(out.filter(x => x && x !== w && !/ zero$/.test(x)));
+  }
+  const HW = h => h === 1 ? "l'una" : 'le ' + numW(h);
+  function timeW(h, mm) {
+    const nx = h === 12 ? 1 : h + 1;
+    const head = hh => hh === 1 ? "è l'una" : 'sono le ' + numW(hh);
+    if (mm === 0) return [head(h)];
+    if (mm === 15) return [head(h) + ' e un quarto', head(h) + ' e quindici'];
+    if (mm === 30) return [head(h) + ' e mezza', head(h) + ' e mezzo', head(h) + ' e trenta'];
+    if (mm === 45) return [head(nx) + ' meno un quarto', head(h) + ' e quarantacinque'];
+    if (mm > 30) return [head(nx) + ' meno ' + numW(60 - mm), head(h) + ' e ' + numW(mm)];
+    return [head(h) + ' e ' + numW(mm)];
+  }
+  const DAYS = ['lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato', 'domenica'];
+  const MONTHS = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+  const pad = n => (n < 10 ? '0' : '') + n;
+  register('m35', {
+    levels: ['Grundregel: Zahlen bis 20, Zehner, Wochentage', '+ Zahlen bis 100, Uhrzeit, Monate', '+ große Zahlen, Datum, meno un quarto'],
+    table(level) {
+      const pool = level === 0 ? [3, 7, 11, 14, 16, 19, 20, 30, 50, 80] : level === 1 ? [21, 28, 33, 38, 41, 47, 56, 63, 71, 99] : [100, 101, 150, 200, 500, 1000, 2000, 2026];
+      return TAB('Schreibe die Zahl aus', shuf(pool).slice(0, 5).map(n => [String(n), n === 101 ? ['centouno', 'centuno'] : numW(n)]));
+    },
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.5) {
+        if (R.chance(0.5)) {
+          const d = R.chance(0.4) ? 1 : R.pick([2, 3, 10, 15, 21, 25, 31].filter(x => x !== 31 || true)), mo = R.pick(MONTHS);
+          const w = d === 1 ? 'primo' : numW(d);
+          return spec({ key: 'date-' + d + mo, prompt: 'Schreibe das Datum:', text: `${d}.${MONTHS.indexOf(mo) + 1}. → il ___ ${mo}`, accept: w,
+            distractors: d === 1 ? ['uno', 'prima', 'un'] : ['primo', numW(d) + 'o', numW(d === 2 ? 3 : 2)], explain: d === 1 ? 'Der Erste: il primo.' : 'Im Datum steht die Grundzahl: il ' + w + ' ' + mo + '.' });
+        }
+        const n = R.pick([100, 110, 120, 200, 300, 500, 1000, 1200, 2000, 2010, 2026]), w = numW(n);
+        return spec({ key: 'numB-' + n, prompt: 'Schreibe die Zahl aus:', text: `${n} → ___`, accept: n === 101 ? ['centouno', 'centuno'] : w, distractors: numWrong(n, w), explain: `${n} = ${w}.` });
+      }
+      if (level >= 1 && r < 0.75) {
+        if (R.chance(0.6)) {
+          const h = R.pick([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]), mm = R.pick(level >= 2 ? [0, 15, 30, 45, 10, 20, 40, 50] : [0, 15, 30, 10, 20]);
+          const acc = timeW(h, mm);
+          const nx = h === 11 ? 12 : h + 1;
+          const dis = uniq([...(mm ? timeW(h, 0) : timeW(nx, 0)), ...(mm === 15 ? timeW(h, 45) : mm === 45 ? timeW(h, 15) : []),
+            'è le ' + numW(h === 1 ? 2 : h), 'sono le una', 'sono le ' + numW(h) + (mm ? ' e un quarto' : ' e mezza'), timeW(h === 1 ? 2 : h - 1, mm)[0]]).filter(x => !acc.includes(x));
+          return spec({ key: 'time-' + h + mm, prompt: 'Wie spät ist es?', text: `${h}:${pad(mm)} → ___`, accept: acc, distractors: dis,
+            explain: `${h}:${pad(mm)} = ${acc[0]}.` + (h === 1 ? ' 1 Uhr steht im Singular.' : '') });
+        }
+        if (R.chance(0.35)) {
+          const i = R.pick([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+          return spec({ key: 'mon-' + i, prompt: 'Welcher Monat kommt danach?', text: `Dopo ${MONTHS[i]} viene ___.`, so: SO(null, `Dopo ${MONTHS[i]} viene`, ''), accept: MONTHS[i + 1],
+            distractors: shuf(MONTHS.filter((x, j) => j !== i + 1)).slice(0, 4), explain: MONTHS.join(', ') + '.' });
+        }
+        const n = R.pick([21, 23, 28, 31, 33, 38, 42, 45, 51, 58, 63, 67, 71, 78, 83, 88, 91, 99]), w = numW(n);
+        return spec({ key: 'numM-' + n, prompt: 'Schreibe die Zahl aus:', text: `${n} → ___`, accept: w, distractors: numWrong(n, w),
+          explain: `${n} = ${w}.` + (n % 10 === 1 || n % 10 === 8 ? ' Vor uno und otto fällt der Vokal weg.' : n % 10 === 3 ? ' tre am Ende mit Akzent.' : '') });
+      }
+      if (R.chance(0.3)) {
+        const i = R.pick([0, 1, 2, 3, 4, 5]);
+        return spec({ key: 'day-' + i, prompt: 'Welcher Tag kommt danach?', text: `Dopo ${DAYS[i]} viene ___.`, so: SO(null, `Dopo ${DAYS[i]} viene`, ''), accept: DAYS[i + 1],
+          distractors: shuf(DAYS.filter((x, j) => j !== i + 1)).slice(0, 4), explain: DAYS.join(', ') + '.' });
+      }
+      const n = R.pick([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 30, 40, 50, 60, 70, 80, 90]), w = numW(n);
+      if (R.chance(0.3) && n > 1 && n < 20) {
+        return spec({ key: 'age-' + n, prompt: `Wie alt? (${n})`, text: `Il mio cane ha ___ anni.`, so: SO(null, 'Il mio cane ha', 'anni'), accept: w,
+          distractors: numWrong(n, w), explain: `${n} = ${w}. Alter mit avere.` });
+      }
+      return spec({ key: 'num-' + n, prompt: 'Schreibe die Zahl aus:', text: `${n} → ___`, accept: w, distractors: numWrong(n, w), explain: `${n} = ${w}.` });
+    },
+  });
+
   return { get, register, _int: { presente, futuro, imperfetto, gerundio, part, artDet, artInd, VERBS, N, PA } };
 })();

@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — piacere: Mi piace …</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Verben (A1) · Modul 33</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>❤️ piacere: Mi piace …</h1>
+    <p>mi piace, mi piacciono, anche a me</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m33",
+ "block": "verben-a1",
+ "title": "piacere: Mi piace …",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "<strong>piacere</strong> bedeutet „gefallen“. Statt „Ich mag Pizza“ sagt man auf Italienisch „Mir gefällt die Pizza“: <em>Mi piace la pizza.</em> Die Sache, die gefällt, ist das Subjekt. Die Person steht als <strong>Pronomen davor</strong>."
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "eine Sache / Tätigkeit",
+    "mehrere Sachen"
+   ],
+   "rows": [
+    [
+     "mir",
+     "mi piace",
+     "mi piacciono"
+    ],
+    [
+     "dir",
+     "ti piace",
+     "ti piacciono"
+    ],
+    [
+     "ihm / ihr",
+     "gli piace / le piace",
+     "gli / le piacciono"
+    ],
+    [
+     "uns",
+     "ci piace",
+     "ci piacciono"
+    ],
+    [
+     "euch",
+     "vi piace",
+     "vi piacciono"
+    ],
+    [
+     "ihnen",
+     "gli piace",
+     "gli piacciono"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Merke:</strong> Singular oder Infinitiv → <strong>piace</strong> (<em>Mi piace il caffè. Mi piace leggere.</em>). Plural → <strong>piacciono</strong> (<em>Mi piacciono i gatti.</em>). Verneinung: <em>Non mi piace …</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Mit Namen oder Betonung</strong> steht <em>a</em> + Person: <em>A Marco piace il calcio. A me piace, a te no.</em> Das betonte <em>a me</em> braucht man auch in kurzen Antworten:"
+  },
+  {
+   "type": "table",
+   "head": [
+    "Italiano",
+    "Deutsch"
+   ],
+   "rows": [
+    [
+     "Anche a me.",
+     "Mir auch."
+    ],
+    [
+     "Neanche a me.",
+     "Mir auch nicht."
+    ],
+    [
+     "A me sì / a me no.",
+     "Mir schon / mir nicht."
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Typischer Fehler:</strong> <em>Io piace</em> oder <em>anch'io</em> als Antwort auf „Mi piace …“. Richtig: <em>Mi piace … – Anche a me.</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Passato prossimo:</strong> piacere bildet das Passato mit <strong>essere</strong>. Das Partizip richtet sich nach der Sache: <em>Mi è piaciuto il film. Mi è piaciuta la festa. Mi sono piaciuti i regali. Mi sono piaciute le foto.</em>"
+  },
+  {
+   "type": "example",
+   "it": "Ieri sera mi è piaciuta molto la cena. E a te?",
+   "de": "Gestern Abend hat mir das Essen sehr gut geschmeckt. Und dir?"
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m33-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "mi",
+    "piace",
+    "piacciono",
+    "la",
+    "pizza"
+   ],
+   "solution": [
+    "mi",
+    "piace",
+    "la",
+    "pizza"
+   ],
+   "translation": "Ich mag Pizza. (Mir gefällt die Pizza.)",
+   "explain": "Eine Sache (Singular) → piace."
+  },
+  {
+   "id": "m33-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "ti",
+    "piacciono",
+    "piace",
+    "i",
+    "gatti"
+   ],
+   "solution": [
+    "ti",
+    "piacciono",
+    "i",
+    "gatti"
+   ],
+   "translation": "Magst du Katzen?",
+   "explain": "Mehrere Dinge (Plural) → piacciono."
+  },
+  {
+   "id": "m33-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "non",
+    "mi",
+    "piace",
+    "piacciono",
+    "il",
+    "caffè"
+   ],
+   "solution": [
+    "non",
+    "mi",
+    "piace",
+    "il",
+    "caffè"
+   ],
+   "translation": "Ich mag keinen Kaffee.",
+   "explain": "non steht vor mi: non mi piace."
+  },
+  {
+   "id": "m33-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "a",
+    "Marco",
+    "piace",
+    "piacciono",
+    "ballare"
+   ],
+   "solution": [
+    "a",
+    "Marco",
+    "piace",
+    "ballare"
+   ],
+   "translation": "Marco tanzt gern.",
+   "explain": "Mit Infinitiv immer piace (Singular)."
+  },
+  {
+   "id": "m33-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "gli",
+    "piacciono",
+    "piace",
+    "le",
+    "lingue"
+   ],
+   "solution": [
+    "gli",
+    "piacciono",
+    "le",
+    "lingue"
+   ],
+   "translation": "Ihm gefallen Sprachen.",
+   "explain": "gli = ihm; lingue (Plural) → piacciono."
+  },
+  {
+   "id": "m33-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "mi",
+    "è",
+    "piaciuto",
+    "piaciuta",
+    "il",
+    "film"
+   ],
+   "solution": [
+    "mi",
+    "è",
+    "piaciuto",
+    "il",
+    "film"
+   ],
+   "translation": "Der Film hat mir gefallen.",
+   "explain": "Passato mit essere; piaciuto passt sich an film (m Sg.) an."
+  },
+  {
+   "id": "m33-el-01",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Mi {0} il mare, ma non mi {1} le montagne.",
+   "blanks": [
+    {
+     "accept": "piace",
+     "distractors": [
+      "piacciono",
+      "piaccio",
+      "piaci"
+     ]
+    },
+    {
+     "accept": "piacciono",
+     "distractors": [
+      "piace",
+      "piaccio",
+      "piacete"
+     ]
+    }
+   ],
+   "explain": "il mare (Sg.) → piace; le montagne (Pl.) → piacciono."
+  },
+  {
+   "id": "m33-el-02",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} piace la musica? — Sì, {1} piace molto.",
+   "blanks": [
+    {
+     "accept": "Ti",
+     "distractors": [
+      "Mi",
+      "Gli",
+      "Le"
+     ]
+    },
+    {
+     "accept": "mi",
+     "distractors": [
+      "ti",
+      "gli",
+      "le"
+     ]
+    }
+   ],
+   "explain": "Frage mit ti (dir), Antwort mit mi (mir)."
+  },
+  {
+   "id": "m33-el-03",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "A Luca {0} piace il calcio, ad Anna {1} piace il tennis.",
+   "blanks": [
+    {
+     "accept": "gli",
+     "distractors": [
+      "le",
+      "lo",
+      "la"
+     ]
+    },
+    {
+     "accept": "le",
+     "distractors": [
+      "gli",
+      "la",
+      "lo"
+     ]
+    }
+   ],
+   "explain": "a Luca → gli; ad Anna → le."
+  },
+  {
+   "id": "m33-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Ragazzi, {0} piace cucinare? — Sì, {1} piace tanto!",
+   "blanks": [
+    {
+     "accept": "vi",
+     "distractors": [
+      "ci",
+      "gli",
+      "ti"
+     ]
+    },
+    {
+     "accept": "ci",
+     "distractors": [
+      "vi",
+      "gli",
+      "mi"
+     ]
+    }
+   ],
+   "explain": "vi = euch, ci = uns."
+  },
+  {
+   "id": "m33-el-05",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Mi piace il tè. — {0} a me! — Il caffè non mi piace. — {1} a me.",
+   "blanks": [
+    {
+     "accept": "Anche",
+     "distractors": [
+      "Neanche",
+      "Ancora",
+      "Non"
+     ]
+    },
+    {
+     "accept": "Neanche",
+     "distractors": [
+      "Anche",
+      "Ancora",
+      "Sempre"
+     ]
+    }
+   ],
+   "explain": "anche a me = mir auch; neanche a me = mir auch nicht."
+  },
+  {
+   "id": "m33-el-06",
+   "type": "EL",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Ieri mi {0} la festa, ma non mi {1} i dolci.",
+   "blanks": [
+    {
+     "accept": "è piaciuta",
+     "distractors": [
+      "è piaciuto",
+      "ha piaciuto",
+      "sono piaciuti"
+     ]
+    },
+    {
+     "accept": "sono piaciuti",
+     "distractors": [
+      "è piaciuto",
+      "sono piaciute",
+      "ha piaciuto"
+     ]
+    }
+   ],
+   "explain": "festa (f Sg.) → è piaciuta; dolci (m Pl.) → sono piaciuti."
+  },
+  {
+   "id": "m33-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "mir gefällt",
+     "it": "mi piace"
+    },
+    {
+     "de": "dir gefällt",
+     "it": "ti piace"
+    },
+    {
+     "de": "ihm gefällt",
+     "it": "gli piace"
+    },
+    {
+     "de": "ihr gefällt",
+     "it": "le piace"
+    },
+    {
+     "de": "uns gefällt",
+     "it": "ci piace"
+    },
+    {
+     "de": "euch gefällt",
+     "it": "vi piace"
+    }
+   ]
+  },
+  {
+   "id": "m33-zo-02",
+   "type": "ZO",
+   "prompt": "piace oder piacciono?",
+   "pairs": [
+    {
+     "de": "… la pizza",
+     "it": "piace"
+    },
+    {
+     "de": "… gli spaghetti",
+     "it": "piacciono"
+    },
+    {
+     "de": "… leggere",
+     "it": "piace"
+    },
+    {
+     "de": "… i cani",
+     "it": "piacciono"
+    },
+    {
+     "de": "… il cinema",
+     "it": "piace"
+    },
+    {
+     "de": "… le feste",
+     "it": "piacciono"
+    }
+   ]
+  },
+  {
+   "id": "m33-zo-03",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "Mir auch.",
+     "it": "Anche a me."
+    },
+    {
+     "de": "Mir auch nicht.",
+     "it": "Neanche a me."
+    },
+    {
+     "de": "Mir schon.",
+     "it": "A me sì."
+    },
+    {
+     "de": "Mir nicht.",
+     "it": "A me no."
+    },
+    {
+     "de": "Ich mag es sehr.",
+     "it": "Mi piace molto."
+    },
+    {
+     "de": "Ich mag es überhaupt nicht.",
+     "it": "Non mi piace per niente."
+    }
+   ]
+  },
+  {
+   "id": "m33-zo-04",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: betonte und unbetonte Form",
+   "pairs": [
+    {
+     "de": "a me piace",
+     "it": "mi piace"
+    },
+    {
+     "de": "a te piace",
+     "it": "ti piace"
+    },
+    {
+     "de": "a lui piace",
+     "it": "gli piace"
+    },
+    {
+     "de": "a lei piace",
+     "it": "le piace"
+    },
+    {
+     "de": "a noi piace",
+     "it": "ci piace"
+    },
+    {
+     "de": "a voi piace",
+     "it": "vi piace"
+    }
+   ]
+  },
+  {
+   "id": "m33-zo-05",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: Passato prossimo",
+   "pairs": [
+    {
+     "de": "il film",
+     "it": "mi è piaciuto"
+    },
+    {
+     "de": "la festa",
+     "it": "mi è piaciuta"
+    },
+    {
+     "de": "i libri",
+     "it": "mi sono piaciuti"
+    },
+    {
+     "de": "le canzoni",
+     "it": "mi sono piaciute"
+    },
+    {
+     "de": "ballare",
+     "it": "mi è piaciuto"
+    },
+    {
+     "de": "il concerto",
+     "it": "mi è piaciuto"
+    }
+   ]
+  },
+  {
+   "id": "m33-mc-01",
+   "type": "MC",
+   "prompt": "\"Mi ___ molto la cucina italiana.\"",
+   "options": [
+    "piace",
+    "piacciono",
+    "piaccio",
+    "piaci"
+   ],
+   "correctValue": "piace",
+   "explain": "la cucina (Sg.) → piace."
+  },
+  {
+   "id": "m33-mc-02",
+   "type": "MC",
+   "prompt": "\"Ti ___ i film gialli?\"",
+   "options": [
+    "piacciono",
+    "piace",
+    "piacete",
+    "piacevi"
+   ],
+   "correctValue": "piacciono",
+   "explain": "i film (Pl.) → piacciono."
+  },
+  {
+   "id": "m33-mc-03",
+   "type": "MC",
+   "prompt": "\"___ piace leggere.\" (mir)",
+   "options": [
+    "Mi",
+    "Io",
+    "Me",
+    "Ti"
+   ],
+   "correctValue": "Mi",
+   "explain": "mir = mi. Nicht: io piace."
+  },
+  {
+   "id": "m33-mc-04",
+   "type": "MC",
+   "prompt": "Wie sagt man „Ich mag keinen Fisch“?",
+   "options": [
+    "Non mi piace il pesce.",
+    "Mi non piace il pesce.",
+    "Non piace il pesce a mi.",
+    "Io non piace il pesce."
+   ],
+   "correctValue": "Non mi piace il pesce.",
+   "explain": "non steht vor mi."
+  },
+  {
+   "id": "m33-mc-05",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"A mia sorella ___ piacciono i cavalli.\"",
+   "options": [
+    "le",
+    "gli",
+    "la",
+    "lei"
+   ],
+   "correctValue": "le",
+   "explain": "a mia sorella (ihr) → le."
+  },
+  {
+   "id": "m33-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Ai miei genitori ___ piace viaggiare.\"",
+   "options": [
+    "gli",
+    "le",
+    "li",
+    "loro"
+   ],
+   "correctValue": "gli",
+   "explain": "Im Alltag: gli (ihnen). Formell: piace loro."
+  },
+  {
+   "id": "m33-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Mi piace il gelato. — ___!\" (Mir auch.)",
+   "options": [
+    "Anche a me",
+    "Anche io",
+    "Anch'io mi",
+    "Anche mi"
+   ],
+   "correctValue": "Anche a me",
+   "explain": "Bei piacere: anche a me (nicht anch'io)."
+  },
+  {
+   "id": "m33-mc-08",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"___ piacciono i dolci?\" (euch)",
+   "options": [
+    "Vi",
+    "Ci",
+    "Gli",
+    "Voi"
+   ],
+   "correctValue": "Vi",
+   "explain": "euch = vi."
+  },
+  {
+   "id": "m33-mc-09",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"Ti ___ il concerto ieri?\"",
+   "options": [
+    "è piaciuto",
+    "ha piaciuto",
+    "è piaciuta",
+    "sei piaciuto"
+   ],
+   "correctValue": "è piaciuto",
+   "explain": "piacere bildet das Passato mit essere: è piaciuto (concerto m Sg.)."
+  },
+  {
+   "id": "m33-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"Mi ___ le tue foto.\"",
+   "options": [
+    "sono piaciute",
+    "è piaciuto",
+    "sono piaciuti",
+    "ho piaciuto"
+   ],
+   "correctValue": "sono piaciute",
+   "explain": "foto ist feminin Plural (le foto) → sono piaciute."
+  },
+  {
+   "id": "m33-lt-01",
+   "type": "LT",
+   "text": "Mi {0} il mare e mi {1} le spiagge.",
+   "blanks": [
+    {
+     "accept": [
+      "piace"
+     ]
+    },
+    {
+     "accept": [
+      "piacciono"
+     ]
+    }
+   ],
+   "explain": "Singular → piace, Plural → piacciono.",
+   "prompt": "Setze piace oder piacciono ein:"
+  },
+  {
+   "id": "m33-lt-02",
+   "type": "LT",
+   "stufe": 2,
+   "text": "A Paolo {0} piace il jazz, a Giulia {1} piace il rock.",
+   "blanks": [
+    {
+     "accept": [
+      "gli"
+     ]
+    },
+    {
+     "accept": [
+      "le"
+     ]
+    }
+   ],
+   "explain": "a Paolo → gli; a Giulia → le.",
+   "prompt": "Setze das Pronomen ein:"
+  },
+  {
+   "id": "m33-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Ci {0} cucinare, ma non ci {1} lavare i piatti.",
+   "blanks": [
+    {
+     "accept": [
+      "piace"
+     ]
+    },
+    {
+     "accept": [
+      "piace"
+     ]
+    }
+   ],
+   "explain": "Infinitive → immer piace.",
+   "prompt": "Setze piace oder piacciono ein:"
+  },
+  {
+   "id": "m33-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "Il libro mi è {0}, ma le storie non mi sono {1}.",
+   "blanks": [
+    {
+     "accept": [
+      "piaciuto"
+     ]
+    },
+    {
+     "accept": [
+      "piaciute"
+     ]
+    }
+   ],
+   "explain": "libro (m Sg.) → piaciuto; storie (f Pl.) → piaciute.",
+   "prompt": "Setze das Partizip von piacere ein:"
+  },
+  {
+   "id": "m33-ft-01",
+   "type": "FT",
+   "prompt": "Setze das Pronomen ein: „… piace la pizza.“",
+   "rows": [
+    {
+     "label": "mir",
+     "accept": [
+      "mi"
+     ]
+    },
+    {
+     "label": "dir",
+     "accept": [
+      "ti"
+     ]
+    },
+    {
+     "label": "ihm",
+     "accept": [
+      "gli"
+     ]
+    },
+    {
+     "label": "ihr",
+     "accept": [
+      "le"
+     ]
+    },
+    {
+     "label": "uns",
+     "accept": [
+      "ci"
+     ]
+    },
+    {
+     "label": "euch",
+     "accept": [
+      "vi"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m33-ft-02",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "piace oder piacciono?",
+   "rows": [
+    {
+     "label": "… il calcio",
+     "accept": [
+      "piace"
+     ]
+    },
+    {
+     "label": "… i libri",
+     "accept": [
+      "piacciono"
+     ]
+    },
+    {
+     "label": "… nuotare",
+     "accept": [
+      "piace"
+     ]
+    },
+    {
+     "label": "… le mele",
+     "accept": [
+      "piacciono"
+     ]
+    },
+    {
+     "label": "… la musica",
+     "accept": [
+      "piace"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m33-ft-03",
+   "type": "FT",
+   "stufe": 3,
+   "prompt": "Passato: Mi è / sono …",
+   "rows": [
+    {
+     "label": "il film",
+     "accept": [
+      "mi è piaciuto"
+     ]
+    },
+    {
+     "label": "la città",
+     "accept": [
+      "mi è piaciuta"
+     ]
+    },
+    {
+     "label": "i musei",
+     "accept": [
+      "mi sono piaciuti"
+     ]
+    },
+    {
+     "label": "le spiagge",
+     "accept": [
+      "mi sono piaciute"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m33-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Mi piacciono la pizza.",
+   "solution": "Mi piace la pizza.",
+   "errorToken": "piacciono",
+   "explain": "la pizza ist Singular → piace."
+  },
+  {
+   "id": "m33-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Io piace il calcio.",
+   "solution": "Mi piace il calcio.",
+   "errorToken": "Io piace",
+   "explain": "Wer etwas mag, steht im Dativ: mi piace."
+  },
+  {
+   "id": "m33-fk-03",
+   "type": "FK",
+   "stufe": 3,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Mi ha piaciuto il film.",
+   "solution": "Mi è piaciuto il film.",
+   "errorToken": "ha piaciuto",
+   "explain": "piacere bildet das Passato mit essere."
+  },
+  {
+   "id": "m33-ka-01",
+   "type": "KA",
+   "prompt": "piace oder piacciono?",
+   "categories": [
+    "piace",
+    "piacciono"
+   ],
+   "items": [
+    {
+     "text": "la musica",
+     "cat": 0
+    },
+    {
+     "text": "i fumetti",
+     "cat": 1
+    },
+    {
+     "text": "viaggiare",
+     "cat": 0
+    },
+    {
+     "text": "le vacanze",
+     "cat": 1
+    },
+    {
+     "text": "il gelato",
+     "cat": 0
+    },
+    {
+     "text": "gli animali",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m33-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "gli oder le?",
+   "categories": [
+    "gli (ihm)",
+    "le (ihr)"
+   ],
+   "items": [
+    {
+     "text": "a Marco",
+     "cat": 0
+    },
+    {
+     "text": "a mia madre",
+     "cat": 1
+    },
+    {
+     "text": "a Luca",
+     "cat": 0
+    },
+    {
+     "text": "ad Anna",
+     "cat": 1
+    },
+    {
+     "text": "al professore",
+     "cat": 0
+    },
+    {
+     "text": "alla professoressa",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m33-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "è piaciuto/a oder sono piaciuti/e?",
+   "categories": [
+    "è piaciuto / è piaciuta",
+    "sono piaciuti / sono piaciute"
+   ],
+   "items": [
+    {
+     "text": "il film",
+     "cat": 0
+    },
+    {
+     "text": "le foto",
+     "cat": 1
+    },
+    {
+     "text": "la cena",
+     "cat": 0
+    },
+    {
+     "text": "i regali",
+     "cat": 1
+    },
+    {
+     "text": "ballare",
+     "cat": 0
+    },
+    {
+     "text": "gli spettacoli",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m33-ko-01",
+   "type": "KO",
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "Mi piace il libro.",
+    "tag": "eine Sache"
+   },
+   "b": {
+    "sentence": "Mi piacciono i libri.",
+    "tag": "mehrere Sachen"
+   },
+   "reveal": "Das Verb richtet sich nach der Sache, die gefällt (sie ist das Subjekt): il libro → piace, i libri → piacciono. Die Person, der etwas gefällt, steht als Pronomen davor: mi, ti, gli, le, ci, vi."
+  },
+  {
+   "id": "m33-de-01",
+   "type": "DE",
+   "prompt": "\"Ich mag Pizza, aber ich mag keine Oliven.\"",
+   "solutions": [
+    "Mi piace la pizza, ma non mi piacciono le olive."
+   ],
+   "note": "la pizza → piace; le olive → piacciono."
+  },
+  {
+   "id": "m33-de-02",
+   "type": "DE",
+   "stufe": 2,
+   "prompt": "\"Meine Schwester reist gern. Mir auch!\"",
+   "solutions": [
+    "A mia sorella piace viaggiare. Anche a me!"
+   ],
+   "note": "a mia sorella → piace + Infinitiv; anche a me."
+  },
+  {
+   "id": "m33-it-01",
+   "type": "IT",
+   "prompt": "\"Ti piacciono gli animali?\"",
+   "solutions": [
+    "Magst du Tiere?",
+    "Gefallen dir Tiere?"
+   ],
+   "note": "piacciono, weil gli animali Plural ist."
+  },
+  {
+   "id": "m33-it-02",
+   "type": "IT",
+   "stufe": 3,
+   "prompt": "\"La vacanza ci è piaciuta tanto.\"",
+   "solutions": [
+    "Der Urlaub hat uns sehr gefallen."
+   ],
+   "note": "Passato: è piaciuta (vacanza f Sg.)."
+  },
+  {
+   "id": "m33-sr-01",
+   "type": "SR",
+   "it": "Mi piace molto la musica italiana.",
+   "de": "Ich mag italienische Musik sehr."
+  },
+  {
+   "id": "m33-sr-02",
+   "type": "SR",
+   "it": "Non mi piacciono i film dell'orrore.",
+   "de": "Ich mag keine Horrorfilme."
+  },
+  {
+   "id": "m33-sr-03",
+   "type": "SR",
+   "stufe": 2,
+   "it": "A mio fratello piace giocare a calcio.",
+   "de": "Mein Bruder spielt gern Fußball."
+  },
+  {
+   "id": "m33-st-01",
+   "type": "ST",
+   "de": "Magst du Eis?",
+   "solutions": [
+    "Ti piace il gelato?"
+   ],
+   "note": "il gelato (Sg.) → piace."
+  },
+  {
+   "id": "m33-st-02",
+   "type": "ST",
+   "stufe": 2,
+   "de": "Uns gefallen die Bücher.",
+   "solutions": [
+    "Ci piacciono i libri."
+   ],
+   "note": "ci = uns; i libri → piacciono."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

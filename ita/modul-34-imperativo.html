@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — Imperativ</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Verben (A1) · Modul 34</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>📣 Imperativ</h1>
+    <p>parla! prendi! non parlare! und die Höflichkeitsform</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m34",
+ "block": "verben-a1",
+ "title": "Imperativ",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "Mit dem <strong>Imperativ</strong> gibt man Aufforderungen, Anweisungen und Tipps. Für <strong>voi</strong> und <strong>noi</strong> nimmt man einfach die Präsensform. Nur die <strong>tu</strong>-Form der Verben auf -are ist anders."
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "parlare",
+    "prendere",
+    "sentire",
+    "finire"
+   ],
+   "rows": [
+    [
+     "tu",
+     "parl<strong>a</strong>!",
+     "prend<strong>i</strong>!",
+     "sent<strong>i</strong>!",
+     "fin<strong>isci</strong>!"
+    ],
+    [
+     "noi",
+     "parliamo!",
+     "prendiamo!",
+     "sentiamo!",
+     "finiamo!"
+    ],
+    [
+     "voi",
+     "parlate!",
+     "prendete!",
+     "sentite!",
+     "finite!"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Merke:</strong> -are → tu <strong>-a</strong> (parla!). -ere und -ire → tu <strong>-i</strong> (prendi! senti!). Die noi-Form heißt „lass(t) uns …“: <em>Andiamo!</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Verbote:</strong> Bei tu steht <strong>non + Infinitiv</strong>: <em>Non parlare! Non andare!</em> Bei voi bleibt die normale Form: <em>Non parlate!</em>"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Unregelmäßige tu-Formen:</strong>"
+  },
+  {
+   "type": "table",
+   "head": [
+    "Verb",
+    "tu",
+    "voi"
+   ],
+   "rows": [
+    [
+     "andare",
+     "vai! / va'!",
+     "andate!"
+    ],
+    [
+     "fare",
+     "fai! / fa'!",
+     "fate!"
+    ],
+    [
+     "stare",
+     "stai! / sta'!",
+     "state!"
+    ],
+    [
+     "dare",
+     "dai! / da'!",
+     "date!"
+    ],
+    [
+     "dire",
+     "di'!",
+     "dite!"
+    ],
+    [
+     "essere",
+     "sii!",
+     "siate!"
+    ],
+    [
+     "avere",
+     "abbi!",
+     "abbiate!"
+    ],
+    [
+     "venire",
+     "vieni!",
+     "venite!"
+    ]
+   ]
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Imperativ mit Pronomen:</strong> Pronomen werden an die tu-, noi- und voi-Form angehängt: <em>Aspettami! Alzati! Siediti!</em> Bei den kurzen Formen da', di', fa', sta', va' wird der Konsonant verdoppelt: <em>dammi, dimmi, fammi</em>."
+  },
+  {
+   "type": "text",
+   "html": "<strong>Höflichkeitsform (Lei):</strong> -are → <strong>-i</strong>, -ere/-ire → <strong>-a</strong>: <em>Scusi! Prenda! Senta! Entri!</em> Häufig: <em>venga, vada, faccia, dica</em>."
+  },
+  {
+   "type": "example",
+   "it": "Senti, aspettami un momento e non andare via!",
+   "de": "Hör mal, warte kurz auf mich und geh nicht weg!"
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m34-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "parla",
+    "più",
+    "piano",
+    "parli",
+    "parlare"
+   ],
+   "solution": [
+    "parla",
+    "più",
+    "piano"
+   ],
+   "translation": "Sprich leiser!",
+   "explain": "Imperativ tu bei -are: parla (Endung -a)."
+  },
+  {
+   "id": "m34-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "prendi",
+    "un",
+    "caffè",
+    "prende",
+    "prendo"
+   ],
+   "solution": [
+    "prendi",
+    "un",
+    "caffè"
+   ],
+   "translation": "Nimm einen Kaffee!",
+   "explain": "Imperativ tu bei -ere: prendi."
+  },
+  {
+   "id": "m34-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "aprite",
+    "la",
+    "finestra",
+    "aprire",
+    "apri"
+   ],
+   "solution": [
+    "aprite",
+    "la",
+    "finestra"
+   ],
+   "translation": "Macht das Fenster auf!",
+   "explain": "Imperativ voi = Präsensform: aprite."
+  },
+  {
+   "id": "m34-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "non",
+    "toccare",
+    "tocca",
+    "toccate"
+   ],
+   "solution": [
+    "non",
+    "toccare"
+   ],
+   "translation": "Fass das nicht an! (du)",
+   "explain": "Verneinter Imperativ tu: non + Infinitiv."
+  },
+  {
+   "id": "m34-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "vieni",
+    "qui",
+    "subito",
+    "viene",
+    "venga"
+   ],
+   "solution": [
+    "vieni",
+    "qui",
+    "subito"
+   ],
+   "translation": "Komm sofort her!",
+   "explain": "venire, tu → vieni."
+  },
+  {
+   "id": "m34-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "dimmi",
+    "la",
+    "verità",
+    "dici",
+    "di"
+   ],
+   "solution": [
+    "dimmi",
+    "la",
+    "verità"
+   ],
+   "translation": "Sag mir die Wahrheit!",
+   "explain": "di' + mi → dimmi (Doppel-m)."
+  },
+  {
+   "id": "m34-el-01",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} attenzione e {1} la lezione!",
+   "blanks": [
+    {
+     "accept": "Fai",
+     "distractors": [
+      "Faccia",
+      "Fate",
+      "Fare"
+     ]
+    },
+    {
+     "accept": "ascolta",
+     "distractors": [
+      "ascolti",
+      "ascoltare",
+      "ascolto"
+     ]
+    }
+   ],
+   "explain": "fare, tu → fai (oder fa'); ascoltare, tu → ascolta."
+  },
+  {
+   "id": "m34-el-02",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Ragazzi, {0} il libro e {1} a pagina dieci!",
+   "blanks": [
+    {
+     "accept": "aprite",
+     "distractors": [
+      "aprire",
+      "apri",
+      "aprono"
+     ]
+    },
+    {
+     "accept": "leggete",
+     "distractors": [
+      "leggi",
+      "leggere",
+      "leggono"
+     ]
+    }
+   ],
+   "explain": "voi: aprite, leggete (wie im Präsens)."
+  },
+  {
+   "id": "m34-el-03",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Marco, {0} il pane e {1} la tavola!",
+   "blanks": [
+    {
+     "accept": "compra",
+     "distractors": [
+      "compri",
+      "comprare",
+      "compro"
+     ]
+    },
+    {
+     "accept": "prepara",
+     "distractors": [
+      "prepari",
+      "preparare",
+      "preparo"
+     ]
+    }
+   ],
+   "explain": "tu bei -are: compra, prepara."
+  },
+  {
+   "id": "m34-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Non {0} così tardi e non {1} troppo!",
+   "blanks": [
+    {
+     "accept": "tornare",
+     "distractors": [
+      "torna",
+      "torni",
+      "tornate"
+     ]
+    },
+    {
+     "accept": "mangiare",
+     "distractors": [
+      "mangia",
+      "mangi",
+      "mangiate"
+     ]
+    }
+   ],
+   "explain": "Verneinung tu: non + Infinitiv."
+  },
+  {
+   "id": "m34-el-05",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} qui e {1} tranquillo!",
+   "blanks": [
+    {
+     "accept": "Vieni",
+     "distractors": [
+      "Viene",
+      "Venga",
+      "Venite"
+     ]
+    },
+    {
+     "accept": "stai",
+     "distractors": [
+      "stato",
+      "stia",
+      "stare"
+     ]
+    }
+   ],
+   "explain": "venire → vieni; stare → stai (oder sta')."
+  },
+  {
+   "id": "m34-el-06",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Bambini, non {0} e {1} buoni!",
+   "blanks": [
+    {
+     "accept": "gridate",
+     "distractors": [
+      "gridare",
+      "grida",
+      "gridi"
+     ]
+    },
+    {
+     "accept": "siate",
+     "distractors": [
+      "siete",
+      "sii",
+      "essere"
+     ]
+    }
+   ],
+   "explain": "voi verneint: non gridate. essere → siate."
+  },
+  {
+   "id": "m34-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne zu: Imperativ tu",
+   "pairs": [
+    {
+     "de": "parlare",
+     "it": "parla!"
+    },
+    {
+     "de": "prendere",
+     "it": "prendi!"
+    },
+    {
+     "de": "sentire",
+     "it": "senti!"
+    },
+    {
+     "de": "finire",
+     "it": "finisci!"
+    },
+    {
+     "de": "guardare",
+     "it": "guarda!"
+    },
+    {
+     "de": "scrivere",
+     "it": "scrivi!"
+    }
+   ]
+  },
+  {
+   "id": "m34-zo-02",
+   "type": "ZO",
+   "prompt": "Ordne zu: Imperativ voi",
+   "pairs": [
+    {
+     "de": "parlare",
+     "it": "parlate!"
+    },
+    {
+     "de": "prendere",
+     "it": "prendete!"
+    },
+    {
+     "de": "sentire",
+     "it": "sentite!"
+    },
+    {
+     "de": "finire",
+     "it": "finite!"
+    },
+    {
+     "de": "venire",
+     "it": "venite!"
+    },
+    {
+     "de": "fare",
+     "it": "fate!"
+    }
+   ]
+  },
+  {
+   "id": "m34-zo-03",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: unregelmäßige Formen (tu)",
+   "pairs": [
+    {
+     "de": "andare",
+     "it": "vai! / va'!"
+    },
+    {
+     "de": "fare",
+     "it": "fai! / fa'!"
+    },
+    {
+     "de": "dire",
+     "it": "di'!"
+    },
+    {
+     "de": "essere",
+     "it": "sii!"
+    },
+    {
+     "de": "avere",
+     "it": "abbi!"
+    },
+    {
+     "de": "venire",
+     "it": "vieni!"
+    }
+   ]
+  },
+  {
+   "id": "m34-zo-04",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: Verbote (tu)",
+   "pairs": [
+    {
+     "de": "Rede nicht!",
+     "it": "Non parlare!"
+    },
+    {
+     "de": "Geh nicht!",
+     "it": "Non andare!"
+    },
+    {
+     "de": "Mach das nicht!",
+     "it": "Non farlo!"
+    },
+    {
+     "de": "Trink nicht!",
+     "it": "Non bere!"
+    },
+    {
+     "de": "Komm nicht!",
+     "it": "Non venire!"
+    },
+    {
+     "de": "Hab keine Angst!",
+     "it": "Non avere paura!"
+    }
+   ]
+  },
+  {
+   "id": "m34-zo-05",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: Imperativ mit Pronomen",
+   "pairs": [
+    {
+     "de": "Sag mir!",
+     "it": "Dimmi!"
+    },
+    {
+     "de": "Gib mir!",
+     "it": "Dammi!"
+    },
+    {
+     "de": "Warte auf mich!",
+     "it": "Aspettami!"
+    },
+    {
+     "de": "Steh auf!",
+     "it": "Alzati!"
+    },
+    {
+     "de": "Setz dich!",
+     "it": "Siediti!"
+    },
+    {
+     "de": "Mach dir keine Sorgen!",
+     "it": "Non preoccuparti!"
+    }
+   ]
+  },
+  {
+   "id": "m34-mc-01",
+   "type": "MC",
+   "prompt": "Imperativ tu von guardare: \"___ questa foto!\"",
+   "options": [
+    "Guarda",
+    "Guardi",
+    "Guardare",
+    "Guardo"
+   ],
+   "correctValue": "Guarda",
+   "explain": "-are: tu → -a."
+  },
+  {
+   "id": "m34-mc-02",
+   "type": "MC",
+   "prompt": "Imperativ tu von scrivere: \"___ una mail a Paolo!\"",
+   "options": [
+    "Scrivi",
+    "Scriva",
+    "Scrive",
+    "Scrivere"
+   ],
+   "correctValue": "Scrivi",
+   "explain": "-ere: tu → -i."
+  },
+  {
+   "id": "m34-mc-03",
+   "type": "MC",
+   "prompt": "Imperativ voi von ascoltare: \"Ragazzi, ___!\"",
+   "options": [
+    "ascoltate",
+    "ascolta",
+    "ascoltare",
+    "ascoltiamo"
+   ],
+   "correctValue": "ascoltate",
+   "explain": "voi = Präsensform."
+  },
+  {
+   "id": "m34-mc-04",
+   "type": "MC",
+   "prompt": "„Lass uns gehen!“",
+   "options": [
+    "Andiamo!",
+    "Andate!",
+    "Vai!",
+    "Andare!"
+   ],
+   "correctValue": "Andiamo!",
+   "explain": "noi-Form = Präsens: andiamo! (Lass uns gehen!)"
+  },
+  {
+   "id": "m34-mc-05",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Verbot (tu): \"Non ___!\" (piangere)",
+   "options": [
+    "piangere",
+    "piangi",
+    "piange",
+    "piangete"
+   ],
+   "correctValue": "piangere",
+   "explain": "Verneinter Imperativ tu: non + Infinitiv."
+  },
+  {
+   "id": "m34-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Imperativ tu von finire: \"___ i compiti!\"",
+   "options": [
+    "Finisci",
+    "Finisca",
+    "Fini",
+    "Finire"
+   ],
+   "correctValue": "Finisci",
+   "explain": "Verben mit -isc-: finisci!"
+  },
+  {
+   "id": "m34-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Imperativ tu von essere: \"___ gentile!\"",
+   "options": [
+    "Sii",
+    "Sei",
+    "Sia",
+    "Essere"
+   ],
+   "correctValue": "Sii",
+   "explain": "essere, tu → sii."
+  },
+  {
+   "id": "m34-mc-08",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Imperativ tu von andare: \"___ a dormire!\"",
+   "options": [
+    "Vai",
+    "Vada",
+    "Andare",
+    "Andi"
+   ],
+   "correctValue": "Vai",
+   "explain": "andare, tu → vai (oder va')."
+  },
+  {
+   "id": "m34-mc-09",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Höflich (Lei): \"___, dov'è la stazione?\" (scusare)",
+   "options": [
+    "Scusi",
+    "Scusa",
+    "Scusate",
+    "Scusare"
+   ],
+   "correctValue": "Scusi",
+   "explain": "Lei-Form: -are → -i (scusi), -ere/-ire → -a (prenda, senta)."
+  },
+  {
+   "id": "m34-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"___ il libro!\" (gib mir, tu)",
+   "options": [
+    "Dammi",
+    "Dami",
+    "Mi dai",
+    "Dai mi"
+   ],
+   "correctValue": "Dammi",
+   "explain": "da' + mi → dammi."
+  },
+  {
+   "id": "m34-lt-01",
+   "type": "LT",
+   "text": "Luca, {0} la porta e {1} la luce!",
+   "blanks": [
+    {
+     "accept": [
+      "chiudi"
+     ]
+    },
+    {
+     "accept": [
+      "spegni"
+     ]
+    }
+   ],
+   "explain": "chiudere → chiudi; spegnere → spegni.",
+   "prompt": "Setze den Imperativ (tu) ein: chiudere, spegnere"
+  },
+  {
+   "id": "m34-lt-02",
+   "type": "LT",
+   "text": "Ragazzi, {0} piano e {1} bene!",
+   "blanks": [
+    {
+     "accept": [
+      "parlate"
+     ]
+    },
+    {
+     "accept": [
+      "ascoltate"
+     ]
+    }
+   ],
+   "explain": "voi: parlate, ascoltate.",
+   "prompt": "Setze den Imperativ (voi) ein: parlare, ascoltare"
+  },
+  {
+   "id": "m34-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Non {0} paura e {1} con noi!",
+   "blanks": [
+    {
+     "accept": [
+      "avere"
+     ]
+    },
+    {
+     "accept": [
+      "vieni"
+     ]
+    }
+   ],
+   "explain": "Verbot: non avere; venire → vieni.",
+   "prompt": "Setze den Imperativ (tu) ein: avere, venire"
+  },
+  {
+   "id": "m34-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "Signora, {0} pure e {1} qui!",
+   "blanks": [
+    {
+     "accept": [
+      "entri"
+     ]
+    },
+    {
+     "accept": [
+      "si sieda"
+     ]
+    }
+   ],
+   "explain": "Lei-Form: entri; sedersi → si sieda.",
+   "prompt": "Setze die Höflichkeitsform (Lei) ein: entrare, sedersi"
+  },
+  {
+   "id": "m34-ft-01",
+   "type": "FT",
+   "prompt": "Bilde den Imperativ (tu):",
+   "rows": [
+    {
+     "label": "parlare",
+     "accept": [
+      "parla"
+     ]
+    },
+    {
+     "label": "mangiare",
+     "accept": [
+      "mangia"
+     ]
+    },
+    {
+     "label": "prendere",
+     "accept": [
+      "prendi"
+     ]
+    },
+    {
+     "label": "dormire",
+     "accept": [
+      "dormi"
+     ]
+    },
+    {
+     "label": "finire",
+     "accept": [
+      "finisci"
+     ]
+    },
+    {
+     "label": "leggere",
+     "accept": [
+      "leggi"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m34-ft-02",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "Verneine (tu):",
+   "rows": [
+    {
+     "label": "parla!",
+     "accept": [
+      "non parlare"
+     ]
+    },
+    {
+     "label": "vai!",
+     "accept": [
+      "non andare"
+     ]
+    },
+    {
+     "label": "mangia!",
+     "accept": [
+      "non mangiare"
+     ]
+    },
+    {
+     "label": "fai!",
+     "accept": [
+      "non fare"
+     ]
+    },
+    {
+     "label": "vieni!",
+     "accept": [
+      "non venire"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m34-ft-03",
+   "type": "FT",
+   "stufe": 3,
+   "prompt": "Höflichkeitsform (Lei):",
+   "rows": [
+    {
+     "label": "parlare",
+     "accept": [
+      "parli"
+     ]
+    },
+    {
+     "label": "prendere",
+     "accept": [
+      "prenda"
+     ]
+    },
+    {
+     "label": "sentire",
+     "accept": [
+      "senta"
+     ]
+    },
+    {
+     "label": "scusare",
+     "accept": [
+      "scusi"
+     ]
+    },
+    {
+     "label": "venire",
+     "accept": [
+      "venga"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m34-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Marco, mangi la verdura!",
+   "solution": "Marco, mangia la verdura!",
+   "errorToken": "mangi",
+   "explain": "Imperativ tu bei -are endet auf -a."
+  },
+  {
+   "id": "m34-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Non parla così forte!",
+   "solution": "Non parlare così forte!",
+   "errorToken": "parla",
+   "explain": "Verbot (tu): non + Infinitiv."
+  },
+  {
+   "id": "m34-fk-03",
+   "type": "FK",
+   "stufe": 3,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Dimi tutto!",
+   "solution": "Dimmi tutto!",
+   "errorToken": "Dimi",
+   "explain": "di' + mi → dimmi (Doppelkonsonant)."
+  },
+  {
+   "id": "m34-ka-01",
+   "type": "KA",
+   "prompt": "Imperativ tu: Endung -a oder -i?",
+   "categories": [
+    "-a (Verben auf -are)",
+    "-i (Verben auf -ere/-ire)"
+   ],
+   "items": [
+    {
+     "text": "parlare",
+     "cat": 0
+    },
+    {
+     "text": "prendere",
+     "cat": 1
+    },
+    {
+     "text": "guardare",
+     "cat": 0
+    },
+    {
+     "text": "dormire",
+     "cat": 1
+    },
+    {
+     "text": "cantare",
+     "cat": 0
+    },
+    {
+     "text": "scrivere",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m34-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "Gebot oder Verbot?",
+   "categories": [
+    "Gebot",
+    "Verbot"
+   ],
+   "items": [
+    {
+     "text": "Parla!",
+     "cat": 0
+    },
+    {
+     "text": "Non parlare!",
+     "cat": 1
+    },
+    {
+     "text": "Venite!",
+     "cat": 0
+    },
+    {
+     "text": "Non venite!",
+     "cat": 1
+    },
+    {
+     "text": "Mangia!",
+     "cat": 0
+    },
+    {
+     "text": "Non mangiare!",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m34-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "Wen spreche ich an?",
+   "categories": [
+    "tu (Freund)",
+    "Lei (höflich)"
+   ],
+   "items": [
+    {
+     "text": "Scusa!",
+     "cat": 0
+    },
+    {
+     "text": "Scusi!",
+     "cat": 1
+    },
+    {
+     "text": "Senti!",
+     "cat": 0
+    },
+    {
+     "text": "Senta!",
+     "cat": 1
+    },
+    {
+     "text": "Prendi!",
+     "cat": 0
+    },
+    {
+     "text": "Prenda!",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m34-ko-01",
+   "type": "KO",
+   "stufe": 2,
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "Parla!",
+    "tag": "Gebot (tu)"
+   },
+   "b": {
+    "sentence": "Non parlare!",
+    "tag": "Verbot (tu)"
+   },
+   "reveal": "Beim verneinten Imperativ der du-Form steht non + Infinitiv: non parlare, non andare, non fare. Bei voi bleibt die normale Form: non parlate!"
+  },
+  {
+   "id": "m34-de-01",
+   "type": "DE",
+   "prompt": "\"Mach das Fenster auf und schließ die Tür!\"",
+   "solutions": [
+    "Apri la finestra e chiudi la porta!"
+   ],
+   "note": "aprire → apri; chiudere → chiudi."
+  },
+  {
+   "id": "m34-de-02",
+   "type": "DE",
+   "stufe": 2,
+   "prompt": "\"Geh nicht weg! Bleib hier!\"",
+   "solutions": [
+    "Non andare via! Rimani qui!",
+    "Non andartene! Resta qui!",
+    "Non andare via! Resta qui!"
+   ],
+   "note": "Verbot mit non + Infinitiv; restare → resta, rimanere → rimani."
+  },
+  {
+   "id": "m34-it-01",
+   "type": "IT",
+   "prompt": "\"Ragazzi, aprite il libro e leggete il testo!\"",
+   "solutions": [
+    "Kinder, öffnet das Buch und lest den Text!",
+    "Leute, macht das Buch auf und lest den Text!"
+   ],
+   "note": "voi: aprite, leggete."
+  },
+  {
+   "id": "m34-it-02",
+   "type": "IT",
+   "stufe": 3,
+   "prompt": "\"Mi scusi, mi può aiutare?\"",
+   "solutions": [
+    "Entschuldigen Sie, können Sie mir helfen?"
+   ],
+   "note": "Lei-Form: mi scusi."
+  },
+  {
+   "id": "m34-sr-01",
+   "type": "SR",
+   "it": "Ascolta bene e ripeti la frase!",
+   "de": "Hör gut zu und wiederhole den Satz!"
+  },
+  {
+   "id": "m34-sr-02",
+   "type": "SR",
+   "stufe": 2,
+   "it": "Non avere paura, vieni con me!",
+   "de": "Hab keine Angst, komm mit mir!"
+  },
+  {
+   "id": "m34-sr-03",
+   "type": "SR",
+   "stufe": 3,
+   "it": "Scusi, mi dica dov'è il museo.",
+   "de": "Entschuldigen Sie, sagen Sie mir, wo das Museum ist."
+  },
+  {
+   "id": "m34-st-01",
+   "type": "ST",
+   "de": "Iss den Apfel! (du)",
+   "solutions": [
+    "Mangia la mela!"
+   ],
+   "note": "-are: tu → -a."
+  },
+  {
+   "id": "m34-st-02",
+   "type": "ST",
+   "stufe": 2,
+   "de": "Sprich nicht so schnell! (du)",
+   "solutions": [
+    "Non parlare così veloce!",
+    "Non parlare così velocemente!",
+    "Non parlare così in fretta!"
+   ],
+   "note": "Verbot: non + Infinitiv."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
