@@ -79,70 +79,70 @@ const MODULE = {
   exercises: [
 
     /* === SO 2 — mit Ablenkungstokens === */
-    { id:'m25-so-01', type:'SO',
+    { id:'m25-so-01', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['me', 'te', 'lo', 'do', 'subito', 'glielo'],
       solution:['me', 'lo', 'do', 'subito'],
       translation:'Ich gebe es dir sofort.',
       explain:'me lo = mir es (indir. mi→me + dir. lo). te lo wäre "dir es". Hier: "mir" → me lo.' },
 
-    { id:'m25-so-02', type:'SO',
+    { id:'m25-so-02', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['glielo', 'glieli', 'ho', 'detto', 'te lo'],
       solution:['glielo', 'ho', 'detto'],
       translation:'Ich habe es ihm/ihr gesagt.',
       explain:'glielo = gli/le + lo (m/Sg. Objekt). glieli wäre für Pl. Objekt (li). Partizip detto unveränderlich da mit avere (kein lo/la vor avere in dieser Form).' },
 
-    { id:'m25-so-03', type:'SO',
+    { id:'m25-so-03', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['te', 'me', 'la', 'do', 'domani', 'gliela'],
       solution:['te', 'la', 'do', 'domani'],
       translation:'Ich gebe sie (f) dir morgen.',
       explain:'te la = dir sie (indir. ti→te + dir. la, f/Sg.). me la wäre "mir sie" — Empfänger ist "dir" (te), nicht "mir".' },
 
-    { id:'m25-so-04', type:'SO',
+    { id:'m25-so-04', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['gliela', 'glielo', 'ho', 'mandata', 'te la'],
       solution:['gliela', 'ho', 'mandata'],
       translation:'Ich habe sie (die E-Mail, f) ihm/ihr geschickt.',
       explain:'gliela = gli/le + la (f/Sg. Objekt). glielo wäre m/Sg. Partizip mandata kongruiert mit la (f/Sg.) — typische ne-avere-Kongruenz.' },
 
-    { id:'m25-so-05', type:'SO',
+    { id:'m25-so-05', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['ce', 'te', 'lo', 'spiego', 'subito', 'glielo'],
       solution:['te', 'lo', 'spiego', 'subito'],
       translation:'Ich erkläre es dir sofort.',
       explain:'te lo = dir es (indir. ti→te + dir. lo, m/Sg.). ce lo wäre "uns es" (indir. ci→ce) — Empfänger ist "dir" (te).' },
 
-    { id:'m25-so-06', type:'SO',
+    { id:'m25-so-06', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['me', 'ce', 'li', 'ha', 'portati', 'glielo'],
       solution:['ce', 'li', 'ha', 'portati'],
       translation:'Er/Sie hat sie (Pl.) uns gebracht.',
       explain:'ce li = uns sie (indir. ci→ce + dir. li, m/Pl.). me li wäre "mir sie" — Empfänger ist "uns" (ce). Partizip kongruiert: portati (m/Pl.).' },
 
-    { id:'m25-so-07', type:'SO',
+    { id:'m25-so-07', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['ve', 'me', 'lo', 'dico', 'io', 'glielo'],
       solution:['ve', 'lo', 'dico', 'io'],
       translation:'Ich sage es euch.',
       explain:'ve lo = euch es (indir. vi→ve + dir. lo, m/Sg.). me lo wäre "mir es" — Empfänger ist "euch" (ve).' },
 
-    { id:'m25-so-08', type:'SO',
+    { id:'m25-so-08', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['gliele', 'glieli', 'ho', 'comprate', 'te le'],
       solution:['gliele', 'ho', 'comprate'],
       translation:'Ich habe sie (die Scarpe, f/Pl.) ihm/ihr gekauft.',
       explain:'gliele = gli/le + le (f/Pl. Objekt). glieli wäre m/Pl. Partizip comprate kongruiert mit le (f/Pl.).' },
 
-    { id:'m25-so-09', type:'SO',
+    { id:'m25-so-09', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['me', 'te', 'lo', 'puoi', 'prestare', 'glielo'],
       solution:['me', 'lo', 'puoi', 'prestare'],
       translation:'Kannst du es mir leihen?',
       explain:'me lo = mir es (indir. mi→me + dir. lo, m/Sg.). te lo wäre "dir es" — Empfänger ist "mir" (me).' },
 
-    { id:'m25-so-10', type:'SO',
+    { id:'m25-so-10', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['ce', 'me', 'la', 'mostra', 'gliela'],
       solution:['ce', 'la', 'mostra'],
@@ -152,70 +152,70 @@ const MODULE = {
 
 
     /* === EL 10 === */
-    { id:'m25-el-01', type:'EL',
+    { id:'m25-el-01', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Il libro? {0} do domani. La penna? {1} presto subito.',
       blanks:[{accept:'Te lo', distractors:['Me lo', 'Glielo']}, {accept:'Te la', distractors:['Me la', 'Gliela']}],
       translation:'Das Buch? Ich gebe es dir morgen. Den Stift? Ich leihe ihn dir sofort.',
       explain:'te lo = dir es (m). te la = dir sie (f).' },
 
-    { id:'m25-el-02', type:'EL',
+    { id:'m25-el-02', type:'EL', stufe:3,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'La lettera? {0} ho mandata. I fiori? {1} ho comprati.',
       blanks:[{accept:'Gliela', distractors:['Te la', 'Me la']}, {accept:'Glieli', distractors:['Te li', 'Ce li']}],
       translation:'Den Brief? Ich habe ihn ihm/ihr geschickt. Die Blumen? Ich habe sie ihm/ihr gekauft.',
       explain:'gliela = ihm/ihr sie (f). glieli = ihm/ihr sie (m/Pl.).' },
 
-    { id:'m25-el-03', type:'EL',
+    { id:'m25-el-03', type:'EL', stufe:3,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'I soldi? {0} puoi prestare. La chiave? {1} puoi dare?',
       blanks:[{accept:'Me li', distractors:['Te li', 'Ce li']}, {accept:'Me la', distractors:['Te la', 'Ce la']}],
       translation:'Das Geld? Kannst du es mir leihen? Den Schlüssel? Kannst du mir ihn geben?',
       explain:'me li = mir sie (m/Pl.). me la = mir sie (f/Sg.).' },
 
-    { id:'m25-el-04', type:'EL',
+    { id:'m25-el-04', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'La torta? {0} ha portata. Il vino? {1} ha portato.',
       blanks:[{accept:'Ce la', distractors:['Te la', 'Me la']}, {accept:'Ce lo', distractors:['Te lo', 'Me lo']}],
       translation:'Den Kuchen? Er hat ihn uns gebracht. Den Wein? Er hat ihn uns gebracht.',
       explain:'ce la = uns sie (f). ce lo = uns ihn (m).' },
 
-    { id:'m25-el-05', type:'EL',
+    { id:'m25-el-05', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Il segreto? {0} dico io. La notizia? {1} dico anch\'io.',
       blanks:[{accept:'Ve lo', distractors:['Te lo', 'Me lo']}, {accept:'Ve la', distractors:['Te la', 'Me la']}],
       translation:'Das Geheimnis? Ich sage es euch. Die Neuigkeit? Ich sage sie euch auch.',
       explain:'ve lo = euch ihn (m). ve la = euch sie (f).' },
 
-    { id:'m25-el-06', type:'EL',
+    { id:'m25-el-06', type:'EL', stufe:3,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Le scarpe? {0} ho comprate ieri. I pantaloni? {1} ho comprati oggi.',
       blanks:[{accept:'Gliele', distractors:['Te le', 'Ce le']}, {accept:'Glieli', distractors:['Te li', 'Ce li']}],
       translation:'Die Schuhe? Ich habe sie ihm/ihr gestern gekauft. Die Hosen? Ich habe sie ihm/ihr heute gekauft.',
       explain:'gliele = ihm/ihr sie (f/Pl.). glieli = ihm/ihr sie (m/Pl.).' },
 
-    { id:'m25-el-07', type:'EL',
+    { id:'m25-el-07', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'La risposta? {0} spiego subito. Il problema? {1} spiego dopo.',
       blanks:[{accept:'Te la', distractors:['Me la', 'Ce la']}, {accept:'Te lo', distractors:['Me lo', 'Ce lo']}],
       translation:'Die Antwort? Ich erkläre sie dir sofort. Das Problem? Ich erkläre es dir später.',
       explain:'te la = dir sie (f). te lo = dir ihn (m).' },
 
-    { id:'m25-el-08', type:'EL',
+    { id:'m25-el-08', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'I compiti? {0} fa la prof. Le schede? {1} dà la prof.',
       blanks:[{accept:'Ce li', distractors:['Ve li', 'Me li']}, {accept:'Ce le', distractors:['Ve le', 'Me le']}],
       translation:'Die Hausaufgaben? Die Lehrerin gibt sie uns. Die Zettel? Die Lehrerin gibt sie uns.',
       explain:'ce li = uns sie (m/Pl.). ce le = uns sie (f/Pl.).' },
 
-    { id:'m25-el-09', type:'EL',
+    { id:'m25-el-09', type:'EL', stufe:3,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Il numero? {0} puoi dare? L\'indirizzo? {1} puoi dare anche?',
       blanks:[{accept:'Me lo', distractors:['Te lo', 'Glielo']}, {accept:'Me lo', distractors:['Te lo', 'Ce lo']}],
       translation:'Die Nummer? Kannst du sie mir geben? Die Adresse? Kannst du sie mir auch geben?',
       explain:'me lo = mir ihn/es (m). Beide Nomen sind maskulin.' },
 
-    { id:'m25-el-10', type:'EL',
+    { id:'m25-el-10', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'La storia? {0} racconto io. Le barzellette? {1} racconto io.',
       blanks:[{accept:'Ve la', distractors:['Te la', 'Ce la']}, {accept:'Ve le', distractors:['Te le', 'Ce le']}],
@@ -223,7 +223,7 @@ const MODULE = {
       explain:'ve la = euch sie (f/Sg.). ve le = euch sie (f/Pl.).' },
 
     /* === ZO 9 — keine Stammwort-Matching, Hinweise in Klammern === */
-    { id:'m25-zo-01', type:'ZO',
+    { id:'m25-zo-01', type:'ZO', stufe:2,
       prompt:'Ordne zu: indirektes Pronomen → kombinierte Form mit lo',
       pairs:[
         { de:'mi (mir) + lo →',    it:'me lo'   },
@@ -234,7 +234,7 @@ const MODULE = {
         { de:'gli (ihnen) + lo →', it:'glielo'  },
       ] },
 
-    { id:'m25-zo-02', type:'ZO',
+    { id:'m25-zo-02', type:'ZO', stufe:2,
       prompt:'Ordne zu: Satz → kombiniertes Pronomen',
       pairs:[
         { de:'Ich gebe es dir. (lo + ti)',       it:'te lo do'      },
@@ -245,7 +245,7 @@ const MODULE = {
         { de:'Er bringt sie mir. (la + mi)',      it:'me la porta'   },
       ] },
 
-    { id:'m25-zo-03', type:'ZO',
+    { id:'m25-zo-03', type:'ZO', stufe:3,
       prompt:'Ordne zu: kombiniertes Pronomen → Bedeutung',
       pairs:[
         { de:'me lo',   it:'es mir (m/Sg.)'          },
@@ -256,7 +256,7 @@ const MODULE = {
         { de:'gliene',  it:'davon ihm/ihr/ihnen'       },
       ] },
 
-    { id:'m25-zo-04', type:'ZO',
+    { id:'m25-zo-04', type:'ZO', stufe:3,
       prompt:'Ordne zu: ne-Kombination → Deutsch',
       pairs:[
         { de:'me ne parla',  it:'er spricht mit mir darüber'    },
@@ -267,7 +267,7 @@ const MODULE = {
         { de:'gliene ha dato',it:'er hat ihm/ihr davon gegeben' },
       ] },
 
-    { id:'m25-zo-05', type:'ZO',
+    { id:'m25-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu: Position bei Modalverb (vor Modal oder an Infinitiv)',
       pairs:[
         { de:'Ich will es dir erklären. (vor Modal)', it:'Te lo voglio spiegare.'   },
@@ -278,7 +278,7 @@ const MODULE = {
         { de:'Kannst du es mir geben? (an Inf.)',     it:'Puoi darmelo?'            },
       ] },
 
-    { id:'m25-zo-06', type:'ZO',
+    { id:'m25-zo-06', type:'ZO', stufe:3,
       prompt:'Ordne zu: Partizip-Kongruenz mit kombiniertem Pronomen',
       pairs:[
         { de:'Me + lo → Partizip -o (il libro)',    it:'Me l\'ha dato.'        },
@@ -289,7 +289,7 @@ const MODULE = {
         { de:'Glielo → Partizip -o (il regalo)',   it:'Glielo ho mandato.'    },
       ] },
 
-    { id:'m25-zo-07', type:'ZO',
+    { id:'m25-zo-07', type:'ZO', stufe:3,
       prompt:'Ordne zu: Satz → Deutsch',
       pairs:[
         { de:'Me lo ha spiegato.',      it:'Er hat es mir erklärt.'               },
@@ -300,7 +300,7 @@ const MODULE = {
         { de:'Glielo puoi dire?',        it:'Kannst du es ihm/ihr sagen?'          },
       ] },
 
-    { id:'m25-zo-08', type:'ZO',
+    { id:'m25-zo-08', type:'ZO', stufe:2,
       prompt:'Ordne zu: lo/la/li/le in glielo/gliela/glieli/gliele',
       pairs:[
         { de:'il libro (m/Sg.) → gli +',    it:'glielo'  },
@@ -311,7 +311,7 @@ const MODULE = {
         { de:'la chiave (f/Sg.) → gli +',   it:'gliela'  },
       ] },
 
-    { id:'m25-zo-09', type:'ZO',
+    { id:'m25-zo-09', type:'ZO', stufe:2,
       prompt:'Ordne zu: Frage → Antwort mit kombiniertem Pronomen',
       pairs:[
         { de:'Mi dai il libro?',         it:'Sì, te lo do.'          },
@@ -335,37 +335,37 @@ const MODULE = {
       correctValue:'Me lo',
       explain:'mi + lo → me lo. "mi" wird zu "me" vor direktem Pronomen.' },
 
-    { id:'m25-mc-03', type:'MC',
+    { id:'m25-mc-03', type:'MC', stufe:2,
       prompt:'"___ dico adesso." (Ich sage es ihr — lo + le)',
       options:['Le lo','Glielo','Gli lo','Ce lo'],
       correctValue:'Glielo',
       explain:'le + lo → glielo (ein Wort, kein Leerzeichen). Gilt für ihm, ihr und ihnen.' },
 
-    { id:'m25-mc-04', type:'MC',
+    { id:'m25-mc-04', type:'MC', stufe:3,
       prompt:'"___ ha dati." (Er hat sie uns gegeben — li + ci)',
       options:['Ci li','Ce le','Ce li','Gli li'],
       correctValue:'Ce li',
       explain:'ci + li → ce li. i documenti (m/Pl.) → li. Partizip: dati (m/Pl.).' },
 
-    { id:'m25-mc-05', type:'MC',
+    { id:'m25-mc-05', type:'MC', stufe:3,
       prompt:'Partizip-Kongruenz: "Me ___ ha data." (la lettera, f/Sg.)',
       options:['lo','la','l\'','li'],
       correctValue:'l\'',
       explain:'la lettera (f) → la → vor ha: me l\'ha data. Elision, Partizip: data (-a).' },
 
-    { id:'m25-mc-06', type:'MC',
+    { id:'m25-mc-06', type:'MC', stufe:3,
       prompt:'"Gliel___ ho mandate." (le foto, f/Pl.)',
       options:['o','a','i','e'],
       correctValue:'e',
       explain:'le foto (f/Pl.) → le → gliele. Partizip: mandate (-e, f/Pl.).' },
 
-    { id:'m25-mc-07', type:'MC',
+    { id:'m25-mc-07', type:'MC', stufe:3,
       prompt:'"___ mando tre." (Ich schicke dir drei davon — ne + ti)',
       options:['Ti ne','Te ne','Me ne','Ne ti'],
       correctValue:'Te ne',
       explain:'ti + ne → te ne. Te ne mando tre.' },
 
-    { id:'m25-mc-08', type:'MC',
+    { id:'m25-mc-08', type:'MC', stufe:3,
       prompt:'Modalverb-Position (beide korrekt?) "Te lo voglio dire."',
       options:[
         'Nur diese Form ist korrekt.',
@@ -376,13 +376,13 @@ const MODULE = {
       correctValue:'Auch "Voglio dirtelo" ist korrekt.',
       explain:'Das Pronomen kann vor das Modalverb (te lo voglio dire) oder an den Infinitiv ohne -e (voglio dirtelo). Nie zwischen Modalverb und Infinitiv.' },
 
-    { id:'m25-mc-09', type:'MC',
+    { id:'m25-mc-09', type:'MC', stufe:3,
       prompt:'"___ ha portato." (Er hat sie ihr gebracht — la + le)',
       options:['Le la','Gliela','Gli la','Ce la'],
       correctValue:'Gliela',
       explain:'le + la → gliela. Partizip: portata (f/Sg.).' },
 
-    { id:'m25-mc-10', type:'MC',
+    { id:'m25-mc-10', type:'MC', stufe:2,
       prompt:'Was ist falsch? "Gli lo ho detto."',
       options:[
         'Gli lo ist getrennt geschrieben — muss glielo sein.',
@@ -393,48 +393,48 @@ const MODULE = {
       correctValue:'Gli lo ist getrennt geschrieben — muss glielo sein.',
       explain:'gli + lo → glielo (ein Wort!). "Gli lo" getrennt existiert nicht. Korrekt: Glielo ho detto.' },
 
-    { id:'m25-mc-11', type:'MC',
+    { id:'m25-mc-11', type:'MC', stufe:2,
       prompt:'"___ spiegherò domani." (Ich werde es euch erklären — lo + vi)',
       options:['Vi lo','Ve lo','Glielo','Ce lo'],
       correctValue:'Ve lo',
       explain:'vi + lo → ve lo. ve lo spiegherò domani.' },
 
-    { id:'m25-mc-12', type:'MC',
+    { id:'m25-mc-12', type:'MC', stufe:3,
       prompt:'Partizip-Kongruenz: "Gliel___ ho mandati." (i documenti, m/Pl.)',
       options:['a','e','i','o'],
       correctValue:'i',
       explain:'i documenti (m/Pl.) → li → glieli. Partizip: mandati (-i, m/Pl.).' },
 
     /* === MCL 5 === */
-    { id:'m25-mcl-01', type:'MC',
+    { id:'m25-mcl-01', type:'MC', stufe:2,
       prompt:'Wähle: "Hai il libro? — Sì, ___ do subito." (dir, m/Sg.)',
       options:['ti lo','te lo','glielo','me lo'],
       correctValue:'te lo',
       translation:'Hast du das Buch? — Ja, ich gebe es dir sofort.',
       explain:'ti (dir) + lo (il libro, m) → te lo.' },
 
-    { id:'m25-mcl-02', type:'MC',
+    { id:'m25-mcl-02', type:'MC', stufe:2,
       prompt:'Wähle: "La risposta? ___ mando per mail." (ihr, f/Sg.)',
       options:['La le','Gliela','Le la','Gliele'],
       correctValue:'Gliela',
       translation:'Die Antwort? Ich schicke sie ihr per Mail.',
       explain:'le (ihr) + la (la risposta, f) → gliela.' },
 
-    { id:'m25-mcl-03', type:'MC',
+    { id:'m25-mcl-03', type:'MC', stufe:3,
       prompt:'Wähle: "Ci hai comprato i biglietti? — Sì, ___ ho comprati." (uns, m/Pl.)',
       options:['Ce li','Ci li','Vi li','Ce le'],
       correctValue:'Ce li',
       translation:'Hast du uns die Tickets gekauft? — Ja, ich habe sie uns gekauft.',
       explain:'ci (uns) + li (i biglietti, m/Pl.) → ce li. Partizip: comprati (m/Pl.).' },
 
-    { id:'m25-mcl-04', type:'MC',
+    { id:'m25-mcl-04', type:'MC', stufe:3,
       prompt:'Wähle: "Sai la risposta? ___ puoi dire?" (mir, f/Sg.)',
       options:['Mi la','Me la','Gliela','Te la'],
       correctValue:'Me la',
       translation:'Weißt du die Antwort? Kannst du sie mir sagen?',
       explain:'mi (mir) + la (la risposta, f) → me la. Vor puoi (Modal) oder: puoi dirmela.' },
 
-    { id:'m25-mcl-05', type:'MC',
+    { id:'m25-mcl-05', type:'MC', stufe:3,
       prompt:'Wähle: "Ne vuole ancora? — Sì, ___ dia ancora un po\'." (ihm)',
       options:['Gli ne','Gliene','Ce ne','Me ne'],
       correctValue:'Gliene',
@@ -448,26 +448,26 @@ const MODULE = {
       translation:'Hast du mein Buch? Ja, ich gebe es dir morgen zurück.',
       explain:'ti (dir) + lo (il libro, m) → te lo.' },
 
-    { id:'m25-lt-02', type:'LT',
+    { id:'m25-lt-02', type:'LT', stufe:2,
       text:'Marco non sa la notizia. {0} dico io adesso.',
       blanks:[ { accept:['Gliela'] } ],
       translation:'Marco weiß die Neuigkeit nicht. Ich sage sie ihm jetzt.',
       explain:'gli (ihm) + la (la notizia, f) → Gliela.' },
 
-    { id:'m25-lt-03', type:'LT',
+    { id:'m25-lt-03', type:'LT', stufe:3,
       text:'I documenti? Li ho stampati e {0} ho mandati ieri.',
       blanks:[ { accept:['glieli'] } ],
       translation:'Die Dokumente? Ich habe sie ausgedruckt und sie ihm gestern geschickt.',
       explain:'gli + li → glieli. Partizip: mandati (m/Pl.).' },
 
-    { id:'m25-lt-04', type:'LT',
+    { id:'m25-lt-04', type:'LT', stufe:3,
       text:'Vuoi sapere come funziona? {0} spiego volentieri, oppure {1} puoi spiegare tu.',
       blanks:[ { accept:['Te lo'] }, { accept:['me lo'] } ],
       translation:'Willst du wissen, wie es funktioniert? Ich erkläre es dir gerne, oder du kannst es mir erklären.',
       explain:'Te lo spiego (dir) / me lo puoi spiegare (mir). ti→te, mi→me vor direktem Pronomen.' },
 
     /* === FT 2 === */
-    { id:'m25-ft-01', type:'FT',
+    { id:'m25-ft-01', type:'FT', stufe:3,
       prompt:'Kombiniere: mi + ... (vollständige Tabelle)',
       rows:[
         { label:'mi + lo →',   accept:['me lo']  },
@@ -478,7 +478,7 @@ const MODULE = {
         { label:'ti + lo →',   accept:['te lo']  },
       ] },
 
-    { id:'m25-ft-02', type:'FT',
+    { id:'m25-ft-02', type:'FT', stufe:3,
       prompt:'Kombiniere: gli/le + ... (glielo-Formen)',
       rows:[
         { label:'gli + lo →',   accept:['glielo']  },
@@ -490,7 +490,7 @@ const MODULE = {
       ] },
 
     /* === FK 3 === */
-    { id:'m25-fk-01', type:'FK',
+    { id:'m25-fk-01', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Gli lo ho detto ieri.',
       solution:'Glielo ho detto ieri.',
@@ -498,7 +498,7 @@ const MODULE = {
       translation:'Ich habe es ihm gestern gesagt.',
       explain:'gli + lo verschmilzt immer zu glielo (ein Wort). "Gli lo" getrennt ist falsch.' },
 
-    { id:'m25-fk-02', type:'FK',
+    { id:'m25-fk-02', type:'FK', stufe:2,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Me la hai dato. (il libro, m)',
       solution:'Me lo hai dato.',
@@ -506,7 +506,7 @@ const MODULE = {
       translation:'Du hast es mir gegeben. (das Buch)',
       explain:'il libro ist maskulin → lo, nicht la. me lo (nicht me la).' },
 
-    { id:'m25-fk-03', type:'FK',
+    { id:'m25-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Voglio te lo dire.',
       solution:'Te lo voglio dire.',
@@ -515,7 +515,7 @@ const MODULE = {
       explain:'Das kombinierte Pronomen steht VOR dem Modalverb (te lo voglio dire) oder AN den Infinitiv (voglio dirtelo). Nie zwischen Modalverb und Infinitiv.' },
 
     /* === KA 2 === */
-    { id:'m25-ka-01', type:'KA',
+    { id:'m25-ka-01', type:'KA', stufe:2,
       prompt:'Kategorisiere: richtige oder falsche kombinierte Form?',
       categories:['korrekt', 'falsch'],
       items:[
@@ -527,7 +527,7 @@ const MODULE = {
         { text:'ti la',      cat:1 },
       ] },
 
-    { id:'m25-ka-02', type:'KA',
+    { id:'m25-ka-02', type:'KA', stufe:3,
       prompt:'Kategorisiere: Partizip-Kongruenz — welche Endung?',
       categories:['Partizip auf -o / -a (Sg.)', 'Partizip auf -i / -e (Pl.)'],
       items:[
@@ -540,7 +540,7 @@ const MODULE = {
       ] },
 
     /* === KO 1 === */
-    { id:'m25-ko-01', type:'KO',
+    { id:'m25-ko-01', type:'KO', stufe:2,
       prompt:'Worin unterscheiden sich diese Sätze?',
       a:{ sentence:'Te lo do.', tag:'kombiniert: dir + es' },
       b:{ sentence:'Glielo do.', tag:'kombiniert: ihm/ihr/ihnen + es' },
@@ -552,28 +552,28 @@ const MODULE = {
       solutions:['Te lo spiego domani.','Domani te lo spiego.'],
       note:'ti + lo → te lo. Vor dem Verb, Reihenfolge: indir. + dir.' },
 
-    { id:'m25-de-02', type:'DE',
+    { id:'m25-de-02', type:'DE', stufe:3,
       prompt:'"Sie hat mir die Neuigkeit gesagt." (la + mi)',
       solutions:["Me l'ha detta.","Me l'ha detto."],
       note:'mi + la → me la → vor ha: me l\'ha detta. Partizip: detta (f/Sg.).' },
 
-    { id:'m25-de-03', type:'DE',
+    { id:'m25-de-03', type:'DE', stufe:3,
       prompt:'"Ich kann euch die Dokumente morgen schicken." (li + vi)',
       solutions:['Ve li posso mandare domani.','Posso mandarveli domani.'],
       note:'vi + li → ve li. Modalverb: vor Modal oder an Infinitiv (mandare+ve+li = mandarveli).' },
 
     /* === IT 3 === */
-    { id:'m25-it-01', type:'IT',
+    { id:'m25-it-01', type:'IT', stufe:3,
       prompt:'"Glielo ha promesso."',
       solutions:['Er/Sie hat es ihm/ihr versprochen.','Er hat es ihr versprochen.'],
       note:'glielo = gli/le + lo. promettere → ha promesso (avere). Partizip: promesso (unveränderlich, da avere ohne vorausgehendes direktes Pronomen in traditioneller Form).' },
 
-    { id:'m25-it-02', type:'IT',
+    { id:'m25-it-02', type:'IT', stufe:3,
       prompt:'"Me ne ha parlato per ore."',
       solutions:['Er hat stundenlang mit mir darüber gesprochen.','Sie hat stundenlang mit mir davon geredet.'],
       note:'me ne = mir + davon/darüber. parlarne = darüber sprechen. per ore = stundenlang.' },
 
-    { id:'m25-it-03', type:'IT',
+    { id:'m25-it-03', type:'IT', stufe:3,
       prompt:'"Non gliele ho ancora mandate."',
       solutions:['Ich habe sie ihm/ihr noch nicht geschickt.','Ich habe sie ihnen noch nicht geschickt.'],
       note:'gliele = gli/le + le (f/Pl.). mandate: Partizip -e (f/Pl.). non … ancora = noch nicht.' },
@@ -583,31 +583,31 @@ const MODULE = {
     { id:'m25-sr-01', type:'SR',
       it:'Te lo dico subito, non preoccuparti.',
       de:'Ich sage es dir gleich, mach dir keine Sorgen.' },
-    { id:'m25-sr-02', type:'SR',
+    { id:'m25-sr-02', type:'SR', stufe:3,
       it:'Me lo puoi spiegare ancora una volta?',
       de:'Kannst du es mir noch einmal erklären?' },
-    { id:'m25-sr-03', type:'SR',
+    { id:'m25-sr-03', type:'SR', stufe:3,
       it:'Gliele ho mandate ieri per e-mail.',
       de:'Ich habe sie ihm/ihr gestern per E-Mail geschickt.' },
-    { id:'m25-sr-04', type:'SR',
+    { id:'m25-sr-04', type:'SR', stufe:2,
       it:'Ce la dai la ricetta di questa torta?',
       de:'Gibst du uns das Rezept für diesen Kuchen?' },
     { id:'m25-sr-05', type:'SR',
       it:"Ve lo racconto domani, è una storia lunga.",
       de:'Ich erzähle es euch morgen, es ist eine lange Geschichte.' },
-    { id:'m25-sr-06', type:'SR',
+    { id:'m25-sr-06', type:'SR', stufe:2,
       it:'Glielo spiego volentieri, non è difficile.',
       de:'Ich erkläre es ihm/ihr gerne, es ist nicht schwierig.' },
-    { id:'m25-sr-07', type:'SR',
+    { id:'m25-sr-07', type:'SR', stufe:2,
       it:'Me li porti domani, per favore?',
       de:'Kannst du sie mir bitte morgen mitbringen?' },
-    { id:'m25-sr-08', type:'SR',
+    { id:'m25-sr-08', type:'SR', stufe:2,
       it:'Te la preparo io la colazione, siediti.',
       de:'Ich bereite dir das Frühstück vor, setz dich.' },
-    { id:'m25-sr-09', type:'SR',
+    { id:'m25-sr-09', type:'SR', stufe:3,
       it:'Gliela devo restituire entro venerdì.',
       de:'Ich muss sie ihm/ihr bis Freitag zurückgeben.' },
-    { id:'m25-sr-10', type:'SR',
+    { id:'m25-sr-10', type:'SR', stufe:2,
       it:'Ce li porta il corriere domani mattina.',
       de:'Der Kurier bringt sie uns morgen früh.' },
 
@@ -615,11 +615,11 @@ const MODULE = {
       de:'Ich gebe es dir morgen.',
       solutions:['Te lo do domani.'],
       note:'ti + lo → te lo; vor dem Verb zusammengezogen' },
-    { id:'m25-st-02', type:'ST',
+    { id:'m25-st-02', type:'ST', stufe:2,
       de:'Er erklärt es ihr gerne.',
       solutions:['Glielo spiega volentieri.'],
       note:'le + lo → glielo (3. Ps. Sg. indir. + lo)' },
-    { id:'m25-st-03', type:'ST',
+    { id:'m25-st-03', type:'ST', stufe:3,
       de:'Kannst du es mir sagen?',
       solutions:['Me lo puoi dire?','Puoi dirmelo?'],
       note:'mi + lo → me lo; alternativ als Enklitikum an den Infinitiv' },
@@ -627,7 +627,7 @@ const MODULE = {
       de:'Wir geben es euch heute Abend.',
       solutions:['Ve lo diamo stasera.'],
       note:'vi + lo → ve lo (2. Ps. Pl. indir. + lo)' },
-    { id:'m25-st-05', type:'ST',
+    { id:'m25-st-05', type:'ST', stufe:2,
       de:'Sie schickt sie ihnen per Post.',
       solutions:['Gliele manda per posta.'],
       note:'gli + le → gliele (3. Ps. Pl. indir. + le)' },
@@ -635,7 +635,7 @@ const MODULE = {
       de:'Er bringt es uns mit.',
       solutions:['Ce lo porta.'],
       note:'ci + lo → ce lo (1. Ps. Pl. indir. + lo)' },
-    { id:'m25-st-07', type:'ST',
+    { id:'m25-st-07', type:'ST', stufe:2,
       de:'Ich zeige dir das Foto.',
       solutions:['Te la mostro la foto.','Te la faccio vedere.'],
       note:'ti + la → te la (foto ist femininum)' },
@@ -643,7 +643,7 @@ const MODULE = {
       de:'Sie erklären es mir nicht.',
       solutions:['Non me lo spiegano.'],
       note:'mi + lo → me lo; Verneinung: non vor der Pronomengruppe' },
-    { id:'m25-st-09', type:'ST',
+    { id:'m25-st-09', type:'ST', stufe:3,
       de:'Kannst du sie ihm zurückgeben?',
       solutions:['Puoi restituirgliela?','Gliela puoi restituire?'],
       note:'gli + la → gliela; als Enklitikum oder vor dem Modalverb' },

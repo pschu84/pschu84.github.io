@@ -213,6 +213,12 @@ const GEN = (() => {
     const low = acc.map(a => a.toLowerCase());
     o.accept = acc;
     o.distractors = uniq((o.distractors || []).filter(d => d && !low.includes(d.toLowerCase())));
+    // Lücke am Satzanfang: alle Optionen großschreiben (sonst verrät die Großschreibung die Lösung)
+    if (typeof o.text === 'string' && /[.?!]$/.test(o.text.trim()) && /(^|[.?!]\s+)___/.test(o.text.trim())) {
+      const C = x => x.charAt(0).toUpperCase() + x.slice(1);
+      o.accept = uniq(acc.map(C).concat(acc));
+      o.distractors = uniq(o.distractors.map(C)).filter(d => !o.accept.includes(d));
+    }
     return o;
   }
 
@@ -1707,6 +1713,203 @@ const GEN = (() => {
       const [s, t] = pickS([['Ho finito il libro', ['due giorni', 'una settimana']], ['Ho fatto i compiti', SH], ['Abbiamo imparato la canzone', SH], ['Ha pulito la casa', ["un'ora", 'due ore']]]);
       return spec({ key: 'in-' + s + t, prompt: `innerhalb von ${TD[t]}`, text: `${s} ___ ${t}.`, so: SO(null, s, t), accept: 'in', distractors: ['tra', 'fa', 'da'],
         explain: 'in + Zeit = innerhalb von (wie lange etwas gedauert hat).' });
+    },
+  });
+
+  /* ================================================================
+     M16  Condizionale presente
+     ================================================================ */
+  const COND_E = ['ei', 'esti', 'ebbe', 'emmo', 'este', 'ebbero'];
+  const cv = (inf, de, cls) => ({ inf, de, cls: cls || inf.slice(-3) });
+  const COND_REG = [cv('parlare', 'sprechen'), cv('mangiare', 'essen'), cv('comprare', 'kaufen'), cv('prendere', 'nehmen'), cv('leggere', 'lesen'), cv('preferire', 'lieber mögen', 'isc'),
+    cv('dormire', 'schlafen'), cv('cercare', 'suchen'), cv('scrivere', 'schreiben'), cv('aiutare', 'helfen'), cv('cominciare', 'anfangen'), cv('pagare', 'bezahlen'), cv('viaggiare', 'reisen')];
+  const COND_IRR = [cv('essere', 'sein'), cv('avere', 'haben'), cv('andare', 'gehen'), cv('venire', 'kommen'), cv('fare', 'machen'), cv('sapere', 'wissen'), cv('vedere', 'sehen'),
+    cv('bere', 'trinken'), cv('stare', 'bleiben'), cv('dare', 'geben'), cv('rimanere', 'bleiben'), cv('vivere', 'leben')];
+  const COND_MOD = [cv('volere', 'wollen'), cv('potere', 'können'), cv('dovere', 'müssen/sollen')];
+  const COND_STEM_IRR = { fare: 'far', dare: 'dar', stare: 'star' };
+  const condStem = v => COND_STEM_IRR[v.inf] || futuroStem(v);
+  const condiz = (v, p) => condStem(v) + COND_E[p];
+  const COND_C = {
+    parlare: 'con il direttore', mangiare: 'una pizza', comprare: 'una casa al mare', prendere: 'un caffè', leggere: 'questo libro', preferire: 'restare a casa', dormire: 'fino a mezzogiorno',
+    cercare: 'un lavoro nuovo', scrivere: 'una lettera', aiutare: 'gli amici', cominciare: 'subito', pagare: 'con la carta', viaggiare: 'in tutto il mondo',
+    essere: 'contento', avere: 'più tempo', andare: 'in Italia', venire: 'volentieri', fare: 'una festa', sapere: 'la risposta', vedere: 'il mare', bere: 'un bicchiere di vino',
+    stare: 'a casa', dare: 'una mano', rimanere: 'qui', vivere: 'a Roma',
+  };
+  const MOD_C = { volere: ['un caffè, per favore', 'un tavolo per due', 'andare al mare'], potere: ['aprire la finestra?', 'aiutarmi?', 'parlare più piano?'], dovere: ['studiare di più', 'dormire di più', 'bere più acqua'] };
+  function condTask(v, de, lead) {
+    const s = R.pick(SUBJ), p = s[1], form = condiz(v, p);
+    const irr = COND_IRR.includes(v);
+    const regLike = v.inf.slice(0, -3) + (v.inf.endsWith('ire') ? 'ir' : 'er') + COND_E[p];
+    const wrong = uniq([futuroStem(v) + FUT_E[p], irr ? regLike : presente(v, p), condStem(v) + COND_E[(p + 1) % 6], condStem(v) + COND_E[(p + 2) % 6]].filter(x => x && x !== form));
+    const c = COND_C[v.inf] || '';
+    return spec({ key: 'cond-' + v.inf + p, cue: v.inf, prompt: `${v.inf} (${de || v.de}), Condizionale:`, text: `${lead ? lead + ' ' : ''}${s[0]} ___ ${c}.`.replace(/^./, x => x.toUpperCase()),
+      so: SO(lead, s[0], c), accept: form, distractors: wrong, explain: `Stamm ${condStem(v)}- + Endung -${COND_E[p]}.` });
+  }
+  register('m16', {
+    levels: ['Grundregel: vorrei, potresti, dovresti', '+ regelmäßige Verben (-are → -erei)', '+ unregelmäßige Stämme (sarei, andrei, verrei)'],
+    ka: true,
+    table(level) {
+      const v = R.pick(level === 0 ? COND_MOD : level === 1 ? COND_REG : COND_IRR);
+      return TAB(`Condizionale: ${v.inf} (${v.de})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], condiz(v, p)]));
+    },
+    zo(level) {
+      const v = R.pick(level === 0 ? COND_MOD : level === 1 ? COND_REG : COND_IRR);
+      return { prompt: `Ordne die Endungen zu: ${v.inf} (Stamm ${condStem(v)}-)`, pairs: shuf([0, 1, 2, 3, 4, 5]).slice(0, 5).map(p => ({ de: PRON[p] + ' …', it: '-' + COND_E[p] })) };
+    },
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.5) {
+        if (R.chance(0.3)) {
+          const it = R.pick([['Mi ___ vivere in Italia.', 'piacerebbe', ['piacerei', 'piace', 'piacerà'], 'Mi piacerebbe = ich würde gern (piacere in der 3. Person).'],
+            ['___ bello andare al mare.', 'Sarebbe', ['Sarei', 'Sarà', 'Essere'], 'Sarebbe bello … = Es wäre schön …'],
+            ['Mi ___ due biglietti, per favore.', 'servirebbero', ['servirebbe', 'serve', 'servirei'], 'Zwei Karten (Plural) → servirebbero.'],
+            ['Al posto tuo, io non lo ___.', 'farei', ['farò', 'faccio', 'farebbe'], 'Ratschlag: al posto tuo + Condizionale.']]);
+          return spec({ key: 'c3-' + it[0], prompt: 'Setze das Condizionale ein:', text: it[0], accept: it[1], distractors: it[2], explain: it[3] });
+        }
+        return condTask(R.pick(COND_IRR), null, R.chance(0.4) ? 'Con più tempo' : null);
+      }
+      if (level >= 1 && r < 0.8) return condTask(R.pick(COND_REG), null, R.pick([null, 'Con più tempo', 'In vacanza']));
+      const v = R.pick(COND_MOD), s = R.pick(SUBJ.filter(x => level > 0 || [0, 1, 2].includes(x[1]))), p = s[1], c = R.pick(MOD_C[v.inf]);
+      const form = condiz(v, p);
+      const wrong = uniq([presente(v, p), futuroStem(v) + FUT_E[p], condStem(v) + COND_E[(p + 1) % 6]]);
+      const PRES = { volere: ['voglio', 'vuoi', 'vuole', 'vogliamo', 'volete', 'vogliono'], potere: ['posso', 'puoi', 'può', 'possiamo', 'potete', 'possono'], dovere: ['devo', 'devi', 'deve', 'dobbiamo', 'dovete', 'devono'] };
+      wrong[0] = PRES[v.inf][p];
+      const sense = { volere: 'höflicher Wunsch', potere: 'höfliche Bitte', dovere: 'Ratschlag' }[v.inf];
+      const end = c.endsWith('?') ? '' : '.';
+      return spec({ key: 'cm-' + v.inf + p + c, cue: v.inf, prompt: `${v.inf} (${v.de}), ${sense}:`, text: `${cap(s[0])} ___ ${c}${end}`, so: SO(null, cap(s[0]), c.replace(/\?$/, '')), accept: form,
+        distractors: wrong.filter(x => x !== form), explain: `${sense}: Condizionale ${form} (Stamm ${condStem(v)}-).` });
+    },
+  });
+
+  /* ================================================================
+     M15  Relativsätze
+     ================================================================ */
+  const REL_CHE = [['Il libro', 'leggo', 'è bello'], ['La ragazza', 'conosco', 'è simpatica'], ['Il film', 'ho visto ieri', 'era lungo'], ['La macchina', 'ho comprato', 'è rossa'],
+    ['Il ragazzo', 'parla con Anna', 'è mio fratello'], ['La pizza', 'mangiamo qui', 'è ottima'], ['Le scarpe', 'porti', 'sono belle'], ['Gli amici', 'abitano a Roma', 'vengono domani'],
+    ['Il treno', 'parte alle otto', 'è in ritardo'], ['La signora', 'abita qui', 'è gentile'], ['Il caffè', 'bevi', 'è forte'], ['La canzone', 'ascolto', 'è italiana']];
+  const REL_CUI = [['La città', 'in', 'abito', 'ist sehr grande', 'wohnen in'], ['Il collega', 'con', 'lavoro', 'è bravo', 'arbeiten mit'], ['La persona', 'di', 'parlo', 'è Marco', 'sprechen über/von'],
+    ["L'amico", 'a', 'ho scritto', 'si chiama Luca', 'schreiben an'], ['Il motivo', 'per', 'sono qui', 'è semplice', 'aus dem Grund'], ['Il paese', 'da', 'vengo', 'è la Germania', 'kommen aus'],
+    ['La casa', 'in', 'sono cresciuto', 'è piccola', 'aufwachsen in'], ['Gli amici', 'con', 'esco', 'sono simpatici', 'ausgehen mit'], ['Il tavolo', 'su', 'ho messo le chiavi', 'è in cucina', 'legen auf'],
+    ['La ragazza', 'a', 'ho dato il libro', 'è mia cugina', 'geben (wem?)'], ['Il film', 'di', 'ti ho parlato', 'è bellissimo', 'erzählen von'], ['La ditta', 'per', 'lavoro', 'è grande', 'arbeiten für']];
+  REL_CUI[0][3] = 'è molto grande';
+  const REL_POSS = [['La ragazza', 'madre', 'f', 's', 'è medico', 'conosco'], ["L'uomo", 'macchina', 'f', 's', 'è rossa', 'vedi'].slice(0, 0), ['Lo scrittore', 'libri', 'm', 'p', 'sono famosi', 'leggo'],
+    ['Il ragazzo', 'padre', 'm', 's', 'lavora con me', 'conosci'], ['La signora', 'figlie', 'f', 'p', 'studiano a Roma', 'conosciamo'], ['Lo studente', 'voti', 'm', 'p', 'sono ottimi', 'vedi'],
+    ['Il cantante', 'canzone', 'f', 's', 'ascolto', 'ami']].filter(x => x.length);
+  register('m15', {
+    levels: ['Grundregel: che', '+ Präposition + cui (in cui, con cui …)', '+ il cui, quello che'],
+    ka: true,
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.45) {
+        if (R.chance(0.5)) {
+          const [ant, poss, g, n, pred] = R.pick(REL_POSS), art = { ms: 'il', fs: 'la', mp: 'i', fp: 'le' }[g + n];
+          const isPred = !pred.startsWith('ascolto');
+          const text = isPred ? `${ant} ___ ${poss} ${pred}, abita qui.` : `${ant} ___ ${poss} ${pred} è italiano.`;
+          return spec({ key: 'rpos-' + ant + poss, prompt: `„dessen / deren“: Artikel passt zu ${poss}`, text: isPred ? `${ant} ___ ${poss} ${pred} abita qui.` : text,
+            accept: art + ' cui', distractors: ['il cui', 'la cui', 'i cui', 'le cui', 'che', 'di cui'], explain: `Der Artikel richtet sich nach dem Besitz (${poss}), nicht nach dem Besitzer: ${art} cui.` });
+        }
+        const it = R.pick([['___ dici è vero.', 'Quello che', ['Che', 'Cui', 'Il quale'], 'quello che / ciò che = das, was'], ['Non capisco ___ vuoi.', 'quello che', ['che', 'cui', 'chi'], 'quello che = (das,) was'],
+          ['Faccio ___ posso.', 'quello che', ['che', 'cui', 'il quale'], 'quello che = was'], ['È tutto ___ so.', 'quello che', ['che cui', 'cui', 'chi'], 'tutto quello che = alles, was'],
+          ['___ mi piace di più è il mare.', 'Quello che', ['Che', 'Chi', 'Di cui'], 'Quello che = Das, was']]);
+        return spec({ key: 'rq-' + it[0], prompt: '„was“ als Relativpronomen:', text: it[0], accept: it[1] === 'quello che' ? ['quello che', 'ciò che'] : ['Quello che', 'Ciò che'], distractors: it[2], explain: it[3] + '.' });
+      }
+      if (level >= 1 && r < 0.75) {
+        const [ant, pre, cl, pred, de] = R.pick(REL_CUI);
+        const others = ['in', 'con', 'di', 'a', 'per', 'da', 'su'].filter(x => x !== pre);
+        return spec({ key: 'rcui-' + ant + cl, cue: de, prompt: `Präposition + cui (${de}):`, text: `${ant} ___ ${cl} ${pred}.`, so: SO(null, ant, `${cl} ${pred}`), accept: pre + ' cui',
+          distractors: ['che', pre + ' che', ...shuf(others).slice(0, 2).map(x => x + ' cui')], explain: `Nach einer Präposition steht cui, nie che: ${pre} cui.` });
+      }
+      const [ant, cl, pred] = R.pick(REL_CHE);
+      return spec({ key: 'rche-' + ant, prompt: 'Setze das Relativpronomen ein:', text: `${ant} ___ ${cl} ${pred}.`, so: SO(null, ant, `${cl} ${pred}`), accept: 'che',
+        distractors: ['cui', 'chi', 'di cui', 'quale'], explain: 'Ohne Präposition steht che (für Subjekt und direktes Objekt). Es verändert sich nie.' });
+    },
+  });
+
+  /* ================================================================
+     M25  Kombinierte Pronomen
+     ================================================================ */
+  const KO_OBJ = [['Il libro', 'm', 's', 'lo'], ['Il regalo', 'm', 's', 'lo'], ['La lettera', 'f', 's', 'la'], ['La chiave', 'f', 's', 'la'], ['La ricetta', 'f', 's', 'la'],
+    ['I biglietti', 'm', 'p', 'li'], ['I documenti', 'm', 'p', 'li'], ['Le chiavi', 'f', 'p', 'le'], ['Le foto', 'f', 'p', 'le']];
+  const KO_REC = [['me', 'mir', 3], ['te', 'dir', 1], ['glie', 'ihm', 1], ['glie', 'ihr', 1], ['ce', 'uns', 3], ['ve', 'euch', 1], ['glie', 'ihnen', 1]];
+  const KO_V = [['do', 'dà', 'dat', 'geben'], ['mando', 'manda', 'mandat', 'schicken'], ['porto', 'porta', 'portat', 'bringen'], ['presto', 'presta', 'prestat', 'leihen'], ['restituisco', 'restituisce', 'restituit', 'zurückgeben']];
+  const koForm = (r, o) => r === 'glie' ? 'glie' + o : r + ' ' + o;
+  register('m25', {
+    levels: ['Grundregel: me lo, te lo (mit lo)', '+ la/li/le und glielo', '+ Partizip-Angleichung (te l\'ho data)'],
+    ka: true,
+    table(level) {
+      const o = level === 0 ? 'lo' : R.pick(['lo', 'la', 'li', 'le']);
+      return TAB(`Kombiniere mit ${o}:`, [['mi + ' + o, 'me ' + o], ['ti + ' + o, 'te ' + o], ['gli/le + ' + o, 'glie' + o], ['ci + ' + o, 'ce ' + o], ['vi + ' + o, 've ' + o]].slice(0, level === 0 ? 4 : 5).map(([a, b]) => [a, b]));
+    },
+    make(level) {
+      const objs = level === 0 ? KO_OBJ.filter(x => x[3] === 'lo') : KO_OBJ;
+      const recs = level === 0 ? KO_REC.filter(x => x[0] !== 'glie') : KO_REC;
+      const [noun, g, n, o] = R.pick(objs), [r, rde, pers] = R.pick(recs), [v1, v3, part, vde] = R.pick(KO_V);
+      const subj = pers === 3 ? 'Marco ' : '';
+      if (level >= 2 && R.chance(0.45)) {
+        const end = { ms: 'o', fs: 'a', mp: 'i', fp: 'e' }[g + n];
+        const aux = pers === 3 ? 'ha' : 'ho';
+        const pron = n === 's' ? (r === 'glie' ? "gliel'" : r + " l'") + aux : koForm(r, o) + ' ' + aux;
+        const t2 = `${noun}? ${subj}${subj ? pron : cap(pron)} ${part}___ ieri.`;
+        return spec({ key: 'kop-' + noun + r + v1, prompt: `Partizip-Endung (${noun.toLowerCase()}: ${g === 'm' ? 'm' : 'f'} ${n === 's' ? 'Sg.' : 'Pl.'})`, text: t2,
+          accept: end, distractors: ['o', 'a', 'i', 'e'], mode: 'mc', explain: `Vor avere richtet sich das Partizip nach lo/la/li/le: ${noun.toLowerCase()} → -${end}.` });
+      }
+      const form = koForm(r, o), verb = pers === 3 ? v3 : v1;
+      const wrongO = ['lo', 'la', 'li', 'le'].filter(x => x !== o).slice(0, 2).map(x => koForm(r, x));
+      const wrong = uniq([...wrongO, r === 'glie' ? 'gli ' + o : { me: 'mi', te: 'ti', ce: 'ci', ve: 'vi' }[r] + ' ' + o, o + ' ' + (r === 'glie' ? 'gli' : r)]);
+      const start = subj ? `${subj}___ ${verb} domani.` : `___ ${verb} domani.`;
+      return spec({ key: 'ko-' + noun + r + verb, prompt: `${noun.replace(/^\S+ /, '')} → ${rde} (${vde})`, text: `${noun}? ${start}`, so: SO(null, `${noun}? ${subj.trim()}`.trim(), `${verb} domani`),
+        accept: r === 'glie' || subj ? form : [cap(form), form], distractors: wrong,
+        explain: r === 'glie' ? `gli/le + ${o} → ${form} (ein Wort).` : `${{ me: 'mi', te: 'ti', ce: 'ci', ve: 'vi' }[r]} wird vor ${o} zu ${r}: ${form}.` });
+    },
+  });
+
+  /* ================================================================
+     M26  ci und ne
+     ================================================================ */
+  const CI_PL = [['Vai spesso a Roma?', 'vado ogni estate', 'nach Rom'], ['Sei mai stato in Sicilia?', 'sono stato due volte', 'in Sizilien'], ['Vai in palestra domani?', 'vado alle sei', 'ins Fitnessstudio'],
+    ['Abiti ancora a Milano?', 'abito da tre anni', 'in Mailand'], ['Vieni al cinema?', 'vengo volentieri', 'ins Kino'], ['Torni in Italia?', 'torno a luglio', 'nach Italien']];
+  const NE_Q = [['Quante mele vuoi?', 'voglio tre', 'mele'], ['Quanti figli hai?', 'ho due', 'figli'], ['Quanto pane compri?', 'compro un chilo', 'pane'], ['Hai delle sigarette?', 'ho ancora due', 'sigarette'],
+    ['Quanti caffè bevi?', 'bevo tre al giorno', 'caffè'], ['Quante lingue parli?', 'parlo quattro', 'lingue']];
+  const CI_A = [['Pensi al viaggio?', 'Sì, ___ penso sempre.', 'ci', 'pensare a'], ['Credi a questa storia?', 'No, non ___ credo.', 'ci', 'credere a'], ['Hai pensato alla festa?', 'Sì, ___ ho pensato.', 'ci', 'pensare a']];
+  const NE_DI = [['Parli spesso del lavoro?', 'Sì, ___ parlo spesso.', 'ne', 'parlare di'], ['Hai bisogno della macchina?', 'Sì, ___ ho bisogno.', 'ne', 'avere bisogno di'], ['Hai paura dei cani?', 'No, non ___ ho paura.', 'ne', 'avere paura di'], ['Che cosa pensi del film?', '___ penso bene.', 'Ne', 'pensare di (Meinung)']];
+  const NE_PART = [['libri', 'm', 'Quanti libri hai letto?', 'lett', 'tre'], ['mele', 'f', 'Quante mele hai mangiato?', 'mangiat', 'due'], ['biglietti', 'm', 'Quanti biglietti hai comprato?', 'comprat', 'quattro'], ['foto', 'f', 'Quante foto hai fatto?', 'fatt', 'cento']];
+  register('m26', {
+    levels: ['Grundregel: ci = dort/dorthin, ne = davon', '+ ci pensare, ne parlare, ne + Partizip', '+ ci vuole / ci vogliono, ce la faccio'],
+    ka: true,
+    make(level) {
+      const r = Math.random();
+      const D = ['ci', 'ne', 'lo', 'la', 'li'];
+      if (level >= 2 && r < 0.4) {
+        if (R.chance(0.5)) {
+          const [x, pl] = R.pick([["un'ora", false], ['due ore', true], ['molta pazienza', false], ['tre giorni', true], ['tanti soldi', true], ['un po\' di tempo', false], ['dieci minuti', true], ['coraggio', false]]);
+          return spec({ key: 'cv-' + x, prompt: 'ci vuole oder ci vogliono?', text: `Per finire ci ___ ${x}.`, accept: pl ? 'vogliono' : 'vuole', distractors: ['vuole', 'vogliono', 'vuoi', 'metto'],
+            explain: pl ? `${x} ist Plural → ci vogliono.` : `${x} ist Singular → ci vuole.` });
+        }
+        const it = R.pick([['Sono stanco, non ___ la faccio più.', 'ce', ['ci', 'ne', 'me'], 'farcela: ci wird vor la zu ce → ce la faccio.'], ['Per arrivare a scuola ___ metto venti minuti.', 'ci', ['ne', 'ce', 'mi'], 'metterci = Zeit brauchen (Person): ci metto.'],
+          ['Questo non ___ entra niente!', "c'", ['ne', 'ce', 'ci si'], "entrarci = damit zu tun haben: non c'entra."], ['Quanti anni hai? ___ ho trenta.', 'Ne', ['Ci', 'Li', 'Ce'], 'Bei Zahlenangaben ohne Nomen braucht man ne.'],
+          ['Ci sono ancora mele? Sì, ___ sono tre.', 'ce ne', ['ci ne', 'ne ci', 'ce li'], 'ci + ne → ce ne.']]);
+        return spec({ key: 'cn3-' + it[0], prompt: 'Ergänze:', text: it[0], accept: it[1], distractors: it[2], explain: it[3] });
+      }
+      if (level >= 1 && r < 0.75) {
+        const k = Math.random();
+        if (k < 0.35) {
+          const [q, a, acc, vb] = R.pick(CI_A);
+          return spec({ key: 'cia-' + q, cue: vb, prompt: `${vb}: ersetze „a + …“`, text: `${q} ${a}`, accept: acc, distractors: D.concat(['gli']), explain: `${vb}: a + Sache wird durch ci ersetzt.` });
+        }
+        if (k < 0.7) {
+          const [q, a, acc, vb] = R.pick(NE_DI);
+          return spec({ key: 'ned-' + q, cue: vb, prompt: `${vb}: ersetze „di + …“`, text: `${q} ${a}`, accept: acc, distractors: D, explain: `${vb}: di + Sache wird durch ne ersetzt.` });
+        }
+        const [nn, g, q, ps, num] = R.pick(NE_PART), end = g === 'f' ? 'e' : 'i';
+        return spec({ key: 'nep-' + nn, prompt: `Partizip nach ne (${nn}: ${g} Pl.)`, text: `${q} Ne ho ${ps}___ ${num}.`, accept: end, distractors: ['o', 'a', 'i', 'e'], mode: 'mc',
+          explain: `Nach ne richtet sich das Partizip nach dem ersetzten Nomen: ${nn} → -${end}.` });
+      }
+      if (R.chance(0.5)) {
+        const [q, a, de] = R.pick(CI_PL);
+        return spec({ key: 'cip-' + q, prompt: `ci = dort / dorthin (${de})`, text: `${q} Sì, ___ ${a}.`, so: SO(q + ' Sì,', '', a), accept: 'ci', distractors: D, explain: 'ci ersetzt einen Ort (a/in + Ort): dort, dorthin.' });
+      }
+      const [q, a, w] = R.pick(NE_Q);
+      return spec({ key: 'neq-' + q, prompt: `ne = davon (${w})`, text: `${q} ___ ${a}.`, so: SO(q, '', a), accept: ['Ne', 'ne'], distractors: ['Ci', 'Li', 'Le', 'Lo'], explain: 'Bei Mengenangaben ersetzt ne das Nomen: ne voglio tre = ich will drei davon.' });
     },
   });
 

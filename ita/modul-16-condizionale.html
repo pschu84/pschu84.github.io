@@ -126,7 +126,7 @@ const MODULE = {
       translation:'Ich würde gerne etwas essen.',
       explain:'vorrei = Condizionale 1. Sg. (ich möchte). vorresti wäre 2. Sg. (du möchtest) — falsches Subjekt bei io.' },
 
-    { id:'m16-so-05', type:'SO',
+    { id:'m16-so-05', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['sarebbe', 'sarei', 'bello', 'andare', 'al', 'mare', 'saresti'],
       solution:['sarebbe', 'bello', 'andare', 'al', 'mare'],
@@ -154,14 +154,14 @@ const MODULE = {
       translation:'Sie würden gerne mit uns kommen.',
       explain:'vorrebbero = Condizionale 3. Pl. (sie möchten). vorreste wäre 2. Pl. (ihr möchtet) — Subjekt ist loro.' },
 
-    { id:'m16-so-09', type:'SO',
+    { id:'m16-so-09', type:'SO', stufe:2,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['preferirei', 'preferirebbe', 'il', 'tè', 'io', 'al', 'caffè', 'preferirebbe'],
       solution:['io', 'preferirei', 'il', 'tè', 'al', 'caffè'],
       translation:'Ich würde lieber Tee als Kaffee nehmen.',
       explain:'preferirei = Condizionale 1. Sg. (ich würde vorziehen). preferirebbe wäre 3. Sg. (er/sie würde vorziehen).' },
 
-    { id:'m16-so-10', type:'SO',
+    { id:'m16-so-10', type:'SO', stufe:3,
       prompt:'Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:',
       tokens:['dareste', 'dareste', 'darebbero', 'un', 'passaggio', 'voi', 'a', 'Marco', 'darei'],
       solution:['voi', 'dareste', 'un', 'passaggio', 'a', 'Marco'],
@@ -220,7 +220,7 @@ const MODULE = {
       translation:'Ich könnte mehr schlafen und du könntest früher aufstehen.',
       explain:'potrei = 1. Sg. (io). potresti = 2. Sg. (tu).' },
 
-    { id:'m16-el-08', type:'EL',
+    { id:'m16-el-08', type:'EL', stufe:2,
       prompt:'Wähle die richtigen Wörter für die Lücken:',
       sentence:'Sarebbe bello {0} insieme e poi {1} una passeggiata.',
       blanks:[{accept:'mangiare', distractors:['mangiamo', 'mangiava']}, {accept:'fare', distractors:['facciamo', 'faceva']}],
@@ -242,7 +242,7 @@ const MODULE = {
       explain:'dovrebbe = 3. Sg. (Marco). dovrei = 1. Sg. (io).' },
 
     /* === ZO 9 === */
-    { id:'m16-zo-01', type:'ZO',
+    { id:'m16-zo-01', type:'ZO', stufe:2,
       prompt:'Ordne zu: parlare im Condizionale Presente',
       pairs:[
         { de:'ich würde sprechen',    it:'parlerei'     },
@@ -253,7 +253,7 @@ const MODULE = {
         { de:'sie würden sprechen',   it:'parlerebbero' },
       ] },
 
-    { id:'m16-zo-02', type:'ZO',
+    { id:'m16-zo-02', type:'ZO', stufe:3,
       prompt:'Ordne zu: essere im Condizionale (Stamm: sar-)',
       pairs:[
         { de:'ich wäre',    it:'sarei'     },
@@ -264,7 +264,7 @@ const MODULE = {
         { de:'sie wären',   it:'sarebbero' },
       ] },
 
-    { id:'m16-zo-03', type:'ZO',
+    { id:'m16-zo-03', type:'ZO', stufe:3,
       prompt:'Ordne zu: volere im Condizionale (Stamm: vorr-)',
       pairs:[
         { de:'ich möchte / ich hätte gerne', it:'vorrei'     },
@@ -275,7 +275,7 @@ const MODULE = {
         { de:'sie möchten',                  it:'vorrebbero' },
       ] },
 
-    { id:'m16-zo-04', type:'ZO',
+    { id:'m16-zo-04', type:'ZO', stufe:3,
       prompt:'Ordne zu: potere im Condizionale (Stamm: potr-)',
       pairs:[
         { de:'ich könnte',    it:'potrei'     },
@@ -286,7 +286,7 @@ const MODULE = {
         { de:'sie könnten',   it:'potrebbero' },
       ] },
 
-    { id:'m16-zo-05', type:'ZO',
+    { id:'m16-zo-05', type:'ZO', stufe:3,
       prompt:'Ordne zu: dovere im Condizionale (Stamm: dovr-)',
       pairs:[
         { de:'ich sollte / müsste', it:'dovrei'     },
@@ -297,7 +297,7 @@ const MODULE = {
         { de:'sie sollten',         it:'dovrebbero' },
       ] },
 
-    { id:'m16-zo-06', type:'ZO',
+    { id:'m16-zo-06', type:'ZO', stufe:3,
       prompt:'Ordne zu: Funktion des Condizionale',
       pairs:[
         { de:'Vorrei un caffè.',             it:'höflicher Wunsch'     },
@@ -308,7 +308,7 @@ const MODULE = {
         { de:'Secondo lui, sarebbe tardi.',  it:'Gerücht / Bericht'    },
       ] },
 
-    { id:'m16-zo-07', type:'ZO',
+    { id:'m16-zo-07', type:'ZO', stufe:3,
       prompt:'Ordne zu: deutsches Verb (io) → unregelmäßige Condizionale-Form',
       pairs:[
         { de:'tun / machen (io)',       it:'farei'    },
@@ -319,7 +319,7 @@ const MODULE = {
         { de:'bleiben (io)',            it:'rimarrei' },
       ] },
 
-    { id:'m16-zo-08', type:'ZO',
+    { id:'m16-zo-08', type:'ZO', stufe:3,
       prompt:'Ordne zu: Satz -> Deutsch',
       pairs:[
         { de:'Potrei venire domani.',         it:'Ich könnte morgen kommen.'            },
@@ -330,7 +330,7 @@ const MODULE = {
         { de:'Che cosa faresti?',             it:'Was würdest du tun?'                  },
       ] },
 
-    { id:'m16-zo-09', type:'ZO',
+    { id:'m16-zo-09', type:'ZO', stufe:3,
       prompt:'Ordne zu: Condizionale vs. Futuro Semplice — Bedeutung',
       pairs:[
         { de:'parlerò (Futuro)',         it:'Ich werde sprechen. (Zukunft, sicher)'        },
@@ -360,13 +360,13 @@ const MODULE = {
       correctValue:'vorremmo',
       explain:'Condizionale 1. Pl. von volere: vorremmo.' },
 
-    { id:'m16-mc-04', type:'MC',
+    { id:'m16-mc-04', type:'MC', stufe:3,
       prompt:'Welche Form? "Loro ___ la verità." (sapere, Condizionale)',
       options:['sanno','sapevano','sapranno','saprebbero'],
       correctValue:'saprebbero',
       explain:'Condizionale 3. Pl. von sapere (Stamm sapr-): saprebbero.' },
 
-    { id:'m16-mc-05', type:'MC',
+    { id:'m16-mc-05', type:'MC', stufe:2,
       prompt:'"Mi piacerebbe vivere a Roma." Was bedeutet das?',
       options:['Mir gefällt es in Rom zu leben.','Ich würde gerne in Rom leben.','Ich lebe gerne in Rom.','Mir wird es gefallen in Rom zu leben.'],
       correctValue:'Ich würde gerne in Rom leben.',
@@ -384,13 +384,13 @@ const MODULE = {
       correctValue:'potreste',
       explain:'Condizionale 2. Pl. von potere: potreste. Könntet ihr früher kommen?' },
 
-    { id:'m16-mc-08', type:'MC',
+    { id:'m16-mc-08', type:'MC', stufe:3,
       prompt:'"Se avessi tempo, ___." (venire, Condizionale)',
       options:['vengo','venivo','verrei','verrò'],
       correctValue:'verrei',
       explain:'Irreale Bedingung: se + Congiuntivo Imperfetto -> Condizionale. verrei (venire, Stamm verr-).' },
 
-    { id:'m16-mc-09', type:'MC',
+    { id:'m16-mc-09', type:'MC', stufe:3,
       prompt:'"Secondo le notizie, ___ un problema grave." (essere)',
       options:['è','era','sarà','sarebbe'],
       correctValue:'sarebbe',
@@ -402,7 +402,7 @@ const MODULE = {
       correctValue:'dovrebbe',
       explain:'Condizionale 3. Sg. von dovere: dovrebbe. Lei dovrebbe partire prima = Sie sollte früher abfahren.' },
 
-    { id:'m16-mc-11', type:'MC',
+    { id:'m16-mc-11', type:'MC', stufe:3,
       prompt:'"Che cosa ___ al posto mio?" (fare, du)',
       options:['fai','facevi','faresti','farai'],
       correctValue:'faresti',
@@ -422,7 +422,7 @@ const MODULE = {
       translation:'Könnten Sie mir ein Glas Wasser bringen, bitte?',
       explain:'Potrebbe (Condizionale 3. Sg. Lei-Form) = Könnten Sie. Höfliche Bitte.' },
 
-    { id:'m16-mcl-02', type:'MC',
+    { id:'m16-mcl-02', type:'MC', stufe:3,
       prompt:'Wähle: "Al posto tuo, non ___ quella cosa."',
       options:['dico','dicevo','direi','dirò'],
       correctValue:'direi',
@@ -436,7 +436,7 @@ const MODULE = {
       translation:'Du solltest mehr schlafen, du bist immer müde.',
       explain:'Ratschlag: dovresti (Condizionale 2. Sg.). Sanfter als devi.' },
 
-    { id:'m16-mcl-04', type:'MC',
+    { id:'m16-mcl-04', type:'MC', stufe:2,
       prompt:'Wähle: "Mi ___ tanto visitare il Giappone un giorno."',
       options:['piace','piaceva','piacerebbe','piacerà'],
       correctValue:'piacerebbe',
@@ -457,19 +457,19 @@ const MODULE = {
       translation:'Ich hätte gerne einen Tisch für zwei Personen, bitte.',
       explain:'Vorrei (Condizionale von volere, 1. Sg.) = höfliche Bestellung.' },
 
-    { id:'m16-lt-02', type:'LT',
+    { id:'m16-lt-02', type:'LT', stufe:3,
       text:'Al posto mio, cosa {0}? Io {1} di parlare con lui direttamente.',
       blanks:[ { accept:['faresti'] }, { accept:['proverei'] } ],
       translation:'Was würdest du an meiner Stelle tun? Ich würde versuchen, direkt mit ihm zu sprechen.',
       explain:'faresti (fare, Stamm far-, 2. Sg.); proverei (provare, 1. Sg.).' },
 
-    { id:'m16-lt-03', type:'LT',
+    { id:'m16-lt-03', type:'LT', stufe:3,
       text:'Secondo le notizie, il governo {0} cambiare la legge. Ma non è certo.',
       blanks:[ { accept:['vorrebbe'] } ],
       translation:'Laut den Nachrichten würde die Regierung das Gesetz ändern. Aber es ist nicht sicher.',
       explain:'Gerücht / nicht bestätigte Information: Condizionale. vorrebbe (volere, 3. Sg.).' },
 
-    { id:'m16-lt-04', type:'LT',
+    { id:'m16-lt-04', type:'LT', stufe:2,
       text:'Mi {0} molto imparare a suonare il pianoforte, ma non ho tempo.',
       blanks:[ { accept:['piacerebbe'] } ],
       translation:'Ich würde sehr gerne Klavier spielen lernen, aber ich habe keine Zeit.',
@@ -482,7 +482,7 @@ const MODULE = {
       explain:'potresti (Condizionale von potere, 2. Sg.) = höfliche Bitte.' },
 
     /* === FT 3 === */
-    { id:'m16-ft-01', type:'FT',
+    { id:'m16-ft-01', type:'FT', stufe:3,
       prompt:'Konjugiere "andare" im Condizionale (Stamm: andr-):',
       rows:[
         { label:'io',       accept:['andrei']    },
@@ -493,7 +493,7 @@ const MODULE = {
         { label:'loro',     accept:['andrebbero']},
       ] },
 
-    { id:'m16-ft-02', type:'FT',
+    { id:'m16-ft-02', type:'FT', stufe:3,
       prompt:'Condizionale von volere / potere / dovere (1. Pers. Sg.):',
       rows:[
         { label:'volere -> io...',   accept:['vorrei']   },
@@ -504,7 +504,7 @@ const MODULE = {
         { label:'fare -> io...',     accept:['farei']    },
       ] },
 
-    { id:'m16-ft-03', type:'FT',
+    { id:'m16-ft-03', type:'FT', stufe:2,
       prompt:'Höfliche Bitten formulieren — Condizionale von potere (2. Sg.) + Verb:',
       rows:[
         { label:'das Fenster öffnen',      accept:['Potresti aprire la finestra?']       },
@@ -532,7 +532,7 @@ const MODULE = {
       translation:'Du solltest mehr schlafen, du bist immer müde.',
       explain:'Ratschlag (weicher): dovresti (Condizionale). devi klingt wie ein Befehl.' },
 
-    { id:'m16-fk-03', type:'FK',
+    { id:'m16-fk-03', type:'FK', stufe:3,
       prompt:'Finde und korrigiere den Fehler:',
       sentence:'Io farebbe volentieri, ma non ho tempo.',
       solution:'Io farei volentieri, ma non ho tempo.',
@@ -541,7 +541,7 @@ const MODULE = {
       explain:'farebbe = 3. Pers. Sg. (er/sie). 1. Pers. Sg. (io): farei. Endung -ei statt -ebbe.' },
 
     /* === KA 2 === */
-    { id:'m16-ka-01', type:'KA',
+    { id:'m16-ka-01', type:'KA', stufe:3,
       prompt:'Kategorisiere: Funktion des Condizionale',
       categories:['höfliche Bitte / Wunsch', 'Ratschlag / Hypothese'],
       items:[
@@ -553,7 +553,7 @@ const MODULE = {
         { text:'Al posto mio andrei via.',   cat:1 },
       ] },
 
-    { id:'m16-ka-02', type:'KA',
+    { id:'m16-ka-02', type:'KA', stufe:3,
       prompt:'Kategorisiere: regelm. Stamm oder unregelm. Stamm?',
       categories:['regelmäßig (Infinitiv - e)', 'unregelmäßig (kürzerer Stamm)'],
       items:[
@@ -589,12 +589,12 @@ const MODULE = {
       solutions:['Dovresti bere più acqua e meno caffè.','Dovresti bere più acqua e caffè meno.'],
       note:'dovresti (Condizionale von dovere, Ratschlag). più/meno = mehr/weniger.' },
 
-    { id:'m16-de-03', type:'DE',
+    { id:'m16-de-03', type:'DE', stufe:3,
       prompt:'"Was würdest du an meiner Stelle tun?"',
       solutions:['Cosa faresti al posto mio?','Al posto mio, cosa faresti?'],
       note:'faresti (Condizionale von fare, 2. Sg.). al posto mio = an meiner Stelle.' },
 
-    { id:'m16-de-04', type:'DE',
+    { id:'m16-de-04', type:'DE', stufe:2,
       prompt:'"Es würde mir gefallen, eines Tages nach Japan zu reisen."',
       solutions:['Mi piacerebbe viaggiare in Giappone un giorno.','Un giorno mi piacerebbe andare in Giappone.'],
       note:'mi piacerebbe (Condizionale von piacere); in Giappone (Länder im Singular stehen nach in ohne Artikel).' },
@@ -605,12 +605,12 @@ const MODULE = {
       solutions:['Könntest du etwas langsamer mit mir sprechen? Ich verstehe nicht alles.','Könntest du ein bisschen langsamer sprechen? Ich verstehe nicht alles.'],
       note:'potresti (Condizionale von potere, 2. Sg.); un po\' più lentamente = etwas langsamer.' },
 
-    { id:'m16-it-02', type:'IT',
+    { id:'m16-it-02', type:'IT', stufe:3,
       prompt:'"Secondo i giornali, il presidente avrebbe incontrato il re ieri."',
       solutions:['Laut den Zeitungen soll der Präsident gestern den König getroffen haben.','Laut den Zeitungen hätte der Präsident gestern den König getroffen.'],
       note:'avrebbe incontrato = Condizionale Passato. Bericht über nicht bestätigte Information.' },
 
-    { id:'m16-it-03', type:'IT',
+    { id:'m16-it-03', type:'IT', stufe:2,
       prompt:'"Sarebbe bello partire adesso e non tornare mai più."',
       solutions:['Es wäre schön, jetzt abzufahren und nie mehr zurückzukehren.','Wäre es nicht schön, jetzt wegzufahren und nie zurückzukommen?'],
       note:'sarebbe (Condizionale von essere); partire = abfahren; non … mai più = nie mehr.' },
@@ -626,7 +626,7 @@ const MODULE = {
     { id:'m16-sr-03', type:'SR',
       it:"Dovrei studiare di più per l'esame.",
       de:'Ich sollte mehr für die Prüfung lernen.' },
-    { id:'m16-sr-04', type:'SR',
+    { id:'m16-sr-04', type:'SR', stufe:2,
       it:'Mi piacerebbe visitare Roma in estate.',
       de:'Ich würde gerne Rom im Sommer besuchen.' },
     { id:'m16-sr-05', type:'SR',
@@ -648,7 +648,7 @@ const MODULE = {
       it:'Noi potremmo andare al mare il weekend.',
       de:'Wir könnten am Wochenende ans Meer fahren.' },
 
-    { id:'m16-st-01', type:'ST',
+    { id:'m16-st-01', type:'ST', stufe:2,
       de:'Ich würde gerne eine Pizza bestellen.',
       solutions:['Vorrei ordinare una pizza.','Mi piacerebbe ordinare una pizza.'],
       note:'vorrei = ich würde gerne (condizionale von volere)' },
@@ -660,15 +660,15 @@ const MODULE = {
       de:'Er sollte mehr schlafen.',
       solutions:['Dovrebbe dormire di più.'],
       note:'dovrebbe = er/sie sollte (condizionale von dovere)' },
-    { id:'m16-st-04', type:'ST',
+    { id:'m16-st-04', type:'ST', stufe:2,
       de:'Wir würden gerne nach Venedig reisen.',
       solutions:['Vorremmo andare a Venezia.','Ci piacerebbe andare a Venezia.'],
       note:'vorremmo = wir würden gerne (condizionale von volere, 1. Ps. Pl.)' },
-    { id:'m16-st-05', type:'ST',
+    { id:'m16-st-05', type:'ST', stufe:2,
       de:'Das wäre sehr schön.',
       solutions:['Sarebbe molto bello.','Sarebbe bellissimo.'],
       note:'sarebbe = es wäre (condizionale von essere)' },
-    { id:'m16-st-06', type:'ST',
+    { id:'m16-st-06', type:'ST', stufe:2,
       de:'Könnten Sie bitte langsamer sprechen?',
       solutions:['Potrebbe parlare più lentamente, per favore?','Potrebbe parlare più piano, per favore?'],
       note:'potrebbe = könnten Sie (condizionale von potere, 3. Ps. Sg.)' },

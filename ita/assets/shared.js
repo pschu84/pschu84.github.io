@@ -545,7 +545,9 @@ const Haptics = (() => {
     el.dataset.hap = '1';
     const cs = getComputedStyle(el);
     const w = document.createElement('span');
-    w.className = 'hapwrap' + (/^(block|flex|grid)$/.test(cs.display) ? ' block' : '');
+    const pw = el.parentNode.clientWidth || 0, ew = el.offsetWidth || 0;
+    const full = /^(block|flex|grid)$/.test(cs.display) && !(ew && pw && ew < pw * 0.85);
+    w.className = 'hapwrap' + (full ? ' block' : '');
     if (el.style.marginLeft) { w.style.marginLeft = el.style.marginLeft; el.style.marginLeft = ''; }
     el.parentNode.insertBefore(w, el); w.appendChild(el);
     const i = document.createElement('input');
@@ -1562,6 +1564,9 @@ class ModuleTrainer {
     if (!DRILL_FORMATS[this.answerMode]) this.answerMode = 'mix';
     this.n = 0; this.recent = []; this.retry = []; this.lastFmt = null; this.timer = null;
     this.sessionCorrect = 0; this.sessionTotal = 0; this.streak = 0;
+    this.roundSize = 20; this.roundAnswered = 0; this.roundCorrect = 0; this.round = (d.rounds || 0) + 1;
+    this.allCorrect = typeof d.allCorrect === 'number' ? d.allCorrect
+      : (d.correct || 0) + Object.values((st.run && st.run.done) || {}).filter(v => v >= 1).length;
     this.byId = new Map(this.mod.exercises.map(e => [e.id, e]));
     window._donDueTrainer = this;
     this._initRun();
@@ -1619,12 +1624,12 @@ class ModuleTrainer {
   }
   _progress(tag) {
     const total = this.run.order.length, done = Object.keys(this.run.done).length;
-    this.fillEl.style.width = `${Math.round(done / total * 100)}%`;
-    this.textEl.textContent = `Aufgabe ${Math.max(1, this.n)}`;
-    this.fillEl.closest('.exercise-progress').title = `Modul-Fortschritt: ${done} von ${total} Modulaufgaben gelöst`;
+    const pos = Math.min(this.roundSize, this.roundAnswered + (this.answered ? 0 : 1));
+    this.fillEl.style.width = `${Math.round(this.roundAnswered / this.roundSize * 100)}%`;
+    this.textEl.textContent = `Runde ${this.round} · ${pos} / ${this.roundSize}`;
     const pct = this.sessionTotal ? Math.round(this.sessionCorrect / this.sessionTotal * 100) : null;
     this.statsEl.innerHTML = `<span>✅ ${this.sessionCorrect} von ${this.sessionTotal}${pct !== null ? ` (${pct} %)` : ''}</span><span>🔥 Serie ${this.streak}</span>`
-      + `<span class="drill-mod" title="Der Balken oben zeigt den Modul-Fortschritt. Zu jeder Modulaufgabe gibt es dazwischen Training.">📚 Modul: ${done} von ${total} Aufgaben gelöst</span>`;
+      + `<span>🏆 Insgesamt ${this.allCorrect} richtig</span>`;
   }
 
   /* ---------- Steuerung ---------- */
@@ -1652,6 +1657,7 @@ class ModuleTrainer {
     this.answered = false;
     this.nextBtn.disabled = true;
     this.hintEl.innerHTML = '';
+    if (this._roundPending) { this._roundPending = false; this.round++; this.roundAnswered = 0; this.roundCorrect = 0; }
     this._progress();
     if (this._useFixed(this.n)) {
       const ex = this._nextFixed();
@@ -2031,8 +2037,11 @@ class ModuleTrainer {
     this.answered = true;
     this.sessionTotal++;
     if (ok) { this.sessionCorrect++; this.streak++; } else this.streak = 0;
+    this.roundAnswered++; if (ok) { this.roundCorrect++; this.allCorrect++; }
+    Store.setDrillPrefs(this.mod.id, { allCorrect: this.allCorrect });
     Haptics.play(ok ? 'correct' : 'wrong');
     if (ok) this._streakEvents();
+    if (this.roundAnswered >= this.roundSize) this._finishRound();
     const act = Store.getActivityStats();
     if (window._updateDailyGoalBanner) window._updateDailyGoalBanner(act.todayCorrect);
     checkMilestones(this.sessionTotal, act.todayTotal, act.todayCorrect);
@@ -2063,6 +2072,18 @@ class ModuleTrainer {
     }
   }
 
+  _finishRound() {
+    const pct = Math.round(this.roundCorrect / this.roundSize * 100);
+    Store.setDrillPrefs(this.mod.id, { rounds: this.round });
+    this._roundPending = true;
+    const msg = pct >= 90 ? 'Eccellente!' : pct >= 75 ? 'Molto bene!' : pct >= 60 ? 'Bene, weiter so!' : 'Dranbleiben, das wird!';
+    setTimeout(() => {
+      Haptics.play('round');
+      if (pct >= 80) confetti(60);
+      showToast('🏁', `Runde ${this.round} geschafft!`, `${this.roundCorrect} von ${this.roundSize} richtig (${pct} %). ${msg}`, 'var(--oliva, #6b7a3a)');
+    }, 700);
+  }
+
   _finishRun() {
     const vals = Object.values(this.run.done);
     const score = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
@@ -2070,8 +2091,8 @@ class ModuleTrainer {
     const pct = Math.round(score * 100), passed = score >= (this.mod.passThreshold || 0.6);
     this.run = { order: buildExerciseSequence(this.mod.exercises).map(e => e.id), done: {} };
     this._saveRun();
-    this.hintEl.innerHTML = `<div class="drill-suggest"><strong>${passed ? '🏆' : '📚'} Alle Übungen dieses Moduls geschafft: ${pct} %.</strong>
-      ${passed ? 'Modul bestanden!' : 'Ab 60 % gilt das Modul als bestanden.'} Es geht mit einem neuen Durchgang weiter.</div>`;
+    this.hintEl.innerHTML = `<div class="drill-suggest"><strong>${passed ? '🏆 Modul bestanden!' : '📚 Meilenstein erreicht!'}</strong>
+      Du hast jede Aufgabenart dieses Moduls einmal gelöst (${pct} % beim ersten Versuch).${passed ? '' : ' Ab 60 % gilt das Modul als bestanden.'} Weiter geht's!</div>`;
     if (passed) confetti(70);
     Haptics.play('round');
     this._progress();
