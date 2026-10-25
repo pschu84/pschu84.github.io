@@ -1525,5 +1525,190 @@ const GEN = (() => {
     },
   });
 
+  /* ================================================================
+     M40  Adverbien
+     ================================================================ */
+  // [Adjektiv, Deutsch, Satz mit Verb (Adverb), Subjekt-Nomen für Adjektivsatz]
+  const AVV = [
+    ['lento', 'langsam', ['Marco parla', 'Il treno va', 'Mio nonno cammina']], ['rapido', 'schnell', ['Anna risponde', 'Luca mangia']],
+    ['tranquillo', 'ruhig', ['Il bambino dorme', 'Sara parla']], ['attento', 'aufmerksam', ['Ascolto', 'Leggi']], ['sicuro', 'sicher (bestimmt)', ['Arriviamo', 'Vince la partita']],
+    ['chiaro', 'deutlich', ['La professoressa spiega', 'Scrivi']], ['serio', 'ernsthaft', ['Luca lavora', 'Parliamo']], ['raro', 'selten', ['Esco', 'Anna telefona']],
+    ['veloce', 'schnell', ['Marco corre', 'Il tempo passa']], ['felice', 'glücklich', ['Vivono', 'I bambini giocano']],
+    ['facile', 'leicht', ['Capisco', 'Vince']], ['gentile', 'freundlich', ['Risponde', 'La signora saluta']], ['regolare', 'regelmäßig', ['Vado in palestra', 'Studio']],
+    ['puntuale', 'pünktlich', ['Il treno arriva', 'Anna paga']], ['normale', 'normal', ['Lavoro', 'Il computer funziona']], ['perfetto', 'perfekt', ['Parla italiano', 'Funziona']],
+  ];
+  const advOf = a => /[lr]e$/.test(a) && !/[^aeiou][lr]e$/.test(a.slice(-4)) ? a.slice(0, -1) + 'mente' : a.endsWith('e') ? a + 'mente' : a.slice(0, -1) + 'amente';
+  register('m40', {
+    levels: ['Grundregel: -o → -amente', '+ -e → -emente, bene / male', '+ -le / -re, Adjektiv oder Adverb?'],
+    ka: true,
+    table(level) {
+      const pool = AVV.filter(x => level === 0 ? x[0].endsWith('o') : level === 1 ? !/[lr]e$/.test(x[0]) : true);
+      return TAB('Bilde das Adverb:', shuf(pool).slice(0, 4).map(x => [x[0], advOf(x[0])]));
+    },
+    make(level) {
+      const pool = AVV.filter(x => level === 0 ? x[0].endsWith('o') : level === 1 ? !/[lr]e$/.test(x[0]) : true);
+      const r = Math.random();
+      if (level >= 1 && r < 0.25) {
+        const it = R.pick([
+          ['Come stai? Sto ___, grazie.', 'bene', ['buono', 'buona', 'bello']], ['Anna canta molto ___.', 'bene', ['buona', 'buono', 'brava']],
+          ['Ho dormito ___: sono stanco.', 'male', ['cattivo', 'mala', 'brutto']], ['Questa pizza è ___.', 'buona', ['bene', 'buono', 'buonamente']],
+          ['Marco cucina ___.', 'bene', ['buono', 'buon', 'bravo']], ['Il film è ___.', 'brutto', ['male', 'malamente', 'brutta']],
+        ]);
+        return spec({ key: 'bm-' + it[0], prompt: 'Adjektiv oder Adverb?', text: it[0], accept: it[1], distractors: it[2],
+          explain: 'Zum Verb gehört das Adverb (bene, male), zum Nomen (nach essere) das Adjektiv.' });
+      }
+      const [a, de, sents] = R.pick(pool), adv = advOf(a), s = R.pick(sents);
+      if (level >= 2 && r < 0.6) {
+        if (R.chance(0.5)) {
+          const [noun, b, bde] = R.pick([['La ragazza', 'tranquillo', 'ruhig'], ['Il ragazzo', 'attento', 'aufmerksam'], ['La lezione', 'facile', 'leicht'], ['Il treno', 'lento', 'langsam'],
+            ['La risposta', 'chiaro', 'klar'], ['Il lavoro', 'serio', 'ernst'], ['La signora', 'gentile', 'freundlich'], ['Il bambino', 'felice', 'glücklich'], ['La macchina', 'veloce', 'schnell'], ['La ragazza', 'puntuale', 'pünktlich']]);
+          const f = noun.startsWith('La'), adj = b.endsWith('e') ? b : b.slice(0, -1) + (f ? 'a' : 'o');
+          return spec({ key: 'aa-' + noun + b, cue: b, prompt: `${b} (${bde}): Adjektiv oder Adverb?`, text: `${noun} è ___.`, so: SO(null, noun + ' è', ''), accept: adj,
+            distractors: [advOf(b), b.endsWith('e') ? b.slice(0, -1) + 'i' : b.slice(0, -1) + (f ? 'o' : 'a'), b.slice(0, -1) + 'omente'], explain: `Nach essere steht das Adjektiv (angepasst an ${noun.toLowerCase()}): ${adj}.` });
+        }
+      }
+      const wrong = uniq([a, a.slice(0, -1) + 'omente', a.endsWith('e') ? a.slice(0, -1) + 'amente' : a + 'mente', /[lr]e$/.test(a) ? a + 'mente' : a.slice(0, -1) + 'emente']).filter(x => x !== adv);
+      return spec({ key: 'av-' + a + s, cue: a, prompt: `Adverb von ${a} (${de}):`, text: `${s} ___.`, so: SO(null, s, ''), accept: adv, distractors: wrong,
+        explain: a.endsWith('o') ? `${a} → weibliche Form ${a.slice(0, -1)}a + -mente = ${adv}.` : /[lr]e$/.test(a) ? `${a} endet auf -${a.slice(-2)}: das e fällt weg → ${adv}.` : `${a} endet auf -e: + -mente = ${adv}.` });
+    },
+  });
+
+  /* ================================================================
+     M41  Verben + a / di + Infinitiv
+     ================================================================ */
+  // [Verb (konjugiert für io), Infinitiv, Präposition ('' = keine), Deutsch]
+  const VPI = [
+    ['Comincio', 'cominciare', 'a', 'anfangen'], ['Inizio', 'iniziare', 'a', 'anfangen'], ['Imparo', 'imparare', 'a', 'lernen'], ['Continuo', 'continuare', 'a', 'weitermachen'],
+    ['Provo', 'provare', 'a', 'versuchen'], ['Riesco', 'riuscire', 'a', 'schaffen'], ['Ti aiuto', 'aiutare', 'a', 'helfen'], ['Vado', 'andare', 'a', 'gehen'],
+    ['Finisco', 'finire', 'di', 'aufhören, fertig werden'], ['Smetto', 'smettere', 'di', 'aufhören'], ['Decido', 'decidere', 'di', 'beschließen'], ['Cerco', 'cercare', 'di', 'versuchen'],
+    ['Spero', 'sperare', 'di', 'hoffen'], ['Dimentico', 'dimenticare', 'di', 'vergessen'], ['Penso', 'pensare', 'di', 'vorhaben'], ['Ho voglia', 'avere voglia', 'di', 'Lust haben'],
+    ['Voglio', 'volere', '', 'wollen'], ['Posso', 'potere', '', 'können'], ['Devo', 'dovere', '', 'müssen'], ['So', 'sapere', '', 'können (gelernt)'], ['Preferisco', 'preferire', '', 'lieber wollen'],
+  ];
+  const INF_C = ['studiare', 'lavorare', 'cucinare', 'leggere un libro', 'scrivere una mail', 'fare sport', 'uscire', 'parlare italiano', 'nuotare', 'dormire'];
+  register('m41', {
+    levels: ['Grundregel: cominciare a, finire di', '+ weitere Verben mit a / di', '+ Modalverben ohne Präposition'],
+    ka: true,
+    table(level) {
+      const pool = VPI.filter(x => x[2] && (level > 0 || ['cominciare', 'imparare', 'finire', 'smettere', 'provare', 'decidere'].includes(x[1])));
+      return TAB('Welche Präposition folgt? (a / di)', shuf(pool).slice(0, 4).map(x => [x[1] + ' …', x[2]]));
+    },
+    make(level) {
+      const base = ['cominciare', 'imparare', 'finire', 'smettere', 'provare', 'decidere', 'continuare'];
+      const pool = VPI.filter(x => level === 0 ? base.includes(x[1]) : level === 1 ? x[2] : true);
+      const [conj, inf, pre, de] = R.pick(pool);
+      let c = R.pick(INF_C);
+      if (inf === 'andare') c = R.pick(['fare la spesa', 'prendere un caffè', 'vedere un film']);
+      if (inf === 'dimenticare') c = R.pick(['chiudere la porta', 'comprare il pane', 'fare i compiti']);
+      if (inf === 'aiutare') c = R.pick(['cucinare', 'fare i compiti', 'studiare']);
+      if (inf === 'imparare' || inf === 'sapere') c = R.pick(['nuotare', 'cucinare', 'parlare italiano', 'suonare la chitarra']);
+      const vow = pre === 'a' && /^[aeiou]/.test(c);
+      const acc = pre === '' ? '—' : vow ? ['ad', 'a'] : pre;
+      return spec({ key: 'vp-' + inf + c, cue: inf, prompt: pre === '' ? `${inf} (${de}) + Infinitiv: Präposition oder nichts (—)?` : `${inf} (${de}) + Infinitiv:`,
+        text: `${conj} ___ ${c}.`, so: pre === '' ? null : SO(null, conj, c), accept: acc, distractors: ['a', 'di', 'da', '—', 'per'],
+        mode: pre === '' ? 'mc' : undefined,
+        explain: pre === '' ? `${inf} steht ohne Präposition: ${conj.toLowerCase()} ${c}.` : `${inf} ${pre} + Infinitiv${vow ? ' (vor Vokal oft ad)' : ''}.` });
+    },
+  });
+
+  /* ================================================================
+     M42  si impersonale
+     ================================================================ */
+  const SI_V = [['parlare', 'parla', 'sprechen', ['italiano', 'molto', 'a voce bassa']], ['mangiare', 'mangia', 'essen', ['bene', 'tardi', 'molto']], ['vivere', 'vive', 'leben', ['bene', 'tranquilli'.slice(0, 0) + 'bene', 'a lungo']],
+    ['lavorare', 'lavora', 'arbeiten', ['molto', 'fino alle sei', 'anche il sabato']], ['dormire', 'dorme', 'schlafen', ['poco', 'bene', 'fino a tardi']], ['dire', 'dice', 'sagen', ['così', 'spesso']],
+    ['cenare', 'cena', 'zu Abend essen', ['tardi', 'alle nove']], ['uscire', 'esce', 'ausgehen', ['la sera', 'spesso']], ['ballare', 'balla', 'tanzen', ['fino a tardi', 'molto']]];
+  const SI_T = [['vendere', 'vende', 'vendono', 'verkaufen'], ['comprare', 'compra', 'comprano', 'kaufen'], ['vedere', 'vede', 'vedono', 'sehen'], ['affittare', 'affitta', 'affittano', 'vermieten'],
+    ['bere', 'beve', 'bevono', 'trinken'], ['usare', 'usa', 'usano', 'benutzen'], ['mangiare', 'mangia', 'mangiano', 'essen']];
+  const SI_N = { vendere: [['il pane', 'i giornali'], ['una casa', 'le scarpe'], ['la frutta', 'i biglietti']], comprare: [['il giornale', 'i biglietti'], ['la frutta', 'le mele']],
+    vedere: [['il mare', 'le montagne'], ['la città', 'le stelle']], affittare: [['un appartamento', 'due camere'], ['una bici', 'le biciclette']],
+    bere: [['il vino', 'molti caffè'], ["l'acqua", 'molte birre']], usare: [['il telefono', 'le mani'], ['la bici', 'i mezzi pubblici']], mangiare: [['la pasta', 'gli spaghetti'], ['la pizza', 'molti dolci']] };
+  const SI_L = ['Qui', 'In Italia', 'In questo negozio', 'Da qui', 'Di solito'];
+  const SI_R = [['alzarsi', 'alza', 'aufstehen', 'In campagna ___ presto.'], ['divertirsi', 'diverte', 'sich amüsieren', 'In vacanza ___ molto.'], ['riposarsi', 'riposa', 'sich ausruhen', 'La domenica ___.'],
+    ['vestirsi', 'veste', 'sich anziehen', 'Per una festa ___ bene.'], ['annoiarsi', 'annoia', 'sich langweilen', 'In questa città non ___ mai.'], ['sentirsi', 'sente', 'sich fühlen', 'Qui ___ a casa.']];
+  register('m42', {
+    levels: ['Grundregel: si + 3. Person Singular', '+ Plural: si vendono le case', '+ ci si alza, si è stanchi'],
+    ka: true,
+    make(level) {
+      const r = Math.random();
+      if (level >= 2 && r < 0.4) {
+        if (R.chance(0.6)) {
+          const [inf, f, de, text] = R.pick(SI_R);
+          return spec({ key: 'cisi-' + inf, cue: inf, prompt: `${inf} (${de}): „man …“`, text, accept: 'ci si ' + f,
+            distractors: ['si si ' + f, 'si ' + f, 'ci si ' + f.replace(/a$/, 'ano').replace(/e$/, 'ono')], explain: `Reflexiv: zwei si gehen nicht → ci si ${f}.` });
+        }
+        const [adj, de] = R.pick([['stanco', 'müde'], ['felice', 'glücklich'], ['contento', 'zufrieden'], ['giovane', 'jung'], ['rilassato', 'entspannt']]);
+        const pl = adj.endsWith('e') ? adj.slice(0, -1) + 'i' : adj.slice(0, -1) + 'i';
+        return spec({ key: 'sie-' + adj, prompt: `„Wenn man ${de} ist …“`, text: `Quando si è ___, si dorme bene.`, accept: pl,
+          distractors: uniq([adj, adj.endsWith('e') ? adj.slice(0, -1) + 'emente' : adj.slice(0, -1) + 'a', adj.endsWith('e') ? adj : adj.slice(0, -1) + 'e']), explain: `Nach si è steht das Adjektiv im Plural: ${pl}.` });
+      }
+      if (level >= 1 && r < 0.75) {
+        const [inf, sg, pl, de] = R.pick(SI_T), pair = R.pick(SI_N[inf]), plural = R.chance(0.5), n = pair[plural ? 1 : 0];
+        const lead = inf === 'vedere' ? 'Da qui' : R.pick(['Qui', 'In Italia', 'In questo posto']);
+        return spec({ key: 'sit-' + inf + n, cue: inf, prompt: `${inf} (${de}): „man …“`, text: `${lead} ___ ${n}.`, so: SO(lead, '', n), accept: 'si ' + (plural ? pl : sg),
+          distractors: ['si ' + (plural ? sg : pl), (plural ? pl : sg) + ' si', 'si si ' + sg], explain: plural ? `${n} ist Plural → si ${pl}.` : `${n} ist Singular → si ${sg}.` });
+      }
+      const [inf, f, de, cs] = R.pick(SI_V), c = R.pick(cs), lead = R.pick(SI_L.filter(x => x !== 'Da qui' && x !== 'In questo negozio'));
+      const pl = f.replace(/a$/, 'ano').replace(/e$/, 'ono');
+      return spec({ key: 'si-' + inf + c + lead, cue: inf, prompt: `${inf} (${de}): „man …“`, text: `${lead} ___ ${c}.`, so: SO(lead, '', c), accept: 'si ' + f,
+        distractors: ['si ' + pl, f + ' si', 'si ' + inf], explain: `man + Verb = si + 3. Person Singular: si ${f}.` });
+    },
+  });
+
+  /* ================================================================
+     M43  Zeitangaben fa, da, tra, per
+     ================================================================ */
+  const TQ = ['due giorni', 'una settimana', 'tre anni', "un'ora", 'dieci minuti', 'un mese', 'cinque anni', 'due ore'];
+  const TQ_DE = { 'due giorni': 'zwei Tagen', 'una settimana': 'einer Woche', 'tre anni': 'drei Jahren', "un'ora": 'einer Stunde', 'dieci minuti': 'zehn Minuten', 'un mese': 'einem Monat', 'cinque anni': 'fünf Jahren', 'due ore': 'zwei Stunden' };
+  const TQ_DE4 = { 'due giorni': 'zwei Tage', 'una settimana': 'eine Woche', 'tre anni': 'drei Jahre', "un'ora": 'eine Stunde', 'dieci minuti': 'zehn Minuten', 'un mese': 'einen Monat', 'cinque anni': 'fünf Jahre', 'due ore': 'zwei Stunden' };
+  register('m43', {
+    levels: ['Grundregel: fa (vor) und tra (in)', '+ da (seit) mit Präsens', '+ per (… lang) und in (innerhalb)'],
+    ka: true,
+    table(level) {
+      const t = R.pick(TQ);
+      const t2 = R.pick(TQ.filter(x => x !== t));
+      const rows = [[`vor ${TQ_DE[t]}`, t + ' fa'], [`in ${TQ_DE[t]}`, ['tra ' + t, 'fra ' + t]]];
+      if (level === 0) rows.push([`vor ${TQ_DE[t2]}`, t2 + ' fa'], [`in ${TQ_DE[t2]}`, ['tra ' + t2, 'fra ' + t2]]);
+      if (level >= 1) rows.push([`seit ${TQ_DE[t]}`, 'da ' + t]);
+      if (level >= 2) rows.push([`${TQ_DE4[t]} lang`, 'per ' + t]);
+      return TAB('Übersetze:', rows);
+    },
+    make(level) {
+      const SH = ["un'ora", 'dieci minuti', 'due ore', "mezz'ora"], LG = ['due giorni', 'una settimana', 'tre anni', 'un mese', 'cinque anni'], ALL = SH.concat(LG);
+      const TD = Object.assign({ "mezz'ora": 'einer halben Stunde', 'dieci ore': 'zehn Stunden' }, TQ_DE), TD4 = Object.assign({ "mezz'ora": 'eine halbe Stunde', 'dieci ore': 'zehn Stunden' }, TQ_DE4);
+      const kinds = ['fa', 'tra'].concat(level >= 1 ? ['da', 'da'] : []).concat(level >= 2 ? ['per', 'in'] : []);
+      const kind = R.pick(kinds), D = ['fa', 'da', 'tra', 'per'];
+      const pickS = list => { const [s, set] = R.pick(list); return [s, R.pick(set)]; };
+      if (kind === 'fa') {
+        const [s, t] = pickS([['Sono arrivato', ALL], ['Ho visto Marco', ALL], ['Ha telefonato Anna', SH.concat(['due giorni'])], ['Sono partiti', ALL], ['Ci siamo conosciuti', LG]]);
+        return spec({ key: 'fa-' + s + t, prompt: `vor ${TD[t]}`, text: `${s} ${t} ___.`, so: SO(null, `${s} ${t}`, ''), accept: 'fa', distractors: D,
+          explain: 'vor + Zeit (Vergangenheit) = Zeit + fa. fa steht nach der Zeitangabe.' });
+      }
+      if (kind === 'tra') {
+        const [s, t] = pickS([['Il treno parte', SH], ['Comincia il film', SH], ['Arrivo', ALL], ['Ci vediamo', ALL], ['Torno in Italia', LG]]);
+        return spec({ key: 'tra-' + s + t, prompt: `in ${TD[t]} (Zukunft)`, text: `${s} ___ ${t}.`, so: SO(null, s, t), accept: ['tra', 'fra'], distractors: D,
+          explain: 'in + Zeit (Zukunft) = tra/fra + Zeit.' });
+      }
+      if (kind === 'da') {
+        if (R.chance(0.4)) {
+          const [ok, wrong, impf, de, rest, set] = R.pick([['Abito', 'Ho abitato', 'Abitavo', 'wohne', 'qui', LG], ['Studio', 'Ho studiato', 'Studiavo', 'lerne', 'italiano', LG],
+            ['Lavoro', 'Ho lavorato', 'Lavoravo', 'arbeite', 'qui', LG], ['Aspetto', 'Ho aspettato', 'Aspettavo', 'warte', "l'autobus", SH], ['Conosco', 'Ho conosciuto', 'Conoscevo', 'kenne', 'Anna', LG]]);
+          const t = R.pick(set);
+          return spec({ key: 'dav-' + ok + t, prompt: `„Ich ${de} seit ${TD[t]} …“`, text: `___ ${rest} da ${t}.`, so: SO(null, '', `${rest} da ${t}`), accept: ok,
+            distractors: [wrong, impf], explain: 'Mit da (seit) steht das Präsens, weil es noch andauert.' });
+        }
+        const [s, t] = pickS([['Abito qui', LG], ['Studio italiano', LG], ['Lavoro in questa ditta', LG], ["Aspetto l'autobus", SH], ['Non vedo Luca', LG], ['Sono in coda', SH]]);
+        return spec({ key: 'da-' + s + t, prompt: `seit ${TD[t]}`, text: `${s} ___ ${t}.`, so: SO(null, s, t), accept: 'da', distractors: D,
+          explain: 'seit + Zeit = da + Zeit; das Verb steht im Präsens.' });
+      }
+      if (kind === 'per') {
+        const [s, t] = pickS([['Ho lavorato', SH.concat(['due giorni'])], ['Ho dormito', ['due ore', 'dieci ore', "un'ora"]], ['Abbiamo aspettato', SH], ['Ha vissuto a Roma', ['tre anni', 'cinque anni', 'un mese']], ['Ho studiato', SH]]);
+        return spec({ key: 'per-' + s + t, prompt: `${TD4[t]} lang (vorbei)`, text: `${s} ___ ${t}.`, so: SO(null, s, t), accept: 'per', distractors: ['fa', 'da', 'tra'],
+          explain: 'Abgeschlossene Dauer in der Vergangenheit: per + Zeit.' });
+      }
+      const [s, t] = pickS([['Ho finito il libro', ['due giorni', 'una settimana']], ['Ho fatto i compiti', SH], ['Abbiamo imparato la canzone', SH], ['Ha pulito la casa', ["un'ora", 'due ore']]]);
+      return spec({ key: 'in-' + s + t, prompt: `innerhalb von ${TD[t]}`, text: `${s} ___ ${t}.`, so: SO(null, s, t), accept: 'in', distractors: ['tra', 'fa', 'da'],
+        explain: 'in + Zeit = innerhalb von (wie lange etwas gedauert hat).' });
+    },
+  });
+
   return { get, register, _int: { presente, futuro, imperfetto, gerundio, part, artDet, artInd, VERBS, N, PA } };
 })();

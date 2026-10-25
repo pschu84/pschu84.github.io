@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — Man: si impersonale</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Verben (A2) · Modul 42</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>👥 Man: si impersonale</h1>
+    <p>si mangia, si vendono, ci si alza</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m42",
+ "block": "verben-a2",
+ "title": "Man: si impersonale",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "Für das deutsche <strong>„man“</strong> benutzt das Italienische <strong>si + Verb in der 3. Person</strong>: <em>si mangia</em> = man isst, <em>si parla</em> = man spricht."
+  },
+  {
+   "type": "table",
+   "head": [
+    "Form",
+    "Beispiel",
+    "Bedeutung"
+   ],
+   "rows": [
+    [
+     "si + 3. Pers. Sg.",
+     "In Italia si mangia bene.",
+     "In Italien isst man gut."
+    ],
+    [
+     "si + 3. Pers. Sg. + Nomen Sg.",
+     "Qui si vende il pane.",
+     "Hier wird Brot verkauft."
+    ],
+    [
+     "si + 3. Pers. Pl. + Nomen Pl.",
+     "Qui si vendono i giornali.",
+     "Hier werden Zeitungen verkauft."
+    ],
+    [
+     "si può / si deve + Infinitiv",
+     "Non si può fumare.",
+     "Man darf nicht rauchen."
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Faustregel:</strong> Folgt ein Nomen im Plural, steht auch das Verb im Plural (<em>si vendono case</em>). Sonst immer Singular."
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Mit essere und Adjektiv</strong> steht das Adjektiv im Plural: <em>Quando si è stanchi …</em> (Wenn man müde ist …)."
+  },
+  {
+   "type": "text",
+   "html": "<strong>Reflexive Verben:</strong> Zwei si hintereinander gehen nicht. Darum heißt es <strong>ci si</strong>: <em>alzarsi → ci si alza</em> (man steht auf), <em>divertirsi → ci si diverte</em>."
+  },
+  {
+   "type": "example",
+   "it": "In Italia ci si alza presto, si lavora molto e si cena tardi.",
+   "de": "In Italien steht man früh auf, arbeitet viel und isst spät zu Abend."
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m42-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "in",
+    "Italia",
+    "si",
+    "mangia",
+    "bene",
+    "si mangiano",
+    "mangiamo"
+   ],
+   "solution": [
+    "in",
+    "Italia",
+    "si",
+    "mangia",
+    "bene"
+   ],
+   "translation": "In Italien isst man gut.",
+   "explain": "si + 3. Person Singular = man."
+  },
+  {
+   "id": "m42-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "qui",
+    "si",
+    "parla",
+    "italiano",
+    "si parlano",
+    "parla si"
+   ],
+   "solution": [
+    "qui",
+    "si",
+    "parla",
+    "italiano"
+   ],
+   "translation": "Hier spricht man Italienisch.",
+   "explain": "si parla = man spricht."
+  },
+  {
+   "id": "m42-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "come",
+    "si",
+    "dice",
+    "in",
+    "italiano",
+    "si dicono",
+    "dice"
+   ],
+   "solution": [
+    "come",
+    "si",
+    "dice",
+    "in",
+    "italiano"
+   ],
+   "translation": "Wie sagt man das auf Italienisch?",
+   "explain": "Come si dice …? = Wie sagt man …?"
+  },
+  {
+   "id": "m42-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "si",
+    "vendono",
+    "giornali",
+    "qui",
+    "si vende",
+    "vendono si"
+   ],
+   "solution": [
+    "si",
+    "vendono",
+    "giornali",
+    "qui"
+   ],
+   "translation": "Hier werden Zeitungen verkauft.",
+   "explain": "Plural-Objekt (giornali) → si vendono."
+  },
+  {
+   "id": "m42-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "non",
+    "si",
+    "può",
+    "fumare",
+    "si possono",
+    "può si"
+   ],
+   "solution": [
+    "non",
+    "si",
+    "può",
+    "fumare"
+   ],
+   "translation": "Man darf nicht rauchen.",
+   "explain": "si può + Infinitiv = man kann / darf."
+  },
+  {
+   "id": "m42-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "quando",
+    "si",
+    "è",
+    "stanchi",
+    "si",
+    "dorme",
+    "bene",
+    "stanco"
+   ],
+   "solution": [
+    "quando",
+    "si",
+    "è",
+    "stanchi",
+    "si",
+    "dorme",
+    "bene"
+   ],
+   "translation": "Wenn man müde ist, schläft man gut.",
+   "explain": "si è + Adjektiv im Plural: si è stanchi."
+  },
+  {
+   "id": "m42-el-01",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "In questo ristorante si {0} bene e si {1} poco.",
+   "blanks": [
+    {
+     "accept": "mangia",
+     "distractors": [
+      "mangiano",
+      "mangi",
+      "mangiamo"
+     ]
+    },
+    {
+     "accept": "spende",
+     "distractors": [
+      "spendono",
+      "spendi",
+      "spendiamo"
+     ]
+    }
+   ],
+   "explain": "si + 3. Person Singular, wenn kein Plural-Objekt folgt."
+  },
+  {
+   "id": "m42-el-02",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Come si {0} „Danke“ in italiano? Si {1} „grazie“.",
+   "blanks": [
+    {
+     "accept": "dice",
+     "distractors": [
+      "dicono",
+      "dici",
+      "dite"
+     ]
+    },
+    {
+     "accept": "dice",
+     "distractors": [
+      "dicono",
+      "diciamo",
+      "dico"
+     ]
+    }
+   ],
+   "explain": "si dice = man sagt."
+  },
+  {
+   "id": "m42-el-03",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Qui si {0} le scarpe e si {1} una borsa.",
+   "blanks": [
+    {
+     "accept": "vendono",
+     "distractors": [
+      "vende",
+      "vendi",
+      "vendiamo"
+     ]
+    },
+    {
+     "accept": "vende",
+     "distractors": [
+      "vendono",
+      "vendi",
+      "vendete"
+     ]
+    }
+   ],
+   "explain": "Plural (le scarpe) → vendono; Singular (una borsa) → vende."
+  },
+  {
+   "id": "m42-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "In Italia si {0} molti caffè e si {1} la pasta ogni giorno.",
+   "blanks": [
+    {
+     "accept": "bevono",
+     "distractors": [
+      "beve",
+      "bevi",
+      "beviamo"
+     ]
+    },
+    {
+     "accept": "mangia",
+     "distractors": [
+      "mangiano",
+      "mangi",
+      "mangiamo"
+     ]
+    }
+   ],
+   "explain": "molti caffè (Pl.) → bevono; la pasta (Sg.) → mangia."
+  },
+  {
+   "id": "m42-el-05",
+   "type": "EL",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Quando si {0} giovani, si {1} molti sogni.",
+   "blanks": [
+    {
+     "accept": "è",
+     "distractors": [
+      "sono",
+      "siamo",
+      "sei"
+     ]
+    },
+    {
+     "accept": "hanno",
+     "distractors": [
+      "ha",
+      "abbiamo",
+      "hai"
+     ]
+    }
+   ],
+   "explain": "si è + Adjektiv im Plural; molti sogni (Pl.) → si hanno."
+  },
+  {
+   "id": "m42-el-06",
+   "type": "EL",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "In biblioteca non si {0} parlare e non si {1} usare il telefono.",
+   "blanks": [
+    {
+     "accept": "può",
+     "distractors": [
+      "possono",
+      "puoi",
+      "possiamo"
+     ]
+    },
+    {
+     "accept": "deve",
+     "distractors": [
+      "devono",
+      "devi",
+      "dobbiamo"
+     ]
+    }
+   ],
+   "explain": "si può / si deve + Infinitiv (Singular)."
+  },
+  {
+   "id": "m42-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "man spricht",
+     "it": "si parla"
+    },
+    {
+     "de": "man isst",
+     "it": "si mangia"
+    },
+    {
+     "de": "man sagt",
+     "it": "si dice"
+    },
+    {
+     "de": "man schreibt",
+     "it": "si scrive"
+    },
+    {
+     "de": "man arbeitet",
+     "it": "si lavora"
+    },
+    {
+     "de": "man schläft",
+     "it": "si dorme"
+    }
+   ]
+  },
+  {
+   "id": "m42-zo-02",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "… il giornale",
+     "it": "si vende"
+    },
+    {
+     "de": "… i giornali",
+     "it": "si vendono"
+    },
+    {
+     "de": "… una casa",
+     "it": "si affitta"
+    },
+    {
+     "de": "… due camere",
+     "it": "si affittano"
+    },
+    {
+     "de": "… il pane",
+     "it": "si compra"
+    },
+    {
+     "de": "… le mele",
+     "it": "si comprano"
+    }
+   ]
+  },
+  {
+   "id": "m42-zo-03",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "man darf nicht",
+     "it": "non si può"
+    },
+    {
+     "de": "man muss",
+     "it": "si deve"
+    },
+    {
+     "de": "man ist glücklich",
+     "it": "si è felici"
+    },
+    {
+     "de": "man wäscht sich",
+     "it": "ci si lava"
+    },
+    {
+     "de": "man sieht sich",
+     "it": "ci si vede"
+    },
+    {
+     "de": "man geht aus",
+     "it": "si esce"
+    }
+   ]
+  },
+  {
+   "id": "m42-mc-01",
+   "type": "MC",
+   "prompt": "\"In Italia ___ molto.\" (man isst)",
+   "options": [
+    "si mangia",
+    "si mangiano",
+    "mangia si",
+    "si mangi"
+   ],
+   "correctValue": "si mangia",
+   "explain": "si + 3. Person Singular."
+  },
+  {
+   "id": "m42-mc-02",
+   "type": "MC",
+   "prompt": "\"Qui ___ inglese.\" (man spricht)",
+   "options": [
+    "si parla",
+    "si parlano",
+    "parla",
+    "si parli"
+   ],
+   "correctValue": "si parla",
+   "explain": "si parla = man spricht."
+  },
+  {
+   "id": "m42-mc-03",
+   "type": "MC",
+   "prompt": "\"Come ___ questa parola?\" (schreibt man)",
+   "options": [
+    "si scrive",
+    "si scrivono",
+    "scrive si",
+    "si scrivi"
+   ],
+   "correctValue": "si scrive",
+   "explain": "si scrive = man schreibt."
+  },
+  {
+   "id": "m42-mc-04",
+   "type": "MC",
+   "prompt": "\"A che ora ___ in Italia?\" (isst man zu Abend)",
+   "options": [
+    "si cena",
+    "si cenano",
+    "cena si",
+    "si ceni"
+   ],
+   "correctValue": "si cena",
+   "explain": "cenare → si cena."
+  },
+  {
+   "id": "m42-mc-05",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"In questo negozio ___ libri usati.\"",
+   "options": [
+    "si vendono",
+    "si vende",
+    "vende si",
+    "si vendi"
+   ],
+   "correctValue": "si vendono",
+   "explain": "libri (Pl.) → si vendono."
+  },
+  {
+   "id": "m42-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"___ appartamento.\" (zu vermieten, Schild)",
+   "options": [
+    "Affittasi",
+    "Affittano si",
+    "Si affittano",
+    "Affitta si"
+   ],
+   "correctValue": "Affittasi",
+   "explain": "Auf Schildern hängt si an: affittasi, vendesi. Mit Singular-Nomen."
+  },
+  {
+   "id": "m42-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Da qui ___ le montagne.\"",
+   "options": [
+    "si vedono",
+    "si vede",
+    "vedono si",
+    "si vedi"
+   ],
+   "correctValue": "si vedono",
+   "explain": "le montagne (Pl.) → si vedono."
+  },
+  {
+   "id": "m42-mc-08",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"In treno non ___ fumare.\"",
+   "options": [
+    "si può",
+    "si possono",
+    "può si",
+    "si puoi"
+   ],
+   "correctValue": "si può",
+   "explain": "si può + Infinitiv."
+  },
+  {
+   "id": "m42-mc-09",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"Quando ___ in vacanza, si è rilassati.\"",
+   "options": [
+    "si è",
+    "si sono",
+    "ci si è",
+    "si siamo"
+   ],
+   "correctValue": "si è",
+   "explain": "si è = man ist."
+  },
+  {
+   "id": "m42-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"La mattina ___ presto.\" (man steht auf)",
+   "options": [
+    "ci si alza",
+    "si si alza",
+    "si alza",
+    "si alzano"
+   ],
+   "correctValue": "ci si alza",
+   "explain": "Bei reflexiven Verben: si + si → ci si."
+  },
+  {
+   "id": "m42-mc-11",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"Quando si è giovani, si è ___.\"",
+   "options": [
+    "curiosi",
+    "curioso",
+    "curiosa",
+    "curiose"
+   ],
+   "correctValue": "curiosi",
+   "explain": "Nach si è steht das Adjektiv im (maskulinen) Plural."
+  },
+  {
+   "id": "m42-mc-12",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"Qui ___ molto bene.\" (man fühlt sich)",
+   "options": [
+    "ci si sente",
+    "si si sente",
+    "si sentono",
+    "si sente si"
+   ],
+   "correctValue": "ci si sente",
+   "explain": "sentirsi → ci si sente."
+  },
+  {
+   "id": "m42-lt-01",
+   "type": "LT",
+   "text": "In Italia si {0} (mangiare) bene e si {1} (dormire) poco.",
+   "blanks": [
+    {
+     "accept": [
+      "mangia"
+     ]
+    },
+    {
+     "accept": [
+      "dorme"
+     ]
+    }
+   ],
+   "explain": "si + 3. Person Singular.",
+   "prompt": "Setze das Verb ein:"
+  },
+  {
+   "id": "m42-lt-02",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Qui si {0} (vendere) i biglietti e si {1} (comprare) il giornale.",
+   "blanks": [
+    {
+     "accept": [
+      "vendono"
+     ]
+    },
+    {
+     "accept": [
+      "compra"
+     ]
+    }
+   ],
+   "explain": "biglietti (Pl.) → vendono; il giornale (Sg.) → compra.",
+   "prompt": "Setze das Verb ein:"
+  },
+  {
+   "id": "m42-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Non si {0} (potere) entrare. Si {1} (dovere) aspettare.",
+   "blanks": [
+    {
+     "accept": [
+      "può"
+     ]
+    },
+    {
+     "accept": [
+      "deve"
+     ]
+    }
+   ],
+   "explain": "si può / si deve + Infinitiv.",
+   "prompt": "Setze das Verb ein:"
+  },
+  {
+   "id": "m42-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "D'estate si {0} (essere) felici e ci si {1} (divertire) molto.",
+   "blanks": [
+    {
+     "accept": [
+      "è"
+     ]
+    },
+    {
+     "accept": [
+      "diverte"
+     ]
+    }
+   ],
+   "explain": "si è; divertirsi → ci si diverte.",
+   "prompt": "Setze das Verb ein:"
+  },
+  {
+   "id": "m42-ft-01",
+   "type": "FT",
+   "prompt": "Bilde die si-Form:",
+   "rows": [
+    {
+     "label": "parlare",
+     "accept": [
+      "si parla"
+     ]
+    },
+    {
+     "label": "mangiare",
+     "accept": [
+      "si mangia"
+     ]
+    },
+    {
+     "label": "vivere",
+     "accept": [
+      "si vive"
+     ]
+    },
+    {
+     "label": "dormire",
+     "accept": [
+      "si dorme"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m42-ft-02",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "Singular oder Plural? Setze vendere ein:",
+   "rows": [
+    {
+     "label": "… il pane",
+     "accept": [
+      "si vende"
+     ]
+    },
+    {
+     "label": "… le pizze",
+     "accept": [
+      "si vendono"
+     ]
+    },
+    {
+     "label": "… una macchina",
+     "accept": [
+      "si vende"
+     ]
+    },
+    {
+     "label": "… i biglietti",
+     "accept": [
+      "si vendono"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m42-ft-03",
+   "type": "FT",
+   "stufe": 3,
+   "prompt": "Bilde die si-Form reflexiver Verben:",
+   "rows": [
+    {
+     "label": "alzarsi",
+     "accept": [
+      "ci si alza"
+     ]
+    },
+    {
+     "label": "divertirsi",
+     "accept": [
+      "ci si diverte"
+     ]
+    },
+    {
+     "label": "vestirsi",
+     "accept": [
+      "ci si veste"
+     ]
+    },
+    {
+     "label": "annoiarsi",
+     "accept": [
+      "ci si annoia"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m42-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "In Italia si mangiano bene.",
+   "solution": "In Italia si mangia bene.",
+   "errorToken": "mangiano",
+   "explain": "Kein Plural-Objekt → si mangia."
+  },
+  {
+   "id": "m42-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Qui si vende le borse.",
+   "solution": "Qui si vendono le borse.",
+   "errorToken": "vende",
+   "explain": "le borse (Pl.) → si vendono."
+  },
+  {
+   "id": "m42-fk-03",
+   "type": "FK",
+   "stufe": 3,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "La domenica si si riposa.",
+   "solution": "La domenica ci si riposa.",
+   "errorToken": "si si",
+   "explain": "Reflexiv: ci si riposa."
+  },
+  {
+   "id": "m42-ka-01",
+   "type": "KA",
+   "prompt": "si + Singular oder Plural?",
+   "categories": [
+    "si … Singular",
+    "si … Plural"
+   ],
+   "items": [
+    {
+     "text": "… parla italiano",
+     "cat": 0
+    },
+    {
+     "text": "… vendono case",
+     "cat": 1
+    },
+    {
+     "text": "… mangia bene",
+     "cat": 0
+    },
+    {
+     "text": "… vedono le stelle",
+     "cat": 1
+    },
+    {
+     "text": "… dice così",
+     "cat": 0
+    },
+    {
+     "text": "… comprano i biglietti",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m42-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "Welches Verb passt? „Qui si ___ …“",
+   "categories": [
+    "vende …",
+    "vendono …"
+   ],
+   "items": [
+    {
+     "text": "il pane",
+     "cat": 0
+    },
+    {
+     "text": "le mele",
+     "cat": 1
+    },
+    {
+     "text": "una bici",
+     "cat": 0
+    },
+    {
+     "text": "libri",
+     "cat": 1
+    },
+    {
+     "text": "frutta",
+     "cat": 0
+    },
+    {
+     "text": "i giornali",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m42-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "si oder ci si?",
+   "categories": [
+    "si …",
+    "ci si …"
+   ],
+   "items": [
+    {
+     "text": "… mangia",
+     "cat": 0
+    },
+    {
+     "text": "… alza",
+     "cat": 1
+    },
+    {
+     "text": "… lavora",
+     "cat": 0
+    },
+    {
+     "text": "… diverte",
+     "cat": 1
+    },
+    {
+     "text": "… parla",
+     "cat": 0
+    },
+    {
+     "text": "… riposa",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m42-ko-01",
+   "type": "KO",
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "Si vende la casa.",
+    "tag": "Singular"
+   },
+   "b": {
+    "sentence": "Si vendono le case.",
+    "tag": "Plural"
+   },
+   "reveal": "Bei si richtet sich das Verb nach dem Nomen danach: ein Haus → vende, mehrere Häuser → vendono. Ohne Nomen (si mangia bene) steht immer Singular."
+  },
+  {
+   "id": "m42-de-01",
+   "type": "DE",
+   "prompt": "\"Hier spricht man Italienisch.\"",
+   "solutions": [
+    "Qui si parla italiano.",
+    "Qui si parla l'italiano."
+   ],
+   "note": "si parla."
+  },
+  {
+   "id": "m42-de-02",
+   "type": "DE",
+   "stufe": 2,
+   "prompt": "\"In Italien trinkt man viel Kaffee.\"",
+   "solutions": [
+    "In Italia si beve molto caffè."
+   ],
+   "note": "molto caffè (Sg.) → si beve."
+  },
+  {
+   "id": "m42-it-01",
+   "type": "IT",
+   "prompt": "\"Come si dice „Haus“ in italiano?\"",
+   "solutions": [
+    "Wie sagt man „Haus“ auf Italienisch?"
+   ],
+   "note": "Come si dice …?"
+  },
+  {
+   "id": "m42-it-02",
+   "type": "IT",
+   "stufe": 3,
+   "prompt": "\"Ci si vede domani!\"",
+   "solutions": [
+    "Man sieht sich morgen!",
+    "Wir sehen uns morgen!",
+    "Bis morgen!"
+   ],
+   "note": "vedersi → ci si vede."
+  },
+  {
+   "id": "m42-sr-01",
+   "type": "SR",
+   "it": "Qui si mangia la pizza più buona della città.",
+   "de": "Hier isst man die beste Pizza der Stadt."
+  },
+  {
+   "id": "m42-sr-02",
+   "type": "SR",
+   "stufe": 2,
+   "it": "Da questa finestra si vedono le montagne.",
+   "de": "Von diesem Fenster aus sieht man die Berge."
+  },
+  {
+   "id": "m42-sr-03",
+   "type": "SR",
+   "stufe": 3,
+   "it": "Quando si è in vacanza, ci si alza tardi.",
+   "de": "Wenn man im Urlaub ist, steht man spät auf."
+  },
+  {
+   "id": "m42-st-01",
+   "type": "ST",
+   "de": "Wie schreibt man das?",
+   "solutions": [
+    "Come si scrive?"
+   ],
+   "note": "si scrive."
+  },
+  {
+   "id": "m42-st-02",
+   "type": "ST",
+   "stufe": 2,
+   "de": "Hier werden Fahrräder vermietet.",
+   "solutions": [
+    "Qui si affittano biciclette.",
+    "Qui si noleggiano biciclette.",
+    "Qui si affittano le biciclette.",
+    "Qui si noleggiano le biciclette.",
+    "Qui si affittano bici.",
+    "Qui si noleggiano bici."
+   ],
+   "note": "Plural → si affittano / si noleggiano."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

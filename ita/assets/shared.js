@@ -1620,9 +1620,11 @@ class ModuleTrainer {
   _progress(tag) {
     const total = this.run.order.length, done = Object.keys(this.run.done).length;
     this.fillEl.style.width = `${Math.round(done / total * 100)}%`;
-    this.textEl.textContent = `Übungen ${done} / ${total}`;
+    this.textEl.textContent = `Aufgabe ${Math.max(1, this.n)}`;
+    this.fillEl.closest('.exercise-progress').title = `Modul-Fortschritt: ${done} von ${total} Modulaufgaben gelöst`;
     const pct = this.sessionTotal ? Math.round(this.sessionCorrect / this.sessionTotal * 100) : null;
-    this.statsEl.innerHTML = `<span>✅ ${this.sessionCorrect} von ${this.sessionTotal}${pct !== null ? ` (${pct} %)` : ''}</span><span>🔥 Serie ${this.streak}</span>`;
+    this.statsEl.innerHTML = `<span>✅ ${this.sessionCorrect} von ${this.sessionTotal}${pct !== null ? ` (${pct} %)` : ''}</span><span>🔥 Serie ${this.streak}</span>`
+      + `<span class="drill-mod" title="Der Balken oben zeigt den Modul-Fortschritt. Zu jeder Modulaufgabe gibt es dazwischen Training.">📚 Modul: ${done} von ${total} Aufgaben gelöst</span>`;
   }
 
   /* ---------- Steuerung ---------- */
@@ -1650,6 +1652,7 @@ class ModuleTrainer {
     this.answered = false;
     this.nextBtn.disabled = true;
     this.hintEl.innerHTML = '';
+    this._progress();
     if (this._useFixed(this.n)) {
       const ex = this._nextFixed();
       if (ex) { this._renderFixed(ex); return this._scroll(first); }
