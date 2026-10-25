@@ -828,5 +828,188 @@ const GEN = (() => {
     },
   });
 
+  /* ================================================================
+     M28  Präsens: unregelmäßige Verben
+     ================================================================ */
+  const IRR = {
+    andare: ['gehen', ['vado', 'vai', 'va', 'andiamo', 'andate', 'vanno'], ['al cinema', 'a scuola', 'in centro'], ['ando', 'andano', 'vadiamo']],
+    fare: ['machen', ['faccio', 'fai', 'fa', 'facciamo', 'fate', 'fanno'], ['colazione', 'la spesa', 'i compiti'], ['faco', 'faciamo', 'fano']],
+    stare: ['sein, sich fühlen', ['sto', 'stai', 'sta', 'stiamo', 'state', 'stanno'], ['bene', 'a casa'], ['stano', 'stao', 'stamo']],
+    dare: ['geben', ['do', 'dai', 'dà', 'diamo', 'date', 'danno'], ['una mano alla nonna', 'il libro a Luca'], ['dano', 'daiamo', 'dao']],
+    venire: ['kommen', ['vengo', 'vieni', 'viene', 'veniamo', 'venite', 'vengono'], ['alla festa', 'da Milano'], ['veno', 'venono', 'vieno']],
+    dire: ['sagen', ['dico', 'dici', 'dice', 'diciamo', 'dite', 'dicono'], ['la verità', 'ciao'], ['dio', 'dicete', 'diro']],
+    bere: ['trinken', ['bevo', 'bevi', 'beve', 'beviamo', 'bevete', 'bevono'], ['un caffè', 'molta acqua'], ['bero', 'berete', 'beono']],
+    uscire: ['ausgehen', ['esco', 'esci', 'esce', 'usciamo', 'uscite', 'escono'], ['stasera', 'con gli amici'], ['usco', 'uscio', 'uscono']],
+    sapere: ['wissen, können', ['so', 'sai', 'sa', 'sappiamo', 'sapete', 'sanno'], ['la risposta', 'nuotare'], ['sapo', 'sapiamo', 'sano']],
+    rimanere: ['bleiben', ['rimango', 'rimani', 'rimane', 'rimaniamo', 'rimanete', 'rimangono'], ['a casa', 'in ufficio'], ['rimano', 'rimanono']],
+    tenere: ['halten', ['tengo', 'tieni', 'tiene', 'teniamo', 'tenete', 'tengono'], ['la porta aperta', 'un diario'], ['teno', 'tenono', 'tieno']],
+    salire: ['einsteigen', ['salgo', 'sali', 'sale', 'saliamo', 'salite', 'salgono'], ['sul treno', 'sul bus'], ['salo', 'salono']],
+    scegliere: ['wählen', ['scelgo', 'scegli', 'sceglie', 'scegliamo', 'scegliete', 'scelgono'], ['il gelato al limone', 'un libro'], ['sceglio', 'sceglono']],
+  };
+  const IRR_LV = [['andare', 'fare', 'stare', 'dare'], ['venire', 'dire', 'bere', 'uscire', 'sapere'], ['rimanere', 'tenere', 'salire', 'scegliere']];
+  const irrPool = level => IRR_LV.slice(0, level + 1).flat();
+  register('m28', {
+    levels: ['Grundregel: andare, fare, stare, dare', '+ venire, dire, bere, uscire, sapere', '+ rimanere, tenere, salire, scegliere'],
+    table(level) {
+      const v = level > 0 && R.chance(0.6) ? R.pick(IRR_LV[level]) : R.pick(irrPool(level));
+      return TAB(`Konjugiere ${v} (${IRR[v][0]})`, [0, 1, 2, 3, 4, 5].map(p => [PRON[p], IRR[v][1][p]]));
+    },
+    make(level) {
+      const v = level > 0 && R.chance(0.6) ? R.pick(IRR_LV[level]) : R.pick(irrPool(level));
+      const [de, f, cs, wrong] = IRR[v];
+      const s = R.pick(SUBJ), p = s[1], c = R.pick(cs);
+      return spec({ key: 'irr-' + v + p, prompt: `Setze ${v} (${de}) ins Präsens:`, text: `${cap(s[0])} ___ ${c}.`, so: SO(null, s[0], c),
+        accept: f[p], distractors: [...others(i => f[i], p).slice(0, 3), R.pick(wrong)],
+        explain: `${v}: ${f.join(', ')}.` });
+    },
+  });
+
+  /* ================================================================
+     M29  Adjektive
+     ================================================================ */
+  // Nomen für Adjektive: [it, Genus, Plural, Anlaut]
+  const NX = {};
+  N.forEach(n => { NX[n.it] = n; });
+  [['torta', 'f', 'torte', 'c'], ['domanda', 'f', 'domande', 'c'], ['esercizio', 'm', 'esercizi', 'v'], ['film', 'm', 'film', 'c'],
+    ['caffè', 'm', 'caffè', 'c'], ['cucina', 'f', 'cucine', 'c'], ['bambino', 'm', 'bambini', 'c'], ['regola', 'f', 'regole', 'c'], ['vestito', 'm', 'vestiti', 'c']]
+    .forEach(r => { NX[r[0]] = { it: r[0], g: r[1], pl: r[2], a: r[3] }; });
+  const PERS = ['ragazzo', 'ragazza', 'studente', 'fratello', 'sorella', 'amico', 'amica', 'bambino'];
+  const OBJ = ['libro', 'tavolo', 'letto', 'casa', 'macchina', 'borsa', 'sedia', 'zaino', 'cappello', 'quaderno', 'orologio', 'ombrello', 'porta', 'finestra', 'camera', 'telefono', 'vestito'];
+  // [Adjektiv, Deutsch, Klasse, passende Nomen]
+  const ADJ = [
+    ['rosso', 'rot', 'o', ['macchina', 'borsa', 'porta', 'cappello', 'vestito', 'mela']], ['nero', 'schwarz', 'o', ['gatto', 'cane', 'borsa', 'zaino', 'cappello', 'vestito']],
+    ['nuovo', 'neu', 'o', OBJ], ['vecchio', 'alt', 'o', OBJ.concat(['albero'])], ['piccolo', 'klein', 'o', OBJ.concat(['gatto', 'cane', 'giardino'])],
+    ['caro', 'teuer', 'o', ['macchina', 'borsa', 'orologio', 'vestito', 'ristorante', 'vino']], ['pieno', 'voll', 'o', ['bicchiere', 'piatto', 'borsa', 'zaino', 'treno']],
+    ['vuoto', 'leer', 'o', ['bicchiere', 'piatto', 'borsa', 'zaino', 'treno', 'camera']], ['freddo', 'kalt', 'o', ['pizza', 'caffè', 'camera', 'notte', 'panino']],
+    ['moderno', 'modern', 'o', ['casa', 'macchina', 'telefono', 'stazione', 'ospedale', 'scuola']], ['comodo', 'bequem', 'o', ['letto', 'sedia', 'stivale', 'treno', 'camera']],
+    ['pulito', 'sauber', 'o', ['camera', 'piatto', 'bicchiere', 'cucina', 'casa', 'vestito']], ['alto', 'groß (Person), hoch', 'o', PERS.concat(['albero'])],
+    ['bravo', 'gut, tüchtig', 'o', PERS], ['contento', 'zufrieden, froh', 'o', PERS],
+    ['grande', 'groß', 'e', OBJ.concat(['giardino', 'città', 'albero'])], ['verde', 'grün', 'e', ['mela', 'albero', 'porta', 'borsa', 'giardino', 'vestito']],
+    ['facile', 'leicht', 'e', ['lezione', 'domanda', 'esercizio', 'regola']], ['difficile', 'schwierig', 'e', ['lezione', 'domanda', 'esercizio', 'regola']],
+    ['veloce', 'schnell', 'e', ['treno', 'macchina', 'aereo']], ['interessante', 'interessant', 'e', ['libro', 'lezione', 'film', 'giornale', 'spettacolo']],
+    ['gentile', 'nett', 'e', PERS], ['dolce', 'süß', 'e', ['torta', 'mela', 'arancia', 'caffè']], ['triste', 'traurig', 'e', PERS.concat(['film'])],
+    ['bianco', 'weiß', 'co', ['casa', 'porta', 'macchina', 'letto', 'sedia', 'vestito'], 'bianchi', 'bianche'], ['lungo', 'lang', 'co', ['strada', 'lezione', 'notte', 'film', 'vestito'], 'lunghi', 'lunghe'],
+    ['stanco', 'müde', 'co', PERS, 'stanchi', 'stanche'], ['antico', 'antik, alt', 'co', ['casa', 'orologio', 'tavolo', 'specchio'], 'antichi', 'antiche'],
+    ['simpatico', 'sympathisch', 'co', PERS, 'simpatici', 'simpatiche'], ['tedesco', 'deutsch', 'co', PERS.concat(['macchina']), 'tedeschi', 'tedesche'],
+    ['blu', 'blau', 'inv', ['macchina', 'borsa', 'porta', 'vestito', 'zaino']], ['rosa', 'rosa', 'inv', ['borsa', 'vestito', 'fiore', 'camera']], ['viola', 'lila', 'inv', ['borsa', 'vestito', 'fiore']],
+  ];
+  const adjForms = a => a[2] === 'o' ? ['o', 'a', 'i', 'e'].map(e => a[0].slice(0, -1) + e)
+    : a[2] === 'e' ? [a[0], a[0], a[0].slice(0, -1) + 'i', a[0].slice(0, -1) + 'i']
+      : a[2] === 'co' ? [a[0], a[0].slice(0, -1) + 'a', a[4], a[5]] : [a[0], a[0], a[0], a[0]];
+  const MIXED = [['Marco e Anna', 'mp'], ['Luca e Sara', 'mp'], ['mio fratello e mia sorella', 'mp'], ['Anna e Giulia', 'fp'], ['le mie amiche', 'fp']];
+  const BELLO = n => n.g === 'f' ? (n.a === 'v' ? "bell'" : 'bella') : n.a === 'c' ? 'bel' : n.a === 'v' ? "bell'" : 'bello';
+  const BELLI = n => n.g === 'f' ? 'belle' : n.a === 'c' ? 'bei' : 'begli';
+  const adjPool = level => level === 0 ? ADJ.filter(a => a[2] === 'o') : level === 1 ? ADJ.filter(a => a[2] === 'o' || a[2] === 'e') : ADJ.filter(a => a[2] === 'co' || a[2] === 'inv');
+  register('m29', {
+    levels: ['Grundregel: -o / -a / -i / -e', '+ Adjektive auf -e und gemischte Gruppen', '+ -co/-go, bello, unveränderliche'],
+    ka: true,
+    table(level) {
+      const a = R.pick(adjPool(level).filter(x => x[2] !== 'inv')), f = adjForms(a);
+      return TAB(`Bilde die Formen von ${a[0]} (${a[1]})`, [['m Sg.', f[0]], ['f Sg.', f[1]], ['m Pl.', f[2]], ['f Pl.', f[3]]]);
+    },
+    make(level) {
+      if (level >= 2 && R.chance(0.3)) {
+        const n = R.pick(N), pl = R.chance(0.4), word = pl ? n.pl : n.it, form = pl ? BELLI(n) : BELLO(n);
+        return spec({ key: 'bello-' + word, prompt: `bello vor dem Nomen (${n.de}${pl ? ', Plural' : ''}):`, text: form.endsWith("'") ? `Che ___${word}!` : `Che ___ ${word}!`,
+          accept: form, distractors: ['bel', 'bello', "bell'", 'bella', 'bei', 'begli', 'belle'],
+          explain: `bello vor dem Nomen verhält sich wie der Artikel: ${withArt(artDet(n, pl), word)} → ${withArt(form, word)}.` });
+      }
+      const pool = level >= 2 && R.chance(0.3) ? ADJ.filter(x => x[2] === 'o' || x[2] === 'e') : adjPool(level);
+      const a = R.pick(pool), f = adjForms(a), base = a[0];
+      let subj, idx, verb, mixed = false;
+      const isPers = a[3] === PERS || a[3].includes('ragazzo');
+      if (level >= 1 && isPers && R.chance(0.35)) {
+        const [mx, gn] = R.pick(MIXED); subj = cap(mx); idx = gn === 'mp' ? 2 : 3; verb = 'sono'; mixed = gn === 'mp';
+      } else {
+        const n = NX[R.pick(a[3])] || NX.libro, pl = R.chance(0.5);
+        subj = cap(withArt(artDet(n, pl), pl ? n.pl : n.it)); idx = (pl ? 2 : 0) + (n.g === 'f' ? 1 : 0); verb = pl ? 'sono' : 'è';
+      }
+      const wrong = uniq([...f, base.slice(0, -1) + 'a', base.slice(0, -1) + 'i', base.slice(0, -1) + 'e', base + 's']);
+      const exp = a[2] === 'inv' ? `${base} ist unveränderlich.` : a[2] === 'e' ? `Adjektive auf -e: Singular -e, Plural -i → ${f[idx]}.`
+        : a[2] === 'co' ? `${base}: ${f.join(', ')}.` : `${['m Sg. -o', 'f Sg. -a', 'm Pl. -i', 'f Pl. -e'][idx]} → ${f[idx]}.`;
+      return spec({ key: 'adj-' + base + subj, prompt: `Setze ${base} (${a[1]}) in der richtigen Form ein:`, text: `${subj} ${verb} ___.`, so: SO(null, subj + ' ' + verb, ''),
+        accept: f[idx], distractors: wrong, explain: exp + (mixed ? ' Gemischte Gruppe → maskulin Plural.' : '') });
+    },
+  });
+
+  /* ================================================================
+     M30  Possessivbegleiter
+     ================================================================ */
+  const POSS = [
+    ['mein', ['mio', 'mia', 'miei', 'mie']], ['dein', ['tuo', 'tua', 'tuoi', 'tue']], ['sein/ihr', ['suo', 'sua', 'suoi', 'sue']],
+    ['unser', ['nostro', 'nostra', 'nostri', 'nostre']], ['euer', ['vostro', 'vostra', 'vostri', 'vostre']], ['ihr (Pl.)', ['loro', 'loro', 'loro', 'loro']],
+  ];
+  const ART4 = ['il', 'la', 'i', 'le'];
+  const FAM = [['padre', 'm', 'Vater', 'genitori'], ['madre', 'f', 'Mutter', null], ['fratello', 'm', 'Bruder', 'fratelli'], ['sorella', 'f', 'Schwester', 'sorelle'],
+    ['zio', 'm', 'Onkel', 'zii'], ['zia', 'f', 'Tante', 'zie'], ['nonno', 'm', 'Opa', 'nonni'], ['nonna', 'f', 'Oma', 'nonne'], ['cugino', 'm', 'Cousin', 'cugini'], ['cugina', 'f', 'Cousine', 'cugine']];
+  const possForm = (p, idx) => ART4[idx] + ' ' + POSS[p][1][idx];
+  register('m30', {
+    levels: ['Grundregel: il mio, la tua …', '+ suo, nostro, vostro, loro', '+ Familie ohne Artikel'],
+    ka: true,
+    table(level) {
+      const p = level === 0 ? R.pick([0, 1]) : R.pick([2, 3, 4, 5]);
+      return TAB(`Setze „${POSS[p][0]}“ mit Artikel ein`, [['… libro', possForm(p, 0)], ['… casa', possForm(p, 1)], ['… libri', possForm(p, 2)], ['… case', possForm(p, 3)]]);
+    },
+    make(level) {
+      if (level >= 2 && R.chance(0.5)) {
+        const fm = R.pick(FAM), p = R.pick([0, 1, 2, 3, 4, 5]), pl = fm[3] && R.chance(0.35);
+        const idx = (pl ? 2 : 0) + (fm[1] === 'f' ? 1 : 0), word = pl ? fm[3] : fm[0];
+        const pos = POSS[p][1][idx];
+        const withA = ART4[idx] + ' ' + pos;
+        const form = (pl || p === 5) ? withA : pos;
+        const de = `${POSS[p][0]} ${fm[2]}${pl ? ' (Pl.)' : ''}`;
+        return spec({ key: 'fam-' + word + p, prompt: `Familie: „${de}“ (mit oder ohne Artikel?)`, text: `___ ${word} abita a Roma.`.replace(' abita', pl ? ' abitano' : ' abita'),
+          so: SO(null, '', `${word} ${pl ? 'abitano' : 'abita'} a Roma`), accept: cap(form),
+          distractors: [cap(form === withA ? pos : withA), cap(ART4[idx ^ 1] + ' ' + POSS[p][1][idx ^ 1]), cap(POSS[p][1][idx ^ 1])],
+          explain: pl ? 'Verwandte im Plural mit Artikel.' : p === 5 ? 'loro steht immer mit Artikel.' : 'Verwandte im Singular ohne Artikel.' });
+      }
+      const p = level === 0 ? R.pick([0, 1]) : R.pick([2, 3, 4, 5, 2, 5]);
+      const n = R.pick(N), pl = R.chance(0.45), idx = (pl ? 2 : 0) + (n.g === 'f' ? 1 : 0);
+      const word = pl ? n.pl : n.it, form = possForm(p, idx);
+      const dis = uniq([0, 1, 2, 3].filter(i => i !== idx).map(i => possForm(p, i)).concat([possForm(p === 2 ? 5 : 2, idx), POSS[p][1][idx]]));
+      return spec({ key: 'poss-' + word + p, prompt: `„${POSS[p][0]} …“ (${n.de}${pl ? ', Plural' : ''}):`, text: `Ecco ___ ${word}.`, so: SO(null, 'Ecco', word),
+        accept: form, distractors: dis,
+        explain: `${word} ist ${n.g === 'f' ? 'feminin' : 'maskulin'} ${pl ? 'Plural' : 'Singular'} → ${form}.` + (p === 2 ? ' suo/sua richtet sich nach dem Besitz, nicht nach dem Besitzer.' : p === 5 ? ' loro bleibt immer gleich.' : '') });
+    },
+  });
+
+  /* ================================================================
+     M31  Fragen stellen
+     ================================================================ */
+  const QW = ['Chi', 'Che cosa', 'Dove', 'Quando', 'Come', 'Perché', 'Quanto', 'Quanti', 'Quanta', 'Quante', 'Quale', 'Quali', 'Di dove'];
+  const Q = [
+    // [Rest der Frage, Antwort, Fragewort, Stufe]
+    ['abiti?', 'A Milano.', 'Dove', 0], ['lavora Marco?', 'In banca.', 'Dove', 0], ['è la stazione?', 'Vicino al centro.', 'Dove', 0], ['vai stasera?', 'Al cinema.', 'Dove', 0],
+    ['ti chiami?', 'Mi chiamo Sara.', 'Come', 0], ['stai?', 'Bene, grazie.', 'Come', 0], ['vai a scuola?', 'In autobus.', 'Come', 0], ['si dice „Danke“ in italiano?', 'Grazie.', 'Come', 0],
+    ['arrivi?', 'Domani sera.', 'Quando', 0], ['è il tuo compleanno?', 'Il tre maggio.', 'Quando', 0], ['finisce la lezione?', 'Tra dieci minuti.', 'Quando', 0], ['parti per le vacanze?', 'Ad agosto.', 'Quando', 0],
+    ['è quel ragazzo?', 'È mio fratello.', 'Chi', 0], ['viene alla festa?', 'Viene Giulia.', 'Chi', 0], ['ha telefonato?', 'Tua madre.', 'Chi', 0], ['paga il conto?', 'Pago io.', 'Chi', 0],
+    ['mangi a pranzo?', 'Un panino.', 'Che cosa', 0], ['fai stasera?', 'Guardo un film.', 'Che cosa', 0], ['bevi?', 'Un caffè.', 'Che cosa', 0], ['studi?', 'Medicina.', 'Che cosa', 0],
+    ['non vieni?', 'Perché sono stanco.', 'Perché', 1], ["studi l'italiano?", 'Perché mi piace.', 'Perché', 1], ['ridi?', 'Perché sono felice.', 'Perché', 1],
+    ['costa il biglietto?', 'Dieci euro.', 'Quanto', 1], ['anni hai?', 'Ventidue.', 'Quanti', 1], ['persone vengono?', 'Sei.', 'Quante', 1], ['acqua bevi al giorno?', 'Due litri.', 'Quanta', 1],
+    ['tempo hai?', "Un'ora.", 'Quanto', 1], ['fratelli hai?', 'Due.', 'Quanti', 1], ['sorelle hai?', 'Una.', 'Quante', 1],
+    ['sei?', 'Sono di Napoli.', 'Di dove', 1], ['è Marco?', 'È di Torino.', 'Di dove', 1],
+    ['colore preferisci?', 'Il blu.', 'Quale', 1], ['libri ti piacciono?', 'I gialli.', 'Quali', 1], ['lingua parli a casa?', 'Il tedesco.', 'Quale', 1],
+    ['ora parte il treno?', 'Alle otto.', 'A che', 2], ['vai al cinema?', 'Con Sara.', 'Con chi', 2], ['è questo regalo?', 'Per te!', 'Per chi', 2],
+    ['quanto tempo studi italiano?', 'Da due anni.', 'Da', 2], ['è il tuo numero di telefono?', 'È 333 4567.', 'Qual', 2], ['dove vieni adesso?', 'Dalla palestra.', 'Da', 2],
+  ];
+  const QW_ALT = { 'Che cosa': ['Che cosa', 'Cosa', 'Che'] };
+  register('m31', {
+    levels: ['Grundregel: chi, che cosa, dove, quando, come', '+ perché, quanto, quale, di dove', '+ Präposition + Fragewort, Qual è'],
+    ka: true,
+    table(level) {
+      if (level >= 1 && R.chance(0.5)) return TAB('Übersetze mit quanto', [['Wie viel Zeit?', 'quanto tempo'], ['Wie viel Wasser?', 'quanta acqua'], ['Wie viele Bücher?', 'quanti libri'], ['Wie viele Leute? (le persone)', 'quante persone']]);
+      return TAB('Welches Fragewort?', [['wer?', 'chi'], ['was?', ['che cosa', 'cosa', 'che']], ['wo?', 'dove'], ['wann?', 'quando'], ['wie?', 'come'], ['warum?', 'perché']]);
+    },
+    make(level) {
+      const pool = Q.filter(q => q[3] <= level && (level === 0 || q[3] === level || R.chance(0.4)));
+      const [rest, ans, qw] = R.pick(pool.length ? pool : Q.filter(q => q[3] <= level));
+      const acc = QW_ALT[qw] || [qw];
+      const dis = qw === 'A che' ? ['A quale', 'Che', 'A quando'] : qw === 'Con chi' ? ['Con che', 'Chi', 'Con come'] : qw === 'Per chi' ? ['Per che', 'Chi', 'Per cosa']
+        : qw === 'Da' ? ['Di', 'A', 'In'] : qw === 'Qual' ? ["Qual'", 'Come', 'Che'] : QW.filter(w => !acc.includes(w));
+      return spec({ key: 'q-' + rest, prompt: `Welches Fragewort passt? Antwort: „${ans}“`, text: `___ ${rest}`, so: SO(null, '', rest),
+        accept: acc, distractors: dis, explain: `${acc[0]} ${rest} – ${ans}` });
+    },
+  });
+
   return { get, register, _int: { presente, futuro, imperfetto, gerundio, part, artDet, artInd, VERBS, N, PA } };
 })();

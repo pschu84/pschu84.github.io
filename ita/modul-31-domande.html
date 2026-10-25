@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — Fragen stellen</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Satzbau (A1) · Modul 31</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>❓ Fragen stellen</h1>
+    <p>chi, che cosa, dove, quando, come, perché, quanto, quale</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m31",
+ "block": "satzbau-a1",
+ "title": "Fragen stellen",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "Eine Frage kann im Italienischen genauso aussehen wie ein Aussagesatz. Nur die <strong>Satzmelodie</strong> (und das Fragezeichen) macht sie zur Frage: <em>Parli italiano.</em> → <em>Parli italiano?</em>"
+  },
+  {
+   "type": "table",
+   "head": [
+    "Fragewort",
+    "Bedeutung",
+    "Beispiel"
+   ],
+   "rows": [
+    [
+     "chi",
+     "wer / wen",
+     "Chi è? – Chi chiami?"
+    ],
+    [
+     "che cosa / cosa / che",
+     "was",
+     "Che cosa fai?"
+    ],
+    [
+     "dove",
+     "wo / wohin",
+     "Dove abiti? – Dove vai?"
+    ],
+    [
+     "quando",
+     "wann",
+     "Quando arrivi?"
+    ],
+    [
+     "come",
+     "wie",
+     "Come stai? – Come ti chiami?"
+    ],
+    [
+     "perché",
+     "warum",
+     "Perché ridi?"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Wortstellung:</strong> Nach dem Fragewort folgt das Verb, das Subjekt steht danach oder am Ende: <em>Dove lavora tua madre?</em> <em>Quando parte il treno?</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>perché</strong> heißt „warum“ und „weil“: <em>Perché non vieni? – Perché sono stanco.</em>"
+  },
+  {
+   "type": "text",
+   "html": "<strong>quanto</strong> und <strong>quale</strong> passen sich an das Nomen an:"
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "Singular",
+    "Plural"
+   ],
+   "rows": [
+    [
+     "quanto (m)",
+     "quanto tempo",
+     "quanti anni"
+    ],
+    [
+     "quanto (f)",
+     "quanta acqua",
+     "quante persone"
+    ],
+    [
+     "quale (m/f)",
+     "quale libro, quale lingua",
+     "quali libri, quali lingue"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Fest:</strong> <em>Quanto costa?</em> (Wie viel kostet …?) · <em>Quanti anni hai?</em> (Wie alt bist du?) · <em>Qual è …?</em> wird <strong>ohne Apostroph</strong> geschrieben: <em>Qual è il tuo numero?</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Präposition + Fragewort:</strong> Im Italienischen steht die Präposition am Anfang der Frage."
+  },
+  {
+   "type": "table",
+   "head": [
+    "Italiano",
+    "Deutsch"
+   ],
+   "rows": [
+    [
+     "Con chi?",
+     "Mit wem?"
+    ],
+    [
+     "A che ora?",
+     "Um wie viel Uhr?"
+    ],
+    [
+     "Di dove sei?",
+     "Woher kommst du? (Heimat)"
+    ],
+    [
+     "Da dove vieni?",
+     "Woher kommst du (gerade)?"
+    ],
+    [
+     "Da quanto tempo?",
+     "Seit wann?"
+    ],
+    [
+     "Per chi?",
+     "Für wen?"
+    ]
+   ]
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Sätze verbinden:</strong> <em>e</em> (und), <em>ma</em> (aber), <em>o</em> (oder), <em>perché</em> (weil), <em>quando</em> (wenn, als) und <em>per</em> + Infinitiv (um … zu): <em>Vado in Italia per imparare l'italiano.</em>"
+  },
+  {
+   "type": "example",
+   "it": "Dove vai stasera? – Vado al cinema con Sara, perché c'è un bel film.",
+   "de": "Wohin gehst du heute Abend? – Ich gehe mit Sara ins Kino, weil ein schöner Film läuft."
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m31-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "come",
+    "ti",
+    "chiami",
+    "chiama",
+    "dove"
+   ],
+   "solution": [
+    "come",
+    "ti",
+    "chiami"
+   ],
+   "translation": "Wie heißt du?",
+   "explain": "come = wie. chiamarsi: tu ti chiami."
+  },
+  {
+   "id": "m31-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "che",
+    "cosa",
+    "fai",
+    "stasera",
+    "chi",
+    "fa"
+   ],
+   "solution": [
+    "che",
+    "cosa",
+    "fai",
+    "stasera"
+   ],
+   "translation": "Was machst du heute Abend?",
+   "explain": "che cosa = was."
+  },
+  {
+   "id": "m31-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "quando",
+    "parte",
+    "il",
+    "treno",
+    "dove",
+    "partono"
+   ],
+   "solution": [
+    "quando",
+    "parte",
+    "il",
+    "treno"
+   ],
+   "translation": "Wann fährt der Zug ab?",
+   "explain": "Nach dem Fragewort folgt das Verb, das Subjekt steht oft am Ende."
+  },
+  {
+   "id": "m31-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "di",
+    "dove",
+    "sei",
+    "da",
+    "chi"
+   ],
+   "solution": [
+    "di",
+    "dove",
+    "sei"
+   ],
+   "translation": "Woher kommst du? (Herkunft)",
+   "explain": "di dove = woher (Herkunft, Heimatstadt)."
+  },
+  {
+   "id": "m31-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "quanti",
+    "anni",
+    "hai",
+    "quante",
+    "quanto"
+   ],
+   "solution": [
+    "quanti",
+    "anni",
+    "hai"
+   ],
+   "translation": "Wie alt bist du?",
+   "explain": "anni ist maskulin Plural → quanti. Alter mit avere."
+  },
+  {
+   "id": "m31-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "con",
+    "chi",
+    "vai",
+    "al",
+    "cinema",
+    "cosa",
+    "vanno"
+   ],
+   "solution": [
+    "con",
+    "chi",
+    "vai",
+    "al",
+    "cinema"
+   ],
+   "translation": "Mit wem gehst du ins Kino?",
+   "explain": "Die Präposition steht vor dem Fragewort: con chi = mit wem."
+  },
+  {
+   "id": "m31-el-01",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} si chiama tua sorella e {1} abita? — Giulia, a Roma.",
+   "blanks": [
+    {
+     "accept": "Come",
+     "distractors": [
+      "Chi",
+      "Quando",
+      "Cosa"
+     ]
+    },
+    {
+     "accept": "dove",
+     "distractors": [
+      "quando",
+      "chi",
+      "come"
+     ]
+    }
+   ],
+   "explain": "Come si chiama? = Wie heißt sie? dove = wo."
+  },
+  {
+   "id": "m31-el-02",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} è quel ragazzo? — È Marco. {1} fa? — Studia.",
+   "blanks": [
+    {
+     "accept": "Chi",
+     "distractors": [
+      "Come",
+      "Dove",
+      "Quale"
+     ]
+    },
+    {
+     "accept": "Che cosa",
+     "distractors": [
+      "Chi",
+      "Dove",
+      "Quanto"
+     ]
+    }
+   ],
+   "explain": "chi = wer, che cosa = was."
+  },
+  {
+   "id": "m31-el-03",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} vai in vacanza? — Ad agosto. {1} vai? — In Sicilia.",
+   "blanks": [
+    {
+     "accept": "Quando",
+     "distractors": [
+      "Dove",
+      "Come",
+      "Chi"
+     ]
+    },
+    {
+     "accept": "Dove",
+     "distractors": [
+      "Quando",
+      "Come",
+      "Chi"
+     ]
+    }
+   ],
+   "explain": "quando = wann, dove = wo/wohin."
+  },
+  {
+   "id": "m31-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} studi l'italiano? — {1} amo l'Italia.",
+   "blanks": [
+    {
+     "accept": "Perché",
+     "distractors": [
+      "Come",
+      "Quando",
+      "Cosa"
+     ]
+    },
+    {
+     "accept": "Perché",
+     "distractors": [
+      "Quando",
+      "Come",
+      "Cosa"
+     ]
+    }
+   ],
+   "explain": "perché = warum (Frage) und weil (Antwort)."
+  },
+  {
+   "id": "m31-el-05",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} costa il libro? E {1} pagine ha?",
+   "blanks": [
+    {
+     "accept": "Quanto",
+     "distractors": [
+      "Quanta",
+      "Quanti",
+      "Come"
+     ]
+    },
+    {
+     "accept": "quante",
+     "distractors": [
+      "quanti",
+      "quanto",
+      "quanta"
+     ]
+    }
+   ],
+   "explain": "Quanto costa? (fest). pagine ist f Pl. → quante."
+  },
+  {
+   "id": "m31-el-06",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "{0} lingua parli? {1} libri preferisci?",
+   "blanks": [
+    {
+     "accept": "Quale",
+     "distractors": [
+      "Quali",
+      "Quanto",
+      "Che cosa"
+     ]
+    },
+    {
+     "accept": "Quali",
+     "distractors": [
+      "Quale",
+      "Quanti",
+      "Chi"
+     ]
+    }
+   ],
+   "explain": "quale (Sg.) und quali (Pl.) = welche/r/s."
+  },
+  {
+   "id": "m31-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne zu: Fragewörter",
+   "pairs": [
+    {
+     "de": "wer?",
+     "it": "chi?"
+    },
+    {
+     "de": "was?",
+     "it": "che cosa?"
+    },
+    {
+     "de": "wo?",
+     "it": "dove?"
+    },
+    {
+     "de": "wann?",
+     "it": "quando?"
+    },
+    {
+     "de": "wie?",
+     "it": "come?"
+    },
+    {
+     "de": "warum?",
+     "it": "perché?"
+    }
+   ]
+  },
+  {
+   "id": "m31-zo-02",
+   "type": "ZO",
+   "prompt": "Ordne jeder Frage die passende Antwort zu:",
+   "pairs": [
+    {
+     "de": "Come stai?",
+     "it": "Bene, grazie."
+    },
+    {
+     "de": "Dove abiti?",
+     "it": "A Milano."
+    },
+    {
+     "de": "Quando arrivi?",
+     "it": "Domani sera."
+    },
+    {
+     "de": "Chi è?",
+     "it": "È mia sorella."
+    },
+    {
+     "de": "Che cosa mangi?",
+     "it": "Una pizza."
+    },
+    {
+     "de": "Perché ridi?",
+     "it": "Perché sono felice."
+    }
+   ]
+  },
+  {
+   "id": "m31-zo-03",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne die passende Form von quanto zu:",
+   "pairs": [
+    {
+     "de": "… tempo (m Sg.)",
+     "it": "quanto"
+    },
+    {
+     "de": "… acqua (f Sg.)",
+     "it": "quanta"
+    },
+    {
+     "de": "… libri (m Pl.)",
+     "it": "quanti"
+    },
+    {
+     "de": "… persone (f Pl.)",
+     "it": "quante"
+    },
+    {
+     "de": "… anni (m Pl.)",
+     "it": "quanti"
+    },
+    {
+     "de": "… pasta (f Sg.)",
+     "it": "quanta"
+    }
+   ]
+  },
+  {
+   "id": "m31-zo-04",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: Satzverbindungen",
+   "pairs": [
+    {
+     "de": "und",
+     "it": "e"
+    },
+    {
+     "de": "aber",
+     "it": "ma"
+    },
+    {
+     "de": "oder",
+     "it": "o"
+    },
+    {
+     "de": "weil",
+     "it": "perché"
+    },
+    {
+     "de": "wenn / als",
+     "it": "quando"
+    },
+    {
+     "de": "um … zu",
+     "it": "per"
+    }
+   ]
+  },
+  {
+   "id": "m31-zo-05",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: Fragewort mit Präposition",
+   "pairs": [
+    {
+     "de": "Um wie viel Uhr?",
+     "it": "A che ora?"
+    },
+    {
+     "de": "Mit wem?",
+     "it": "Con chi?"
+    },
+    {
+     "de": "Seit wann?",
+     "it": "Da quando?"
+    },
+    {
+     "de": "Für wen?",
+     "it": "Per chi?"
+    },
+    {
+     "de": "Woher (Heimat)?",
+     "it": "Di dove?"
+    },
+    {
+     "de": "Woher (gerade)?",
+     "it": "Da dove?"
+    }
+   ]
+  },
+  {
+   "id": "m31-mc-01",
+   "type": "MC",
+   "prompt": "\"___ ti chiami?\" (Wie heißt du?)",
+   "options": [
+    "Come",
+    "Chi",
+    "Cosa",
+    "Dove"
+   ],
+   "correctValue": "Come",
+   "explain": "come = wie."
+  },
+  {
+   "id": "m31-mc-02",
+   "type": "MC",
+   "prompt": "\"___ abita Marco?\" (Wo wohnt Marco?)",
+   "options": [
+    "Dove",
+    "Quando",
+    "Chi",
+    "Come"
+   ],
+   "correctValue": "Dove",
+   "explain": "dove = wo. Das Subjekt Marco steht nach dem Verb."
+  },
+  {
+   "id": "m31-mc-03",
+   "type": "MC",
+   "prompt": "\"___ arriva il treno?\" (Wann?)",
+   "options": [
+    "Quando",
+    "Quanto",
+    "Dove",
+    "Chi"
+   ],
+   "correctValue": "Quando",
+   "explain": "quando = wann."
+  },
+  {
+   "id": "m31-mc-04",
+   "type": "MC",
+   "prompt": "\"___ è quella signora?\" (Wer?)",
+   "options": [
+    "Chi",
+    "Che",
+    "Come",
+    "Quale"
+   ],
+   "correctValue": "Chi",
+   "explain": "chi = wer."
+  },
+  {
+   "id": "m31-mc-05",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"___ anni ha tua nonna?\"",
+   "options": [
+    "Quanti",
+    "Quanto",
+    "Quante",
+    "Quanta"
+   ],
+   "correctValue": "Quanti",
+   "explain": "anni (m Pl.) → quanti."
+  },
+  {
+   "id": "m31-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"___ sei? — Sono di Napoli.\"",
+   "options": [
+    "Di dove",
+    "Da dove",
+    "Dove",
+    "Come"
+   ],
+   "correctValue": "Di dove",
+   "explain": "Herkunft: Di dove sei? – Sono di …"
+  },
+  {
+   "id": "m31-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "\"Perché non vieni? — ___ sono stanco.\"",
+   "options": [
+    "Perché",
+    "Quando",
+    "Ma",
+    "Come"
+   ],
+   "correctValue": "Perché",
+   "explain": "Die Antwort auf perché beginnt wieder mit perché (= weil)."
+  },
+  {
+   "id": "m31-mc-08",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Schreibweise ist richtig?",
+   "options": [
+    "Qual è",
+    "Qual'è",
+    "Quale è",
+    "Quál è"
+   ],
+   "correctValue": "Qual è",
+   "explain": "Qual è schreibt man ohne Apostroph (quale wird nur verkürzt)."
+  },
+  {
+   "id": "m31-mc-09",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "\"___ è il tuo indirizzo?\" (Wie lautet …?)",
+   "options": [
+    "Qual",
+    "Come",
+    "Che",
+    "Quanto"
+   ],
+   "correctValue": "Qual",
+   "explain": "Nach Namen, Adressen oder Nummern fragt man mit Qual è …?"
+  },
+  {
+   "id": "m31-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Wortstellung ist üblich?",
+   "options": [
+    "Dove lavora tua madre?",
+    "Dove tua madre lavora?",
+    "Lavora dove tua madre?",
+    "Dove lavora lei tua madre?"
+   ],
+   "correctValue": "Dove lavora tua madre?",
+   "explain": "Fragewort, dann Verb, dann Subjekt."
+  },
+  {
+   "id": "m31-lt-01",
+   "type": "LT",
+   "text": "{0} ti chiami? — Mi chiamo Luca. {1} abiti? — A Torino.",
+   "blanks": [
+    {
+     "accept": [
+      "Come"
+     ]
+    },
+    {
+     "accept": [
+      "Dove"
+     ]
+    }
+   ],
+   "explain": "come = wie, dove = wo.",
+   "prompt": "Setze das passende Fragewort ein:"
+  },
+  {
+   "id": "m31-lt-02",
+   "type": "LT",
+   "text": "{0} fai domani? — Vado al mare. E {1} torni? — Lunedì.",
+   "blanks": [
+    {
+     "accept": [
+      "Che cosa",
+      "Cosa",
+      "Che"
+     ]
+    },
+    {
+     "accept": [
+      "quando"
+     ]
+    }
+   ],
+   "explain": "che cosa = was, quando = wann.",
+   "prompt": "Setze das passende Fragewort ein:"
+  },
+  {
+   "id": "m31-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "{0} costa il biglietto? — Dieci euro. {1} persone vengono? — Cinque.",
+   "blanks": [
+    {
+     "accept": [
+      "Quanto"
+     ]
+    },
+    {
+     "accept": [
+      "Quante"
+     ]
+    }
+   ],
+   "explain": "Quanto costa? persone (f Pl.) → quante.",
+   "prompt": "Setze die richtige Form von quanto ein:"
+  },
+  {
+   "id": "m31-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "A {0} ora inizia il film? — Alle nove. Con {1} vai? — Con Sara.",
+   "blanks": [
+    {
+     "accept": [
+      "che"
+     ]
+    },
+    {
+     "accept": [
+      "chi"
+     ]
+    }
+   ],
+   "explain": "a che ora = um wie viel Uhr; con chi = mit wem.",
+   "prompt": "Setze das passende Fragewort ein:"
+  },
+  {
+   "id": "m31-ft-01",
+   "type": "FT",
+   "prompt": "Welches Fragewort?",
+   "rows": [
+    {
+     "label": "wer?",
+     "accept": [
+      "chi"
+     ]
+    },
+    {
+     "label": "was?",
+     "accept": [
+      "che cosa",
+      "cosa",
+      "che"
+     ]
+    },
+    {
+     "label": "wo?",
+     "accept": [
+      "dove"
+     ]
+    },
+    {
+     "label": "wann?",
+     "accept": [
+      "quando"
+     ]
+    },
+    {
+     "label": "wie?",
+     "accept": [
+      "come"
+     ]
+    },
+    {
+     "label": "warum?",
+     "accept": [
+      "perché"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m31-ft-02",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "Übersetze mit quanto:",
+   "rows": [
+    {
+     "label": "Wie viel Zeit?",
+     "accept": [
+      "quanto tempo"
+     ]
+    },
+    {
+     "label": "Wie viel Wasser?",
+     "accept": [
+      "quanta acqua"
+     ]
+    },
+    {
+     "label": "Wie viele Bücher?",
+     "accept": [
+      "quanti libri"
+     ]
+    },
+    {
+     "label": "Wie viele Leute? (le persone)",
+     "accept": [
+      "quante persone"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m31-ft-03",
+   "type": "FT",
+   "stufe": 3,
+   "prompt": "Fragewort mit Präposition:",
+   "rows": [
+    {
+     "label": "Mit wem?",
+     "accept": [
+      "con chi"
+     ]
+    },
+    {
+     "label": "Um wie viel Uhr?",
+     "accept": [
+      "a che ora"
+     ]
+    },
+    {
+     "label": "Seit wann?",
+     "accept": [
+      "da quando",
+      "da quanto tempo"
+     ]
+    },
+    {
+     "label": "Für wen?",
+     "accept": [
+      "per chi"
+     ]
+    },
+    {
+     "label": "Woher? (Heimatstadt)",
+     "accept": [
+      "di dove"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m31-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Chi ti chiami?",
+   "solution": "Come ti chiami?",
+   "errorToken": "Chi",
+   "explain": "Nach dem Namen fragt man mit come."
+  },
+  {
+   "id": "m31-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Quanto persone vengono?",
+   "solution": "Quante persone vengono?",
+   "errorToken": "Quanto",
+   "explain": "persone ist feminin Plural → quante."
+  },
+  {
+   "id": "m31-fk-03",
+   "type": "FK",
+   "stufe": 3,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Qual'è il tuo nome?",
+   "solution": "Qual è il tuo nome?",
+   "errorToken": "Qual'è",
+   "explain": "Qual è ohne Apostroph."
+  },
+  {
+   "id": "m31-ka-01",
+   "type": "KA",
+   "prompt": "chi oder dove?",
+   "categories": [
+    "chi (Person)",
+    "dove (Ort)"
+   ],
+   "items": [
+    {
+     "text": "… è il tuo professore?",
+     "cat": 0
+    },
+    {
+     "text": "… vai stasera?",
+     "cat": 1
+    },
+    {
+     "text": "… ha telefonato?",
+     "cat": 0
+    },
+    {
+     "text": "… è la stazione?",
+     "cat": 1
+    },
+    {
+     "text": "… viene alla festa?",
+     "cat": 0
+    },
+    {
+     "text": "… abita Anna?",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m31-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "quanto/quanta oder quanti/quante?",
+   "categories": [
+    "quanto / quanta (Sg.)",
+    "quanti / quante (Pl.)"
+   ],
+   "items": [
+    {
+     "text": "… tempo",
+     "cat": 0
+    },
+    {
+     "text": "… libri",
+     "cat": 1
+    },
+    {
+     "text": "… acqua",
+     "cat": 0
+    },
+    {
+     "text": "… persone",
+     "cat": 1
+    },
+    {
+     "text": "… pane",
+     "cat": 0
+    },
+    {
+     "text": "… anni",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m31-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "perché als Frage oder als Antwort?",
+   "categories": [
+    "warum (Frage)",
+    "weil (Antwort)"
+   ],
+   "items": [
+    {
+     "text": "Perché non mangi?",
+     "cat": 0
+    },
+    {
+     "text": "Perché ho fame.",
+     "cat": 1
+    },
+    {
+     "text": "Perché ridi?",
+     "cat": 0
+    },
+    {
+     "text": "Perché è tardi.",
+     "cat": 1
+    },
+    {
+     "text": "Perché studi l'italiano?",
+     "cat": 0
+    },
+    {
+     "text": "Perché mi piace.",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m31-ko-01",
+   "type": "KO",
+   "stufe": 2,
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "Di dove sei?",
+    "tag": "Herkunft"
+   },
+   "b": {
+    "sentence": "Da dove vieni?",
+    "tag": "Ausgangspunkt"
+   },
+   "reveal": "Di dove sei? fragt nach der Herkunft (Heimatstadt): Sono di Napoli. Da dove vieni? fragt, woher du gerade kommst: Vengo dalla palestra. Bei Ländern sagt man meist: Vengo dalla Germania."
+  },
+  {
+   "id": "m31-de-01",
+   "type": "DE",
+   "prompt": "\"Wo wohnst du und wann kommst du?\"",
+   "solutions": [
+    "Dove abiti e quando vieni?",
+    "Dove abiti e quando arrivi?"
+   ],
+   "note": "dove = wo, quando = wann."
+  },
+  {
+   "id": "m31-de-02",
+   "type": "DE",
+   "stufe": 2,
+   "prompt": "\"Warum lernst du Italienisch? Weil ich nach Italien fahre.\"",
+   "solutions": [
+    "Perché studi l'italiano? Perché vado in Italia.",
+    "Perché impari l'italiano? Perché vado in Italia."
+   ],
+   "note": "perché = warum und weil."
+  },
+  {
+   "id": "m31-it-01",
+   "type": "IT",
+   "prompt": "\"Che cosa mangi a colazione?\"",
+   "solutions": [
+    "Was isst du zum Frühstück?"
+   ],
+   "note": "che cosa = was."
+  },
+  {
+   "id": "m31-it-02",
+   "type": "IT",
+   "stufe": 2,
+   "prompt": "\"Quanti fratelli hai?\"",
+   "solutions": [
+    "Wie viele Geschwister hast du?",
+    "Wie viele Brüder hast du?"
+   ],
+   "note": "fratelli kann Brüder oder Geschwister heißen."
+  },
+  {
+   "id": "m31-sr-01",
+   "type": "SR",
+   "it": "Come ti chiami e dove abiti?",
+   "de": "Wie heißt du und wo wohnst du?"
+  },
+  {
+   "id": "m31-sr-02",
+   "type": "SR",
+   "stufe": 2,
+   "it": "Quanto costa questa borsa?",
+   "de": "Wie viel kostet diese Tasche?"
+  },
+  {
+   "id": "m31-sr-03",
+   "type": "SR",
+   "stufe": 3,
+   "it": "A che ora parte l'autobus per il centro?",
+   "de": "Um wie viel Uhr fährt der Bus ins Zentrum?"
+  },
+  {
+   "id": "m31-st-01",
+   "type": "ST",
+   "de": "Wer ist das?",
+   "solutions": [
+    "Chi è?"
+   ],
+   "note": "chi = wer."
+  },
+  {
+   "id": "m31-st-02",
+   "type": "ST",
+   "stufe": 2,
+   "de": "Wie viele Leute kommen?",
+   "solutions": [
+    "Quante persone vengono?",
+    "Quanta gente viene?"
+   ],
+   "note": "persone (f Pl.) → quante; gente (Sg.) → quanta."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

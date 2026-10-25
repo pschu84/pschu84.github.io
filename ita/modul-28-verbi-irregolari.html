@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — Präsens: unregelmäßige Verben</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Zeiten (A1) · Modul 28</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>🔀 Präsens: unregelmäßige Verben</h1>
+    <p>andare, fare, stare, dare, venire, dire und Co.</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m28",
+ "block": "zeiten-a1",
+ "title": "Präsens: unregelmäßige Verben",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "Einige der wichtigsten Verben sind im Präsens <strong>unregelmäßig</strong>. Du brauchst sie ständig: <strong>andare</strong> (gehen, fahren), <strong>fare</strong> (machen), <strong>stare</strong> (sein, sich befinden) und <strong>dare</strong> (geben). Die Endungen sehen oft vertraut aus, aber der Stamm verändert sich."
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "andare",
+    "fare",
+    "stare",
+    "dare"
+   ],
+   "rows": [
+    [
+     "io",
+     "vado",
+     "faccio",
+     "sto",
+     "do"
+    ],
+    [
+     "tu",
+     "vai",
+     "fai",
+     "stai",
+     "dai"
+    ],
+    [
+     "lui/lei",
+     "va",
+     "fa",
+     "sta",
+     "dà"
+    ],
+    [
+     "noi",
+     "andiamo",
+     "facciamo",
+     "stiamo",
+     "diamo"
+    ],
+    [
+     "voi",
+     "andate",
+     "fate",
+     "state",
+     "date"
+    ],
+    [
+     "loro",
+     "vanno",
+     "fanno",
+     "stanno",
+     "danno"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Merkhilfe:</strong> fare, stare und dare gehen wie ein Reim: fai/stai/dai, fa/sta/dà, fanno/stanno/danno. Bei andare bleibt nur bei noi und voi der Stamm <strong>and-</strong> erhalten. <strong>dà</strong> (er gibt) hat einen Akzent, damit man es von der Präposition <strong>da</strong> unterscheidet."
+  },
+  {
+   "type": "text",
+   "html": "<strong>Wichtige Wendungen:</strong> <em>Come stai? – Sto bene.</em> (Wie geht es dir? – Gut.) · <em>fare colazione</em> (frühstücken) · <em>fare la spesa</em> (einkaufen) · <em>Fa caldo / freddo.</em> (Es ist warm / kalt.) · <em>andare a scuola / in Italia</em>."
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Weitere häufige Verben:</strong> venire (kommen), dire (sagen), bere (trinken), uscire (ausgehen) und sapere (wissen, können)."
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "venire",
+    "dire",
+    "bere"
+   ],
+   "rows": [
+    [
+     "io",
+     "vengo",
+     "dico",
+     "bevo"
+    ],
+    [
+     "tu",
+     "vieni",
+     "dici",
+     "bevi"
+    ],
+    [
+     "lui/lei",
+     "viene",
+     "dice",
+     "beve"
+    ],
+    [
+     "noi",
+     "veniamo",
+     "diciamo",
+     "beviamo"
+    ],
+    [
+     "voi",
+     "venite",
+     "dite",
+     "bevete"
+    ],
+    [
+     "loro",
+     "vengono",
+     "dicono",
+     "bevono"
+    ]
+   ]
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "uscire",
+    "sapere"
+   ],
+   "rows": [
+    [
+     "io",
+     "esco",
+     "so"
+    ],
+    [
+     "tu",
+     "esci",
+     "sai"
+    ],
+    [
+     "lui/lei",
+     "esce",
+     "sa"
+    ],
+    [
+     "noi",
+     "usciamo",
+     "sappiamo"
+    ],
+    [
+     "voi",
+     "uscite",
+     "sapete"
+    ],
+    [
+     "loro",
+     "escono",
+     "sanno"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>bere</strong> und <strong>dire</strong> benutzen einen alten Stamm: <em>bev-</em> und <em>dic-</em>. <strong>uscire</strong> hat bei io, tu, lui und loro den Stamm <em>esc-</em>, nur noi und voi bleiben bei <em>usc-</em>. <strong>sapere + Infinitiv</strong> heißt „etwas können, weil man es gelernt hat“: <em>So nuotare.</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Verben mit -g- in der io-Form:</strong> Bei einigen Verben steht in der io- und loro-Form ein <strong>-g-</strong>. Bei venire und tenere wird außerdem bei tu und lui/lei aus e ein <strong>ie</strong>."
+  },
+  {
+   "type": "table",
+   "head": [
+    "Infinitiv",
+    "io",
+    "tu",
+    "loro"
+   ],
+   "rows": [
+    [
+     "venire (kommen)",
+     "vengo",
+     "vieni",
+     "vengono"
+    ],
+    [
+     "tenere (halten)",
+     "tengo",
+     "tieni",
+     "tengono"
+    ],
+    [
+     "rimanere (bleiben)",
+     "rimango",
+     "rimani",
+     "rimangono"
+    ],
+    [
+     "salire (einsteigen)",
+     "salgo",
+     "sali",
+     "salgono"
+    ],
+    [
+     "scegliere (wählen)",
+     "scelgo",
+     "scegli",
+     "scelgono"
+    ]
+   ]
+  },
+  {
+   "type": "example",
+   "it": "Rimango a casa perché fa freddo.",
+   "de": "Ich bleibe zu Hause, weil es kalt ist."
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m28-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "io",
+    "vado",
+    "va",
+    "vanno",
+    "a",
+    "scuola",
+    "ogni",
+    "giorno"
+   ],
+   "solution": [
+    "io",
+    "vado",
+    "a",
+    "scuola",
+    "ogni",
+    "giorno"
+   ],
+   "translation": "Ich gehe jeden Tag zur Schule.",
+   "explain": "andare, io → vado. va ist lui/lei, vanno ist loro."
+  },
+  {
+   "id": "m28-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "noi",
+    "facciamo",
+    "fanno",
+    "fate",
+    "colazione",
+    "insieme"
+   ],
+   "solution": [
+    "noi",
+    "facciamo",
+    "colazione",
+    "insieme"
+   ],
+   "translation": "Wir frühstücken zusammen.",
+   "explain": "fare, noi → facciamo (mit Doppel-c). fare colazione = frühstücken."
+  },
+  {
+   "id": "m28-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "come",
+    "stai",
+    "sta",
+    "stanno",
+    "oggi"
+   ],
+   "solution": [
+    "come",
+    "stai",
+    "oggi"
+   ],
+   "translation": "Wie geht es dir heute?",
+   "explain": "stare, tu → stai. Come stai? = Wie geht es dir?"
+  },
+  {
+   "id": "m28-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "Marco",
+    "viene",
+    "vieni",
+    "vengono",
+    "alla",
+    "festa"
+   ],
+   "solution": [
+    "Marco",
+    "viene",
+    "alla",
+    "festa"
+   ],
+   "translation": "Marco kommt zur Party.",
+   "explain": "venire, lui → viene. vieni ist tu, vengono ist loro."
+  },
+  {
+   "id": "m28-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "loro",
+    "escono",
+    "uscono",
+    "esce",
+    "stasera"
+   ],
+   "solution": [
+    "loro",
+    "escono",
+    "stasera"
+   ],
+   "translation": "Sie gehen heute Abend aus.",
+   "explain": "uscire: Stamm esc- bei io, tu, lui und loro (escono). „uscono“ gibt es nicht."
+  },
+  {
+   "id": "m28-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "io",
+    "rimango",
+    "rimano",
+    "rimane",
+    "a",
+    "casa"
+   ],
+   "solution": [
+    "io",
+    "rimango",
+    "a",
+    "casa"
+   ],
+   "translation": "Ich bleibe zu Hause.",
+   "explain": "rimanere hat bei io ein -g-: rimango (wie vengo)."
+  },
+  {
+   "id": "m28-el-01",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Io {0} al cinema e tu {1} a casa.",
+   "blanks": [
+    {
+     "accept": "vado",
+     "distractors": [
+      "va",
+      "vanno",
+      "andiamo"
+     ]
+    },
+    {
+     "accept": "stai",
+     "distractors": [
+      "sta",
+      "stanno",
+      "stiamo"
+     ]
+    }
+   ],
+   "explain": "andare: io vado. stare: tu stai."
+  },
+  {
+   "id": "m28-el-02",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Che cosa {0} voi stasera? — {1} una pizza.",
+   "blanks": [
+    {
+     "accept": "fate",
+     "distractors": [
+      "fai",
+      "fanno",
+      "facciamo"
+     ]
+    },
+    {
+     "accept": "Facciamo",
+     "distractors": [
+      "Fate",
+      "Fanno",
+      "Faccio"
+     ]
+    }
+   ],
+   "explain": "fare: voi fate, noi facciamo."
+  },
+  {
+   "id": "m28-el-03",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Oggi {0} caldo e i bambini {1} in giardino.",
+   "blanks": [
+    {
+     "accept": "fa",
+     "distractors": [
+      "fai",
+      "fanno",
+      "sta"
+     ]
+    },
+    {
+     "accept": "stanno",
+     "distractors": [
+      "sta",
+      "stano",
+      "state"
+     ]
+    }
+   ],
+   "explain": "Wetter mit fare: fa caldo. stare, loro → stanno."
+  },
+  {
+   "id": "m28-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Io {0} sempre la verità, ma tu non la {1} mai.",
+   "blanks": [
+    {
+     "accept": "dico",
+     "distractors": [
+      "dici",
+      "dice",
+      "dicono"
+     ]
+    },
+    {
+     "accept": "dici",
+     "distractors": [
+      "dico",
+      "dice",
+      "dite"
+     ]
+    }
+   ],
+   "explain": "dire: io dico, tu dici."
+  },
+  {
+   "id": "m28-el-05",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Noi {0} acqua e voi {1} vino.",
+   "blanks": [
+    {
+     "accept": "beviamo",
+     "distractors": [
+      "bevete",
+      "bevono",
+      "beve"
+     ]
+    },
+    {
+     "accept": "bevete",
+     "distractors": [
+      "beviamo",
+      "bevono",
+      "berete"
+     ]
+    }
+   ],
+   "explain": "bere hat den Stamm bev-: beviamo, bevete."
+  },
+  {
+   "id": "m28-el-06",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Lei non {0} la risposta, ma noi la {1}.",
+   "blanks": [
+    {
+     "accept": "sa",
+     "distractors": [
+      "so",
+      "sai",
+      "sanno"
+     ]
+    },
+    {
+     "accept": "sappiamo",
+     "distractors": [
+      "sapiamo",
+      "sanno",
+      "sapete"
+     ]
+    }
+   ],
+   "explain": "sapere: lei sa, noi sappiamo (mit Doppel-p)."
+  },
+  {
+   "id": "m28-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne zu: andare (gehen)",
+   "pairs": [
+    {
+     "de": "ich gehe",
+     "it": "vado"
+    },
+    {
+     "de": "du gehst",
+     "it": "vai"
+    },
+    {
+     "de": "er/sie geht",
+     "it": "va"
+    },
+    {
+     "de": "wir gehen",
+     "it": "andiamo"
+    },
+    {
+     "de": "ihr geht",
+     "it": "andate"
+    },
+    {
+     "de": "sie gehen",
+     "it": "vanno"
+    }
+   ]
+  },
+  {
+   "id": "m28-zo-02",
+   "type": "ZO",
+   "prompt": "Ordne zu: fare (machen)",
+   "pairs": [
+    {
+     "de": "ich mache",
+     "it": "faccio"
+    },
+    {
+     "de": "du machst",
+     "it": "fai"
+    },
+    {
+     "de": "er/sie macht",
+     "it": "fa"
+    },
+    {
+     "de": "wir machen",
+     "it": "facciamo"
+    },
+    {
+     "de": "ihr macht",
+     "it": "fate"
+    },
+    {
+     "de": "sie machen",
+     "it": "fanno"
+    }
+   ]
+  },
+  {
+   "id": "m28-zo-03",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: venire (kommen)",
+   "pairs": [
+    {
+     "de": "ich komme",
+     "it": "vengo"
+    },
+    {
+     "de": "du kommst",
+     "it": "vieni"
+    },
+    {
+     "de": "er/sie kommt",
+     "it": "viene"
+    },
+    {
+     "de": "wir kommen",
+     "it": "veniamo"
+    },
+    {
+     "de": "ihr kommt",
+     "it": "venite"
+    },
+    {
+     "de": "sie kommen",
+     "it": "vengono"
+    }
+   ]
+  },
+  {
+   "id": "m28-zo-04",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: Wendungen mit fare und stare",
+   "pairs": [
+    {
+     "de": "Wie geht es dir?",
+     "it": "Come stai?"
+    },
+    {
+     "de": "frühstücken",
+     "it": "fare colazione"
+    },
+    {
+     "de": "Es ist warm.",
+     "it": "Fa caldo."
+    },
+    {
+     "de": "spazieren gehen",
+     "it": "fare una passeggiata"
+    },
+    {
+     "de": "Lebensmittel einkaufen",
+     "it": "fare la spesa"
+    },
+    {
+     "de": "Mir geht es gut.",
+     "it": "Sto bene."
+    }
+   ]
+  },
+  {
+   "id": "m28-zo-05",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: die io-Form",
+   "pairs": [
+    {
+     "de": "rimanere",
+     "it": "rimango"
+    },
+    {
+     "de": "tenere",
+     "it": "tengo"
+    },
+    {
+     "de": "salire",
+     "it": "salgo"
+    },
+    {
+     "de": "scegliere",
+     "it": "scelgo"
+    },
+    {
+     "de": "venire",
+     "it": "vengo"
+    },
+    {
+     "de": "uscire",
+     "it": "esco"
+    }
+   ]
+  },
+  {
+   "id": "m28-mc-01",
+   "type": "MC",
+   "prompt": "Welche Form? \"Domani noi ___ al mare.\" (andare)",
+   "options": [
+    "andiamo",
+    "andamo",
+    "vanno",
+    "andate"
+   ],
+   "correctValue": "andiamo",
+   "explain": "andare, noi → andiamo. Nur bei noi und voi bleibt der Stamm and-."
+  },
+  {
+   "id": "m28-mc-02",
+   "type": "MC",
+   "prompt": "Welche Form? \"Tu ___ sport?\" (fare)",
+   "options": [
+    "fai",
+    "fa",
+    "fate",
+    "faci"
+   ],
+   "correctValue": "fai",
+   "explain": "fare, tu → fai."
+  },
+  {
+   "id": "m28-mc-03",
+   "type": "MC",
+   "prompt": "Welche Form? \"Come ___ i tuoi genitori?\" (stare)",
+   "options": [
+    "stanno",
+    "stano",
+    "stai",
+    "sono"
+   ],
+   "correctValue": "stanno",
+   "explain": "stare, loro → stanno (Doppel-n)."
+  },
+  {
+   "id": "m28-mc-04",
+   "type": "MC",
+   "prompt": "Welche Form? \"Io ti ___ il mio numero.\" (dare)",
+   "options": [
+    "do",
+    "dao",
+    "da",
+    "dai"
+   ],
+   "correctValue": "do",
+   "explain": "dare, io → do (ohne Akzent)."
+  },
+  {
+   "id": "m28-mc-05",
+   "type": "MC",
+   "prompt": "Welche Form? \"Il professore ___ i compiti.\" (dare)",
+   "options": [
+    "dà",
+    "da",
+    "danno",
+    "dai"
+   ],
+   "correctValue": "dà",
+   "explain": "dare, lui/lei → dà. Der Akzent unterscheidet es von der Präposition da."
+  },
+  {
+   "id": "m28-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Loro ___ da Napoli.\" (venire)",
+   "options": [
+    "vengono",
+    "venono",
+    "veniano",
+    "viengono"
+   ],
+   "correctValue": "vengono",
+   "explain": "venire, loro → vengono (mit -g- wie io vengo)."
+  },
+  {
+   "id": "m28-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Voi ___ la verità?\" (dire)",
+   "options": [
+    "dite",
+    "dicete",
+    "dicite",
+    "dicono"
+   ],
+   "correctValue": "dite",
+   "explain": "dire, voi → dite (kurze Form)."
+  },
+  {
+   "id": "m28-mc-08",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Io ___ con gli amici stasera.\" (uscire)",
+   "options": [
+    "esco",
+    "usco",
+    "esce",
+    "uscio"
+   ],
+   "correctValue": "esco",
+   "explain": "uscire, io → esco."
+  },
+  {
+   "id": "m28-mc-09",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Tu ___ nuotare?\" (sapere = können, gelernt)",
+   "options": [
+    "sai",
+    "sa",
+    "sapi",
+    "sappi"
+   ],
+   "correctValue": "sai",
+   "explain": "sapere, tu → sai. sapere + Infinitiv = etwas können (gelernt)."
+  },
+  {
+   "id": "m28-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Form? \"Quale gelato ___ tu?\" (scegliere)",
+   "options": [
+    "scegli",
+    "scelgi",
+    "sceglie",
+    "scelgo"
+   ],
+   "correctValue": "scegli",
+   "explain": "scegliere: io scelgo, aber tu scegli."
+  },
+  {
+   "id": "m28-lt-01",
+   "type": "LT",
+   "text": "Io {0} a Roma e tu {1} a Milano.",
+   "blanks": [
+    {
+     "accept": [
+      "vado"
+     ]
+    },
+    {
+     "accept": [
+      "vai"
+     ]
+    }
+   ],
+   "explain": "andare: io vado, tu vai.",
+   "prompt": "Setze andare ein:"
+  },
+  {
+   "id": "m28-lt-02",
+   "type": "LT",
+   "text": "Noi {0} la spesa e voi {1} i compiti.",
+   "blanks": [
+    {
+     "accept": [
+      "facciamo"
+     ]
+    },
+    {
+     "accept": [
+      "fate"
+     ]
+    }
+   ],
+   "explain": "fare: noi facciamo, voi fate.",
+   "prompt": "Setze fare ein:"
+  },
+  {
+   "id": "m28-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Tu {0} alla festa? — Sì, {1} con Anna.",
+   "blanks": [
+    {
+     "accept": [
+      "vieni"
+     ]
+    },
+    {
+     "accept": [
+      "vengo"
+     ]
+    }
+   ],
+   "explain": "venire: tu vieni, io vengo.",
+   "prompt": "Setze venire ein:"
+  },
+  {
+   "id": "m28-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "Loro {0} a casa, io {1} in ufficio.",
+   "blanks": [
+    {
+     "accept": [
+      "rimangono"
+     ]
+    },
+    {
+     "accept": [
+      "rimango"
+     ]
+    }
+   ],
+   "explain": "rimanere: loro rimangono, io rimango.",
+   "prompt": "Setze rimanere ein:"
+  },
+  {
+   "id": "m28-ft-01",
+   "type": "FT",
+   "prompt": "Konjugiere andare (gehen):",
+   "rows": [
+    {
+     "label": "io",
+     "accept": [
+      "vado"
+     ]
+    },
+    {
+     "label": "tu",
+     "accept": [
+      "vai"
+     ]
+    },
+    {
+     "label": "lui/lei",
+     "accept": [
+      "va"
+     ]
+    },
+    {
+     "label": "noi",
+     "accept": [
+      "andiamo"
+     ]
+    },
+    {
+     "label": "voi",
+     "accept": [
+      "andate"
+     ]
+    },
+    {
+     "label": "loro",
+     "accept": [
+      "vanno"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m28-ft-02",
+   "type": "FT",
+   "prompt": "Konjugiere fare (machen):",
+   "rows": [
+    {
+     "label": "io",
+     "accept": [
+      "faccio"
+     ]
+    },
+    {
+     "label": "tu",
+     "accept": [
+      "fai"
+     ]
+    },
+    {
+     "label": "lui/lei",
+     "accept": [
+      "fa"
+     ]
+    },
+    {
+     "label": "noi",
+     "accept": [
+      "facciamo"
+     ]
+    },
+    {
+     "label": "voi",
+     "accept": [
+      "fate"
+     ]
+    },
+    {
+     "label": "loro",
+     "accept": [
+      "fanno"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m28-ft-03",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "Konjugiere dire (sagen):",
+   "rows": [
+    {
+     "label": "io",
+     "accept": [
+      "dico"
+     ]
+    },
+    {
+     "label": "tu",
+     "accept": [
+      "dici"
+     ]
+    },
+    {
+     "label": "lui/lei",
+     "accept": [
+      "dice"
+     ]
+    },
+    {
+     "label": "noi",
+     "accept": [
+      "diciamo"
+     ]
+    },
+    {
+     "label": "voi",
+     "accept": [
+      "dite"
+     ]
+    },
+    {
+     "label": "loro",
+     "accept": [
+      "dicono"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m28-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Noi faciamo colazione alle otto.",
+   "solution": "Noi facciamo colazione alle otto.",
+   "errorToken": "faciamo",
+   "explain": "fare, noi → facciamo (Doppel-c)."
+  },
+  {
+   "id": "m28-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Loro venono domani.",
+   "solution": "Loro vengono domani.",
+   "errorToken": "venono",
+   "explain": "venire, loro → vengono."
+  },
+  {
+   "id": "m28-fk-03",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Io uscio alle sette.",
+   "solution": "Io esco alle sette.",
+   "errorToken": "uscio",
+   "explain": "uscire, io → esco."
+  },
+  {
+   "id": "m28-ka-01",
+   "type": "KA",
+   "prompt": "Von welchem Verb kommt die Form?",
+   "categories": [
+    "andare",
+    "fare"
+   ],
+   "items": [
+    {
+     "text": "vado",
+     "cat": 0
+    },
+    {
+     "text": "fai",
+     "cat": 1
+    },
+    {
+     "text": "va",
+     "cat": 0
+    },
+    {
+     "text": "facciamo",
+     "cat": 1
+    },
+    {
+     "text": "andate",
+     "cat": 0
+    },
+    {
+     "text": "fanno",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m28-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "Von welchem Verb kommt die Form?",
+   "categories": [
+    "venire",
+    "dire"
+   ],
+   "items": [
+    {
+     "text": "vengo",
+     "cat": 0
+    },
+    {
+     "text": "dici",
+     "cat": 1
+    },
+    {
+     "text": "viene",
+     "cat": 0
+    },
+    {
+     "text": "diciamo",
+     "cat": 1
+    },
+    {
+     "text": "venite",
+     "cat": 0
+    },
+    {
+     "text": "dicono",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m28-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "Hat die io-Form ein -g-?",
+   "categories": [
+    "mit -g- (vengo)",
+    "ohne -g-"
+   ],
+   "items": [
+    {
+     "text": "venire → vengo",
+     "cat": 0
+    },
+    {
+     "text": "rimanere → rimango",
+     "cat": 0
+    },
+    {
+     "text": "salire → salgo",
+     "cat": 0
+    },
+    {
+     "text": "andare → vado",
+     "cat": 1
+    },
+    {
+     "text": "fare → faccio",
+     "cat": 1
+    },
+    {
+     "text": "bere → bevo",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m28-ko-01",
+   "type": "KO",
+   "stufe": 3,
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "io vengo",
+    "tag": "mit -g-"
+   },
+   "b": {
+    "sentence": "tu vieni",
+    "tag": "mit -ie-"
+   },
+   "reveal": "Bei venire, tenere und ähnlichen Verben haben io und loro ein -g- (vengo, vengono). Bei tu und lui/lei wird das e zu ie (vieni, viene). noi und voi bleiben regelmäßig: veniamo, venite."
+  },
+  {
+   "id": "m28-de-01",
+   "type": "DE",
+   "prompt": "\"Am Samstag gehe ich ins Kino und mache einen Spaziergang.\"",
+   "solutions": [
+    "Sabato vado al cinema e faccio una passeggiata."
+   ],
+   "note": "andare: vado; fare: faccio. fare una passeggiata = spazieren gehen."
+  },
+  {
+   "id": "m28-de-02",
+   "type": "DE",
+   "stufe": 2,
+   "prompt": "\"Kommst du heute Abend mit uns? Wir gehen aus.\"",
+   "solutions": [
+    "Vieni con noi stasera? Usciamo.",
+    "Stasera vieni con noi? Usciamo."
+   ],
+   "note": "venire: tu vieni; uscire: noi usciamo."
+  },
+  {
+   "id": "m28-it-01",
+   "type": "IT",
+   "prompt": "\"Come stai? — Sto bene, grazie.\"",
+   "solutions": [
+    "Wie geht es dir? — Mir geht es gut, danke.",
+    "Wie geht es dir? Mir geht es gut, danke."
+   ],
+   "note": "stare drückt das Befinden aus."
+  },
+  {
+   "id": "m28-it-02",
+   "type": "IT",
+   "stufe": 2,
+   "prompt": "\"Non so dove vanno i ragazzi.\"",
+   "solutions": [
+    "Ich weiß nicht, wohin die Jungen gehen.",
+    "Ich weiß nicht, wo die Jungs hingehen."
+   ],
+   "note": "sapere: io so; andare: loro vanno."
+  },
+  {
+   "id": "m28-sr-01",
+   "type": "SR",
+   "it": "Vado in centro a fare la spesa.",
+   "de": "Ich gehe in die Stadt einkaufen."
+  },
+  {
+   "id": "m28-sr-02",
+   "type": "SR",
+   "it": "Oggi fa molto caldo.",
+   "de": "Heute ist es sehr warm."
+  },
+  {
+   "id": "m28-sr-03",
+   "type": "SR",
+   "stufe": 2,
+   "it": "I miei amici vengono a cena stasera.",
+   "de": "Meine Freunde kommen heute Abend zum Essen."
+  },
+  {
+   "id": "m28-st-01",
+   "type": "ST",
+   "de": "Ich mache meine Hausaufgaben.",
+   "solutions": [
+    "Faccio i compiti.",
+    "Faccio i miei compiti."
+   ],
+   "note": "fare, io → faccio."
+  },
+  {
+   "id": "m28-st-02",
+   "type": "ST",
+   "stufe": 2,
+   "de": "Was sagst du?",
+   "solutions": [
+    "Che cosa dici?",
+    "Cosa dici?",
+    "Che dici?"
+   ],
+   "note": "dire, tu → dici."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

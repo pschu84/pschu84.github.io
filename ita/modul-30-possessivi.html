@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — Possessivbegleiter</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Grundlagen · Modul 30</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>👜 Possessivbegleiter</h1>
+    <p>il mio, la tua, i suoi … und wann der Artikel wegfällt</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m30",
+ "block": "grundlagen",
+ "title": "Possessivbegleiter",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "Possessivbegleiter (mein, dein, sein …) stehen im Italienischen normalerweise <strong>mit Artikel</strong>: <em>il mio libro</em> (mein Buch). Die Form richtet sich nach dem <strong>Besitz</strong>, nicht nach dem Besitzer."
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "m Sg.",
+    "f Sg.",
+    "m Pl.",
+    "f Pl."
+   ],
+   "rows": [
+    [
+     "mein",
+     "il mio",
+     "la mia",
+     "i miei",
+     "le mie"
+    ],
+    [
+     "dein",
+     "il tuo",
+     "la tua",
+     "i tuoi",
+     "le tue"
+    ],
+    [
+     "sein / ihr",
+     "il suo",
+     "la sua",
+     "i suoi",
+     "le sue"
+    ],
+    [
+     "unser",
+     "il nostro",
+     "la nostra",
+     "i nostri",
+     "le nostre"
+    ],
+    [
+     "euer",
+     "il vostro",
+     "la vostra",
+     "i vostri",
+     "le vostre"
+    ],
+    [
+     "ihr (Pl.)",
+     "il loro",
+     "la loro",
+     "i loro",
+     "le loro"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Achtung:</strong> Der Artikel vor dem Possessiv ist immer il, la, i, le, auch wenn das Nomen mit Vokal beginnt: <em>il mio amico, la mia amica</em>."
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "compare",
+   "left": {
+    "title": "Deutsch",
+    "body": "Anna sucht <strong>ihr</strong> Buch.<br>Marco sucht <strong>seine</strong> Tasche."
+   },
+   "right": {
+    "title": "Italiano",
+    "body": "Anna cerca <strong>il suo</strong> libro.<br>Marco cerca <strong>la sua</strong> borsa."
+   }
+  },
+  {
+   "type": "text",
+   "html": "<strong>suo/sua</strong> bedeutet sowohl „sein“ als auch „ihr“. Entscheidend ist nur das Nomen danach. Auch die Höflichkeitsform <em>Lei</em> verwendet suo: <em>Signora, è la Sua borsa?</em> <strong>loro</strong> (ihr, mehrere Besitzer) bleibt immer gleich, nur der Artikel ändert sich."
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Familie:</strong> Bei Verwandten im <strong>Singular</strong> fällt der Artikel weg: <em>mio padre, tua sorella, nostro zio</em>. Er steht aber im <strong>Plural</strong> (<em>i miei fratelli</em>) und immer bei <strong>loro</strong> (<em>la loro madre</em>)."
+  },
+  {
+   "type": "table",
+   "head": [
+    "ohne Artikel",
+    "mit Artikel"
+   ],
+   "rows": [
+    [
+     "mio padre",
+     "i miei genitori"
+    ],
+    [
+     "mia sorella",
+     "le mie sorelle"
+    ],
+    [
+     "tuo zio",
+     "il loro zio"
+    ]
+   ]
+  },
+  {
+   "type": "text",
+   "html": "<strong>Feste Ausdrücke:</strong> <em>a casa mia</em> (bei mir zu Hause) · <em>un mio amico</em> (ein Freund von mir) · <em>la macchina della mia amica</em> (das Auto meiner Freundin)."
+  },
+  {
+   "type": "example",
+   "it": "Mia madre e i suoi amici sono a casa mia.",
+   "de": "Meine Mutter und ihre Freunde sind bei mir zu Hause."
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m30-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "il",
+    "mio",
+    "libro",
+    "è",
+    "nuovo",
+    "mia",
+    "miei"
+   ],
+   "solution": [
+    "il",
+    "mio",
+    "libro",
+    "è",
+    "nuovo"
+   ],
+   "translation": "Mein Buch ist neu.",
+   "explain": "libro (m Sg.) → il mio. Das Possessiv steht mit Artikel."
+  },
+  {
+   "id": "m30-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "la",
+    "tua",
+    "casa",
+    "è",
+    "bella",
+    "tuo",
+    "tue"
+   ],
+   "solution": [
+    "la",
+    "tua",
+    "casa",
+    "è",
+    "bella"
+   ],
+   "translation": "Dein Haus ist schön.",
+   "explain": "casa (f Sg.) → la tua."
+  },
+  {
+   "id": "m30-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "i",
+    "miei",
+    "amici",
+    "sono",
+    "qui",
+    "mie",
+    "mio"
+   ],
+   "solution": [
+    "i",
+    "miei",
+    "amici",
+    "sono",
+    "qui"
+   ],
+   "translation": "Meine Freunde sind hier.",
+   "explain": "amici (m Pl.) → i miei."
+  },
+  {
+   "id": "m30-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "Anna",
+    "cerca",
+    "il",
+    "suo",
+    "telefono",
+    "sua",
+    "suoi"
+   ],
+   "solution": [
+    "Anna",
+    "cerca",
+    "il",
+    "suo",
+    "telefono"
+   ],
+   "translation": "Anna sucht ihr Handy.",
+   "explain": "telefono ist maskulin → il suo, auch wenn Anna eine Frau ist."
+  },
+  {
+   "id": "m30-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "le",
+    "nostre",
+    "vacanze",
+    "sono",
+    "finite",
+    "nostri",
+    "nostra"
+   ],
+   "solution": [
+    "le",
+    "nostre",
+    "vacanze",
+    "sono",
+    "finite"
+   ],
+   "translation": "Unsere Ferien sind vorbei.",
+   "explain": "vacanze (f Pl.) → le nostre."
+  },
+  {
+   "id": "m30-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "mia",
+    "sorella",
+    "abita",
+    "a",
+    "Roma",
+    "la",
+    "miei"
+   ],
+   "solution": [
+    "mia",
+    "sorella",
+    "abita",
+    "a",
+    "Roma"
+   ],
+   "translation": "Meine Schwester wohnt in Rom.",
+   "explain": "Verwandte im Singular stehen ohne Artikel: mia sorella."
+  },
+  {
+   "id": "m30-el-01",
+   "type": "EL",
+   "prompt": "Setze „mein“ ein:",
+   "sentence": "Questo è {0} zaino e questa è {1} borsa.",
+   "blanks": [
+    {
+     "accept": "il mio",
+     "distractors": [
+      "la mia",
+      "i miei",
+      "il tuo"
+     ]
+    },
+    {
+     "accept": "la mia",
+     "distractors": [
+      "il mio",
+      "le mie",
+      "la tua"
+     ]
+    }
+   ],
+   "explain": "zaino (m) → il mio, borsa (f) → la mia."
+  },
+  {
+   "id": "m30-el-02",
+   "type": "EL",
+   "prompt": "Setze „meine“ und „deine“ ein:",
+   "sentence": "Dove sono {0} chiavi? E dove sono {1} occhiali?",
+   "blanks": [
+    {
+     "accept": "le mie",
+     "distractors": [
+      "i miei",
+      "la mia",
+      "le tue"
+     ]
+    },
+    {
+     "accept": "i tuoi",
+     "distractors": [
+      "le tue",
+      "il tuo",
+      "i miei"
+     ]
+    }
+   ],
+   "explain": "chiavi (f Pl.) → le mie; occhiali (m Pl.) → i tuoi."
+  },
+  {
+   "id": "m30-el-03",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Setze „sein/seine“ ein:",
+   "sentence": "Marco ama {0} gatto e {1} macchina.",
+   "blanks": [
+    {
+     "accept": "il suo",
+     "distractors": [
+      "la sua",
+      "i suoi",
+      "il loro"
+     ]
+    },
+    {
+     "accept": "la sua",
+     "distractors": [
+      "il suo",
+      "le sue",
+      "la loro"
+     ]
+    }
+   ],
+   "explain": "suo/sua richtet sich nach dem Besitz: gatto (m), macchina (f)."
+  },
+  {
+   "id": "m30-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Setze „ihr/ihre“ (von beiden) ein:",
+   "sentence": "Anna e Luca vendono {0} casa e {1} libri.",
+   "blanks": [
+    {
+     "accept": "la loro",
+     "distractors": [
+      "la sua",
+      "le loro",
+      "il loro"
+     ]
+    },
+    {
+     "accept": "i loro",
+     "distractors": [
+      "i suoi",
+      "le loro",
+      "il loro"
+     ]
+    }
+   ],
+   "explain": "loro ist unveränderlich, nur der Artikel ändert sich."
+  },
+  {
+   "id": "m30-el-05",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Setze „euer/eure“ ein:",
+   "sentence": "Ragazzi, {0} professoressa è qui con {1} compiti.",
+   "blanks": [
+    {
+     "accept": "la vostra",
+     "distractors": [
+      "il vostro",
+      "le vostre",
+      "la nostra"
+     ]
+    },
+    {
+     "accept": "i vostri",
+     "distractors": [
+      "le vostre",
+      "il vostro",
+      "i nostri"
+     ]
+    }
+   ],
+   "explain": "professoressa (f) → la vostra; compiti (m Pl.) → i vostri."
+  },
+  {
+   "id": "m30-el-06",
+   "type": "EL",
+   "stufe": 3,
+   "prompt": "Setze „mein/meine“ ein:",
+   "sentence": "{0} padre è medico e {1} genitori vivono a Napoli.",
+   "blanks": [
+    {
+     "accept": "Mio",
+     "distractors": [
+      "Il mio",
+      "La mia",
+      "Mia"
+     ]
+    },
+    {
+     "accept": "i miei",
+     "distractors": [
+      "miei",
+      "le mie",
+      "il mio"
+     ]
+    }
+   ],
+   "explain": "padre (Verwandter, Singular) ohne Artikel; genitori (Plural) mit Artikel."
+  },
+  {
+   "id": "m30-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "mein Buch",
+     "it": "il mio libro"
+    },
+    {
+     "de": "meine Tasche",
+     "it": "la mia borsa"
+    },
+    {
+     "de": "meine Bücher",
+     "it": "i miei libri"
+    },
+    {
+     "de": "meine Taschen",
+     "it": "le mie borse"
+    },
+    {
+     "de": "dein Hund",
+     "it": "il tuo cane"
+    },
+    {
+     "de": "deine Katze",
+     "it": "la tua gatta"
+    }
+   ]
+  },
+  {
+   "id": "m30-zo-02",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu:",
+   "pairs": [
+    {
+     "de": "sein Auto",
+     "it": "la sua macchina"
+    },
+    {
+     "de": "unser Haus",
+     "it": "la nostra casa"
+    },
+    {
+     "de": "euer Garten",
+     "it": "il vostro giardino"
+    },
+    {
+     "de": "ihr Hund (von ihnen)",
+     "it": "il loro cane"
+    },
+    {
+     "de": "unsere Freunde",
+     "it": "i nostri amici"
+    },
+    {
+     "de": "seine Schuhe",
+     "it": "le sue scarpe"
+    }
+   ]
+  },
+  {
+   "id": "m30-zo-03",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne zu: Formen von nostro und loro",
+   "pairs": [
+    {
+     "de": "m Sg. (nostro)",
+     "it": "il nostro"
+    },
+    {
+     "de": "f Sg. (nostro)",
+     "it": "la nostra"
+    },
+    {
+     "de": "m Pl. (nostro)",
+     "it": "i nostri"
+    },
+    {
+     "de": "f Pl. (nostro)",
+     "it": "le nostre"
+    },
+    {
+     "de": "m Sg. (loro)",
+     "it": "il loro"
+    },
+    {
+     "de": "f Pl. (loro)",
+     "it": "le loro"
+    }
+   ]
+  },
+  {
+   "id": "m30-zo-04",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: Familie",
+   "pairs": [
+    {
+     "de": "mein Vater",
+     "it": "mio padre"
+    },
+    {
+     "de": "meine Mutter",
+     "it": "mia madre"
+    },
+    {
+     "de": "meine Brüder",
+     "it": "i miei fratelli"
+    },
+    {
+     "de": "ihre Mutter (von ihnen)",
+     "it": "la loro madre"
+    },
+    {
+     "de": "deine Schwester",
+     "it": "tua sorella"
+    },
+    {
+     "de": "unser Onkel",
+     "it": "nostro zio"
+    }
+   ]
+  },
+  {
+   "id": "m30-zo-05",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: feste Ausdrücke",
+   "pairs": [
+    {
+     "de": "bei mir zu Hause",
+     "it": "a casa mia"
+    },
+    {
+     "de": "ein Freund von mir",
+     "it": "un mio amico"
+    },
+    {
+     "de": "das Auto meiner Freundin",
+     "it": "la macchina della mia amica"
+    },
+    {
+     "de": "mit meinem Bruder",
+     "it": "con mio fratello"
+    },
+    {
+     "de": "für deine Eltern",
+     "it": "per i tuoi genitori"
+    },
+    {
+     "de": "von unserem Lehrer",
+     "it": "dal nostro professore"
+    }
+   ]
+  },
+  {
+   "id": "m30-mc-01",
+   "type": "MC",
+   "prompt": "Welche Form? \"___ casa è grande.\" (mein)",
+   "options": [
+    "La mia",
+    "Il mio",
+    "Mia",
+    "Le mie"
+   ],
+   "correctValue": "La mia",
+   "explain": "casa (f Sg.) → la mia, mit Artikel."
+  },
+  {
+   "id": "m30-mc-02",
+   "type": "MC",
+   "prompt": "Welche Form? \"Dove sono ___ scarpe?\" (meine)",
+   "options": [
+    "le mie",
+    "i miei",
+    "la mia",
+    "mie"
+   ],
+   "correctValue": "le mie",
+   "explain": "scarpe (f Pl.) → le mie."
+  },
+  {
+   "id": "m30-mc-03",
+   "type": "MC",
+   "prompt": "Welche Form? \"Questo è ___ telefono?\" (dein)",
+   "options": [
+    "il tuo",
+    "la tua",
+    "tuo",
+    "i tuo"
+   ],
+   "correctValue": "il tuo",
+   "explain": "telefono (m Sg.) → il tuo."
+  },
+  {
+   "id": "m30-mc-04",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Marco cerca ___ chiavi.\" (seine)",
+   "options": [
+    "le sue",
+    "i suoi",
+    "la sua",
+    "le loro"
+   ],
+   "correctValue": "le sue",
+   "explain": "chiavi (f Pl.) → le sue."
+  },
+  {
+   "id": "m30-mc-05",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Anna ama ___ cane.\" (ihren)",
+   "options": [
+    "il suo",
+    "la sua",
+    "il loro",
+    "il sua"
+   ],
+   "correctValue": "il suo",
+   "explain": "Das Possessiv richtet sich nach cane (m), nicht nach Anna."
+  },
+  {
+   "id": "m30-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"I ragazzi portano ___ zaini.\" (ihre)",
+   "options": [
+    "i loro",
+    "i suoi",
+    "le loro",
+    "il loro"
+   ],
+   "correctValue": "i loro",
+   "explain": "Mehrere Besitzer → loro. zaini (m Pl.) → i loro."
+  },
+  {
+   "id": "m30-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Signora, è ___ borsa?\" (Ihre, Höflichkeitsform)",
+   "options": [
+    "la sua",
+    "la tua",
+    "la vostra",
+    "la loro"
+   ],
+   "correctValue": "la sua",
+   "explain": "Die Höflichkeitsform Lei benutzt suo/sua (oft groß geschrieben: la Sua)."
+  },
+  {
+   "id": "m30-mc-08",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Form? \"___ madre è insegnante.\" (meine)",
+   "options": [
+    "Mia",
+    "La mia",
+    "Mio",
+    "Le mie"
+   ],
+   "correctValue": "Mia",
+   "explain": "Verwandte im Singular ohne Artikel: mia madre."
+  },
+  {
+   "id": "m30-mc-09",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Form? \"___ fratelli abitano a Milano.\" (meine)",
+   "options": [
+    "I miei",
+    "Miei",
+    "Mio",
+    "Le mie"
+   ],
+   "correctValue": "I miei",
+   "explain": "Verwandte im Plural mit Artikel: i miei fratelli."
+  },
+  {
+   "id": "m30-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Form? \"___ padre è simpatico.\" (ihr, von ihnen)",
+   "options": [
+    "Il loro",
+    "Loro",
+    "Suo",
+    "Il suo"
+   ],
+   "correctValue": "Il loro",
+   "explain": "loro steht immer mit Artikel, auch bei Verwandten."
+  },
+  {
+   "id": "m30-lt-01",
+   "type": "LT",
+   "text": "Questo è {0} quaderno e questa è {1} penna.",
+   "blanks": [
+    {
+     "accept": [
+      "il mio"
+     ]
+    },
+    {
+     "accept": [
+      "la mia"
+     ]
+    }
+   ],
+   "explain": "quaderno (m) → il mio; penna (f) → la mia.",
+   "prompt": "Setze „mein/meine“ mit Artikel ein:"
+  },
+  {
+   "id": "m30-lt-02",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Luca prende {0} bici e {1} zaino.",
+   "blanks": [
+    {
+     "accept": [
+      "la sua"
+     ]
+    },
+    {
+     "accept": [
+      "il suo"
+     ]
+    }
+   ],
+   "explain": "bici (f) → la sua; zaino (m) → il suo.",
+   "prompt": "Setze „sein/seine“ mit Artikel ein:"
+  },
+  {
+   "id": "m30-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Noi amiamo {0} città e voi amate {1} paese.",
+   "blanks": [
+    {
+     "accept": [
+      "la nostra"
+     ]
+    },
+    {
+     "accept": [
+      "il vostro"
+     ]
+    }
+   ],
+   "explain": "città (f) → la nostra; paese (m) → il vostro.",
+   "prompt": "Setze „unser“ und „euer“ mit Artikel ein:"
+  },
+  {
+   "id": "m30-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "{0} nonna abita con {1} genitori.",
+   "blanks": [
+    {
+     "accept": [
+      "Mia"
+     ]
+    },
+    {
+     "accept": [
+      "i miei"
+     ]
+    }
+   ],
+   "explain": "nonna (Singular) ohne Artikel; genitori (Plural) mit Artikel.",
+   "prompt": "Setze „meine“ ein (mit oder ohne Artikel?):"
+  },
+  {
+   "id": "m30-ft-01",
+   "type": "FT",
+   "prompt": "Setze mio mit Artikel ein:",
+   "rows": [
+    {
+     "label": "… libro",
+     "accept": [
+      "il mio"
+     ]
+    },
+    {
+     "label": "… casa",
+     "accept": [
+      "la mia"
+     ]
+    },
+    {
+     "label": "… libri",
+     "accept": [
+      "i miei"
+     ]
+    },
+    {
+     "label": "… case",
+     "accept": [
+      "le mie"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m30-ft-02",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "Übersetze mit Artikel und Nomen:",
+   "rows": [
+    {
+     "label": "sein Buch",
+     "accept": [
+      "il suo libro"
+     ]
+    },
+    {
+     "label": "unsere Stadt",
+     "accept": [
+      "la nostra città"
+     ]
+    },
+    {
+     "label": "eure Kinder",
+     "accept": [
+      "i vostri bambini",
+      "i vostri figli"
+     ]
+    },
+    {
+     "label": "ihre Schule (von ihnen)",
+     "accept": [
+      "la loro scuola"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m30-ft-03",
+   "type": "FT",
+   "stufe": 3,
+   "prompt": "Mit oder ohne Artikel?",
+   "rows": [
+    {
+     "label": "mein Bruder",
+     "accept": [
+      "mio fratello"
+     ]
+    },
+    {
+     "label": "meine Brüder",
+     "accept": [
+      "i miei fratelli"
+     ]
+    },
+    {
+     "label": "ihre Mutter (von ihnen)",
+     "accept": [
+      "la loro madre"
+     ]
+    },
+    {
+     "label": "deine Schwester",
+     "accept": [
+      "tua sorella"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m30-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Il mia borsa è nera.",
+   "solution": "La mia borsa è nera.",
+   "errorToken": "Il",
+   "explain": "borsa ist feminin → la mia."
+  },
+  {
+   "id": "m30-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Anna cerca la suo libro.",
+   "solution": "Anna cerca il suo libro.",
+   "errorToken": "la suo",
+   "explain": "libro (m) → il suo."
+  },
+  {
+   "id": "m30-fk-03",
+   "type": "FK",
+   "stufe": 3,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "La mia madre lavora in banca.",
+   "solution": "Mia madre lavora in banca.",
+   "errorToken": "La",
+   "explain": "Verwandte im Singular ohne Artikel."
+  },
+  {
+   "id": "m30-ka-01",
+   "type": "KA",
+   "prompt": "il mio oder la mia?",
+   "categories": [
+    "il mio",
+    "la mia"
+   ],
+   "items": [
+    {
+     "text": "libro",
+     "cat": 0
+    },
+    {
+     "text": "casa",
+     "cat": 1
+    },
+    {
+     "text": "telefono",
+     "cat": 0
+    },
+    {
+     "text": "macchina",
+     "cat": 1
+    },
+    {
+     "text": "zaino",
+     "cat": 0
+    },
+    {
+     "text": "borsa",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m30-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "il suo oder la sua?",
+   "categories": [
+    "il suo",
+    "la sua"
+   ],
+   "items": [
+    {
+     "text": "la borsa di Marco",
+     "cat": 1
+    },
+    {
+     "text": "il libro di Anna",
+     "cat": 0
+    },
+    {
+     "text": "la macchina di Luca",
+     "cat": 1
+    },
+    {
+     "text": "il cane di Sara",
+     "cat": 0
+    },
+    {
+     "text": "la casa di Paolo",
+     "cat": 1
+    },
+    {
+     "text": "il giardino di Giulia",
+     "cat": 0
+    }
+   ]
+  },
+  {
+   "id": "m30-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "Mit oder ohne Artikel?",
+   "categories": [
+    "ohne Artikel",
+    "mit Artikel"
+   ],
+   "items": [
+    {
+     "text": "mein Vater",
+     "cat": 0
+    },
+    {
+     "text": "meine Brüder",
+     "cat": 1
+    },
+    {
+     "text": "deine Mutter",
+     "cat": 0
+    },
+    {
+     "text": "ihre Tante (von ihnen)",
+     "cat": 1
+    },
+    {
+     "text": "unser Opa",
+     "cat": 0
+    },
+    {
+     "text": "meine Schwestern",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m30-ko-01",
+   "type": "KO",
+   "stufe": 2,
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "Marco e la sua macchina",
+    "tag": "sua: macchina ist f"
+   },
+   "b": {
+    "sentence": "Anna e il suo libro",
+    "tag": "suo: libro ist m"
+   },
+   "reveal": "suo/sua heißt sein UND ihr. Die Form richtet sich nur nach dem Besitz (macchina f → sua, libro m → suo), nicht nach dem Besitzer."
+  },
+  {
+   "id": "m30-de-01",
+   "type": "DE",
+   "prompt": "\"Mein Haus ist klein, aber mein Garten ist groß.\"",
+   "solutions": [
+    "La mia casa è piccola, ma il mio giardino è grande."
+   ],
+   "note": "casa (f) → la mia; giardino (m) → il mio."
+  },
+  {
+   "id": "m30-de-02",
+   "type": "DE",
+   "stufe": 3,
+   "prompt": "\"Meine Mutter und meine Schwestern wohnen in Rom.\"",
+   "solutions": [
+    "Mia madre e le mie sorelle abitano a Roma.",
+    "Mia madre e le mie sorelle vivono a Roma."
+   ],
+   "note": "mia madre ohne Artikel, le mie sorelle mit Artikel."
+  },
+  {
+   "id": "m30-it-01",
+   "type": "IT",
+   "stufe": 2,
+   "prompt": "\"Dov'è la vostra macchina?\"",
+   "solutions": [
+    "Wo ist euer Auto?"
+   ],
+   "note": "vostro = euer."
+  },
+  {
+   "id": "m30-it-02",
+   "type": "IT",
+   "stufe": 2,
+   "prompt": "\"Paolo parla con i suoi amici.\"",
+   "solutions": [
+    "Paolo spricht mit seinen Freunden."
+   ],
+   "note": "i suoi amici = seine Freunde."
+  },
+  {
+   "id": "m30-sr-01",
+   "type": "SR",
+   "it": "La mia famiglia è molto grande.",
+   "de": "Meine Familie ist sehr groß."
+  },
+  {
+   "id": "m30-sr-02",
+   "type": "SR",
+   "stufe": 2,
+   "it": "Il loro appartamento è in centro.",
+   "de": "Ihre Wohnung ist im Zentrum."
+  },
+  {
+   "id": "m30-sr-03",
+   "type": "SR",
+   "stufe": 3,
+   "it": "Mio fratello e i suoi amici giocano a calcio.",
+   "de": "Mein Bruder und seine Freunde spielen Fußball."
+  },
+  {
+   "id": "m30-st-01",
+   "type": "ST",
+   "de": "Wo ist mein Handy?",
+   "solutions": [
+    "Dov'è il mio telefono?",
+    "Dov'è il mio cellulare?",
+    "Dove è il mio telefono?"
+   ],
+   "note": "telefono/cellulare (m) → il mio."
+  },
+  {
+   "id": "m30-st-02",
+   "type": "ST",
+   "stufe": 3,
+   "de": "Mein Vater arbeitet in einem Büro.",
+   "solutions": [
+    "Mio padre lavora in un ufficio."
+   ],
+   "note": "mio padre ohne Artikel."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>

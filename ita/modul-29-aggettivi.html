@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Don Due — Adjektive</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="container page-animate">
+  <div class="topbar">
+    <a class="brand" href="index.html"><span class="brand-flag">🇮🇹</span> Don Due</a>
+    <div class="topbar-right">
+      <span class="topbar-module">Grundlagen · Modul 29</span>
+    </div>
+  </div>
+  <div class="module-page-header">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <h1>🎨 Adjektive</h1>
+    <p>Angleichung, Stellung und erste Sonderformen</p>
+  </div>
+  <div id="theory-mount"></div>
+  <h2 class="exercises-heading">Übungen</h2>
+  <div id="daily-goal-mount"></div>
+  <div class="exercise-progress">
+    <span class="exercise-progress-text" id="ex-text"></span>
+    <div class="exercise-progress-track">
+      <div class="exercise-progress-fill" id="ex-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="exercise-box" id="exercise-box"></div>
+  <div class="exercise-nav" id="exercise-nav"></div>
+</div>
+<script src="assets/shared.js"></script>
+<script src="assets/generators.js"></script>
+<script>
+'use strict';
+
+const MODULE = {
+ "id": "m29",
+ "block": "grundlagen",
+ "title": "Adjektive",
+ "passThreshold": 0.6,
+ "theory": [
+  {
+   "type": "text",
+   "html": "Adjektive passen sich im Italienischen immer an das Nomen an: an das <strong>Geschlecht</strong> (maskulin/feminin) und an die <strong>Zahl</strong> (Singular/Plural). Anders als im Deutschen gilt das auch nach <em>essere</em>: <em>La casa è rossa.</em>"
+  },
+  {
+   "type": "table",
+   "head": [
+    "",
+    "Adjektive auf -o",
+    "Adjektive auf -e"
+   ],
+   "rows": [
+    [
+     "m Singular",
+     "il libro ross<strong>o</strong>",
+     "il libro grand<strong>e</strong>"
+    ],
+    [
+     "f Singular",
+     "la casa ross<strong>a</strong>",
+     "la casa grand<strong>e</strong>"
+    ],
+    [
+     "m Plural",
+     "i libri ross<strong>i</strong>",
+     "i libri grand<strong>i</strong>"
+    ],
+    [
+     "f Plural",
+     "le case ross<strong>e</strong>",
+     "le case grand<strong>i</strong>"
+    ]
+   ]
+  },
+  {
+   "type": "tip",
+   "body": "<strong>Merke:</strong> Adjektive auf -o haben vier Formen (-o, -a, -i, -e). Adjektive auf -e haben nur zwei: -e im Singular, -i im Plural."
+  },
+  {
+   "type": "text",
+   "html": "<strong>Stellung:</strong> Die meisten Adjektive stehen <strong>nach</strong> dem Nomen, vor allem Farben, Nationalitäten und Formen: <em>una macchina nera, un ragazzo italiano</em>. Einige kurze, häufige Adjektive stehen oft davor: <em>bello, buono, grande, piccolo, nuovo, vecchio</em> (z. B. <em>un piccolo problema</em>)."
+  },
+  {
+   "type": "table",
+   "head": [
+    "Deutsch",
+    "Italiano"
+   ],
+   "rows": [
+    [
+     "groß / klein",
+     "grande / piccolo"
+    ],
+    [
+     "neu / alt",
+     "nuovo / vecchio"
+    ],
+    [
+     "schön / hässlich",
+     "bello / brutto"
+    ],
+    [
+     "leicht / schwierig",
+     "facile / difficile"
+    ],
+    [
+     "heiß / kalt",
+     "caldo / freddo"
+    ],
+    [
+     "nett / müde",
+     "gentile, simpatico / stanco"
+    ]
+   ]
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Gemischte Gruppen:</strong> Beziehen sich Adjektive auf Männer und Frauen oder auf maskuline und feminine Nomen zusammen, steht das Adjektiv im <strong>maskulinen Plural</strong>: <em>Marco e Anna sono stanchi.</em>"
+  },
+  {
+   "type": "divider"
+  },
+  {
+   "type": "text",
+   "html": "<strong>Sonderfälle:</strong>"
+  },
+  {
+   "type": "table",
+   "head": [
+    "Fall",
+    "Beispiel"
+   ],
+   "rows": [
+    [
+     "-co / -go: Plural mit h (meist)",
+     "bianco → bianchi, bianche · lungo → lunghi, lunghe"
+    ],
+    [
+     "aber: simpatico, greco",
+     "simpatici, greci (m), simpatiche (f)"
+    ],
+    [
+     "unveränderliche Farben",
+     "blu, rosa, viola: le maglie blu"
+    ],
+    [
+     "bello vor dem Nomen (wie der Artikel)",
+     "bel libro, bello zaino, bell'amico, bei libri, begli amici"
+    ],
+    [
+     "buono vor dem Nomen (wie un/uno)",
+     "un buon libro, un buono stipendio, una buona idea"
+    ]
+   ]
+  },
+  {
+   "type": "example",
+   "it": "Che bel film! Le attrici sono brave e simpatiche.",
+   "de": "Was für ein schöner Film! Die Schauspielerinnen sind gut und sympathisch."
+  }
+ ],
+ "exercises": [
+  {
+   "id": "m29-so-01",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "la",
+    "casa",
+    "è",
+    "rossa",
+    "rosso",
+    "rossi"
+   ],
+   "solution": [
+    "la",
+    "casa",
+    "è",
+    "rossa"
+   ],
+   "translation": "Das Haus ist rot.",
+   "explain": "casa ist feminin Singular → rossa."
+  },
+  {
+   "id": "m29-so-02",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "i",
+    "libri",
+    "sono",
+    "nuovi",
+    "nuove",
+    "nuovo"
+   ],
+   "solution": [
+    "i",
+    "libri",
+    "sono",
+    "nuovi"
+   ],
+   "translation": "Die Bücher sind neu.",
+   "explain": "libri ist maskulin Plural → nuovi."
+  },
+  {
+   "id": "m29-so-03",
+   "type": "SO",
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "ho",
+    "una",
+    "macchina",
+    "nera",
+    "nero",
+    "neri"
+   ],
+   "solution": [
+    "ho",
+    "una",
+    "macchina",
+    "nera"
+   ],
+   "translation": "Ich habe ein schwarzes Auto.",
+   "explain": "Das Adjektiv steht nach dem Nomen: una macchina nera."
+  },
+  {
+   "id": "m29-so-04",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "le",
+    "ragazze",
+    "sono",
+    "intelligenti",
+    "intelligente",
+    "intelligenta"
+   ],
+   "solution": [
+    "le",
+    "ragazze",
+    "sono",
+    "intelligenti"
+   ],
+   "translation": "Die Mädchen sind intelligent.",
+   "explain": "Adjektive auf -e haben im Plural -i, egal ob maskulin oder feminin."
+  },
+  {
+   "id": "m29-so-05",
+   "type": "SO",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "Marco",
+    "e",
+    "Anna",
+    "sono",
+    "stanchi",
+    "stanche",
+    "stanco"
+   ],
+   "solution": [
+    "Marco",
+    "e",
+    "Anna",
+    "sono",
+    "stanchi"
+   ],
+   "translation": "Marco und Anna sind müde.",
+   "explain": "Gemischte Gruppe (m + f) → maskulin Plural: stanchi."
+  },
+  {
+   "id": "m29-so-06",
+   "type": "SO",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter und bringe sie in die richtige Reihenfolge:",
+   "tokens": [
+    "è",
+    "un",
+    "bel",
+    "film",
+    "bello",
+    "bei"
+   ],
+   "solution": [
+    "è",
+    "un",
+    "bel",
+    "film"
+   ],
+   "translation": "Das ist ein schöner Film.",
+   "explain": "Vor dem Nomen wird bello wie der Artikel verändert: il film → bel film."
+  },
+  {
+   "id": "m29-el-01",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Il gatto è {0} e la gatta è {1}.",
+   "blanks": [
+    {
+     "accept": "nero",
+     "distractors": [
+      "nera",
+      "neri",
+      "nere"
+     ]
+    },
+    {
+     "accept": "nera",
+     "distractors": [
+      "nero",
+      "neri",
+      "nere"
+     ]
+    }
+   ],
+   "explain": "gatto (m) → nero, gatta (f) → nera."
+  },
+  {
+   "id": "m29-el-02",
+   "type": "EL",
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Ho due libri {0} e tre penne {1}.",
+   "blanks": [
+    {
+     "accept": "rossi",
+     "distractors": [
+      "rosso",
+      "rosse",
+      "rossa"
+     ]
+    },
+    {
+     "accept": "rosse",
+     "distractors": [
+      "rossi",
+      "rossa",
+      "rosso"
+     ]
+    }
+   ],
+   "explain": "libri (m Pl.) → rossi, penne (f Pl.) → rosse."
+  },
+  {
+   "id": "m29-el-03",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "La lezione è {0} e gli esercizi sono {1}.",
+   "blanks": [
+    {
+     "accept": "facile",
+     "distractors": [
+      "facila",
+      "facili",
+      "facilo"
+     ]
+    },
+    {
+     "accept": "facili",
+     "distractors": [
+      "facile",
+      "facilo",
+      "facila"
+     ]
+    }
+   ],
+   "explain": "facile: Singular -e, Plural -i."
+  },
+  {
+   "id": "m29-el-04",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Mia sorella è {0} e i miei fratelli sono {1}.",
+   "blanks": [
+    {
+     "accept": "alta",
+     "distractors": [
+      "alto",
+      "alte",
+      "alti"
+     ]
+    },
+    {
+     "accept": "alti",
+     "distractors": [
+      "alto",
+      "alte",
+      "alta"
+     ]
+    }
+   ],
+   "explain": "sorella (f Sg.) → alta, fratelli (m Pl.) → alti."
+  },
+  {
+   "id": "m29-el-05",
+   "type": "EL",
+   "stufe": 2,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Paolo e Giulia sono {0}, Giulia e Sara sono {1}.",
+   "blanks": [
+    {
+     "accept": "italiani",
+     "distractors": [
+      "italiane",
+      "italiano",
+      "italiana"
+     ]
+    },
+    {
+     "accept": "italiane",
+     "distractors": [
+      "italiani",
+      "italiana",
+      "italiano"
+     ]
+    }
+   ],
+   "explain": "gemischt → italiani; nur Frauen → italiane."
+  },
+  {
+   "id": "m29-el-06",
+   "type": "EL",
+   "stufe": 3,
+   "prompt": "Wähle die richtigen Wörter für die Lücken:",
+   "sentence": "Le mie amiche sono {0} e molto {1}.",
+   "blanks": [
+    {
+     "accept": "inglesi",
+     "distractors": [
+      "inglese",
+      "inglesa",
+      "ingles"
+     ]
+    },
+    {
+     "accept": "simpatiche",
+     "distractors": [
+      "simpatici",
+      "simpatica",
+      "simpatice"
+     ]
+    }
+   ],
+   "explain": "inglese → inglesi; simpatica → simpatiche (h hält den Laut hart)."
+  },
+  {
+   "id": "m29-zo-01",
+   "type": "ZO",
+   "prompt": "Ordne die passende Form von nuovo zu:",
+   "pairs": [
+    {
+     "de": "la casa",
+     "it": "nuova"
+    },
+    {
+     "de": "il libro",
+     "it": "nuovo"
+    },
+    {
+     "de": "le case",
+     "it": "nuove"
+    },
+    {
+     "de": "i libri",
+     "it": "nuovi"
+    },
+    {
+     "de": "la macchina",
+     "it": "nuova"
+    },
+    {
+     "de": "gli zaini",
+     "it": "nuovi"
+    }
+   ]
+  },
+  {
+   "id": "m29-zo-02",
+   "type": "ZO",
+   "prompt": "Ordne zu: Gegenteile",
+   "pairs": [
+    {
+     "de": "groß",
+     "it": "grande"
+    },
+    {
+     "de": "klein",
+     "it": "piccolo"
+    },
+    {
+     "de": "neu",
+     "it": "nuovo"
+    },
+    {
+     "de": "alt (Sachen)",
+     "it": "vecchio"
+    },
+    {
+     "de": "schön",
+     "it": "bello"
+    },
+    {
+     "de": "schwierig",
+     "it": "difficile"
+    }
+   ]
+  },
+  {
+   "id": "m29-zo-03",
+   "type": "ZO",
+   "stufe": 2,
+   "prompt": "Ordne die passende Form von grande zu:",
+   "pairs": [
+    {
+     "de": "la casa",
+     "it": "grande"
+    },
+    {
+     "de": "il libro",
+     "it": "grande"
+    },
+    {
+     "de": "le case",
+     "it": "grandi"
+    },
+    {
+     "de": "i libri",
+     "it": "grandi"
+    },
+    {
+     "de": "la città",
+     "it": "grande"
+    },
+    {
+     "de": "gli alberi",
+     "it": "grandi"
+    }
+   ]
+  },
+  {
+   "id": "m29-zo-04",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: bello vor dem Nomen",
+   "pairs": [
+    {
+     "de": "libro",
+     "it": "bel libro"
+    },
+    {
+     "de": "albero",
+     "it": "bell'albero"
+    },
+    {
+     "de": "zaino",
+     "it": "bello zaino"
+    },
+    {
+     "de": "libri",
+     "it": "bei libri"
+    },
+    {
+     "de": "alberi",
+     "it": "begli alberi"
+    },
+    {
+     "de": "case",
+     "it": "belle case"
+    }
+   ]
+  },
+  {
+   "id": "m29-zo-05",
+   "type": "ZO",
+   "stufe": 3,
+   "prompt": "Ordne zu: Nationalitäten im Plural (m)",
+   "pairs": [
+    {
+     "de": "tedesco",
+     "it": "tedeschi"
+    },
+    {
+     "de": "inglese",
+     "it": "inglesi"
+    },
+    {
+     "de": "italiano",
+     "it": "italiani"
+    },
+    {
+     "de": "francese",
+     "it": "francesi"
+    },
+    {
+     "de": "spagnolo",
+     "it": "spagnoli"
+    },
+    {
+     "de": "greco",
+     "it": "greci"
+    }
+   ]
+  },
+  {
+   "id": "m29-mc-01",
+   "type": "MC",
+   "prompt": "Welche Form? \"La pizza è ___.\" (buono)",
+   "options": [
+    "buona",
+    "buono",
+    "buone",
+    "buoni"
+   ],
+   "correctValue": "buona",
+   "explain": "pizza ist feminin Singular → buona."
+  },
+  {
+   "id": "m29-mc-02",
+   "type": "MC",
+   "prompt": "Welche Form? \"I ragazzi sono ___.\" (alto)",
+   "options": [
+    "alti",
+    "alte",
+    "alto",
+    "alta"
+   ],
+   "correctValue": "alti",
+   "explain": "ragazzi ist maskulin Plural → alti."
+  },
+  {
+   "id": "m29-mc-03",
+   "type": "MC",
+   "prompt": "Welche Form? \"Le finestre sono ___.\" (aperto)",
+   "options": [
+    "aperte",
+    "aperti",
+    "aperta",
+    "aperto"
+   ],
+   "correctValue": "aperte",
+   "explain": "finestre ist feminin Plural → aperte."
+  },
+  {
+   "id": "m29-mc-04",
+   "type": "MC",
+   "prompt": "Welche Wortstellung ist normal?",
+   "options": [
+    "una macchina rossa",
+    "una rossa macchina",
+    "una macchina rosso",
+    "rossa una macchina"
+   ],
+   "correctValue": "una macchina rossa",
+   "explain": "Farben und die meisten Adjektive stehen nach dem Nomen."
+  },
+  {
+   "id": "m29-mc-05",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Il treno è ___.\" (veloce)",
+   "options": [
+    "veloce",
+    "veloco",
+    "veloci",
+    "velocia"
+   ],
+   "correctValue": "veloce",
+   "explain": "Adjektive auf -e: Singular für m und f gleich → veloce."
+  },
+  {
+   "id": "m29-mc-06",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Le domande sono ___.\" (difficile)",
+   "options": [
+    "difficili",
+    "difficile",
+    "difficila",
+    "difficilo"
+   ],
+   "correctValue": "difficili",
+   "explain": "Plural von Adjektiven auf -e → -i."
+  },
+  {
+   "id": "m29-mc-07",
+   "type": "MC",
+   "stufe": 2,
+   "prompt": "Welche Form? \"Marco e Laura sono ___.\" (contento)",
+   "options": [
+    "contenti",
+    "contente",
+    "contento",
+    "contenta"
+   ],
+   "correctValue": "contenti",
+   "explain": "Gemischte Gruppe → maskulin Plural."
+  },
+  {
+   "id": "m29-mc-08",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Form? \"È un ___ ragazzo.\" (buono)",
+   "options": [
+    "buon",
+    "buono",
+    "buona",
+    "buoni"
+   ],
+   "correctValue": "buon",
+   "explain": "Vor maskulinen Nomen (nicht s+Konsonant, z) wird buono zu buon: un buon ragazzo."
+  },
+  {
+   "id": "m29-mc-09",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Form? \"Ho tre maglie ___.\" (blu)",
+   "options": [
+    "blu",
+    "blue",
+    "bli",
+    "blus"
+   ],
+   "correctValue": "blu",
+   "explain": "blu, rosa, viola und beige bleiben unverändert."
+  },
+  {
+   "id": "m29-mc-10",
+   "type": "MC",
+   "stufe": 3,
+   "prompt": "Welche Form? \"Sono ragazzi molto ___.\" (simpatico)",
+   "options": [
+    "simpatici",
+    "simpatichi",
+    "simpatiche",
+    "simpatico"
+   ],
+   "correctValue": "simpatici",
+   "explain": "simpatico → simpatici (maskulin Plural ohne h), aber feminin simpatiche."
+  },
+  {
+   "id": "m29-lt-01",
+   "type": "LT",
+   "text": "La casa è {0} e il giardino è {1}.",
+   "blanks": [
+    {
+     "accept": [
+      "piccola"
+     ]
+    },
+    {
+     "accept": [
+      "piccolo"
+     ]
+    }
+   ],
+   "explain": "casa (f) → piccola, giardino (m) → piccolo.",
+   "prompt": "Setze piccolo in der richtigen Form ein:"
+  },
+  {
+   "id": "m29-lt-02",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Le lezioni sono {0} e i professori sono {1}.",
+   "blanks": [
+    {
+     "accept": [
+      "interessanti"
+     ]
+    },
+    {
+     "accept": [
+      "bravi"
+     ]
+    }
+   ],
+   "explain": "interessante → interessanti; bravo → bravi.",
+   "prompt": "Setze interessante und bravo ein:"
+  },
+  {
+   "id": "m29-lt-03",
+   "type": "LT",
+   "stufe": 2,
+   "text": "Anna e Marco sono {0}? — No, sono {1}.",
+   "blanks": [
+    {
+     "accept": [
+      "stanchi"
+     ]
+    },
+    {
+     "accept": [
+      "felici"
+     ]
+    }
+   ],
+   "explain": "stanco → stanchi; felice → felici.",
+   "prompt": "Setze stanco und felice ein:"
+  },
+  {
+   "id": "m29-lt-04",
+   "type": "LT",
+   "stufe": 3,
+   "text": "Che {0} giornata! Che {1} panorama!",
+   "blanks": [
+    {
+     "accept": [
+      "bella"
+     ]
+    },
+    {
+     "accept": [
+      "bel"
+     ]
+    }
+   ],
+   "explain": "giornata (f) → bella; panorama (m) → bel.",
+   "prompt": "Setze bello in der richtigen Form ein:"
+  },
+  {
+   "id": "m29-ft-01",
+   "type": "FT",
+   "prompt": "Bilde alle Formen von nuovo:",
+   "rows": [
+    {
+     "label": "il libro …",
+     "accept": [
+      "nuovo"
+     ]
+    },
+    {
+     "label": "la casa …",
+     "accept": [
+      "nuova"
+     ]
+    },
+    {
+     "label": "i libri …",
+     "accept": [
+      "nuovi"
+     ]
+    },
+    {
+     "label": "le case …",
+     "accept": [
+      "nuove"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m29-ft-02",
+   "type": "FT",
+   "stufe": 2,
+   "prompt": "Setze grande und felice ein:",
+   "rows": [
+    {
+     "label": "il libro … (grande)",
+     "accept": [
+      "grande"
+     ]
+    },
+    {
+     "label": "le case … (grande)",
+     "accept": [
+      "grandi"
+     ]
+    },
+    {
+     "label": "la ragazza … (felice)",
+     "accept": [
+      "felice"
+     ]
+    },
+    {
+     "label": "i bambini … (felice)",
+     "accept": [
+      "felici"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m29-ft-03",
+   "type": "FT",
+   "stufe": 3,
+   "prompt": "bello vor dem Nomen:",
+   "rows": [
+    {
+     "label": "… libro",
+     "accept": [
+      "bel"
+     ]
+    },
+    {
+     "label": "… amica",
+     "accept": [
+      "bell'"
+     ]
+    },
+    {
+     "label": "… zaino",
+     "accept": [
+      "bello"
+     ]
+    },
+    {
+     "label": "… ragazzi",
+     "accept": [
+      "bei"
+     ]
+    },
+    {
+     "label": "… amici",
+     "accept": [
+      "begli"
+     ]
+    },
+    {
+     "label": "… ragazze",
+     "accept": [
+      "belle"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m29-fk-01",
+   "type": "FK",
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "La macchina è nuovo.",
+   "solution": "La macchina è nuova.",
+   "errorToken": "nuovo",
+   "explain": "macchina ist feminin → nuova."
+  },
+  {
+   "id": "m29-fk-02",
+   "type": "FK",
+   "stufe": 2,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Le ragazze sono intelligente.",
+   "solution": "Le ragazze sono intelligenti.",
+   "errorToken": "intelligente",
+   "explain": "Plural von intelligente → intelligenti."
+  },
+  {
+   "id": "m29-fk-03",
+   "type": "FK",
+   "stufe": 3,
+   "prompt": "Finde und korrigiere den Fehler:",
+   "sentence": "Ho comprato un bello libro.",
+   "solution": "Ho comprato un bel libro.",
+   "errorToken": "bello",
+   "explain": "bello vor libro → bel (wie il libro)."
+  },
+  {
+   "id": "m29-ka-01",
+   "type": "KA",
+   "prompt": "Wie viele Formen hat das Adjektiv?",
+   "categories": [
+    "4 Formen (-o/-a/-i/-e)",
+    "2 Formen (-e/-i)"
+   ],
+   "items": [
+    {
+     "text": "rosso",
+     "cat": 0
+    },
+    {
+     "text": "grande",
+     "cat": 1
+    },
+    {
+     "text": "nuovo",
+     "cat": 0
+    },
+    {
+     "text": "felice",
+     "cat": 1
+    },
+    {
+     "text": "alto",
+     "cat": 0
+    },
+    {
+     "text": "verde",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m29-ka-02",
+   "type": "KA",
+   "stufe": 2,
+   "prompt": "Passt die Form zu „la casa“ oder zu „i libri“?",
+   "categories": [
+    "la casa …",
+    "i libri …"
+   ],
+   "items": [
+    {
+     "text": "nuova",
+     "cat": 0
+    },
+    {
+     "text": "nuovi",
+     "cat": 1
+    },
+    {
+     "text": "grande",
+     "cat": 0
+    },
+    {
+     "text": "grandi",
+     "cat": 1
+    },
+    {
+     "text": "vecchia",
+     "cat": 0
+    },
+    {
+     "text": "vecchi",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m29-ka-03",
+   "type": "KA",
+   "stufe": 3,
+   "prompt": "Verändert sich das Adjektiv?",
+   "categories": [
+    "unveränderlich",
+    "veränderlich"
+   ],
+   "items": [
+    {
+     "text": "blu",
+     "cat": 0
+    },
+    {
+     "text": "rosa",
+     "cat": 0
+    },
+    {
+     "text": "viola",
+     "cat": 0
+    },
+    {
+     "text": "rosso",
+     "cat": 1
+    },
+    {
+     "text": "nero",
+     "cat": 1
+    },
+    {
+     "text": "verde",
+     "cat": 1
+    }
+   ]
+  },
+  {
+   "id": "m29-ko-01",
+   "type": "KO",
+   "stufe": 2,
+   "prompt": "Worin unterscheiden sich diese Formen?",
+   "a": {
+    "sentence": "ragazzi alti",
+    "tag": "m Pl. oder gemischt"
+   },
+   "b": {
+    "sentence": "ragazze alte",
+    "tag": "nur f Pl."
+   },
+   "reveal": "Sobald in einer Gruppe ein Mann oder ein maskulines Nomen dabei ist, steht das Adjektiv im maskulinen Plural: Marco e Anna sono alti. Nur bei rein femininen Gruppen: Anna e Sara sono alte."
+  },
+  {
+   "id": "m29-de-01",
+   "type": "DE",
+   "prompt": "\"Ich habe ein neues Auto. Es ist rot.\"",
+   "solutions": [
+    "Ho una macchina nuova. È rossa."
+   ],
+   "note": "macchina (f) → nuova, rossa. Adjektiv nach dem Nomen."
+  },
+  {
+   "id": "m29-de-02",
+   "type": "DE",
+   "stufe": 2,
+   "prompt": "\"Die Häuser sind groß und die Gärten sind klein.\"",
+   "solutions": [
+    "Le case sono grandi e i giardini sono piccoli."
+   ],
+   "note": "grande → grandi; piccolo → piccoli."
+  },
+  {
+   "id": "m29-it-01",
+   "type": "IT",
+   "prompt": "\"Il caffè è caldo e la birra è fredda.\"",
+   "solutions": [
+    "Der Kaffee ist heiß und das Bier ist kalt.",
+    "Der Kaffee ist warm und das Bier ist kalt."
+   ],
+   "note": "caldo (m), fredda (f)."
+  },
+  {
+   "id": "m29-it-02",
+   "type": "IT",
+   "stufe": 3,
+   "prompt": "\"Che bella giornata!\"",
+   "solutions": [
+    "Was für ein schöner Tag!"
+   ],
+   "note": "Che + Adjektiv + Nomen = Was für ein …!"
+  },
+  {
+   "id": "m29-sr-01",
+   "type": "SR",
+   "it": "La mia casa è piccola ma molto bella.",
+   "de": "Mein Haus ist klein, aber sehr schön."
+  },
+  {
+   "id": "m29-sr-02",
+   "type": "SR",
+   "it": "Ho un gatto nero e una gatta bianca.",
+   "de": "Ich habe einen schwarzen Kater und eine weiße Katze."
+  },
+  {
+   "id": "m29-sr-03",
+   "type": "SR",
+   "stufe": 2,
+   "it": "I miei amici sono gentili e allegri.",
+   "de": "Meine Freunde sind nett und fröhlich."
+  },
+  {
+   "id": "m29-st-01",
+   "type": "ST",
+   "de": "Die Pizza ist sehr gut.",
+   "solutions": [
+    "La pizza è molto buona.",
+    "La pizza è buonissima."
+   ],
+   "note": "pizza (f) → buona."
+  },
+  {
+   "id": "m29-st-02",
+   "type": "ST",
+   "stufe": 2,
+   "de": "Die Lehrerinnen sind nett.",
+   "solutions": [
+    "Le professoresse sono gentili.",
+    "Le insegnanti sono gentili.",
+    "Le professoresse sono simpatiche.",
+    "Le insegnanti sono simpatiche."
+   ],
+   "note": "gentile → gentili; simpatica → simpatiche."
+  }
+ ]
+};
+
+function initModulePage() {
+  renderTheory(MODULE.theory, document.getElementById('theory-mount'));
+
+  // Tagesziel-Banner einbinden
+  renderDailyGoalBanner(document.getElementById('daily-goal-mount'));
+  const session = new ExerciseSession(
+    MODULE,
+    document.getElementById('ex-fill'),
+    document.getElementById('ex-text'),
+    document.getElementById('exercise-box'),
+    document.getElementById('exercise-nav')
+  );
+  session.start();
+}
+initModulePage();
+</script>
+</body>
+</html>
