@@ -65,14 +65,49 @@ button{font:inherit;color:inherit}
 
 /* Modus-Auswahl */
 .sec-title{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 2px 8px}
-.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
-.mode{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:12px 6px;border-radius:16px;border:2px solid var(--line);background:var(--paper);cursor:pointer;transition:all .25s cubic-bezier(.2,.8,.2,1)}
-.mode:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-.mode.active{border-color:var(--verde);background:var(--verde-l);box-shadow:0 0 0 3px rgba(47,125,79,.15)}
-.mode-icon{font-size:24px;transition:transform .3s}
-.mode.active .mode-icon{transform:scale(1.15) rotate(-6deg)}
-.mode-name{font-weight:800;font-size:12.5px;line-height:1.2}
-.mode-sub{font-size:10.5px;color:var(--muted);line-height:1.25}
+/* kompakte Leiste: kleine Tippflächen, damit beim Scrollen nichts aus Versehen umschaltet */
+.modes{display:flex;gap:3px;padding:3px;border-radius:99px;background:var(--paper);border:1.5px solid var(--line);margin-bottom:4px}
+.mode{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;padding:6px 4px;border-radius:99px;border:0;background:transparent;cursor:pointer;
+  font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background .2s,color .2s}
+.mode.active{background:var(--verde);color:#fff}
+.mode-icon{font-size:14px;line-height:1}
+.mode-sub-line{font-size:11.5px;color:var(--muted);text-align:center;margin:0 0 10px}
+
+/* Problemwörter und Vertiefen */
+.deep-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:2px 0 10px}
+.deep-btn{font-size:12.5px;font-weight:800;padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;color:var(--muted);touch-action:manipulation}
+.deep-btn.on{background:var(--oro-l);border-color:var(--oro-b);color:var(--oro)}
+.deep-btn.go{border-color:var(--viola-b);color:var(--viola)}
+.again-tag{font-size:11px;font-weight:800;color:var(--viola);background:var(--viola-l);border:1px solid var(--viola-b);padding:2px 8px;border-radius:99px;margin-left:6px;white-space:nowrap}
+.memo{margin-top:8px;font-size:13px;line-height:1.4;color:var(--oro);background:var(--oro-l);border:1px solid var(--oro-b);border-radius:12px;padding:6px 10px;max-width:100%}
+.memo.s{color:var(--viola);background:var(--viola-l);border-color:var(--viola-b);font-style:italic}
+.hard-box{background:var(--viola-l);border-color:var(--viola-b)}
+.hard-box .chip.due-chip{border-color:var(--viola-b)}
+.deep{width:100%;max-width:440px;max-height:92vh;overflow:auto;padding:16px 16px 14px}
+.deep-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.deep-head h3{margin:0}
+.deep-x{border:0;background:transparent;font-size:22px;cursor:pointer;color:var(--muted);padding:2px 6px}
+.deep-tabs{display:flex;gap:3px;padding:3px;border-radius:99px;background:var(--bg);border:1.5px solid var(--line);margin-bottom:12px}
+.deep-tabs button{flex:1;border:0;background:transparent;border-radius:99px;padding:6px 2px;font-size:12px;font-weight:800;color:var(--muted);cursor:pointer;white-space:nowrap}
+.deep-tabs button.on{background:var(--viola);color:#fff}
+.deep-q{text-align:center;font-size:13px;color:var(--muted);margin-bottom:4px}
+.deep-word{text-align:center;font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--verde-d);margin-bottom:10px;line-height:1.2}
+.deep-gap{font-size:17px;line-height:1.5;text-align:center;margin-bottom:6px}
+.deep-gap b{display:inline-block;min-width:70px;border-bottom:2px solid var(--viola);color:var(--viola)}
+.deep-in{display:flex;gap:6px;margin:8px 0}
+.deep-in input,.deep textarea{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.deep textarea{width:100%;min-height:64px;resize:vertical;margin:4px 0 10px;font-size:15px}
+.deep label{font-size:12.5px;font-weight:800;color:var(--muted)}
+.deep-hints{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:4px 0}
+.deep-pattern{text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:20px;letter-spacing:.18em;color:var(--viola);margin:6px 0}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.tile{min-width:36px;height:40px;border-radius:10px;border:1.5px solid var(--viola-b);background:var(--viola-l);font-size:18px;font-weight:800;cursor:pointer;color:var(--viola)}
+.tile.used{opacity:.25;pointer-events:none}
+.deep-fb{text-align:center;font-size:14px;font-weight:700;border-radius:12px;padding:8px 10px;margin:8px 0}
+.deep-fb.ok{background:var(--verde-l);color:var(--verde-d)}
+.deep-fb.near{background:var(--oro-l);color:var(--oro)}
+.deep-fb.no{background:var(--rosso-l);color:var(--rosso)}
+.deep-foot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}
 
 /* Lektionen */
 .level{display:flex;align-items:center;gap:10px;margin:20px 2px 8px;font-family:'Fraunces',serif;font-weight:700;color:var(--verde-d)}
@@ -315,9 +350,6 @@ button{font:inherit;color:inherit}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
 @media (max-width:420px){
-  .modes{grid-template-columns:1fr}
-  .mode{flex-direction:row;text-align:left;gap:10px;padding:10px 12px}
-  .mode-sub{margin-left:auto;text-align:right}
   .word{font-size:30px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -2135,11 +2167,153 @@ const SPEECH_OK_KEY = "itpro_speech_ok";
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 
 const MODES = [
-  {id:"card",  icon:"🃏", name:"Karteikarten", sub:"Selbst überlegen, aufdecken"},
-  {id:"sayDE", icon:"🎙️", name:"Sprechen: IT → DE", sub:"Italienisch lesen, Deutsch sagen"},
-  {id:"sayIT", icon:"🗣️", name:"Sprechen: DE → IT", sub:"Deutsch lesen, Italienisch sagen"},
-  {id:"mix",   icon:"🔀", name:"Sprechen: gemischt", sub:"Richtung wechselt zufällig"},
+  {id:"card",  icon:"🃏", short:"Karten", name:"Karteikarten", sub:"Selbst überlegen, aufdecken"},
+  {id:"sayDE", icon:"🎙️", short:"IT→DE", name:"Sprechen: IT → DE", sub:"Italienisch lesen, Deutsch sagen"},
+  {id:"sayIT", icon:"🗣️", short:"DE→IT", name:"Sprechen: DE → IT", sub:"Deutsch lesen, Italienisch sagen"},
+  {id:"mix",   icon:"🔀", short:"Mix", name:"Sprechen: gemischt", sub:"Richtung wechselt zufällig"},
 ];
+
+/* ───────── Problemwörter & Vertiefen (Extra-Training, ändert die Wiederholungen nicht) ───────── */
+const HARD_MISSES = 3;   // ab so vielen Fehlversuchen gilt ein Wort automatisch als Problemwort
+function isHard(c){ return !!c && (c.hard===true || (c.hard!==false && (c.miss||0)>=HARD_MISSES)); }
+function collectHard(st){
+  const out = [];
+  LESSON_DEFS.forEach(ld=>ld.words.forEach(w=>{ if (isHard(st[ld.name+"__"+w.it])) out.push(Object.assign({}, w, {__ln: ld.name})); }));
+  return out;
+}
+// Hauptform eines Eintrags (erste Variante, ohne Klammern), z. B. „perso/a“ → „perso“
+function mainForm(it){ return it.replace(/\([^)]*\)/g,"").split(/\s*\/\s*|,|;/)[0].trim(); }
+// Lückensatz: das Wort (oder eine gebeugte Form) im Beispielsatz finden
+function gapFor(w){
+  if (!w.ex || w.phrase) return null;
+  const tgt = norm(mainForm(w.it)).split(" ").filter(Boolean);
+  if (!tgt.length) return null;
+  const toks = []; const re = /[\p{L}]+/gu; let m;
+  while ((m = re.exec(w.ex))) toks.push({t:m[0], i:m.index, n:norm(m[0])});
+  const cut = (a,b)=>({before:w.ex.slice(0,toks[a].i), answer:w.ex.slice(toks[a].i, toks[b].i+toks[b].t.length), after:w.ex.slice(toks[b].i+toks[b].t.length)});
+  if (tgt.length>1) {
+    for (let a=0;a+tgt.length<=toks.length;a++) if (tgt.every((x,j)=>toks[a+j].n===x)) return cut(a, a+tgt.length-1);
+    return null;
+  }
+  const t = tgt[0];
+  let k = toks.findIndex(x=>x.n===t);
+  if (k<0 && t.length>=4) {
+    const stem = t.slice(0, Math.max(3, t.length - (/(are|ere|ire)$/.test(t)?3:1)));
+    k = toks.findIndex(x=>x.n.startsWith(stem) && Math.abs(x.n.length-t.length)<=4);
+  }
+  return k<0 ? null : cut(k,k);
+}
+function scramble(s){
+  const a = s.split(""); let tries = 0, out;
+  do { out = shuffle(a.slice()).join(""); tries++; } while (out===s && s.length>1 && tries<8);
+  return out.split("");
+}
+
+function DeepPanel({w, note, onNote, onClose, hasVoice, speak}){
+  const gap = React.useMemo(()=>gapFor(w), [w]);
+  const [tab, setTab] = useState("type");
+  const [val, setVal] = useState("");
+  const [fb, setFb] = useState(null);        // {cls, text}
+  const [fails, setFails] = useState(0);
+  const [hint, setHint] = useState(0);       // 0 keine, 1 Anfangsbuchstabe, 2 Länge, 3 Buchstaben
+  const [used, setUsed] = useState([]);
+  const [b, setB] = useState(note.b||"");
+  const [s, setS] = useState(note.s||"");
+  const full = (w.art ? w.art+(w.art.endsWith("'")?"":" ") : "") + w.it;
+  const hintWord = mainForm(w.it);
+  const tiles = React.useMemo(()=>scramble(hintWord), [hintWord]);
+  useEffect(()=>{ setVal(""); setFb(null); setFails(0); setHint(0); setUsed([]); }, [tab]);
+  // Merkhilfe kurz nach dem Tippen speichern
+  useEffect(()=>{
+    if (b===(note.b||"") && s===(note.s||"")) return;
+    const t = setTimeout(()=>onNote({b:b.trim(), s:s.trim()}), 400);
+    return ()=>clearTimeout(t);
+  }, [b, s]);
+
+  const exactWord = v => { const x = v.trim().toLowerCase().replace(/[’`´]/g,"'"); return [w.it, full, mainForm(w.it)].some(y=>y.toLowerCase()===x); };
+  function check(e){
+    e.preventDefault();
+    const v = val.trim(); if (!v) return;
+    let ok, perfect, sol;
+    if (tab==="gap") {
+      sol = gap.answer;
+      perfect = v.toLowerCase()===sol.toLowerCase();
+      ok = perfect || norm(v)===norm(sol);
+      if (!ok && sol.length>=6 && lev(norm(v), norm(sol))<=1) { setFb({cls:"near", text:"Fast! Ein Buchstabe stimmt noch nicht."}); return; }
+    } else {
+      sol = full;
+      perfect = exactWord(v);
+      ok = perfect || checkSpoken([v], w.it, "it", !!w.phrase, true).ok;
+    }
+    if (perfect) { setFb({cls:"ok", text:"✓ Perfekt geschrieben!"}); haptic("correct"); }
+    else if (ok) { setFb({cls:"near", text:"✓ Richtig! Genaue Schreibweise: "+sol}); haptic("correct"); }
+    else {
+      const n = fails+1; setFails(n); haptic("wrong");
+      setFb({cls:"no", text: n>=3 ? "Lösung: "+sol+". Schreib sie zum Einprägen einmal ab." : "Noch nicht. Versuch es nochmal"+(tab==="type"&&hint<3?" oder nimm eine Hilfe.":".")});
+      if (n<3) return;
+    }
+    if (ok) setVal("");
+  }
+  function tileTap(i){ setUsed(u=>u.concat(i)); setVal(v=>v+tiles[i]); }
+  function tileBack(){ setUsed(u=>u.slice(0,-1)); setVal(v=>v.slice(0,-1)); }
+  const pattern = hintWord.split("").map((ch,i)=>ch===" "?" ":(i===0?ch:"_")).join(" ");
+
+  const tabs = [["type","⌨️ Tippen"]].concat(gap?[["gap","✏️ Lücke"]]:[], hasVoice?[["dict","🎧 Diktat"]]:[], [["memo","💡 Merkhilfe"]]);
+  return (
+    <div className="modal-bg" onClick={onClose}>
+      <div className="modal deep" onClick={e=>e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="deep-h">
+        <div className="deep-head"><h3 id="deep-h">🧠 Vertiefen</h3><button className="deep-x" onClick={onClose} aria-label="Schließen">✕</button></div>
+        <div className="deep-tabs" role="tablist">
+          {tabs.map(([id,lbl])=><button key={id} role="tab" aria-selected={tab===id} className={tab===id?"on":""} onClick={()=>setTab(id)}>{lbl}</button>)}
+        </div>
+
+        {tab==="type"&&<>
+          <div className="deep-q">Schreib auf Italienisch:</div>
+          <div className="deep-word">{w.de}</div>
+          {hint>=2&&<div className="deep-pattern">{pattern}</div>}
+          {hint===1&&<div className="deep-q">Fängt an mit <b>{hintWord[0]}</b></div>}
+          {hint>=3&&<div className="tiles">
+            {tiles.map((ch,i)=><button key={i} type="button" className={"tile"+(used.includes(i)?" used":"")} onClick={()=>tileTap(i)}>{ch===" "?"␣":ch}</button>)}
+            <button type="button" className="tile" onClick={tileBack} aria-label="Letzten Buchstaben löschen">⌫</button>
+          </div>}
+        </>}
+        {tab==="gap"&&gap&&<>
+          <div className="deep-q">Setz das Wort in der passenden Form ein:</div>
+          <div className="deep-gap">{gap.before}<b>{fb&&fb.cls!=="no"||fails>=3 ? gap.answer : " "}</b>{gap.after}</div>
+          <div className="deep-q">Grundform: <b>{full}</b> · {w.de}</div>
+        </>}
+        {tab==="dict"&&<>
+          <div className="deep-q">Hör zu und schreib, was du hörst:</div>
+          <div className="deep-hints"><button type="button" className="btn small" onClick={()=>speak(full)}>🔊 Anhören</button></div>
+          {fb&&<div className="deep-q">Bedeutung: {w.de}</div>}
+        </>}
+
+        {tab!=="memo"&&<>
+          <form className="deep-in" onSubmit={check}>
+            <input value={val} onChange={e=>setVal(e.target.value)} placeholder="Italienisch eintippen" autoComplete="off" autoCapitalize="off" autoCorrect="off" spellCheck="false" lang="it" aria-label="Antwort"/>
+            <button className="btn small" type="submit">Prüfen</button>
+          </form>
+          {tab==="type"&&hint<3&&!(fb&&fb.cls!=="no")&&<div className="deep-hints">
+            <button type="button" className="chip" onClick={()=>setHint(h=>h+1)}>💡 {["Anfangsbuchstabe","Länge zeigen","Buchstaben zum Antippen"][hint]}</button>
+          </div>}
+          {fb&&<div className={"deep-fb "+fb.cls}>{fb.text}</div>}
+          {fb&&fb.cls!=="no"&&<div className="deep-hints"><button type="button" className="chip" onClick={()=>{ setVal(""); setFb(null); setFails(0); setHint(0); setUsed([]); }}>Nochmal</button></div>}
+        </>}
+
+        {tab==="memo"&&<>
+          <div className="deep-word">{full}</div>
+          <div className="deep-q" style={{marginBottom:10}}>{w.de}</div>
+          <label htmlFor="memo-b">Eselsbrücke (z. B. Klang, Bild, ähnliches Wort)</label>
+          <textarea id="memo-b" value={b} onChange={e=>setB(e.target.value)} placeholder="z. B. il cassetto: In der Schublade liegt eine Kassette"/>
+          <label htmlFor="memo-s">Mein eigener Satz mit dem Wort</label>
+          <textarea id="memo-s" value={s} onChange={e=>setS(e.target.value)} placeholder="Ein Satz aus deinem Leben" lang="it"/>
+          <div className="deep-foot">Wird automatisch gespeichert und auf der Rückseite der Karte angezeigt.</div>
+        </>}
+        <div className="deep-foot">Extra-Training: zählt nicht für die Wiederholungen.</div>
+      </div>
+    </div>
+  );
+}
 
 /* Bildhilfe auf der Karteikarte (Daten und Szenen in italiano-bilder.js) */
 const BILD_KEY = "itpro_bilder";
@@ -2698,6 +2872,7 @@ function App() {
   const recRef = useRef(null);
   const shownLoops = useRef(0);
   const [reading, setReading] = useState(false);   // liest gerade das italienische Wort vor
+  const [deepOpen, setDeepOpen] = useState(false);  // Vertiefen-Fenster
   const doAnswerRef = useRef(null);   // wie oft nach dem Aufdecken schon neu zugehört wurde
 
   const persist = useCallback((newSt)=>{ setSt(newSt); saveState(newSt); }, []);
@@ -2753,7 +2928,7 @@ function App() {
     clearAuto();
     stopRec();
     try { if (window.speechSynthesis && speechSynthesis.speaking) speechSynthesis.cancel(); } catch {}
-    setFlipped(false); setSeen(false); setResult(null); setHeard("");
+    setFlipped(false); setSeen(false); setResult(null); setHeard(""); setDeepOpen(false);
     setTries(0); triesRef.current = 0; liveRestarts.current = 0; setSpeechMsg(null); setTyped("");
   },[sidx, session, mode, view]);
 
@@ -2818,9 +2993,63 @@ function App() {
     return ()=>clearTimeout(t);
   },[toasts]);
 
+  // Nicht gewusstes Wort in derselben Runde nach ca. 3 Karten nochmal zeigen,
+  // Problemwörter zusätzlich nach ca. 10 Karten. Diese Wiederholungen sind reines Extra-Training.
+  function requeue(sess, idx, w, hard){
+    if (sess.slice(idx+1).some(x=>x.it===w.it)) return sess;
+    const copy = Object.assign({}, w, {__again:true});
+    const arr = sess.slice(), d = dirs.slice();
+    const rnd = ()=>Math.random()<.5?"sayIT":"sayDE";
+    const p1 = Math.min(arr.length, idx+4);
+    const p2 = Math.min(arr.length, idx+11);
+    if (hard && p2 - p1 >= 4) { arr.splice(p2, 0, copy); d.splice(p2, 0, rnd()); }   // zuerst die hintere Stelle, dann bleibt p1 gültig
+    arr.splice(p1, 0, copy); d.splice(p1, 0, rnd());
+    setDirs(d);
+    return arr;
+  }
+  function goNext(sess, celebrateEnd){
+    const next = sidx+1;
+    if (next >= sess.length) {
+      setView("end");
+      if (celebrateEnd) setTimeout(()=>{ boom({particleCount:160,spread:110}); haptic("round"); },250);
+      return;
+    }
+    if (sess!==session) setSession(sess);
+    setSidx(next);
+  }
+  function practiceAnswer(ok){
+    const w = session[sidx];
+    if (curLesson.virtual) setRoundStats(r=>({ok:r.ok+(ok?1:0), no:r.no+(ok?0:1)}));
+    goNext(ok ? session : requeue(session, sidx, w, true), true);
+  }
+  function toggleHard(){
+    const w = session[sidx]; if (!w) return;
+    const newSt = {...st};
+    const c = getCard(newSt, w.__ln||curLesson.name, w.it);
+    if (isHard(c)) { delete c.hard; c.miss = 0; } else c.hard = true;
+    persist(newSt);
+  }
+  function saveNote(it, n){
+    const notes = Object.assign({}, st.__notes||{});
+    if (n.b || n.s) notes[it] = n; else delete notes[it];
+    persist(Object.assign({}, st, {__notes: notes}));
+  }
+  function startHard(){
+    const list = shuffle(collectHard(st)).slice(0, SESSION_SIZE);
+    if (!list.length) return;
+    setCurLesson({name:"⭐ Meine Problemwörter", virtual:true, words:list});
+    setSessMode("normal");
+    setSession(list);
+    setDirs(list.map(()=>Math.random()<.5?"sayIT":"sayDE"));
+    setSidx(0); setRoundStats({ok:0,no:0}); setRoundEvents([]);
+    setView("study");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
   function doAnswer(correct, known) {
     const w = session[sidx];
     if (!w) return;
+    if (w.__again || curLesson.virtual) { practiceAnswer(correct||known); return; }
     const newSt = {...st};
     const c = getCard(newSt, curLesson.name, w.it);
     const now = Date.now();
@@ -2845,11 +3074,13 @@ function App() {
       if (c.phase >= 1) c.lapse = 1;
       c.due = now;
     }
+    if (!correct && !known) c.miss = (c.miss||0) + 1;   // Fehlerzähler für Problemwörter
     if (sessMode==="refresh" && !refreshWords(newSt, curLesson, now).length) newSt.__refDone = dayStr();
     persist(newSt);
     setRoundStats(r=>({ok:r.ok+(correct||known?1:0), no:r.no+(correct||known?0:1)}));
+    const sess = (!correct && !known) ? requeue(session, sidx, w, isHard(c)) : session;
     const next = sidx+1;
-    const roundEnd = next >= session.length;
+    const roundEnd = !sess.slice(next).some(x=>!x.__again);   // keine regulären Karten mehr übrig
     const perfect = roundEnd && session.length>=5 && roundStats.no===0 && (correct||known);
     const {r:nr, ev} = applyAnswer(rw, newSt, {correct, known, speech: isSpeak && result==="ok", mix: mode==="mix", roundEnd, perfect, recordShown: recordShownRef.current});
     if (ev.some(e=>e.type==="record")) recordShownRef.current = true;
@@ -2857,10 +3088,9 @@ function App() {
     setRw(nr); saveRw(nr);
     if (ev.length) {
       setRoundEvents(x=>x.concat(ev.filter(e=>e.type!=="combo")));
-      if (!roundEnd) celebrate(ev);
+      if (!roundEnd || next < sess.length) celebrate(ev);
     }
-    if (roundEnd) { setView("end"); setTimeout(()=>{ boom({particleCount:160,spread:110}); haptic("round"); },250); }
-    else setSidx(next);
+    goNext(sess, true);
   }
 
   doAnswerRef.current = doAnswer;
@@ -2872,7 +3102,10 @@ function App() {
   },[result]);
 
   const w = session[sidx];
-  const c = w ? getCard(st, curLesson?.name, w.it) : null;
+  const c = w ? getCard(st, w.__ln || curLesson?.name, w.it) : null;
+  const note = (w && st.__notes && st.__notes[w.it]) || null;
+  const memoEl = note && <>{note.b&&<div className="memo">💡 {note.b}</div>}{note.s&&<div className="memo s" lang="it">✍️ {note.s}</div>}</>;
+  const practiceCard = !!(w && (w.__again || (curLesson && curLesson.virtual)));
   const target = w ? (eff==="sayIT" ? w.it : w.de) : "";
 
   // live: Das Mikrofon hört nach einem falschen Wort weiter zu (kein Neustart nötig)
@@ -3033,6 +3266,7 @@ function App() {
     };
     autoTimer.current = setTimeout(resume, 400);
   }
+  function openDeep(){ clearAuto(); stopRec(); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch {} setDeepOpen(true); }
   function revealSolution(){ stopRec(); setFlipped(true); setSeen(true); if(result!=="ok") setResult("shown"); }
 
   function handleImport(e) {
@@ -3055,7 +3289,7 @@ function App() {
   // Tastatur: Leertaste = umdrehen / Mikrofon
   useEffect(()=>{
     function onKey(e){
-      if (view!=="study" || consentOpen) return;
+      if (view!=="study" || consentOpen || deepOpen) return;
       if (e.target && /input|textarea/i.test(e.target.tagName)) return;
       if (e.code==="Space") {
         e.preventDefault();
@@ -3090,7 +3324,8 @@ function App() {
     });
     return {neu,lernen,gelernt,bekannt};
   }
-  const curStats = curLesson ? lessonStats(curLesson) : null;
+  const curStats = curLesson && !curLesson.virtual ? lessonStats(curLesson) : null;
+  const hardList = view==="lessons" ? collectHard(st) : [];
   const vocabLessons = LESSON_DEFS.filter(l=>!l.isPhrase);
   const phraseLessons = LESSON_DEFS.filter(l=>l.isPhrase);
   const levels = ["A1","A2","B1","B2","C1"];
@@ -3160,6 +3395,7 @@ function App() {
       <Bild w={w}/>
       <div className="ex">„{w.ex}“</div>
       <div className="small-de">{w.de}</div>
+      {memoEl}
     </>
   ) : (
     <>
@@ -3168,6 +3404,7 @@ function App() {
       <Bild w={w}/>
       <div className="ex">„{w.ex}“</div>
       <div className="small-de">{(w.art&&!w.phrase?w.art+(w.art.endsWith("'")?"":" "):"")+w.it}</div>
+      {memoEl}
     </>
   ));
 
@@ -3209,16 +3446,22 @@ function App() {
       {view==="lessons"&&(
         <section className="fade-in">
           <div className="sec-title">Lernmodus</div>
-          <div className="modes">
+          <div className="modes" role="group" aria-label="Lernmodus">
             {MODES.map(m=>(
-              <Hap key={m.id}><button type="button" className={"mode"+(mode===m.id?" active":"")} onClick={()=>setMode(m.id)} aria-pressed={mode===m.id}>
-                <span className="mode-icon">{m.icon}</span>
-                <span className="mode-name">{m.name}</span>
-                <span className="mode-sub">{m.sub}</span>
-              </button></Hap>
+              <button key={m.id} type="button" className={"mode"+(mode===m.id?" active":"")} onClick={()=>setMode(m.id)} aria-pressed={mode===m.id} title={m.name}>
+                <span className="mode-icon" aria-hidden="true">{m.icon}</span>{m.short}
+              </button>
             ))}
           </div>
+          <div className="mode-sub-line">{MODES.find(m=>m.id===mode).name}: {MODES.find(m=>m.id===mode).sub}</div>
           {isSpeak&&!SR&&<div className="note warn">Dein Browser unterstützt keine Spracheingabe (z. B. Firefox). Du kannst die Antwort im Sprechmodus eintippen oder Chrome, Edge bzw. Safari nutzen.</div>}
+          {hardList.length>0&&(
+            <div className="due-box hard-box">
+              <div className="due-title">⭐ Meine Problemwörter · {hardList.length}</div>
+              <div className="due-text">Wörter, die du oft nicht wusstest oder selbst markiert hast. Diese Übung ist Extra-Training und verändert deine Wiederholungen nicht.</div>
+              <div className="due-chips"><button type="button" className="chip due-chip" onClick={startHard}>Jetzt üben{hardList.length>SESSION_SIZE?" ("+SESSION_SIZE+")":""}</button></div>
+            </div>
+          )}
           {dueTotal>0&&(
             <div className="due-box">
               <div className="due-title">🔁 Jetzt wiederholen lohnt sich</div>
@@ -3263,7 +3506,7 @@ function App() {
           </div>
           <div className="study-head">
             <span className="study-name">{MODES.find(m=>m.id===mode).icon} {curLesson.name}</span>
-            <span className="study-prog">{sidx+1} / {session.length}</span>
+            <span className="study-prog">{w.__again&&<span className="again-tag">🔁 nochmal</span>} {sidx+1} / {session.length}</span>
           </div>
           <div className="progress"><span style={{width:((sidx)/session.length*100)+"%"}}/></div>
           {curStats&&<div className="stats-line"><b>{curStats.neu}</b> neu · <b>{curStats.lernen}</b> in Übung · <b>{curStats.gelernt}</b> gelernt · <b>{curStats.bekannt}</b> bekannt</div>}
@@ -3301,7 +3544,7 @@ function App() {
                 : <>
                     <Hap><button className="btn wrong" onClick={()=>doAnswer(false,false)}>Noch nicht</button></Hap>
                     <Hap><button className="btn right" onClick={()=>{ haptic("correct"); doAnswer(true,false); }}>Gewusst!</button></Hap>
-                    <Hap><button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button></Hap>
+                    {!practiceCard&&<Hap><button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button></Hap>}
                   </>}
             </div>
           )}
@@ -3351,16 +3594,37 @@ function App() {
                 {result==="ok" && <Hap><button className="btn next" onClick={()=>doAnswer(true,false)}>Weiter →</button></Hap>}
                 {result==="shown" && <>
                   {tries>0&&<Hap><button className="btn right" onClick={()=>doAnswer(true,false)} title="Falls die Spracherkennung dich falsch verstanden hat">Doch gewusst</button></Hap>}
-                  <Hap><button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button></Hap>
+                  {!practiceCard&&<Hap><button className="btn known" onClick={()=>doAnswer(false,true)}>Bereits bekannt</button></Hap>}
                 </>}
               </div>
             </div>
           )}
-          {seen&&result!=="ok"&&<div className="note">„Bereits bekannt“ entfernt die Karte dauerhaft aus allen Übungen.</div>}
+          <div className="deep-row">
+            <button type="button" className={"deep-btn"+(isHard(c)?" on":"")} onClick={toggleHard} aria-pressed={isHard(c)} title={isHard(c)?"Markierung entfernen":"Als Problemwort markieren"}>{isHard(c)?"★ Problemwort":"☆ Problemwort"}</button>
+            <button type="button" className="deep-btn go" onClick={openDeep}>🧠 Vertiefen</button>
+          </div>
+          {practiceCard&&<div className="note">{curLesson.virtual?"Problemwörter-Übung":"Wiederholung in dieser Runde"}: Extra-Training, zählt nicht für die Wiederholungen.</div>}
+          {seen&&result!=="ok"&&!practiceCard&&<div className="note">„Bereits bekannt“ entfernt die Karte dauerhaft aus allen Übungen.</div>}
+          {deepOpen&&<DeepPanel key={w.it} w={w} note={note||{}} onNote={n=>saveNote(w.it,n)} onClose={()=>setDeepOpen(false)} hasVoice={hasVoice} speak={speak}/>}
         </section>
       )}
 
-      {view==="end"&&curLesson&&(()=>{
+      {view==="end"&&curLesson&&curLesson.virtual&&(()=>{ const left = collectHard(st).length; return (
+        <section className="fade-in">
+          <button className="back" onClick={()=>setView("lessons")}>← Lektionen</button>
+          <div className="end">
+            <div className="end-emoji">💪</div>
+            <h2>Gut drangeblieben!</h2>
+            <p className="end-round"><span className="g">{roundStats.ok} gewusst</span> · <span className="r">{roundStats.no} noch nicht</span></p>
+            <div className="end-info">Sitzt ein Wort inzwischen sicher, tippe beim Üben auf <b>★ Problemwort</b>, dann verschwindet es aus dieser Liste.</div>
+            {left>0
+              ? <Hap><button className="btn next" onClick={startHard}>Nochmal üben ({Math.min(left,SESSION_SIZE)})</button></Hap>
+              : <p>Keine Problemwörter mehr. Bravo!</p>}
+            <div><Hap><button className="btn show force" onClick={()=>setView("lessons")}>Zu den Lektionen</button></Hap></div>
+          </div>
+        </section>); })()}
+
+      {view==="end"&&curLesson&&!curLesson.virtual&&(()=>{
         const eq = lessonQueue(st, curLesson, nowTick);
         const more = eq.due.length + eq.neu.length;
         const allDone = !more && !eq.wait.length;
