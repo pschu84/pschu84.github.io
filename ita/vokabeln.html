@@ -2621,6 +2621,27 @@ function Hap({children, block, on}){
     </span>
   );
 }
+// Zuverlässiger Knopf für Touch-Geräte: löst beim Loslassen aus, wenn der Finger kaum bewegt wurde.
+// Beim Scrollen bricht der Browser die Berührung ab (pointercancel), dann passiert nichts.
+// Auf dem iPhone geht ein normaler Klick sonst manchmal verloren (z. B. direkt nach dem Scrollen).
+function TapBtn({onTap, children, ...rest}){
+  const ref = useRef(null);
+  return (
+    <button type="button" {...rest}
+      onPointerDown={e=>{ ref.current = {x:e.clientX, y:e.clientY, t:Date.now(), done:false}; }}
+      onPointerCancel={()=>{ ref.current = null; }}
+      onPointerUp={e=>{
+        const p = ref.current;
+        if (!p || e.pointerType==="mouse") return;
+        if (Math.abs(e.clientX-p.x)<12 && Math.abs(e.clientY-p.y)<12 && Date.now()-p.t<900) { p.done = true; onTap(e); }
+      }}
+      onClick={e=>{
+        const p = ref.current; ref.current = null;
+        if (p && p.done && Date.now()-p.t<1500) return;   // schon beim Loslassen ausgelöst
+        onTap(e);
+      }}>{children}</button>
+  );
+}
 function setHaptic(on){ hapticOn = on; try { localStorage.setItem(HAPTIC_KEY, on?"1":"0"); } catch {} if (on) haptic("correct"); }
 
 function boom(opts){
@@ -2993,17 +3014,17 @@ function App() {
     return ()=>clearTimeout(t);
   },[toasts]);
 
-  // Nicht gewusstes Wort in derselben Runde nach ca. 3 Karten nochmal zeigen,
-  // Problemwörter zusätzlich nach ca. 10 Karten. Diese Wiederholungen sind reines Extra-Training.
-  function requeue(sess, idx, w, hard){
+  // Nicht gewusstes Wort in derselben Runde nochmal zeigen: zuerst nach ca. 3 Karten, beim zweiten Mal nach ca. 7.
+  // Höchstens 2 Extra-Wiederholungen pro Wort und Runde, damit es nicht endlos wiederkommt.
+  const MAX_AGAIN = 2;
+  function requeue(sess, idx, w){
     if (sess.slice(idx+1).some(x=>x.it===w.it)) return sess;
-    const copy = Object.assign({}, w, {__again:true});
+    const n = sess.filter(x=>x.__again && x.it===w.it).length;
+    if (n >= MAX_AGAIN) return sess;
     const arr = sess.slice(), d = dirs.slice();
-    const rnd = ()=>Math.random()<.5?"sayIT":"sayDE";
-    const p1 = Math.min(arr.length, idx+4);
-    const p2 = Math.min(arr.length, idx+11);
-    if (hard && p2 - p1 >= 4) { arr.splice(p2, 0, copy); d.splice(p2, 0, rnd()); }   // zuerst die hintere Stelle, dann bleibt p1 gültig
-    arr.splice(p1, 0, copy); d.splice(p1, 0, rnd());
+    const pos = Math.min(arr.length, idx + (n===0 ? 4 : 8));
+    arr.splice(pos, 0, Object.assign({}, w, {__again:true}));
+    d.splice(pos, 0, Math.random()<.5?"sayIT":"sayDE");
     setDirs(d);
     return arr;
   }
@@ -3020,7 +3041,13 @@ function App() {
   function practiceAnswer(ok){
     const w = session[sidx];
     if (curLesson.virtual) setRoundStats(r=>({ok:r.ok+(ok?1:0), no:r.no+(ok?0:1)}));
-    goNext(ok ? session : requeue(session, sidx, w, true), true);
+    if (!ok) {   // auch hier zählt der Fehlversuch für die Problemwort-Markierung (Wiederholungen bleiben unverändert)
+      const newSt = {...st};
+      const c = getCard(newSt, w.__ln||curLesson.name, w.it);
+      c.miss = (c.miss||0) + 1;
+      persist(newSt);
+    }
+    goNext(ok ? session : requeue(session, sidx, w), true);
   }
   function toggleHard(){
     const w = session[sidx]; if (!w) return;
@@ -3078,7 +3105,7 @@ function App() {
     if (sessMode==="refresh" && !refreshWords(newSt, curLesson, now).length) newSt.__refDone = dayStr();
     persist(newSt);
     setRoundStats(r=>({ok:r.ok+(correct||known?1:0), no:r.no+(correct||known?0:1)}));
-    const sess = (!correct && !known) ? requeue(session, sidx, w, isHard(c)) : session;
+    const sess = (!correct && !known) ? requeue(session, sidx, w) : session;
     const next = sidx+1;
     const roundEnd = !sess.slice(next).some(x=>!x.__again);   // keine regulären Karten mehr übrig
     const perfect = roundEnd && session.length>=5 && roundStats.no===0 && (correct||known);
@@ -3448,9 +3475,9 @@ function App() {
           <div className="sec-title">Lernmodus</div>
           <div className="modes" role="group" aria-label="Lernmodus">
             {MODES.map(m=>(
-              <button key={m.id} type="button" className={"mode"+(mode===m.id?" active":"")} onClick={()=>setMode(m.id)} aria-pressed={mode===m.id} title={m.name}>
+              <TapBtn key={m.id} className={"mode"+(mode===m.id?" active":"")} onTap={()=>setMode(m.id)} aria-pressed={mode===m.id} title={m.name}>
                 <span className="mode-icon" aria-hidden="true">{m.icon}</span>{m.short}
-              </button>
+              </TapBtn>
             ))}
           </div>
           <div className="mode-sub-line">{MODES.find(m=>m.id===mode).name}: {MODES.find(m=>m.id===mode).sub}</div>
@@ -3459,7 +3486,7 @@ function App() {
             <div className="due-box hard-box">
               <div className="due-title">⭐ Meine Problemwörter · {hardList.length}</div>
               <div className="due-text">Wörter, die du oft nicht wusstest oder selbst markiert hast. Diese Übung ist Extra-Training und verändert deine Wiederholungen nicht.</div>
-              <div className="due-chips"><button type="button" className="chip due-chip" onClick={startHard}>Jetzt üben{hardList.length>SESSION_SIZE?" ("+SESSION_SIZE+")":""}</button></div>
+              <div className="due-chips"><TapBtn className="chip due-chip" onTap={startHard}>Jetzt üben{hardList.length>SESSION_SIZE?" ("+SESSION_SIZE+")":""}</TapBtn></div>
             </div>
           )}
           {dueTotal>0&&(
@@ -3600,8 +3627,8 @@ function App() {
             </div>
           )}
           <div className="deep-row">
-            <button type="button" className={"deep-btn"+(isHard(c)?" on":"")} onClick={toggleHard} aria-pressed={isHard(c)} title={isHard(c)?"Markierung entfernen":"Als Problemwort markieren"}>{isHard(c)?"★ Problemwort":"☆ Problemwort"}</button>
-            <button type="button" className="deep-btn go" onClick={openDeep}>🧠 Vertiefen</button>
+            <TapBtn className={"deep-btn"+(isHard(c)?" on":"")} onTap={toggleHard} aria-pressed={isHard(c)} title={isHard(c)?"Markierung entfernen":"Als Problemwort markieren"}>{isHard(c)?"★ Problemwort":"☆ Problemwort"}</TapBtn>
+            <TapBtn className="deep-btn go" onTap={openDeep}>🧠 Vertiefen</TapBtn>
           </div>
           {practiceCard&&<div className="note">{curLesson.virtual?"Problemwörter-Übung":"Wiederholung in dieser Runde"}: Extra-Training, zählt nicht für die Wiederholungen.</div>}
           {seen&&result!=="ok"&&!practiceCard&&<div className="note">„Bereits bekannt“ entfernt die Karte dauerhaft aus allen Übungen.</div>}
