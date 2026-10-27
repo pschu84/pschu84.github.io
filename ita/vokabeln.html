@@ -107,6 +107,30 @@ button{font:inherit;color:inherit}
 .deep-fb.ok{background:var(--verde-l);color:var(--verde-d)}
 .deep-fb.near{background:var(--oro-l);color:var(--oro)}
 .deep-fb.no{background:var(--rosso-l);color:var(--rosso)}
+/* Problemwörter-Training */
+.ht-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.ht-label{flex:1;text-align:center;font-size:12.5px;font-weight:800;color:var(--viola)}
+.ht-info{border:0;background:transparent;font-size:18px;cursor:pointer;padding:2px 4px}
+.ht-prog{flex-basis:100%;margin:2px 0 0}
+.ht-card{background:var(--paper);border:1.5px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:20px 16px 16px;margin-bottom:12px;animation:pop .35s both}
+.ht-card.deep{max-width:none;max-height:none;overflow:visible}
+.ht-card h2{font-family:'Fraunces',serif;color:var(--verde-d);font-size:21px;margin-bottom:10px;text-align:center}
+.ht-intro ol{padding-left:20px;display:grid;gap:8px;font-size:14px;line-height:1.45;margin-bottom:12px}
+.ht-small{font-size:12.5px;color:var(--muted);text-align:center;margin:8px 0}
+.ht-skip{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--muted);margin:6px 0 12px}
+.ht-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
+.ht-step{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--viola);text-align:center;margin-bottom:8px}
+.ht-learn{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ht-learn .word{font-size:34px}
+.ht-de{font-size:19px;font-weight:800;color:var(--ink);margin:4px 0}
+.ht-say{margin:4px 0}
+.ht-memo-btn{margin-top:10px}
+.ht-memo{width:100%;text-align:left;margin-top:8px;padding:0}
+.ht-res{display:grid;gap:6px;margin:6px 0 10px}
+.ht-res-row{display:flex;align-items:baseline;gap:8px;padding:8px 12px;border-radius:12px;background:var(--verde-l)}
+.ht-res-row.no{background:var(--oro-l)}
+.ht-res-row small{margin-left:auto;color:var(--muted);text-align:right}
+.ht-ask{background:var(--viola-l);border:1px solid var(--viola-b);border-radius:14px;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.4}
 .deep-foot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}
 
 /* Lektionen */
@@ -2209,55 +2233,116 @@ function scramble(s){
   return out.split("");
 }
 
-function DeepPanel({w, note, onNote, onClose, hasVoice, speak}){
-  const gap = React.useMemo(()=>gapFor(w), [w]);
-  const [tab, setTab] = useState("type");
+const fullIt = w => (w.art&&!w.phrase ? w.art+(w.art.endsWith("'")?"":" ") : "") + w.it;
+
+// Eine Schreibaufgabe: Tippen (DE → IT), Lückensatz oder Diktat.
+// Mit onDone: Aufgabe im Problemwörter-Training (einmal lösen, dann „Weiter“).
+// Ohne onDone: freies Üben im Vertiefen-Fenster (beliebig oft „Nochmal“).
+function TaskBox({w, kind, hasVoice, speak, onDone}){
+  const task = !!onDone;
+  const gap = React.useMemo(()=>kind==="gap" ? gapFor(w) : null, [w, kind]);
   const [val, setVal] = useState("");
   const [fb, setFb] = useState(null);        // {cls, text}
   const [fails, setFails] = useState(0);
   const [hint, setHint] = useState(0);       // 0 keine, 1 Anfangsbuchstabe, 2 Länge, 3 Buchstaben
   const [used, setUsed] = useState([]);
-  const [b, setB] = useState(note.b||"");
-  const [s, setS] = useState(note.s||"");
-  const full = (w.art ? w.art+(w.art.endsWith("'")?"":" ") : "") + w.it;
+  const [solved, setSolved] = useState(false);
+  const [shown, setShown] = useState(false);
+  const full = fullIt(w);
   const hintWord = mainForm(w.it);
   const tiles = React.useMemo(()=>scramble(hintWord), [hintWord]);
-  useEffect(()=>{ setVal(""); setFb(null); setFails(0); setHint(0); setUsed([]); }, [tab]);
-  // Merkhilfe kurz nach dem Tippen speichern
-  useEffect(()=>{
-    if (b===(note.b||"") && s===(note.s||"")) return;
-    const t = setTimeout(()=>onNote({b:b.trim(), s:s.trim()}), 400);
-    return ()=>clearTimeout(t);
-  }, [b, s]);
+  const sol = kind==="gap" && gap ? gap.answer : full;
+  const finished = solved || shown;
+  useEffect(()=>{ if (kind==="dict" && hasVoice) { const t = setTimeout(()=>speak(full), 350); return ()=>clearTimeout(t); } }, []);
 
   const exactWord = v => { const x = v.trim().toLowerCase().replace(/[’`´]/g,"'"); return [w.it, full, mainForm(w.it)].some(y=>y.toLowerCase()===x); };
+  function finish(){ onDone({ok: solved, hinted: hint>0 || fails>0}); }
+  function reset(){ setVal(""); setFb(null); setFails(0); setHint(0); setUsed([]); setSolved(false); setShown(false); }
+  function giveUp(){ setShown(true); setFb({cls:"no", text:"Lösung: "+sol}); if (kind==="dict"&&hasVoice) speak(full); }
   function check(e){
     e.preventDefault();
+    if (task && finished) { finish(); return; }
     const v = val.trim(); if (!v) return;
-    let ok, perfect, sol;
-    if (tab==="gap") {
-      sol = gap.answer;
+    let ok, perfect;
+    if (kind==="gap") {
       perfect = v.toLowerCase()===sol.toLowerCase();
       ok = perfect || norm(v)===norm(sol);
-      if (!ok && sol.length>=6 && lev(norm(v), norm(sol))<=1) { setFb({cls:"near", text:"Fast! Ein Buchstabe stimmt noch nicht."}); return; }
+      if (!ok && sol.length>=6 && lev(norm(v), norm(sol))<=1) { setFails(f=>f+1); setFb({cls:"near", text:"Fast! Ein Buchstabe stimmt noch nicht."}); return; }
     } else {
-      sol = full;
       perfect = exactWord(v);
       ok = perfect || checkSpoken([v], w.it, "it", !!w.phrase, true).ok;
     }
-    if (perfect) { setFb({cls:"ok", text:"✓ Perfekt geschrieben!"}); haptic("correct"); }
-    else if (ok) { setFb({cls:"near", text:"✓ Richtig! Genaue Schreibweise: "+sol}); haptic("correct"); }
-    else {
-      const n = fails+1; setFails(n); haptic("wrong");
-      setFb({cls:"no", text: n>=3 ? "Lösung: "+sol+". Schreib sie zum Einprägen einmal ab." : "Noch nicht. Versuch es nochmal"+(tab==="type"&&hint<3?" oder nimm eine Hilfe.":".")});
-      if (n<3) return;
+    if (ok) {
+      setFb(perfect ? {cls:"ok", text:"✓ Perfekt geschrieben!"} : {cls:"near", text:"✓ Richtig! Genaue Schreibweise: "+sol});
+      haptic("correct");
+      if (task) setSolved(true); else setVal("");
+      return;
     }
-    if (ok) setVal("");
+    const n = fails+1; setFails(n); haptic("wrong");
+    if (n>=3) { setShown(true); setFb({cls:"no", text:"Lösung: "+sol+(task?"":". Schreib sie zum Einprägen einmal ab.")}); return; }
+    setFb({cls:"no", text:"Noch nicht. Versuch es nochmal"+(kind==="type"&&hint<3?" oder nimm eine Hilfe.":".")});
   }
   function tileTap(i){ setUsed(u=>u.concat(i)); setVal(v=>v+tiles[i]); }
   function tileBack(){ setUsed(u=>u.slice(0,-1)); setVal(v=>v.slice(0,-1)); }
   const pattern = hintWord.split("").map((ch,i)=>ch===" "?" ":(i===0?ch:"_")).join(" ");
 
+  return (<>
+    {kind==="type"&&<>
+      <div className="deep-q">Schreib auf Italienisch:</div>
+      <div className="deep-word">{w.de}</div>
+      {hint===1&&!finished&&<div className="deep-q">Fängt an mit <b>{hintWord[0]}</b></div>}
+      {hint>=2&&!finished&&<div className="deep-pattern">{pattern}</div>}
+      {hint>=3&&!finished&&<div className="tiles">
+        {tiles.map((ch,i)=><button key={i} type="button" className={"tile"+(used.includes(i)?" used":"")} onClick={()=>tileTap(i)}>{ch===" "?"␣":ch}</button>)}
+        <button type="button" className="tile" onClick={tileBack} aria-label="Letzten Buchstaben löschen">⌫</button>
+      </div>}
+    </>}
+    {kind==="gap"&&gap&&<>
+      <div className="deep-q">Setz das Wort in der passenden Form ein:</div>
+      <div className="deep-gap">{gap.before}<b>{finished||(fb&&fb.cls==="ok") ? gap.answer : " "}</b>{gap.after}</div>
+      <div className="deep-q">Bedeutung: <b>{w.de}</b>{finished?<> · Grundform: <b>{full}</b></>:null}</div>
+    </>}
+    {kind==="dict"&&<>
+      <div className="deep-q">Hör zu und schreib, was du hörst:</div>
+      <div className="deep-hints"><TapBtn className="btn small" onTap={()=>speak(full)}>🔊 Nochmal anhören</TapBtn></div>
+      {finished&&<div className="deep-q">Bedeutung: {w.de}</div>}
+    </>}
+
+    <form className="deep-in" onSubmit={check}>
+      <input value={val} onChange={e=>setVal(e.target.value)} disabled={task&&finished} autoFocus={task} placeholder="Italienisch eintippen" autoComplete="off" autoCapitalize="off" autoCorrect="off" spellCheck="false" lang="it" aria-label="Antwort"/>
+      <TapBtn className="btn small" onTap={()=>check({preventDefault(){}})}>{task&&finished ? "Weiter →" : "Prüfen"}</TapBtn>
+    </form>
+    {!finished&&<div className="deep-hints">
+      {kind==="type"&&hint<3&&!(fb&&fb.cls==="ok")&&<TapBtn className="chip" onTap={()=>setHint(h=>h+1)}>💡 {["Anfangsbuchstabe","Länge zeigen","Buchstaben zum Antippen"][hint]}</TapBtn>}
+      {task&&<TapBtn className="chip" onTap={giveUp}>🤷 Weiß ich nicht</TapBtn>}
+    </div>}
+    {fb&&<div className={"deep-fb "+fb.cls}>{fb.text}</div>}
+    {task&&shown&&<div className="deep-foot">Kein Problem: Dieses Wort kommt am Ende des Blocks nochmal.</div>}
+    {!task&&fb&&fb.cls!=="no"&&<div className="deep-hints"><TapBtn className="chip" onTap={reset}>Nochmal</TapBtn></div>}
+  </>);
+}
+
+// Eselsbrücke und eigener Satz, speichert kurz nach dem Tippen
+function MemoEditor({note, onNote}){
+  const [b, setB] = useState(note.b||"");
+  const [s, setS] = useState(note.s||"");
+  useEffect(()=>{
+    if (b===(note.b||"") && s===(note.s||"")) return;
+    const t = setTimeout(()=>onNote({b:b.trim(), s:s.trim()}), 400);
+    return ()=>clearTimeout(t);
+  }, [b, s]);
+  return (<>
+    <label htmlFor="memo-b">Eselsbrücke (z. B. Klang, Bild, ähnliches Wort)</label>
+    <textarea id="memo-b" value={b} onChange={e=>setB(e.target.value)} placeholder="z. B. il cassetto: In der Schublade liegt eine Kassette"/>
+    <label htmlFor="memo-s">Mein eigener Satz mit dem Wort</label>
+    <textarea id="memo-s" value={s} onChange={e=>setS(e.target.value)} placeholder="Ein Satz aus deinem Leben" lang="it"/>
+    <div className="deep-foot">Wird automatisch gespeichert und auf der Rückseite der Karte angezeigt.</div>
+  </>);
+}
+
+function DeepPanel({w, note, onNote, onClose, hasVoice, speak}){
+  const gap = React.useMemo(()=>gapFor(w), [w]);
+  const [tab, setTab] = useState("type");
   const tabs = [["type","⌨️ Tippen"]].concat(gap?[["gap","✏️ Lücke"]]:[], hasVoice?[["dict","🎧 Diktat"]]:[], [["memo","💡 Merkhilfe"]]);
   return (
     <div className="modal-bg" onClick={onClose}>
@@ -2266,53 +2351,160 @@ function DeepPanel({w, note, onNote, onClose, hasVoice, speak}){
         <div className="deep-tabs" role="tablist">
           {tabs.map(([id,lbl])=><button key={id} role="tab" aria-selected={tab===id} className={tab===id?"on":""} onClick={()=>setTab(id)}>{lbl}</button>)}
         </div>
-
-        {tab==="type"&&<>
-          <div className="deep-q">Schreib auf Italienisch:</div>
-          <div className="deep-word">{w.de}</div>
-          {hint>=2&&<div className="deep-pattern">{pattern}</div>}
-          {hint===1&&<div className="deep-q">Fängt an mit <b>{hintWord[0]}</b></div>}
-          {hint>=3&&<div className="tiles">
-            {tiles.map((ch,i)=><button key={i} type="button" className={"tile"+(used.includes(i)?" used":"")} onClick={()=>tileTap(i)}>{ch===" "?"␣":ch}</button>)}
-            <button type="button" className="tile" onClick={tileBack} aria-label="Letzten Buchstaben löschen">⌫</button>
-          </div>}
-        </>}
-        {tab==="gap"&&gap&&<>
-          <div className="deep-q">Setz das Wort in der passenden Form ein:</div>
-          <div className="deep-gap">{gap.before}<b>{fb&&fb.cls!=="no"||fails>=3 ? gap.answer : " "}</b>{gap.after}</div>
-          <div className="deep-q">Grundform: <b>{full}</b> · {w.de}</div>
-        </>}
-        {tab==="dict"&&<>
-          <div className="deep-q">Hör zu und schreib, was du hörst:</div>
-          <div className="deep-hints"><button type="button" className="btn small" onClick={()=>speak(full)}>🔊 Anhören</button></div>
-          {fb&&<div className="deep-q">Bedeutung: {w.de}</div>}
-        </>}
-
-        {tab!=="memo"&&<>
-          <form className="deep-in" onSubmit={check}>
-            <input value={val} onChange={e=>setVal(e.target.value)} placeholder="Italienisch eintippen" autoComplete="off" autoCapitalize="off" autoCorrect="off" spellCheck="false" lang="it" aria-label="Antwort"/>
-            <button className="btn small" type="submit">Prüfen</button>
-          </form>
-          {tab==="type"&&hint<3&&!(fb&&fb.cls!=="no")&&<div className="deep-hints">
-            <button type="button" className="chip" onClick={()=>setHint(h=>h+1)}>💡 {["Anfangsbuchstabe","Länge zeigen","Buchstaben zum Antippen"][hint]}</button>
-          </div>}
-          {fb&&<div className={"deep-fb "+fb.cls}>{fb.text}</div>}
-          {fb&&fb.cls!=="no"&&<div className="deep-hints"><button type="button" className="chip" onClick={()=>{ setVal(""); setFb(null); setFails(0); setHint(0); setUsed([]); }}>Nochmal</button></div>}
-        </>}
-
-        {tab==="memo"&&<>
-          <div className="deep-word">{full}</div>
-          <div className="deep-q" style={{marginBottom:10}}>{w.de}</div>
-          <label htmlFor="memo-b">Eselsbrücke (z. B. Klang, Bild, ähnliches Wort)</label>
-          <textarea id="memo-b" value={b} onChange={e=>setB(e.target.value)} placeholder="z. B. il cassetto: In der Schublade liegt eine Kassette"/>
-          <label htmlFor="memo-s">Mein eigener Satz mit dem Wort</label>
-          <textarea id="memo-s" value={s} onChange={e=>setS(e.target.value)} placeholder="Ein Satz aus deinem Leben" lang="it"/>
-          <div className="deep-foot">Wird automatisch gespeichert und auf der Rückseite der Karte angezeigt.</div>
-        </>}
+        {tab==="memo"
+          ? <><div className="deep-word">{fullIt(w)}</div><div className="deep-q" style={{marginBottom:10}}>{w.de}</div><MemoEditor note={note} onNote={onNote}/></>
+          : <TaskBox key={tab} w={w} kind={tab} hasVoice={hasVoice} speak={speak}/>}
         <div className="deep-foot">Extra-Training: zählt nicht für die Wiederholungen.</div>
       </div>
     </div>
   );
+}
+
+/* ───────── Problemwörter-Training: 3 Wörter einprägen, dann gemischt aus dem Gedächtnis schreiben ───────── */
+const HARD_BLOCK = 3;
+const HARD_INTRO_KEY = "itpro_hard_intro";
+function HardIntro({onStart, onBack, again}){
+  const [skip, setSkip] = useState(()=>lsGet(HARD_INTRO_KEY,"")==="1");
+  return (
+    <div className="ht-card ht-intro">
+      <h2>⭐ So übst du deine Problemwörter</h2>
+      <ol>
+        <li><b>Einprägen:</b> Du siehst {HARD_BLOCK} Wörter nacheinander mit Italienisch, Deutsch, Beispielsatz und Aussprache. Nimm dir Zeit und denk dir am besten eine Eselsbrücke aus.</li>
+        <li><b>Abrufen:</b> Danach sind die Wörter verdeckt. Du schreibst sie aus dem Gedächtnis, in gemischter Reihenfolge: tippen, Lückensatz oder Diktat.</li>
+        <li><b>Warum gemischt?</b> Direkt nach dem Ansehen würdest du nur abschreiben. Die anderen Wörter dazwischen sorgen dafür, dass du dich wirklich erinnern musst. Genau das macht das Wort fest.</li>
+        <li><b>Nicht gewusst?</b> Du siehst die Lösung, und das Wort kommt am Ende des Blocks nochmal.</li>
+        <li><b>Geschafft:</b> Schreibst du ein Wort an zwei verschiedenen Tagen ohne Hilfe richtig, kannst du es aus der Liste nehmen.</li>
+      </ol>
+      <p className="ht-small">Das ist Extra-Training. Deine normalen Wiederholungen in den Lektionen ändern sich dadurch nicht.</p>
+      <label className="ht-skip"><input type="checkbox" checked={skip} onChange={e=>{ setSkip(e.target.checked); lsSet(HARD_INTRO_KEY, e.target.checked?"1":""); }}/> Erklärung beim nächsten Mal überspringen</label>
+      <div className="ht-actions">
+        <TapBtn className="btn next" onTap={onStart}>{again?"Weiter üben":"Los geht's"}</TapBtn>
+        <TapBtn className="btn show" onTap={onBack}>Zurück</TapBtn>
+      </div>
+    </div>
+  );
+}
+
+function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onExit}){
+  const [intro, setIntro] = useState(()=>lsGet(HARD_INTRO_KEY,"")!=="1");
+  const [bi, setBi] = useState(0);
+  const [phase, setPhase] = useState("learn");   // learn | recall | end
+  const [li, setLi] = useState(0);
+  const [tasks, setTasks] = useState([]);
+  const [ti, setTi] = useState(0);
+  const [res, setRes] = useState({});             // it → {ok, no}
+  const [memoOpen, setMemoOpen] = useState(false);
+  const [decided, setDecided] = useState({});     // Entfernen/Behalten schon entschieden
+  const block = words.slice(bi, bi+HARD_BLOCK);
+  const cardOf = w => st[w.__ln+"__"+w.it] || {};
+  const noteOf = w => (st.__notes && st.__notes[w.it]) || {};
+  useEffect(()=>{ window.scrollTo({top:0}); setMemoOpen(false); }, [phase, li, ti, bi, intro]);
+
+  if (!words.length) return (
+    <div className="ht-card"><h2>Keine Problemwörter</h2><p>Gerade gibt es nichts zu üben. Bravo!</p>
+      <div className="ht-actions"><TapBtn className="btn next" onTap={onExit}>Zu den Lektionen</TapBtn></div></div>
+  );
+
+  function startRecall(){
+    const second = w => gapFor(w) ? "gap" : hasVoice ? "dict" : "type";
+    const r1 = shuffle(block.map(w=>({w, kind:"type"})));
+    const r2 = shuffle(block.map(w=>({w, kind:second(w)})));
+    if (r2.length>1 && r2[0].w.it===r1[r1.length-1].w.it) r2.push(r2.shift());
+    setTasks(r1.concat(r2).map((t,i)=>Object.assign({id:i}, t)));
+    setTi(0); setPhase("recall");
+  }
+  function onDone(r){
+    const t = tasks[ti];
+    updCard(t.w, c=>{
+      if (!r.ok) { c.miss = (c.miss||0)+1; c.solid = []; }
+      else if (!r.hinted && t.kind!=="gap") { const d = dayStr(); c.solid = Array.from(new Set((c.solid||[]).concat(d))).slice(-5); }
+    });
+    setRes(x=>{ const o = x[t.w.it]||{ok:0,no:0}; return Object.assign({}, x, {[t.w.it]: {ok:o.ok+(r.ok?1:0), no:o.no+(r.ok?0:1)}}); });
+    let nt = tasks;
+    if (!r.ok && !t.retry) { nt = tasks.concat([Object.assign({}, t, {retry:true, id:tasks.length})]); setTasks(nt); }
+    if (ti+1 < nt.length) setTi(ti+1); else setPhase("end");
+  }
+  function nextBlock(){ setBi(bi+HARD_BLOCK); setPhase("learn"); setLi(0); setRes({}); setTasks([]); setTi(0); }
+
+  const top = (label, cur, total) => (
+    <div className="ht-top">
+      <button className="back" onClick={onExit}>← Lektionen</button>
+      <span className="ht-label">{label}</span>
+      <button className="ht-info" onClick={()=>setIntro(true)} aria-label="Erklärung anzeigen">ℹ️</button>
+      {total>0&&<div className="progress ht-prog"><span style={{width:(cur/total*100)+"%"}}/></div>}
+    </div>
+  );
+
+  if (intro) return <HardIntro again={bi>0||phase!=="learn"||li>0} onStart={()=>setIntro(false)} onBack={onExit}/>;
+
+  if (phase==="learn") {
+    const w = block[li]; const n = noteOf(w);
+    return (<>
+      {top("Einprägen · Wort "+(li+1)+" von "+block.length, li, block.length)}
+      <div className="ht-card ht-learn" key={w.it}>
+        <div className="ht-step">1 Einprägen</div>
+        {!w.phrase&&w.art&&<div className="art">{w.art}</div>}
+        <div className="word">{w.it}</div>
+        {hasVoice&&<TapBtn className="btn small ht-say" onTap={()=>speak(fullIt(w))}>🔊 Anhören</TapBtn>}
+        <div className="ht-de">{w.de}</div>
+        <Bild w={w}/>
+        {w.ex&&<div className="ex" lang="it">„{w.ex}“</div>}
+        {n.b&&<div className="memo">💡 {n.b}</div>}
+        {n.s&&<div className="memo s" lang="it">✍️ {n.s}</div>}
+        <TapBtn className="chip ht-memo-btn" onTap={()=>setMemoOpen(o=>!o)}>{memoOpen?"Merkhilfe schließen":(n.b||n.s)?"💡 Merkhilfe bearbeiten":"💡 Eselsbrücke ergänzen"}</TapBtn>
+        {memoOpen&&<div className="deep ht-memo"><MemoEditor note={n} onNote={x=>saveNote(w.it,x)}/></div>}
+      </div>
+      <div className="ht-actions">
+        {li>0&&<TapBtn className="btn show" onTap={()=>setLi(li-1)}>← Zurück</TapBtn>}
+        {li+1<block.length
+          ? <TapBtn className="btn next" onTap={()=>setLi(li+1)}>Nächstes Wort →</TapBtn>
+          : <TapBtn className="btn next" onTap={startRecall}>Jetzt abrufen →</TapBtn>}
+      </div>
+    </>);
+  }
+
+  if (phase==="recall") {
+    const t = tasks[ti];
+    return (<>
+      {top("Abrufen · Aufgabe "+(ti+1)+" von "+tasks.length, ti, tasks.length)}
+      <div className="ht-card deep">
+        <div className="ht-step">2 Aus dem Gedächtnis {t.kind==="gap"?"· Lückensatz":t.kind==="dict"?"· Diktat":"· Tippen"}</div>
+        <TaskBox key={bi+"-"+t.id} w={t.w} kind={t.kind} hasVoice={hasVoice} speak={speak} onDone={onDone}/>
+      </div>
+    </>);
+  }
+
+  // Ende des Blocks
+  const ask = block.filter(w=>{ const c = cardOf(w); return !decided[w.it] && isHard(c) && (c.solid||[]).length>=2; });
+  const left = words.length - (bi+HARD_BLOCK);
+  return (<>
+    {top("Block geschafft", 1, 1)}
+    <div className="ht-card">
+      <h2>💪 Block geschafft!</h2>
+      <div className="ht-res">
+        {block.map(w=>{ const r = res[w.it]||{ok:0,no:0}; return (
+          <div key={w.it} className={"ht-res-row"+(r.no?" no":" ok")}>
+            <span>{r.no?"🔁":"✓"}</span><b>{fullIt(w)}</b><small>{w.de}</small>
+          </div>); })}
+      </div>
+      {ask.map(w=>(
+        <div key={w.it} className="ht-ask">
+          <div>🎉 <b>{fullIt(w)}</b> hast du an zwei verschiedenen Tagen ohne Hilfe richtig geschrieben. Sitzt es jetzt?</div>
+          <div className="ht-actions">
+            <button type="button" className="btn right" onClick={()=>{ updCard(w, c=>{ delete c.hard; c.miss=0; c.solid=[]; }); setDecided(d=>Object.assign({},d,{[w.it]:1})); }}>Aus der Liste nehmen</button>
+            <button type="button" className="btn show" onClick={()=>{ updCard(w, c=>{ c.solid=[]; }); setDecided(d=>Object.assign({},d,{[w.it]:1})); }}>Behalten</button>
+          </div>
+        </div>
+      ))}
+      {Object.keys(decided).length>0&&ask.length===0&&<p className="ht-small">Gespeichert.</p>}
+      <div className="ht-actions">
+        {left>0
+          ? <TapBtn className="btn next" onTap={nextBlock}>Nächster Block ({Math.min(left,HARD_BLOCK)} {Math.min(left,HARD_BLOCK)===1?"Wort":"Wörter"})</TapBtn>
+          : <p className="ht-small">Du hast alle Problemwörter dieser Runde durch.</p>}
+        <TapBtn className="btn show" onTap={onExit}>Beenden</TapBtn>
+      </div>
+    </div>
+  </>);
 }
 
 /* Bildhilfe auf der Karteikarte (Daten und Szenen in italiano-bilder.js) */
@@ -3061,17 +3253,18 @@ function App() {
     if (n.b || n.s) notes[it] = n; else delete notes[it];
     persist(Object.assign({}, st, {__notes: notes}));
   }
+  const [hardWords, setHardWords] = useState([]);
   function startHard(){
-    const list = shuffle(collectHard(st)).slice(0, SESSION_SIZE);
-    if (!list.length) return;
-    setCurLesson({name:"⭐ Meine Problemwörter", virtual:true, words:list});
-    setSessMode("normal");
-    setSession(list);
-    setDirs(list.map(()=>Math.random()<.5?"sayIT":"sayDE"));
-    setSidx(0); setRoundStats({ok:0,no:0}); setRoundEvents([]);
-    setView("study");
-    window.scrollTo({top:0,behavior:"smooth"});
+    setHardWords(shuffle(collectHard(st)));
+    setView("hard");
+    window.scrollTo({top:0});
   }
+  function updCard(w, fn){
+    const newSt = {...st};
+    fn(getCard(newSt, w.__ln, w.it));
+    persist(newSt);
+  }
+
 
   function doAnswer(correct, known) {
     const w = session[sidx];
@@ -3485,8 +3678,8 @@ function App() {
           {hardList.length>0&&(
             <div className="due-box hard-box">
               <div className="due-title">⭐ Meine Problemwörter · {hardList.length}</div>
-              <div className="due-text">Wörter, die du oft nicht wusstest oder selbst markiert hast. Diese Übung ist Extra-Training und verändert deine Wiederholungen nicht.</div>
-              <div className="due-chips"><TapBtn className="chip due-chip" onTap={startHard}>Jetzt üben{hardList.length>SESSION_SIZE?" ("+SESSION_SIZE+")":""}</TapBtn></div>
+              <div className="due-text">Wörter, die du oft nicht wusstest oder selbst markiert hast. Geübt wird in 3er-Blöcken: erst einprägen, dann aus dem Gedächtnis schreiben. Extra-Training, deine Wiederholungen bleiben unverändert.</div>
+              <div className="due-chips"><TapBtn className="chip due-chip" onTap={startHard}>Jetzt üben</TapBtn></div>
             </div>
           )}
           {dueTotal>0&&(
@@ -3702,6 +3895,8 @@ function App() {
         </section>
         );
       })()}
+
+      {view==="hard"&&<section className="fade-in"><HardTrainer st={st} words={hardWords} hasVoice={hasVoice} speak={speak} updCard={updCard} saveNote={saveNote} onExit={()=>setView("lessons")}/></section>}
 
       {view==="badges"&&(
         <section className="fade-in">
