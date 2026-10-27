@@ -107,6 +107,18 @@ button{font:inherit;color:inherit}
 .deep-fb.ok{background:var(--verde-l);color:var(--verde-d)}
 .deep-fb.near{background:var(--oro-l);color:var(--oro)}
 .deep-fb.no{background:var(--rosso-l);color:var(--rosso)}
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.mc-opt{padding:14px 8px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-size:16px;font-weight:800;cursor:pointer;color:var(--ink);touch-action:manipulation;transition:background .2s,border-color .2s,opacity .2s}
+.mc-opt.right{background:var(--verde-l);border-color:var(--verde);color:var(--verde-d)}
+.mc-opt.wrong{background:var(--rosso-l);border-color:#EDB3A6;color:var(--rosso)}
+.mc-opt.dim{opacity:.45}
+.ord-line{min-height:54px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border-radius:14px;border:1.5px dashed var(--viola-b);background:var(--viola-l);margin:10px 0}
+.ord-ph{font-size:12.5px;color:var(--muted);width:100%;text-align:center}
+.ord-end{font-size:18px;font-weight:800}
+.ord-pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0}
+.ord-chip{padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:16px;font-weight:700;cursor:pointer;color:var(--ink);touch-action:manipulation}
+.ord-chip.on{border-color:var(--viola-b);color:var(--viola)}
+.ord-chip.used{visibility:hidden}
 /* Problemwörter-Training */
 .ht-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .ht-label{flex:1;text-align:center;font-size:12.5px;font-weight:800;color:var(--viola)}
@@ -2256,7 +2268,14 @@ function TaskBox({w, kind, hasVoice, speak, onDone}){
   useEffect(()=>{ if (kind==="dict" && hasVoice) { const t = setTimeout(()=>speak(full), 350); return ()=>clearTimeout(t); } }, []);
 
   const exactWord = v => { const x = v.trim().toLowerCase().replace(/[’`´]/g,"'"); return [w.it, full, mainForm(w.it)].some(y=>y.toLowerCase()===x); };
-  function finish(){ onDone({ok: solved, hinted: hint>0 || fails>0}); }
+  function finish(){ if (doneRef.current) return; doneRef.current = true; onDone({ok: solved, hinted: hint>0 || fails>0}); }
+  const doneRef = useRef(false);
+  // richtig getippt: automatisch weiter (bei kleiner Abweichung etwas länger, damit man die Schreibweise lesen kann)
+  useEffect(()=>{
+    if (!task || !solved) return;
+    const t = setTimeout(finish, fb && fb.cls==="ok" ? 1000 : 2200);
+    return ()=>clearTimeout(t);
+  }, [solved]);
   function reset(){ setVal(""); setFb(null); setFails(0); setHint(0); setUsed([]); setSolved(false); setShown(false); }
   function giveUp(){ setShown(true); setFb({cls:"no", text:"Lösung: "+sol}); if (kind==="dict"&&hasVoice) speak(full); }
   function check(e){
@@ -2293,8 +2312,8 @@ function TaskBox({w, kind, hasVoice, speak, onDone}){
       {hint===1&&!finished&&<div className="deep-q">Fängt an mit <b>{hintWord[0]}</b></div>}
       {hint>=2&&!finished&&<div className="deep-pattern">{pattern}</div>}
       {hint>=3&&!finished&&<div className="tiles">
-        {tiles.map((ch,i)=><button key={i} type="button" className={"tile"+(used.includes(i)?" used":"")} onClick={()=>tileTap(i)}>{ch===" "?"␣":ch}</button>)}
-        <button type="button" className="tile" onClick={tileBack} aria-label="Letzten Buchstaben löschen">⌫</button>
+        {tiles.map((ch,i)=><TapBtn key={i} className={"tile"+(used.includes(i)?" used":"")} onTap={()=>tileTap(i)}>{ch===" "?"␣":ch}</TapBtn>)}
+        <TapBtn className="tile" onTap={tileBack} aria-label="Letzten Buchstaben löschen">⌫</TapBtn>
       </div>}
     </>}
     {kind==="gap"&&gap&&<>
@@ -2360,6 +2379,94 @@ function DeepPanel({w, note, onNote, onClose, hasVoice, speak}){
   );
 }
 
+// Multiple Choice: deutsches Wort, 4 italienische Wörter zur Auswahl
+function distractors(w, n){
+  const own = (LESSON_DEFS.find(l=>l.name===w.__ln)||{words:[]}).words;
+  const ok = x => !x.phrase===!w.phrase && x.it!==w.it && norm(x.de)!==norm(w.de);
+  let pool = own.filter(ok);
+  if (pool.length < n) { const lv = (LESSON_DEFS.find(l=>l.name===w.__ln)||{}).level; LESSON_DEFS.forEach(l=>{ if (l.level===lv && l.name!==w.__ln) pool = pool.concat(l.words.filter(ok)); }); }
+  const seen = new Set([norm(fullIt(w))]), out = [];
+  for (const x of shuffle(pool.slice())) { const k = norm(fullIt(x)); if (seen.has(k)) continue; seen.add(k); out.push(x); if (out.length>=n) break; }
+  return out;
+}
+function McTask({w, hasVoice, speak, onDone}){
+  const opts = React.useMemo(()=>shuffle([w].concat(distractors(w,3))), [w]);
+  const [pick, setPick] = useState(null);
+  const right = pick!==null && opts[pick]===w;
+  function choose(i){
+    if (pick!==null) return;
+    setPick(i);
+    if (opts[i]===w) { haptic("correct"); if (hasVoice) speak(fullIt(w)); setTimeout(()=>onDone({ok:true, hinted:false}), 1200); }
+    else haptic("wrong");
+  }
+  return (<>
+    <div className="deep-q">Welches Wort heißt</div>
+    <div className="deep-word">{w.de}</div>
+    <div className="mc-grid">
+      {opts.map((x,i)=><TapBtn key={i} className={"mc-opt"+(pick===null?"":x===w?" right":pick===i?" wrong":" dim")} onTap={()=>choose(i)} lang="it">{fullIt(x)}</TapBtn>)}
+    </div>
+    {pick!==null&&!right&&<>
+      <div className="deep-fb no">Richtig wäre: {fullIt(w)}</div>
+      <div className="deep-foot">Kein Problem: Dieses Wort kommt am Ende des Blocks nochmal.</div>
+      <div className="ht-actions"><TapBtn className="btn next" onTap={()=>onDone({ok:false})}>Weiter →</TapBtn></div>
+    </>}
+    {right&&<div className="deep-fb ok">✓ Richtig!</div>}
+  </>);
+}
+
+// Satzbau: Wörter des Beispielsatzes in die richtige Reihenfolge tippen (wie die Sortieraufgaben in Don Due)
+function orderFor(w){
+  if (!w.ex) return null;
+  const ex = w.ex.trim();
+  const end = (ex.match(/[.!?…]+$/)||[""])[0];
+  const toks = ex.slice(0, ex.length-end.length).split(/\s+/).filter(Boolean);
+  if (toks.length<3 || toks.length>10) return null;
+  return {toks, end};
+}
+function OrderTask({w, hasVoice, speak, onDone}){
+  const o = React.useMemo(()=>orderFor(w), [w]);
+  const pool = React.useMemo(()=>{
+    const idx = o.toks.map((_,i)=>i); let p, n = 0;
+    do { p = shuffle(idx.slice()); n++; } while (p.every((x,i)=>x===i) && n<10);
+    return p;
+  }, [o]);
+  const [sel, setSel] = useState([]);
+  const [fb, setFb] = useState(null);
+  const [fails, setFails] = useState(0);
+  const [done, setDone] = useState(null);   // "ok" | "shown"
+  const sentence = ids => ids.map(i=>o.toks[i]).join(" ");
+  function add(i){
+    if (done || sel.includes(i)) return;
+    const nsel = sel.concat(i); setSel(nsel); setFb(null);
+    if (nsel.length===o.toks.length) {
+      if (norm(sentence(nsel))===norm(o.toks.join(" "))) {
+        setDone("ok"); setFb({cls:"ok", text:"✓ Richtig!"}); haptic("correct");
+        if (hasVoice) speak(w.ex);
+        setTimeout(()=>onDone({ok:true, hinted:fails>0}), 2200);
+      } else {
+        const n = fails+1; setFails(n); haptic("wrong");
+        if (n>=3) { setDone("shown"); setSel(o.toks.map((_,i)=>i)); setFb({cls:"no", text:"So heißt der Satz richtig."}); if (hasVoice) speak(w.ex); }
+        else setFb({cls:"no", text:"Die Reihenfolge stimmt noch nicht. Tippe Wörter oben an, um sie zurückzulegen."});
+      }
+    }
+  }
+  function remove(k){ if (done) return; setSel(sel.filter((_,j)=>j!==k)); setFb(null); }
+  return (<>
+    <div className="deep-q">Bau den Satz mit <b lang="it">{fullIt(w)}</b> ({w.de}):</div>
+    <div className="ord-line" lang="it">
+      {sel.length===0&&<span className="ord-ph">Tippe die Wörter in der richtigen Reihenfolge an</span>}
+      {sel.map((i,k)=><TapBtn key={k} className="ord-chip on" onTap={()=>remove(k)}>{o.toks[i]}</TapBtn>)}
+      {sel.length===o.toks.length&&<span className="ord-end">{o.end}</span>}
+    </div>
+    <div className="ord-pool" lang="it">
+      {pool.map(i=><TapBtn key={i} className={"ord-chip"+(sel.includes(i)?" used":"")} onTap={()=>add(i)}>{o.toks[i]}</TapBtn>)}
+    </div>
+    {!done&&sel.length>0&&<div className="deep-hints"><button type="button" className="chip" onClick={()=>{ setSel([]); setFb(null); }}>↺ Neu anfangen</button></div>}
+    {fb&&<div className={"deep-fb "+fb.cls}>{fb.text}</div>}
+    {done==="shown"&&<div className="ht-actions"><TapBtn className="btn next" onTap={()=>onDone({ok:false})}>Weiter →</TapBtn></div>}
+  </>);
+}
+
 /* ───────── Problemwörter-Training: 3 Wörter einprägen, dann gemischt aus dem Gedächtnis schreiben ───────── */
 const HARD_BLOCK = 3;
 const HARD_INTRO_KEY = "itpro_hard_intro";
@@ -2369,8 +2476,8 @@ function HardIntro({onStart, onBack, again}){
     <div className="ht-card ht-intro">
       <h2>⭐ So übst du deine Problemwörter</h2>
       <ol>
-        <li><b>Einprägen:</b> Du siehst {HARD_BLOCK} Wörter nacheinander mit Italienisch, Deutsch, Beispielsatz und Aussprache. Nimm dir Zeit und denk dir am besten eine Eselsbrücke aus.</li>
-        <li><b>Abrufen:</b> Danach sind die Wörter verdeckt. Du schreibst sie aus dem Gedächtnis, in gemischter Reihenfolge: tippen, Lückensatz oder Diktat.</li>
+        <li><b>Einprägen:</b> Du siehst {HARD_BLOCK} Wörter nacheinander mit Italienisch, Deutsch und Beispielsatz, jedes Wort wird dir dabei vorgelesen. Nimm dir Zeit und denk dir am besten eine Eselsbrücke aus.</li>
+        <li><b>Abrufen:</b> Danach sind die Wörter verdeckt und kommen in gemischter Reihenfolge zweimal dran: zuerst leichter (aus 4 Wörtern auswählen oder einen Satz zusammenbauen), dann selbst schreiben (tippen, Lückensatz oder Diktat). Bei richtiger Antwort geht es automatisch weiter.</li>
         <li><b>Warum gemischt?</b> Direkt nach dem Ansehen würdest du nur abschreiben. Die anderen Wörter dazwischen sorgen dafür, dass du dich wirklich erinnern musst. Genau das macht das Wort fest.</li>
         <li><b>Nicht gewusst?</b> Du siehst die Lösung, und das Wort kommt am Ende des Blocks nochmal.</li>
         <li><b>Geschafft:</b> Schreibst du ein Wort an zwei verschiedenen Tagen ohne Hilfe richtig, kannst du es aus der Liste nehmen.</li>
@@ -2399,6 +2506,12 @@ function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onExit}){
   const cardOf = w => st[w.__ln+"__"+w.it] || {};
   const noteOf = w => (st.__notes && st.__notes[w.it]) || {};
   useEffect(()=>{ window.scrollTo({top:0}); setMemoOpen(false); }, [phase, li, ti, bi, intro]);
+  // Lernkarte: Wort automatisch auf Italienisch vorlesen
+  useEffect(()=>{
+    if (intro || phase!=="learn" || !hasVoice || !block[li]) return;
+    const t = setTimeout(()=>speak(fullIt(block[li])), 450);
+    return ()=>clearTimeout(t);
+  }, [phase, li, bi, intro, hasVoice]);
 
   if (!words.length) return (
     <div className="ht-card"><h2>Keine Problemwörter</h2><p>Gerade gibt es nichts zu üben. Bravo!</p>
@@ -2406,8 +2519,11 @@ function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onExit}){
   );
 
   function startRecall(){
-    const second = w => gapFor(w) ? "gap" : hasVoice ? "dict" : "type";
-    const r1 = shuffle(block.map(w=>({w, kind:"type"})));
+    // Runde 1 leichter (Auswahl oder Satzbau), Runde 2 selbst schreiben (Tippen, Lückensatz oder Diktat)
+    const pickOne = a => a[Math.floor(Math.random()*a.length)];
+    const first = w => pickOne(["mc"].concat(orderFor(w)?["order"]:[]));
+    const second = w => pickOne(["type"].concat(gapFor(w)?["gap"]:[], hasVoice?["dict"]:[]));
+    const r1 = shuffle(block.map(w=>({w, kind:first(w)})));
     const r2 = shuffle(block.map(w=>({w, kind:second(w)})));
     if (r2.length>1 && r2[0].w.it===r1[r1.length-1].w.it) r2.push(r2.shift());
     setTasks(r1.concat(r2).map((t,i)=>Object.assign({id:i}, t)));
@@ -2468,8 +2584,10 @@ function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onExit}){
     return (<>
       {top("Abrufen · Aufgabe "+(ti+1)+" von "+tasks.length, ti, tasks.length)}
       <div className="ht-card deep">
-        <div className="ht-step">2 Aus dem Gedächtnis {t.kind==="gap"?"· Lückensatz":t.kind==="dict"?"· Diktat":"· Tippen"}</div>
-        <TaskBox key={bi+"-"+t.id} w={t.w} kind={t.kind} hasVoice={hasVoice} speak={speak} onDone={onDone}/>
+        <div className="ht-step">2 Aus dem Gedächtnis · {({gap:"Lückensatz",dict:"Diktat",type:"Tippen",mc:"Auswahl",order:"Satzbau"})[t.kind]}</div>
+        {t.kind==="mc" ? <McTask key={bi+"-"+t.id} w={t.w} hasVoice={hasVoice} speak={speak} onDone={onDone}/>
+          : t.kind==="order" ? <OrderTask key={bi+"-"+t.id} w={t.w} hasVoice={hasVoice} speak={speak} onDone={onDone}/>
+          : <TaskBox key={bi+"-"+t.id} w={t.w} kind={t.kind} hasVoice={hasVoice} speak={speak} onDone={onDone}/>}
       </div>
     </>);
   }
@@ -2816,6 +2934,7 @@ function Hap({children, block, on}){
 // Zuverlässiger Knopf für Touch-Geräte: löst beim Loslassen aus, wenn der Finger kaum bewegt wurde.
 // Beim Scrollen bricht der Browser die Berührung ab (pointercancel), dann passiert nichts.
 // Auf dem iPhone geht ein normaler Klick sonst manchmal verloren (z. B. direkt nach dem Scrollen).
+let lastTapAt = 0;   // Zeitpunkt der letzten Auslösung beim Loslassen (gegen „Geister-Klicks“ auf den nächsten Knopf)
 function TapBtn({onTap, children, ...rest}){
   const ref = useRef(null);
   return (
@@ -2825,11 +2944,12 @@ function TapBtn({onTap, children, ...rest}){
       onPointerUp={e=>{
         const p = ref.current;
         if (!p || e.pointerType==="mouse") return;
-        if (Math.abs(e.clientX-p.x)<12 && Math.abs(e.clientY-p.y)<12 && Date.now()-p.t<900) { p.done = true; onTap(e); }
+        if (Math.abs(e.clientX-p.x)<12 && Math.abs(e.clientY-p.y)<12 && Date.now()-p.t<900) { p.done = true; lastTapAt = Date.now(); onTap(e); }
       }}
       onClick={e=>{
         const p = ref.current; ref.current = null;
         if (p && p.done && Date.now()-p.t<1500) return;   // schon beim Loslassen ausgelöst
+        if (!p && Date.now()-lastTapAt<800) return;        // Klick gehört zur vorherigen Berührung (Knopf wurde gerade ersetzt)
         onTap(e);
       }}>{children}</button>
   );
