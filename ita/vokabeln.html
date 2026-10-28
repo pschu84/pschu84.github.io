@@ -146,6 +146,7 @@ button{font:inherit;color:inherit}
 .ht-res-row.no{background:var(--blu-l)}
 .ht-res-row small{margin-left:auto;color:var(--muted);text-align:right}
 .ht-ask{background:var(--blu-l);border:1px solid var(--blu-b);border-radius:14px;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.4}
+.form-hint{text-align:center;font-size:13px;color:var(--blu);background:var(--blu-l);border:1px solid var(--blu-b);border-radius:12px;padding:6px 10px;margin:6px auto;max-width:max-content}
 .deep-foot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}
 
 /* Lektionen */
@@ -2255,34 +2256,78 @@ const fullIt = w => (w.art&&!w.phrase ? w.art+(w.art.endsWith("'")?"":" ") : "")
 // Eine Schreibaufgabe: Tippen (DE → IT), Lückensatz oder Diktat.
 // Mit onDone: Aufgabe im Problemwörter-Training (einmal lösen, dann „Weiter“).
 // Ohne onDone: freies Üben im Vertiefen-Fenster (beliebig oft „Nochmal“).
+// Grammatik-Hinweis zur gesuchten Form (Faustregeln nach der Endung, keine vollständige Analyse)
+function formHint(base, ans){
+  const b = norm(base), a = norm(ans), A = (ans||"").toLowerCase();
+  if (!b || !a || a===b) return null;
+  if (/(are|ere|ire|rre|arsi|ersi|irsi)$/.test(b)) {
+    const V = [
+      [/(rebbero)$/,"Konditional, loro (sie, Mehrzahl): würden …"],[/(remmo)$/,"Konditional, noi (wir): würden …"],[/(reste)$/,"Konditional, voi (ihr): würdet …"],
+      [/(resti)$/,"Konditional, tu (du): würdest …"],[/(rebbe)$/,"Konditional, lui/lei (er/sie): würde …"],[/(rei)$/,"Konditional, io (ich): würde …"],
+      [/(ranno)$/,"Futur, loro (sie, Mehrzahl)"],[/(remo)$/,"Futur, noi (wir)"],[/(rete)$/,"Futur, voi (ihr)"],[/(rai)$/,"Futur, tu (du)"],
+      [/(avano|evano|ivano)$/,"Imperfekt, loro (sie, Mehrzahl)"],[/(avamo|evamo|ivamo)$/,"Imperfekt, noi (wir)"],[/(avate|evate|ivate)$/,"Imperfekt, voi (ihr)"],
+      [/(avo|evo|ivo)$/,"Imperfekt, io (ich)"],[/(avi|evi|ivi)$/,"Imperfekt, tu (du)"],[/(ava|eva|iva)$/,"Imperfekt, lui/lei (er/sie)"],
+      [/(ando|endo)$/,"Gerundium (… -end)"],
+      [/(ati|uti|iti|ate|ute|ite|ata|uta|ita)$/,"Partizip Perfekt, angeglichen (passato prossimo)"],[/(ato|uto|ito)$/,"Partizip Perfekt (passato prossimo)"],
+      [/(iamo)$/,"Präsens, noi (wir)"],[/(ete|ite)$/,"Präsens, voi (ihr)"],[/(ano|ono)$/,"Präsens, loro (sie, Mehrzahl)"],
+      [/o$/,"Präsens, io (ich)"],[/i$/,"Präsens, tu (du)"],[/[ae]$/,"Präsens, lui/lei (er/sie/es) oder Höflichkeitsform"],
+    ];
+    if (/rò$/.test(A)) return "Futur, io (ich)";
+    if (/rà$/.test(A)) return "Futur, lui/lei (er/sie)";
+    for (const [re,t] of V) if (re.test(a)) return t;
+    return null;
+  }
+  const be = b.slice(-1), ae = a.slice(-1), same = b.slice(0,-1)===a.slice(0,-1);
+  if (!same) return null;
+  if (be==="o" && ae==="i") return "Mehrzahl";
+  if (be==="a" && ae==="e") return "Mehrzahl";
+  if (be==="e" && ae==="i") return "Mehrzahl";
+  if (be==="o" && ae==="a") return "weibliche Form";
+  if (be==="o" && ae==="e") return "weiblich, Mehrzahl";
+  if (be==="a" && ae==="i") return "Mehrzahl (männlich oder gemischt)";
+  return null;
+}
+function commonPrefix(a, b){ let i=0; while (i<a.length && i<b.length && a[i]===b[i]) i++; return i; }
 function TaskBox({w, kind, hasVoice, speak, onDone}){
   const task = !!onDone;
   const gap = React.useMemo(()=>kind==="gap" ? gapFor(w) : null, [w, kind]);
   const [val, setVal] = useState("");
   const [fb, setFb] = useState(null);        // {cls, text}
   const [fails, setFails] = useState(0);
-  const [hint, setHint] = useState(0);       // 0 keine, 1 Anfangsbuchstabe, 2 Länge, 3 Buchstaben
-  const [used, setUsed] = useState([]);
+  const [reveal, setReveal] = useState(0);   // so viele Buchstaben der Lösung sind aufgedeckt
+  const [wordOk, setWordOk] = useState(false);   // Wort erkannt, nur die Form (Endung) passt nicht
   const [solved, setSolved] = useState(false);
   const [shown, setShown] = useState(false);
   const full = fullIt(w);
-  const hintWord = kind==="gap" && gap ? gap.answer : mainForm(w.it);
-  const tiles = React.useMemo(()=>scramble(hintWord), [hintWord]);
-  const sol = kind==="gap" && gap ? gap.answer : full;
+  const base = mainForm(w.it);
+  const sol = kind==="gap" && gap ? gap.answer : (kind==="type" ? base : full);
+  const solFull = kind==="gap" && gap ? gap.answer : full;
+  const inflected = kind==="gap" && gap && norm(gap.answer)!==norm(base);
+  // gemeinsamer Wortstamm von Lösung und Grundform („parl“ bei parlo/parlare, „man“ bei mani/mano)
+  const stem = inflected ? norm(sol).slice(0, commonPrefix(norm(sol), norm(base))) : "";
+  const fHint = inflected ? formHint(base, sol) : null;
+  const [showForm, setShowForm] = useState(false);
   const finished = solved || shown;
   useEffect(()=>{ if (kind==="dict" && hasVoice) { const t = setTimeout(()=>speak(full), 350); return ()=>clearTimeout(t); } }, []);
 
-  const exactWord = v => { const x = v.trim().toLowerCase().replace(/[’`´]/g,"'"); return [w.it, full, mainForm(w.it)].some(y=>y.toLowerCase()===x); };
-  function finish(){ if (doneRef.current) return; doneRef.current = true; onDone({ok: solved, hinted: hint>0 || fails>0}); }
   const doneRef = useRef(false);
-  // richtig getippt: automatisch weiter (bei kleiner Abweichung etwas länger, damit man die Schreibweise lesen kann)
+  // Wort gewusst, nur die Form nicht: zählt als gewusst (mit Hilfe), damit es kein Fehler wird
+  function finish(){ if (doneRef.current) return; doneRef.current = true; onDone({ok: solved || wordOk, hinted: reveal>0 || fails>0 || showForm || !solved, formOnly: !solved && wordOk}); }
   useEffect(()=>{
     if (!task || !solved) return;
     const t = setTimeout(finish, fb && fb.cls==="ok" ? 1000 : 2200);
     return ()=>clearTimeout(t);
   }, [solved]);
-  function reset(){ setVal(""); setFb(null); setFails(0); setHint(0); setUsed([]); setSolved(false); setShown(false); }
-  function giveUp(){ setShown(true); setFb({cls:"no", text:"Lösung: "+sol}); if (kind==="dict"&&hasVoice) speak(full); }
+  function reset(){ setShowForm(false); setVal(""); setFb(null); setFails(0); setReveal(0); setWordOk(false); setSolved(false); setShown(false); }
+  function showSolution(prefix){
+    setShown(true);
+    setFb(wordOk||prefix==="form"
+      ? {cls:"near", text:"✓ Das Wort hast du gewusst. Die passende Form ist: "+solFull}
+      : {cls:"no", text:"Lösung: "+solFull+(task?"":". Schreib sie zum Einprägen einmal ab.")});
+    if (kind==="dict"&&hasVoice) speak(full);
+  }
+  function giveUp(){ showSolution(); }
+  function exactWord(v){ const x = v.trim().toLowerCase().replace(/[’`´]/g,"'"); return [w.it, full, base].some(y=>y.toLowerCase()===x); }
   function check(e){
     e.preventDefault();
     if (task && finished) { finish(); return; }
@@ -2291,24 +2336,39 @@ function TaskBox({w, kind, hasVoice, speak, onDone}){
     if (kind==="gap") {
       perfect = v.toLowerCase()===sol.toLowerCase();
       ok = perfect || norm(v)===norm(sol);
-      if (!ok && sol.length>=6 && lev(norm(v), norm(sol))<=1) { setFails(f=>f+1); setFb({cls:"near", text:"Fast! Ein Buchstabe stimmt noch nicht."}); return; }
     } else {
       perfect = exactWord(v);
       ok = perfect || checkSpoken([v], w.it, "it", !!w.phrase, true).ok;
     }
     if (ok) {
-      setFb(perfect ? {cls:"ok", text:"✓ Perfekt geschrieben!"} : {cls:"near", text:"✓ Richtig! Genaue Schreibweise: "+sol});
+      setFb(perfect ? {cls:"ok", text:"✓ Perfekt geschrieben!"} : {cls:"near", text:"✓ Richtig! Genaue Schreibweise: "+solFull});
       haptic("correct");
       if (task) setSolved(true); else setVal("");
       return;
     }
     const n = fails+1; setFails(n); haptic("wrong");
-    if (n>=3) { setShown(true); setFb({cls:"no", text:"Lösung: "+sol+(task?"":". Schreib sie zum Einprägen einmal ab.")}); return; }
-    setFb({cls:"no", text:"Noch nicht. Versuch es nochmal"+((kind==="type"||kind==="gap")&&hint<3?" oder nimm eine Hilfe.":".")});
+    const nv = norm(v);
+    // richtiges Wort, aber falsche Form (z. B. Grundform statt gebeugter Form)
+    const isWord = inflected && (nv===norm(base) || (stem.length>=3 && nv.startsWith(stem)));
+    const nowWordOk = wordOk || isWord;
+    if (isWord) { setWordOk(true); setShowForm(true); }
+    if (n>=3) { showSolution(nowWordOk ? "form" : ""); return; }
+    const cp = commonPrefix(nv, norm(sol));
+    let t;
+    if (isWord && nv===norm(base)) t = "Das Wort stimmt! Im Satz braucht es aber eine andere Form. Achte auf die Endung.";
+    else if (isWord) t = "Der Wortstamm stimmt („"+sol.slice(0, Math.max(cp, stem.length))+"…“), nur die Endung noch nicht.";
+    else if (sol.length>=6 && lev(nv, norm(sol))<=1) t = "Fast! Ein Buchstabe stimmt noch nicht.";
+    else if (cp>=2) t = "Der Anfang „"+sol.slice(0,cp)+"“ stimmt, danach nicht mehr.";
+    else t = "Noch nicht. Versuch es nochmal oder nimm eine Hilfe.";
+    setFb({cls: isWord || cp>=2 ? "near" : "no", text: t+" ("+n+" von 3 Versuchen)"});
   }
-  function tileTap(i){ setUsed(u=>u.concat(i)); setVal(v=>v+tiles[i]); }
-  function tileBack(){ setUsed(u=>u.slice(0,-1)); setVal(v=>v.slice(0,-1)); }
-  const pattern = hintWord.split("").map((ch,i)=>ch===" "?" ":(i===0?ch:"_")).join(" ");
+  // Hilfe: deckt den nächsten Buchstaben NACH dem bereits richtig getippten Anfang auf
+  function nextLetter(){
+    const cp = commonPrefix(norm(val.trim()), norm(sol));
+    if (fHint && !showForm) { setShowForm(true); return; }   // erst sagen, welche Form gesucht ist
+    setReveal(r => Math.min(sol.length-1, Math.max(r, cp) + 1));
+  }
+  const pattern = sol.split("").map((ch,i)=>ch===" "?" ":(i<reveal?ch:"_")).join(" ");
 
   return (<>
     {kind==="type"&&<>
@@ -2316,18 +2376,12 @@ function TaskBox({w, kind, hasVoice, speak, onDone}){
       <div className="deep-word">{w.de}</div>
     </>}
     {kind==="gap"&&gap&&<>
-      <div className="deep-q">Setz das Wort in der passenden Form ein:</div>
+      <div className="deep-q">{inflected ? "Setz das Wort in der passenden Form ein:" : "Setz das fehlende Wort ein:"}</div>
       <div className="deep-gap">{gap.before}<b>{finished||(fb&&fb.cls==="ok") ? gap.answer : " "}</b>{gap.after}</div>
-      <div className="deep-q">Bedeutung: <b>{w.de}</b>{finished?<> · Grundform: <b>{full}</b></>:null}</div>
+      <div className="deep-q">Bedeutung: <b>{w.de}</b>{(finished||wordOk)&&inflected?<> · Grundform: <b>{full}</b></>:null}</div>
     </>}
-    {(kind==="type"||kind==="gap")&&!finished&&<>
-      {hint===1&&<div className="deep-q">Fängt an mit <b>{hintWord[0]}</b></div>}
-      {hint>=2&&<div className="deep-pattern">{pattern}</div>}
-      {hint>=3&&<div className="tiles">
-        {tiles.map((ch,i)=><TapBtn key={i} className={"tile"+(used.includes(i)?" used":"")} onTap={()=>tileTap(i)}>{ch===" "?"␣":ch}</TapBtn>)}
-        <TapBtn className="tile" onTap={tileBack} aria-label="Letzten Buchstaben löschen">⌫</TapBtn>
-      </div>}
-    </>}
+    {kind==="gap"&&fHint&&(showForm||finished)&&<div className="form-hint">Gesucht: <b>{fHint}</b></div>}
+    {(kind==="type"||kind==="gap")&&!finished&&reveal>0&&<div className="deep-pattern">{pattern}</div>}
     {kind==="dict"&&<>
       <div className="deep-q">Hör zu und schreib, was du hörst:</div>
       <div className="deep-hints"><TapBtn className="btn small" onTap={()=>speak(full)}>🔊 Nochmal anhören</TapBtn></div>
@@ -2339,12 +2393,12 @@ function TaskBox({w, kind, hasVoice, speak, onDone}){
       <TapBtn className="btn small" onTap={()=>check({preventDefault(){}})}>{task&&finished ? "Weiter →" : "Prüfen"}</TapBtn>
     </form>
     {!finished&&<div className="deep-hints">
-      {(kind==="type"||kind==="gap")&&hint<3&&!(fb&&fb.cls==="ok")&&<TapBtn className="chip" onTap={()=>setHint(h=>h+1)}>💡 {["Anfangsbuchstabe","Länge zeigen","Buchstaben zum Antippen"][hint]}</TapBtn>}
-      {task&&<TapBtn className="chip" onTap={giveUp}>🤷 Weiß ich nicht</TapBtn>}
+      {(kind==="type"||kind==="gap")&&reveal<sol.length-1&&!(fb&&fb.cls==="ok")&&<TapBtn className="chip" onTap={nextLetter}>💡 {fHint&&!showForm ? "Welche Form?" : reveal===0&&!val.trim() ? "Anfangsbuchstabe" : "Nächster Buchstabe"}</TapBtn>}
+      {task&&<TapBtn className="chip" onTap={giveUp}>{wordOk ? "👀 Form zeigen" : "🤷 Weiß ich nicht"}</TapBtn>}
     </div>}
     {fb&&<div className={"deep-fb "+fb.cls}>{fb.text}</div>}
-    {task&&shown&&<div className="deep-foot">Kein Problem: Dieses Wort kommt am Ende des Blocks nochmal.</div>}
-    {!task&&fb&&fb.cls!=="no"&&<div className="deep-hints"><TapBtn className="chip" onTap={reset}>Nochmal</TapBtn></div>}
+    {task&&shown&&<div className="deep-foot">{wordOk ? "Zählt als gewusst. Die Form übst du am Ende des Blocks nochmal." : "Kein Problem: Dieses Wort kommt am Ende des Blocks nochmal."}</div>}
+    {!task&&fb&&fb.cls!=="no"&&(solved||shown||fb.cls==="ok")&&<div className="deep-hints"><TapBtn className="chip" onTap={reset}>Nochmal</TapBtn></div>}
   </>);
 }
 
@@ -2570,7 +2624,7 @@ function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onCount, on
     const write = t.kind==="type" || t.kind==="gap";
     const again = (t.retry||0) < (write ? 2 : 1);
     if ((!r.ok || (write && r.hinted)) && again) {
-      const kind = write ? (t.kind==="gap" ? "type" : (gapFor(t.w) ? "gap" : "type")) : t.kind;
+      const kind = write ? (r.formOnly ? "gap" : t.kind==="gap" ? "type" : (gapFor(t.w) ? "gap" : "type")) : t.kind;
       nt = tasks.concat([Object.assign({}, t, {kind, retry:(t.retry||0)+1, id:tasks.length})]);
       setTasks(nt);
     }
