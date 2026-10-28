@@ -3126,10 +3126,23 @@ function softKey(s){
     .replace(/[bvpf]/g,"b").replace(/[dt]/g,"d").replace(/[rl]/g,"r").replace(/[cgkq]/g,"k").replace(/[sz]/g,"s")
     .replace(/[ei]/g,"e").replace(/[ou]/g,"o").replace(/([a-z])\1+/g,"$1");
 }
+// Verschluckter Konsonant vor einem weiteren Konsonanten: „largo“ wird als „lago“ erkannt,
+// „parco“ als „paco“, „molto“ als „moto“. Gilt nur für gesprochene Antworten.
+function clusterDrop(c, v){
+  const C = /[bcdfglmnprstvz]/, V = /[aeiou]/;
+  const kc = softKey(c);
+  for (let i=1;i<v.length-1;i++){
+    if (C.test(v[i]) && C.test(v[i+1]) && V.test(v[i-1]) && v[i]!==v[i+1]) {
+      if (softKey(v.slice(0,i)+v.slice(i+1))===kc) return true;
+    }
+  }
+  return false;
+}
 function softMatch(c, v){
   if (v.length<4) return false;
   const kc = softKey(c), kv = softKey(v);
   if (kc===kv) return true;
+  if (!v.includes(" ") && v.length>=5 && clusterDrop(c.replace(/\s+/g,""), v)) return true;
   return kv.length>=4 && kc.length===kv.length && /[aeo]$/.test(kv) && /[aeo]$/.test(kc) && kc.slice(0,-1)===kv.slice(0,-1);
 }
 // Wörter, die die Spracherkennung erfahrungsgemäß hartnäckig anders schreibt
