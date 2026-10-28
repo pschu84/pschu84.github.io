@@ -2498,7 +2498,7 @@ function HardIntro({onStart, onBack, again}){
         <li><b>Nicht gewusst?</b> Du siehst die Lösung, und das Wort kommt am Ende des Blocks nochmal. Beim Schreiben gilt das auch, wenn du eine Hilfe gebraucht hast: Dann versuchst du es am Ende noch einmal ohne.</li>
         <li><b>Geschafft:</b> Schreibst du ein Wort an zwei verschiedenen Tagen ohne Hilfe richtig, kannst du es aus der Liste nehmen.</li>
       </ol>
-      <p className="ht-small">Das ist Extra-Training. Deine normalen Wiederholungen in den Lektionen ändern sich dadurch nicht.</p>
+      <p className="ht-small">Solange ein Wort in dieser Liste steht, wird es nur hier geübt und taucht in den Lektionen nicht als Wiederholung auf. Nimmst du es aus der Liste, kommt es dort wieder ganz normal dran. Jede Aufgabe zählt fürs Tagesziel.</p>
       <label className="ht-skip"><input type="checkbox" checked={skip} onChange={e=>{ setSkip(e.target.checked); lsSet(HARD_INTRO_KEY, e.target.checked?"1":""); }}/> Erklärung beim nächsten Mal überspringen</label>
       <div className="ht-actions">
         <TapBtn className="btn next" onTap={onStart}>{again?"Weiter üben":"Los geht's"}</TapBtn>
@@ -2508,7 +2508,7 @@ function HardIntro({onStart, onBack, again}){
   );
 }
 
-function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onExit}){
+function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onCount, onExit}){
   const [intro, setIntro] = useState(()=>lsGet(HARD_INTRO_KEY,"")!=="1");
   const [bi, setBi] = useState(0);
   const [phase, setPhase] = useState("learn");   // learn | recall | end
@@ -2555,6 +2555,7 @@ function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onExit}){
   }
   function onDone(r){
     const t = tasks[ti];
+    onCount(!!r.ok);
     updCard(t.w, c=>{
       if (!r.ok) { c.miss = (c.miss||0)+1; c.solid = []; }
       else if (!r.hinted && t.kind!=="gap") { const d = dayStr(); c.solid = Array.from(new Set((c.solid||[]).concat(d))).slice(-5); }
@@ -2640,7 +2641,7 @@ function HardTrainer({st, words, hasVoice, speak, updCard, saveNote, onExit}){
         <div key={w.it} className="ht-ask">
           <div>🎉 <b>{fullIt(w)}</b> hast du an zwei verschiedenen Tagen ohne Hilfe richtig geschrieben. Sitzt es jetzt?</div>
           <div className="ht-actions">
-            <button type="button" className="btn right" onClick={()=>{ updCard(w, c=>{ delete c.hard; c.miss=0; c.solid=[]; }); setDecided(d=>Object.assign({},d,{[w.it]:1})); }}>Aus der Liste nehmen</button>
+            <button type="button" className="btn right" onClick={()=>{ updCard(w, c=>{ delete c.hard; c.miss=0; c.solid=[]; if (c.phase>0 && c.phase<3) c.due = Date.now(); }); setDecided(d=>Object.assign({},d,{[w.it]:1})); }}>Aus der Liste nehmen</button>
             <button type="button" className="btn show" onClick={()=>{ updCard(w, c=>{ c.solid=[]; }); setDecided(d=>Object.assign({},d,{[w.it]:1})); }}>Behalten</button>
           </div>
         </div>
@@ -2721,9 +2722,11 @@ function cardStatus(c, now){
   return (!c.due || c.due<=now) ? "due" : "wait";
 }
 function lessonQueue(st, ld, now){
-  const q = {due:[], neu:[], wait:[], done:[], nextDue:0};
+  const q = {due:[], neu:[], wait:[], done:[], hard:[], nextDue:0};
   ld.words.forEach(w=>{
     const c = getCard(st, ld.name, w.it), s = cardStatus(c, now);
+    // Problemwörter werden nur in „Meine Problemwörter“ geübt, nicht zusätzlich in der Lektion
+    if (isHard(c)) { q.hard.push(w); return; }
     if (s==="due") q.due.push(w); else if (s==="new") q.neu.push(w); else if (s==="wait") { q.wait.push(w); if (!q.nextDue || c.due<q.nextDue) q.nextDue = c.due; } else q.done.push(w);
   });
   return q;
@@ -2736,7 +2739,7 @@ const DAY = 24*HOUR;
 const REFRESH_FIRST = 42*DAY;
 const REFRESH_NEXT = 365*DAY;
 function refreshAt(c){ if (!c || c.phase!==3 || !c.learned) return 0; return c.ref ? c.ref + REFRESH_NEXT : c.learned + REFRESH_FIRST; }
-function refreshWords(st, ld, now){ return ld.words.filter(w=>{ const t = refreshAt(getCard(st,ld.name,w.it)); return t && t<=now; }); }
+function refreshWords(st, ld, now){ return ld.words.filter(w=>{ const c = getCard(st,ld.name,w.it); if (isHard(c)) return false; const t = refreshAt(c); return t && t<=now; }); }
 function refreshSuggestion(st, now){
   if (st.__refDone === dayStr(new Date(now))) return null;
   let best = null, bestT = Infinity;
@@ -3396,8 +3399,16 @@ function App() {
     const w = session[sidx]; if (!w) return;
     const newSt = {...st};
     const c = getCard(newSt, w.__ln||curLesson.name, w.it);
-    if (isHard(c)) { delete c.hard; c.miss = 0; } else c.hard = true;
+    if (isHard(c)) { delete c.hard; c.miss = 0; if (c.phase>0 && c.phase<3) c.due = Date.now(); } else c.hard = true;
     persist(newSt);
+  }
+  // Problemwörter-Aufgaben zählen fürs Tagesziel, für die Serie und für Abzeichen
+  function countPractice(ok){
+    const {r:nr, ev} = applyAnswer(rw, st, {correct:ok, known:false, speech:false, mix:false, roundEnd:false, perfect:false, recordShown: recordShownRef.current});
+    if (ev.some(e=>e.type==="record")) recordShownRef.current = true;
+    if (!ok) recordShownRef.current = false;
+    setRw(nr); saveRw(nr);
+    if (ev.length) celebrate(ev);
   }
   function saveNote(it, n){
     const notes = Object.assign({}, st.__notes||{});
@@ -3449,7 +3460,7 @@ function App() {
     if (sessMode==="refresh" && !refreshWords(newSt, curLesson, now).length) newSt.__refDone = dayStr();
     persist(newSt);
     setRoundStats(r=>({ok:r.ok+(correct||known?1:0), no:r.no+(correct||known?0:1)}));
-    const sess = (!correct && !known) ? requeue(session, sidx, w) : session;
+    const sess = (!correct && !known && !isHard(c)) ? requeue(session, sidx, w) : session;
     const next = sidx+1;
     const roundEnd = !sess.slice(next).some(x=>!x.__again);   // keine regulären Karten mehr übrig
     const perfect = roundEnd && session.length>=5 && roundStats.no===0 && (correct||known);
@@ -3829,7 +3840,7 @@ function App() {
           {hardList.length>0&&(
             <div className="due-box hard-box">
               <div className="due-title">⭐ Meine Problemwörter · {hardList.length}</div>
-              <div className="due-text">Wörter, die du oft nicht wusstest oder selbst markiert hast. Geübt wird in 3er-Blöcken: erst einprägen, dann aus dem Gedächtnis schreiben. Extra-Training, deine Wiederholungen bleiben unverändert.</div>
+              <div className="due-text">Wörter, die du oft nicht wusstest oder selbst markiert hast. Geübt wird in 3er-Blöcken: erst einprägen, dann aus dem Gedächtnis abrufen. Solange ein Wort hier steht, kommt es in den Lektionen nicht dran.</div>
               <div className="due-chips"><TapBtn className="chip due-chip" onTap={startHard}>Jetzt üben</TapBtn></div>
             </div>
           )}
@@ -3972,11 +3983,9 @@ function App() {
           )}
           <div className="deep-row">
             <TapBtn className={"deep-btn"+(isHard(c)?" on":"")} onTap={toggleHard} aria-pressed={isHard(c)} title={isHard(c)?"Markierung entfernen":"Als Problemwort markieren"}>{isHard(c)?"★ Problemwort":"☆ Problemwort"}</TapBtn>
-            <TapBtn className="deep-btn go" onTap={openDeep}>🧠 Vertiefen</TapBtn>
           </div>
           {practiceCard&&<div className="note">{curLesson.virtual?"Problemwörter-Übung":"Wiederholung in dieser Runde"}: Extra-Training, zählt nicht für die Wiederholungen.</div>}
           {seen&&result!=="ok"&&!practiceCard&&<div className="note">„Bereits bekannt“ entfernt die Karte dauerhaft aus allen Übungen.</div>}
-          {deepOpen&&<DeepPanel key={w.it} w={w} note={note||{}} onNote={n=>saveNote(w.it,n)} onClose={()=>setDeepOpen(false)} hasVoice={hasVoice} speak={speak}/>}
         </section>
       )}
 
@@ -3998,7 +4007,7 @@ function App() {
       {view==="end"&&curLesson&&!curLesson.virtual&&(()=>{
         const eq = lessonQueue(st, curLesson, nowTick);
         const more = eq.due.length + eq.neu.length;
-        const allDone = !more && !eq.wait.length;
+        const allDone = !more && !eq.wait.length && !eq.hard.length;
         const nxt = more ? null : findNextLesson(st, curLesson, nowTick);
         const isRef = sessMode==="refresh" && session.length>0;
         const refLeft = isRef ? refreshWords(st, curLesson, nowTick).length : 0;
@@ -4047,7 +4056,7 @@ function App() {
         );
       })()}
 
-      {view==="hard"&&<section className="fade-in"><HardTrainer st={st} words={hardWords} hasVoice={hasVoice} speak={speak} updCard={updCard} saveNote={saveNote} onExit={()=>setView("lessons")}/></section>}
+      {view==="hard"&&<section className="fade-in"><HardTrainer st={st} words={hardWords} hasVoice={hasVoice} speak={speak} updCard={updCard} saveNote={saveNote} onCount={countPractice} onExit={()=>setView("lessons")}/></section>}
 
       {view==="badges"&&(
         <section className="fade-in">
