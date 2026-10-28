@@ -27,6 +27,7 @@
   --rosso:#C2412D; --rosso-l:#FBE7E2;
   --oro:#9A6F12; --oro-l:#FBF0D6; --oro-b:#E9CF8A;
   --viola:#6B4BA0; --viola-l:#EFE8F9; --viola-b:#CDB8EC;
+  --blu:#2C6C9E; --blu-l:#E4EFF8; --blu-b:#A8C9E5;
   --rosa:#B04A72; --rosa-l:#FCEBF2; --rosa-b:#EBB6CB;
   --shadow:0 1px 2px rgba(60,40,10,.06),0 8px 24px rgba(60,40,10,.08);
 }
@@ -76,32 +77,33 @@ button{font:inherit;color:inherit}
 /* Problemwörter und Vertiefen */
 .deep-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:2px 0 10px}
 .deep-btn{font-size:12.5px;font-weight:800;padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;color:var(--muted);touch-action:manipulation}
-.deep-btn.on{background:var(--oro-l);border-color:var(--oro-b);color:var(--oro)}
+.deep-btn.on{background:var(--blu-l);border-color:var(--blu-b);color:var(--blu)}
 .deep-btn.go{border-color:var(--viola-b);color:var(--viola)}
 .again-tag{font-size:11px;font-weight:800;color:var(--viola);background:var(--viola-l);border:1px solid var(--viola-b);padding:2px 8px;border-radius:99px;margin-left:6px;white-space:nowrap}
 .memo{margin-top:8px;font-size:13px;line-height:1.4;color:var(--oro);background:var(--oro-l);border:1px solid var(--oro-b);border-radius:12px;padding:6px 10px;max-width:100%}
 .memo.s{color:var(--viola);background:var(--viola-l);border-color:var(--viola-b);font-style:italic}
-.hard-box{background:var(--viola-l);border-color:var(--viola-b)}
-.hard-box .chip.due-chip{border-color:var(--viola-b)}
+.due-box.hard-box{background:var(--blu-l);border-color:var(--blu-b)}
+.due-box.hard-box .due-title{color:var(--blu)}
+.due-box.hard-box .chip.due-chip{border-color:var(--blu-b);color:var(--blu)}
 .deep{width:100%;max-width:440px;max-height:92vh;overflow:auto;padding:16px 16px 14px}
 .deep-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .deep-head h3{margin:0}
 .deep-x{border:0;background:transparent;font-size:22px;cursor:pointer;color:var(--muted);padding:2px 6px}
 .deep-tabs{display:flex;gap:3px;padding:3px;border-radius:99px;background:var(--bg);border:1.5px solid var(--line);margin-bottom:12px}
 .deep-tabs button{flex:1;border:0;background:transparent;border-radius:99px;padding:6px 2px;font-size:12px;font-weight:800;color:var(--muted);cursor:pointer;white-space:nowrap}
-.deep-tabs button.on{background:var(--viola);color:#fff}
+.deep-tabs button.on{background:var(--blu);color:#fff}
 .deep-q{text-align:center;font-size:13px;color:var(--muted);margin-bottom:4px}
 .deep-word{text-align:center;font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--verde-d);margin-bottom:10px;line-height:1.2}
 .deep-gap{font-size:17px;line-height:1.5;text-align:center;margin-bottom:6px}
-.deep-gap b{display:inline-block;min-width:70px;border-bottom:2px solid var(--viola);color:var(--viola)}
+.deep-gap b{display:inline-block;min-width:70px;border-bottom:2px solid var(--blu);color:var(--blu)}
 .deep-in{display:flex;gap:6px;margin:8px 0}
 .deep-in input,.deep textarea{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink)}
 .deep textarea{width:100%;min-height:64px;resize:vertical;margin:4px 0 10px;font-size:15px}
 .deep label{font-size:12.5px;font-weight:800;color:var(--muted)}
 .deep-hints{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:4px 0}
-.deep-pattern{text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:20px;letter-spacing:.18em;color:var(--viola);margin:6px 0}
+.deep-pattern{text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:20px;letter-spacing:.18em;color:var(--blu);margin:6px 0}
 .tiles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
-.tile{min-width:36px;height:40px;border-radius:10px;border:1.5px solid var(--viola-b);background:var(--viola-l);font-size:18px;font-weight:800;cursor:pointer;color:var(--viola)}
+.tile{min-width:36px;height:40px;border-radius:10px;border:1.5px solid var(--blu-b);background:var(--blu-l);font-size:18px;font-weight:800;cursor:pointer;color:var(--blu)}
 .tile.used{opacity:.25;pointer-events:none}
 .deep-fb{text-align:center;font-size:14px;font-weight:700;border-radius:12px;padding:8px 10px;margin:8px 0}
 .deep-fb.ok{background:var(--verde-l);color:var(--verde-d)}
@@ -113,16 +115,16 @@ button{font:inherit;color:inherit}
 .mc-opt.right{background:var(--verde-l);border-color:var(--verde);color:var(--verde-d)}
 .mc-opt.wrong{background:var(--rosso-l);border-color:#EDB3A6;color:var(--rosso)}
 .mc-opt.dim{opacity:.45}
-.ord-line{min-height:54px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border-radius:14px;border:1.5px dashed var(--viola-b);background:var(--viola-l);margin:10px 0}
+.ord-line{min-height:54px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border-radius:14px;border:1.5px dashed var(--blu-b);background:var(--blu-l);margin:10px 0}
 .ord-ph{font-size:12.5px;color:var(--muted);width:100%;text-align:center}
 .ord-end{font-size:18px;font-weight:800}
 .ord-pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0}
 .ord-chip{padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:16px;font-weight:700;cursor:pointer;color:var(--ink);touch-action:manipulation}
-.ord-chip.on{border-color:var(--viola-b);color:var(--viola)}
+.ord-chip.on{border-color:var(--blu-b);color:var(--blu)}
 .ord-chip.used{visibility:hidden}
 /* Problemwörter-Training */
 .ht-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.ht-label{flex:1;text-align:center;font-size:12.5px;font-weight:800;color:var(--viola)}
+.ht-label{flex:1;text-align:center;font-size:12.5px;font-weight:800;color:var(--blu)}
 .ht-info{border:0;background:transparent;font-size:18px;cursor:pointer;padding:2px 4px}
 .ht-prog{flex-basis:100%;margin:2px 0 0}
 .ht-card{background:var(--paper);border:1.5px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:20px 16px 16px;margin-bottom:12px;animation:pop .35s both}
@@ -132,7 +134,7 @@ button{font:inherit;color:inherit}
 .ht-small{font-size:12.5px;color:var(--muted);text-align:center;margin:8px 0}
 .ht-skip{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--muted);margin:6px 0 12px}
 .ht-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
-.ht-step{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--viola);text-align:center;margin-bottom:8px}
+.ht-step{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blu);text-align:center;margin-bottom:8px}
 .ht-learn{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
 .ht-learn .word{font-size:34px}
 .ht-de{font-size:19px;font-weight:800;color:var(--ink);margin:4px 0}
@@ -141,9 +143,9 @@ button{font:inherit;color:inherit}
 .ht-memo{width:100%;text-align:left;margin-top:8px;padding:0}
 .ht-res{display:grid;gap:6px;margin:6px 0 10px}
 .ht-res-row{display:flex;align-items:baseline;gap:8px;padding:8px 12px;border-radius:12px;background:var(--verde-l)}
-.ht-res-row.no{background:var(--oro-l)}
+.ht-res-row.no{background:var(--blu-l)}
 .ht-res-row small{margin-left:auto;color:var(--muted);text-align:right}
-.ht-ask{background:var(--viola-l);border:1px solid var(--viola-b);border-radius:14px;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.4}
+.ht-ask{background:var(--blu-l);border:1px solid var(--blu-b);border-radius:14px;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.4}
 .deep-foot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}
 
 /* Lektionen */
@@ -169,6 +171,8 @@ button{font:inherit;color:inherit}
 .bar .b-done{background:linear-gradient(90deg,var(--verde),#57a874)}
 .bar .b-work{background:#8FCB9F}
 .bar .b-seen{background:#D9B464}
+.bar .b-hard{background:var(--blu)}
+.lesson-due.hard{color:var(--blu);background:var(--blu-l);border:1px solid var(--blu-b);border-radius:99px;padding:2px 8px;align-self:flex-start}
 .lesson.phrase .bar .b-done{background:linear-gradient(90deg,var(--rosa),#d97ea2)}
 .lesson.phrase .bar .b-work{background:var(--rosa-b)}
 .corner.rep{font-size:12px}
@@ -2796,16 +2800,16 @@ function isUnlocked(st, ld) {
 // Fortschritt in drei Teilen: gelernt (Stufe 3/4), dabei (Stufe 1/2, schon mindestens einmal gewusst),
 // angeschaut (Stufe 0, aber schon einmal abgefragt)
 function lessonParts(st, ld) {
-  let done=0, work=0, seen=0;
+  let done=0, work=0, seen=0, hard=0;
   ld.words.forEach(w=>{
     const c = getCard(st,ld.name,w.it);
-    if (c.phase>=3) done++; else if (c.phase>=1) work++; else if (c.seen) seen++;
+    if (c.phase>=3) done++; else if (isHard(c)) hard++; else if (c.phase>=1) work++; else if (c.seen) seen++;
   });
-  return {done, work, seen};
+  return {done, work, seen, hard};
 }
 function totalInWork(st) {
   let n=0;
-  LESSON_DEFS.forEach(ld=>{ const p = lessonParts(st, ld); n += p.work + p.seen; });
+  LESSON_DEFS.forEach(ld=>{ const p = lessonParts(st, ld); n += p.work + p.seen + p.hard; });
   return n;
 }
 function totalDone(st) {
@@ -3751,7 +3755,8 @@ function App() {
         }}>
         <span className="lesson-name">{ld.name.replace(/^[A-Z0-9]+ – /,"").replace(/^Phrasen – /,"")}</span>
         <span className="lesson-count">{ld.words.length} {ld.isPhrase?"Phrasen":"Wörter"} · {p}%</span>
-        <span className="bar"><span className="b-done" style={{width:(doneCnt/ld.words.length*100)+"%"}}/><span className="b-work" style={{width:wp+"%"}}/><span className="b-seen" style={{width:sp+"%"}}/></span>
+        <span className="bar"><span className="b-done" style={{width:(doneCnt/ld.words.length*100)+"%"}}/><span className="b-work" style={{width:wp+"%"}}/><span className="b-hard" style={{width:(parts.hard/ld.words.length*100)+"%"}}/><span className="b-seen" style={{width:sp+"%"}}/></span>
+        {parts.hard>0 && <span className="lesson-due hard" title="Diese Wörter übst du unter „Meine Problemwörter“">⭐ {parts.hard} {parts.hard===1?"Problemwort":"Problemwörter"}</span>}
         {nDue>0 && <span className="lesson-due on" title="Diese Wörter jetzt zu wiederholen bringt am meisten">🔁 {nDue} {nDue===1?"Wort":"Wörter"} wiederholen</span>}
         {nDue===0 && refSug && refSug.ld===ld && <span className="lesson-due ref" title="Diese Wörter hast du vor einiger Zeit gelernt">✨ Auffrischen</span>}
         {nDue===0 && !(refSug && refSug.ld===ld) && q && q.wait.length>0 && <span className="lesson-due" title="Wörter, die gerade eine Pause machen, damit sie besser im Gedächtnis bleiben">⏳ Wdh. {fmtDue(q.nextDue, true)}</span>}
