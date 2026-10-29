@@ -1013,6 +1013,23 @@ function getRecentWorkouts(exerciseId,count){
   if(!_historyByExerciseId)buildHistoryIndex();
   return(_historyByExerciseId[exerciseId]||[]).slice(0,count);
 }
+// Aktuelles Leistungsniveau: bestes e1RM aus den letzten drei Einheiten, die
+// höchstens maxDays zurückliegen (Deload ausgenommen). Für Blockwechsel zählt,
+// was du JETZT kannst, nicht der Bestwert von vor einer langen Pause.
+function getRecentE1RM(exerciseId,maxDays){
+  if(!_historyByExerciseId)buildHistoryIndex();
+  const todayStr=new Date().toISOString().slice(0,10);
+  const list=(_historyByExerciseId[exerciseId]||[])
+    .filter(h=>!h.legacy&&h.phase!=='deload'&&h.date<=todayStr&&daysBetweenIso(todayStr,h.date)<=(maxDays||35))
+    .sort((a,b)=>b.date.localeCompare(a.date))
+    .slice(0,3);
+  if(!list.length)return null;
+  let best=0,bestSet=null;
+  list.forEach(h=>(h.sets||[]).forEach(s=>{const e=calcE1RM(s.weight,s.reps);if(e&&e>best){best=e;bestSet={weight:s.weight,reps:s.reps};}}));
+  if(best<=0)return null;
+  const lastTop=topSetOf(list[0].sets);
+  return{e1rm:best,set:bestSet,lastTop:lastTop,date:list[0].date};
+}
 function getBestE1RM(exerciseId){
   if(!_historyByExerciseId)buildHistoryIndex();
   const records=(_historyByExerciseId[exerciseId]||[]).filter(h=>!h.legacy);
@@ -1169,7 +1186,13 @@ function progressionSuggestion(exerciseId,exercise){
   if(getCurrentWeek()===1&&DATA.cycle.mesoHistory.length>0){
     const lastMeso=DATA.cycle.mesoHistory[DATA.cycle.mesoHistory.length-1];
     if(lastMeso&&lastMeso.phase!==phase){
-      const e1rm=getBestE1RM(exerciseId);
+      // Basis ist das AKTUELLE Niveau (letzte 5 Wochen). Früher stand hier der
+      // Allzeit-Bestwert; nach einer langen Pause lag der Vorschlag dadurch
+      // weit über dem, was gerade möglich ist.
+      const recent=getRecentE1RM(exerciseId,35);
+      let e1rm=0,fromOld=false;
+      if(recent)e1rm=recent.e1rm;
+      else{const best=getBestE1RM(exerciseId);if(best>0){e1rm=best*0.9;fromOld=true;}}
       if(e1rm>0){
         const phaseDef=PHASE_DEFS[phase];
         let targetPct;
@@ -1182,13 +1205,27 @@ function progressionSuggestion(exerciseId,exercise){
           // Hypertrophie und Kraftausdauer: Mitte des Intensitätsbandes
           targetPct=(phaseDef.intensityPct[0]+phaseDef.intensityPct[1])/2;
         }
-        const w=snapWeight(e1rm*targetPct,exerciseId,exercise,'near');
+        let w=snapWeight(e1rm*targetPct,exerciseId,exercise,'near');
+        let extra='';
+        // Pause vor dem Blockstart: dieselbe Regel wie in der normalen Progression.
+        if(muscleGap!==null&&muscleGap>10){
+          w=snapWeight(w*(muscleGap>21?0.88:0.95),exerciseId,exercise,'down');
+          extra+=` Nach ${muscleGap} Tagen Pause eine Stufe vorsichtiger.`;
+        }
+        // Deckel: höchstens 20% über dem zuletzt tatsächlich bewegten Gewicht.
+        // Der Sprung von 12 auf 5 Wiederholungen liegt real bei etwa 15%.
+        if(recent&&recent.lastTop&&recent.lastTop.weight>0){
+          const cap=snapWeight(recent.lastTop.weight*1.20,exerciseId,exercise,'down');
+          if(cap>0&&w>cap)w=cap;
+        }
+        if(recent&&recent.set)extra=` Berechnet aus deiner aktuellen Leistung (${fmtWeight(recent.set.weight)} kg × ${recent.set.reps} ≈ ${Math.round(e1rm)} kg 1RM).`+extra;
+        else if(fromOld)extra=` Keine aktuellen Werte, deshalb vorsichtig aus älteren Einheiten geschätzt.`+extra;
         const note=phase==='maxkraft'&&(DATA.cycle.mesoHistory||[]).filter(m=>m.phase==='maxkraft').length===0?' (konservativer Einstieg)':'';
         // Maschinenlimit-Check: empfohlenes Gewicht übersteigt das Maschinen-Maximum
         if(exercise.maxWeight&&w>exercise.maxWeight){
           return{weight:exercise.maxWeight,text:`⚠️ Maschinenlimit (${exercise.maxWeight} kg) liegt unter dem empfohlenen Gewicht für ${phaseDef.shortLabel} (${w} kg). Diese Maschine ist für diesen Block ungeeignet. Übung tauschen empfohlen.`,isWarn:true,showSwap:true};
         }
-        return{weight:w,text:`Neuer ${phaseDef.shortLabel||phaseDef.label}-Block: ${w} kg${note}`};
+        return{weight:w,text:`Neuer ${phaseDef.shortLabel||phaseDef.label}-Block: ${fmtWeight(w)} kg${note}.${extra}`};
       }
     }
   }
@@ -1747,6 +1784,16 @@ function renderToday(){
     </div>`;
   // Begrüßung, Tagesziele und erreichbare Abzeichen
   html+=renderSessionIntro(planKey);
+  // Block-Check: dünner Vorblock oder längere Pause vor einem neuen Block
+  const bc=getBlockCheck();
+  if(bc){
+    const lbl=PHASE_DEFS[bc.phase].shortLabel||PHASE_DEFS[bc.phase].label;
+    const why=[];
+    if(bc.thin)why.push(`Im letzten Block hast du ${bc.done} von ${bc.planned} geplanten Einheiten geschafft`);
+    if(bc.longGap)why.push(`dein letztes Training ist ${bc.gap} Tage her`);
+    const whyTxt=why.join(', und ');
+    html+=`<div class="suggest" style="margin-bottom:10px;">🧭 <strong>Startklar für ${lbl}?</strong> ${whyTxt}. Die Gewichte sind schon an dein aktuelles Niveau angepasst. Wenn du dich trotzdem noch nicht bereit fühlst, kannst du eine Aufbau-Woche (8-12 Wdh) einschieben. Sie zählt erst, wenn du ${DATA.cycle.frequency||2} Einheiten gemacht hast.<div class="btn-row" style="margin-top:8px;"><button class="btn btn-small" onclick="insertAufbauWeek()">Aufbau-Woche einschieben</button><button class="btn btn-ghost btn-small" onclick="dismissBlockCheck()">${lbl} starten</button></div></div>`;
+  }
   // Empfehlung nach langer Pause: Block neu aufsetzen statt Deload fortführen
   const cbToday=getComebackState();
   // Nur anzeigen, solange die Rampe noch nicht laeuft. Sonst taucht der
@@ -3004,7 +3051,12 @@ function advanceCycleIfNeeded(){
   // Hybrid-Bedingung:
   // (a) Geplante Frequenz erreicht → klassisch vorrücken
   // (b) Mindestens 7 Tage vergangen UND mindestens 1 Training → robust vorrücken
-  const shouldAdvance=(trainingDates.size>=DATA.cycle.frequency) || (daysSinceAdvance>=7 && trainingDates.size>=1);
+  // Eingeschobene Aufbau-Wochen (requireFull) zählen nur mit voller Frequenz.
+  // Sonst rutscht man mit einer einzigen Einheit pro Woche durch den Aufbau
+  // und steht danach unvorbereitet im schweren Block.
+  const shouldAdvance=meso.requireFull
+    ? trainingDates.size>=DATA.cycle.frequency
+    : (trainingDates.size>=DATA.cycle.frequency) || (daysSinceAdvance>=7 && trainingDates.size>=1);
   if(shouldAdvance){
     meso.lastWeekAdvance=todayStr;
     if(meso.currentWeek>=meso.lengthWeeks)finishMesoAndAdvance();
@@ -3020,8 +3072,9 @@ function finishMesoAndAdvance(){
     const _today=new Date().toISOString().slice(0,10);
     const _phase=_cur.resumePhase||DATA.macro.blocks[DATA.macro.currentBlockIndex].phase;
     const _weeks=_cur.resumeWeeks||DATA.macro.blocks[DATA.macro.currentBlockIndex].weeks;
-    DATA.cycle.currentMeso={phase:_phase,startDate:_today,lengthWeeks:_weeks,currentWeek:1,lastWeekAdvance:_today};
-    showToast(`Wiedereinstieg geschafft. ${PHASE_DEFS[_phase].shortLabel||PHASE_DEFS[_phase].label} startet neu bei Woche 1.`,4500);
+    DATA.cycle.currentMeso={phase:_phase,startDate:_today,lengthWeeks:_weeks,currentWeek:1,lastWeekAdvance:_today,thinChecked:_cur.bridgeKind==='aufbau'};
+    const _lbl=PHASE_DEFS[_phase].shortLabel||PHASE_DEFS[_phase].label;
+    showToast(_cur.bridgeKind==='aufbau'?`Aufbau-Woche geschafft. ${_lbl} startet jetzt bei Woche 1.`:`Wiedereinstieg geschafft. ${_lbl} startet neu bei Woche 1.`,4500);
     return;
   }
   window._mesoJustFinished=true;
@@ -3724,7 +3777,7 @@ function renderCycle(){
 
   // Wochen-Beschreibungen je nach Phase
   function getWeekDescription(weekNum,totalWeeks,phaseId){
-    const isDeload=phaseId!=='wiedereinstieg'&&weekNum>=totalWeeks;
+    const isDeload=phaseId!=='wiedereinstieg'&&!DATA.cycle.currentMeso.isBridge&&weekNum>=totalWeeks;
     const def=PHASE_DEFS[isDeload?'deload':phaseId];
     let label;
     if(isDeload){
@@ -3835,7 +3888,7 @@ function renderCycle(){
       <div class="phase-name">${phaseDef.label}</div>
       <span class="badge ${phaseDef.badge}">Woche ${week}/${mesoLen}</span>
     </div>
-    <div style="color:var(--text-dim);font-size:12px;margin-top:2px;">${DATA.cycle.frequency}× pro Woche</div>
+    <div style="color:var(--text-dim);font-size:12px;margin-top:2px;">${DATA.cycle.frequency}× pro Woche${DATA.cycle.currentMeso.isBridge&&DATA.cycle.currentMeso.resumePhase?` · eingeschoben, danach startet ${PHASE_DEFS[DATA.cycle.currentMeso.resumePhase].shortLabel||DATA.cycle.currentMeso.resumePhase} bei Woche 1${DATA.cycle.currentMeso.requireFull?` · eine Woche zählt erst mit ${DATA.cycle.frequency} Einheiten`:''}`:''}</div>
     <div class="rir-hint">Diese Woche: <span class="rir-value">RIR ${rir}</span> · ${phaseDef.repsRange[0]}-${phaseDef.repsRange[1]} Wdh</div>
   </div>
 
@@ -5173,6 +5226,43 @@ function comebackFinishesToday(){
 // Wenn die Rampe durch ist, geht es NICHT direkt in einen Maxkraft-Block.
 // Nach einer langen Pause fehlt zuerst die Volumenbasis; Transmutation ohne
 // vorherige Akkumulation ist der klassische Weg in die Ueberlastung.
+// Prüft beim Start eines neuen Blocks, ob der Übergang trägt: Wurde der
+// vorige Block nur dünn trainiert oder liegt die letzte Einheit länger zurück,
+// bietet die App eine eingeschobene Aufbau-Woche an. Entscheiden tust du.
+function getBlockCheck(){
+  const meso=DATA.cycle&&DATA.cycle.currentMeso;
+  if(!meso||meso.isBridge||meso.thinChecked||meso.currentWeek!==1)return null;
+  if(isComebackActive())return null;
+  if(meso.phase!=='maxkraft'&&meso.phase!=='hypertrophie')return null;
+  const hist=DATA.cycle.mesoHistory||[];
+  const prev=hist[hist.length-1];
+  if(!prev)return null;
+  const dates=allTrainingDates();
+  if(dates.some(d=>d>meso.startDate))return null; // im neuen Block schon trainiert
+  const todayStr=new Date().toISOString().slice(0,10);
+  const freq=Math.max(1,DATA.cycle.frequency||2);
+  const planned=Math.max(1,(prev.weeks||1)*freq);
+  const done=dates.filter(d=>d>=prev.startDate&&d<=prev.endDate).length;
+  const gap=dates.length?daysBetweenIso(todayStr,dates[0]):0;
+  const thin=done/planned<0.7;
+  const longGap=gap>=10;
+  if(!thin&&!longGap)return null;
+  return{done,planned,gap,thin,longGap,prevPhase:prev.phase,phase:meso.phase};
+}
+function insertAufbauWeek(){
+  const cur=DATA.cycle.currentMeso;
+  const today=new Date().toISOString().slice(0,10);
+  DATA.cycle.currentMeso={phase:'hypertrophie',startDate:today,lengthWeeks:1,currentWeek:1,lastWeekAdvance:today,
+    isBridge:true,requireFull:true,bridgeKind:'aufbau',resumePhase:cur.phase,resumeWeeks:cur.lengthWeeks};
+  saveData(DATA);
+  const lbl=PHASE_DEFS[cur.phase]?(PHASE_DEFS[cur.phase].shortLabel||PHASE_DEFS[cur.phase].label):cur.phase;
+  showToast(`Aufbau-Woche eingeschoben. Nach ${DATA.cycle.frequency||2} Einheiten startet ${lbl} bei Woche 1.`,4500);
+  renderToday();
+}
+function dismissBlockCheck(){
+  DATA.cycle.currentMeso.thinChecked=true;
+  saveData(DATA);renderToday();
+}
 function finishComebackRamp(){
   const cur=DATA.cycle.currentMeso;
   const today=new Date().toISOString().slice(0,10);
@@ -5181,7 +5271,7 @@ function finishComebackRamp(){
   const targetWeeks=(cur.isBridge?cur.resumeWeeks:cur.lengthWeeks)||3;
   if(target==='maxkraft'){
     DATA.cycle.currentMeso={phase:'hypertrophie',startDate:today,lengthWeeks:3,currentWeek:1,
-      lastWeekAdvance:today,isBridge:true,resumePhase:'maxkraft',resumeWeeks:targetWeeks};
+      lastWeekAdvance:today,isBridge:true,requireFull:true,resumePhase:'maxkraft',resumeWeeks:targetWeeks};
     saveData(DATA);
     showToast('Wiedereinstieg geschafft. Jetzt 3 Wochen Aufbau mit 8-12 Wdh, danach startet Maxkraft neu bei Woche 1.',6500);
   }else{
