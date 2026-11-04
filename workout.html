@@ -1713,6 +1713,123 @@ function initWorkoutDraft(planKey,force=false){
   };
   saveWorkoutDraft();
 }
+// ===== NICHT GESPEICHERTE TRAININGS UND DATUM =====
+// Jede Eingabe landet sofort als Entwurf im Speicher, aber unter dem Datum des
+// Trainingstags. Am nächsten Tag wurde bisher nur nach dem heutigen Entwurf
+// gesucht, ältere blieben unsichtbar liegen. Diese Funktionen holen sie zurück.
+const ORPHAN_MAX_DAYS=30;
+function draftFilledSets(d){
+  return (d&&d.exercises||[]).reduce((a,ex)=>a+(ex.sets||[]).filter(s=>s.reps!==null&&s.reps!==undefined&&s.reps!=='').length,0);
+}
+function findOrphanDrafts(){
+  const todayStr=new Date().toISOString().slice(0,10);
+  const out=[];
+  let keys=[];
+  try{keys=Object.keys(localStorage).filter(k=>k.startsWith('kr_draft_'));}catch(e){return out;}
+  keys.forEach(k=>{
+    const m=k.match(/^kr_draft_(\d{4}-\d{2}-\d{2})_(.+)$/);
+    if(!m||m[1]>=todayStr)return;
+    if(currentWorkoutDraft&&currentWorkoutDraft.date===m[1]&&currentWorkoutDraft.planId===m[2])return;
+    let d;try{d=JSON.parse(localStorage.getItem(k));}catch(e){return;}
+    if(!d||!d.exercises)return;
+    const filled=draftFilledSets(d);
+    if(filled===0){try{localStorage.removeItem(k);}catch(e){}return;} // leere Altentwürfe aufräumen
+    if(daysBetweenIso(todayStr,m[1])>ORPHAN_MAX_DAYS)return;
+    // Für Datum und Plan schon ein gespeichertes Training vorhanden? Dann nicht nachfragen.
+    if((DATA.history||[]).some(h=>!h.legacy&&h.date===m[1]&&h.planId===d.planId))return;
+    const exCount=d.exercises.filter(ex=>(ex.sets||[]).some(s=>s.reps!==null&&s.reps!==undefined)).length;
+    out.push({key:k,date:m[1],planId:d.planId,filled,exCount});
+  });
+  return out.sort((a,b)=>b.date.localeCompare(a.date));
+}
+function resumeOrphanDraft(key){
+  let d;try{d=JSON.parse(localStorage.getItem(key));}catch(e){d=null;}
+  if(!d){showToast('Entwurf nicht mehr vorhanden');renderToday();return;}
+  // Heutigen, noch leeren Entwurf nicht stehen lassen
+  if(currentWorkoutDraft&&currentWorkoutDraft.date!==d.date&&draftFilledSets(currentWorkoutDraft)===0)clearWorkoutDraft();
+  d.restored=true;
+  currentWorkoutDraft=d;
+  stopSessionTimer();
+  renderToday();
+  window.scrollTo&&window.scrollTo(0,0);
+  showToast(`Training vom ${fmtDate(d.date)} geöffnet. Prüfen, ergänzen, dann abschließen.`,4500);
+}
+function discardOrphanDraft(key,date){
+  showModal(`<h2>Entwurf verwerfen?</h2>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;">Die eingetragenen Werte vom ${fmtDate(date)} werden gelöscht. Das lässt sich nicht rückgängig machen.</p>
+    <button class="btn btn-full" onclick="try{localStorage.removeItem('${key}')}catch(e){};closeModal();renderToday();">Verwerfen</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Abbrechen</button>`);
+}
+function leaveRestoredDraft(){
+  // Zurück zum heutigen Training, der Entwurf bleibt gespeichert
+  currentWorkoutDraft=null;
+  renderToday();
+}
+function isoMinusDays(iso,n){const d=new Date(iso+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-n);return d.toISOString().slice(0,10);}
+// Datum des laufenden Trainings ändern, bevor es abgeschlossen wird
+function showDraftDateModal(){
+  if(!currentWorkoutDraft)return;
+  const todayStr=new Date().toISOString().slice(0,10);
+  showModal(`<h2>Trainingsdatum</h2>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">An welchem Tag hast du dieses Training gemacht? Wochenziel, Serie und Pausen werden dann nach diesem Tag berechnet.</p>
+    <input type="date" id="draft-date-input" class="set-input" style="width:100%;font-size:17px;padding:10px;" value="${currentWorkoutDraft.date}" min="${isoMinusDays(todayStr,ORPHAN_MAX_DAYS)}" max="${todayStr}">
+    <button class="btn btn-full" style="margin-top:14px;" onclick="applyDraftDate()">Übernehmen</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Abbrechen</button>`);
+}
+function applyDraftDate(){
+  const el=document.getElementById('draft-date-input');
+  const nd=el&&el.value;
+  const todayStr=new Date().toISOString().slice(0,10);
+  if(!nd||!/^\d{4}-\d{2}-\d{2}$/.test(nd)){showToast('Bitte ein Datum wählen');return;}
+  if(nd>todayStr){showToast('Das Datum liegt in der Zukunft');return;}
+  const d=currentWorkoutDraft;
+  if(!d||nd===d.date){closeModal();return;}
+  const newKey=`kr_draft_${nd}_${d.planId}`;
+  try{
+    const ex=localStorage.getItem(newKey);
+    if(ex&&draftFilledSets(JSON.parse(ex))>0){showToast(`Für den ${fmtDate(nd)} gibt es schon einen Entwurf von ${d.planId}`,4000);return;}
+  }catch(e){}
+  clearWorkoutDraft();
+  d.date=nd;
+  d.restored=nd!==todayStr;
+  saveWorkoutDraft();
+  closeModal();renderToday();
+  showToast(`Training auf ${fmtDate(nd)} gesetzt`);
+}
+// Datum eines bereits gespeicherten Trainings ändern (Trainings-Verlauf)
+function showMoveDayModal(oldDate){
+  const todayStr=new Date().toISOString().slice(0,10);
+  showModal(`<h2>Datum ändern</h2>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">Das Training vom <strong style="color:var(--text);">${fmtDate(oldDate)}</strong> wird mit allen Übungen auf den neuen Tag verschoben. Wochenziel, Serie und Anwesenheit richten sich danach.</p>
+    <input type="date" id="move-day-input" class="set-input" style="width:100%;font-size:17px;padding:10px;" value="${oldDate}" max="${todayStr}">
+    <button class="btn btn-full" style="margin-top:14px;" onclick="applyMoveDay('${oldDate}')">Verschieben</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="closeModal()">Abbrechen</button>`);
+}
+function applyMoveDay(oldDate){
+  const el=document.getElementById('move-day-input');
+  const nd=el&&el.value;
+  const todayStr=new Date().toISOString().slice(0,10);
+  if(!nd||!/^\d{4}-\d{2}-\d{2}$/.test(nd)){showToast('Bitte ein Datum wählen');return;}
+  if(nd>todayStr){showToast('Das Datum liegt in der Zukunft');return;}
+  if(nd===oldDate){closeModal();return;}
+  const clash=(DATA.history||[]).some(h=>!h.legacy&&h.date===nd);
+  if(clash&&!window._moveDayConfirm){
+    window._moveDayConfirm=true;
+    showToast(`Am ${fmtDate(nd)} gibt es schon ein Training. Nochmal tippen, um beide zusammenzulegen.`,5000);
+    setTimeout(()=>{window._moveDayConfirm=false;},6000);
+    return;
+  }
+  window._moveDayConfirm=false;
+  let n=0;
+  (DATA.history||[]).forEach(h=>{if(!h.legacy&&h.date===oldDate){h.date=nd;n++;}});
+  (DATA.workoutSessions||[]).forEach(w=>{if(w.date===oldDate)w.date=nd;});
+  if(typeof invalidateHistoryIndex==='function')invalidateHistoryIndex();
+  _cbMemo={key:null,val:null};
+  saveData(DATA);
+  closeModal();
+  renderStats();
+  showToast(`${n} ${n===1?'Übung':'Übungen'} auf ${fmtDate(nd)} verschoben`);
+}
 function saveWorkoutDraft(){if(!currentWorkoutDraft)return;localStorage.setItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`,JSON.stringify(currentWorkoutDraft));}
 function clearWorkoutDraft(){if(!currentWorkoutDraft)return;localStorage.removeItem(`kr_draft_${currentWorkoutDraft.date}_${currentWorkoutDraft.planId}`);}
 function renderToday(){
@@ -1722,7 +1839,7 @@ function renderToday(){
     return;
   }
   let planKey;
-  if(currentWorkoutDraft&&currentWorkoutDraft.date===todayStr)planKey=currentWorkoutDraft.planId;
+  if(currentWorkoutDraft&&(currentWorkoutDraft.date===todayStr||currentWorkoutDraft.restored))planKey=currentWorkoutDraft.planId;
   else{
     const saved=loadDraftFromStorage(todayStr);
     if(saved){currentWorkoutDraft=saved;planKey=saved.planId;}
@@ -1733,11 +1850,23 @@ function renderToday(){
   const rir=getWeeklyRIR();
   const mesoLen=getMesoLength();
   const week=getCurrentWeek();
-  const daySkip=getDaySkip(todayStr,planKey);
-  let html=`
+  const workoutDate=currentWorkoutDraft?currentWorkoutDraft.date:todayStr;
+  const isPastDraft=workoutDate!==todayStr;
+  const daySkip=isPastDraft?null:getDaySkip(todayStr,planKey);
+  let html='';
+  // Nicht gespeicherte Trainings von früheren Tagen
+  if(!isPastDraft){
+    findOrphanDrafts().slice(0,3).forEach(o=>{
+      const pName=DATA.plans[o.planId]?DATA.plans[o.planId].name:o.planId;
+      html+=`<div class="suggest" style="margin-bottom:10px;">💾 <strong>Nicht abgeschlossenes Training vom ${fmtDate(o.date)}</strong> (${escapeHtml(pName)}, ${o.filled} ${o.filled===1?'Satz':'Sätze'} in ${o.exCount} ${o.exCount===1?'Übung':'Übungen'} eingetragen). Deine Werte sind noch da. Öffnen, prüfen und abschließen, dann zählt es für den richtigen Tag.<div class="btn-row" style="margin-top:8px;"><button class="btn btn-small" onclick="resumeOrphanDraft('${o.key}')">Öffnen und abschließen</button><button class="btn btn-ghost btn-small" onclick="discardOrphanDraft('${o.key}','${o.date}')">Verwerfen</button></div></div>`;
+    });
+  }else{
+    html+=`<div class="suggest" style="margin-bottom:10px;">📅 <strong>Nachtrag für ${fmtDateLong(workoutDate)}</strong>. Beim Abschließen wird das Training für diesen Tag gespeichert.<div class="btn-row" style="margin-top:8px;"><button class="btn btn-ghost btn-small" onclick="leaveRestoredDraft()">Zurück zu heute</button></div></div>`;
+  }
+  html+=`
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:10px;">
       <div style="flex:1;min-width:0;">
-        <div style="color:var(--text-dim);font-size:12px;">${fmtDateLong(todayStr)}</div>
+        <button onclick="showDraftDateModal()" title="Trainingsdatum ändern" style="background:none;border:0;padding:0;font:inherit;color:${isPastDraft?'var(--accent)':'var(--text-dim)'};font-size:12px;cursor:pointer;">${fmtDateLong(workoutDate)} <span style="opacity:.7;">✎</span></button>
         <h1 style="margin-top:2px;">${plan.name}</h1>
       </div>
       <div style="text-align:right;flex-shrink:0;">
@@ -1845,7 +1974,7 @@ function renderToday(){
     const def=getExerciseInfo(draftEx.exerciseId);
     if(!def)return;
     const isTime=def.type==='time',isBW=def&&def.bodyweight&&!def.allowAddedWeight;
-    const exSkip=isExerciseSkipped(todayStr,planKey,draftEx.exerciseId);
+    const exSkip=isExerciseSkipped(workoutDate,planKey,draftEx.exerciseId);
     const last=getLastWorkout(draftEx.exerciseId);
     const sug=progressionSuggestion(draftEx.exerciseId,draftEx);
     const advice=intelligentExerciseAdvice(draftEx.exerciseId,draftEx);
@@ -2046,6 +2175,7 @@ function onSetInput(inputEl){
   const oldVal=currentWorkoutDraft.exercises[exIdx].sets[setIdx][field];
   const newVal=(value===''||isNaN(v))?null:v;
   currentWorkoutDraft.exercises[exIdx].sets[setIdx][field]=newVal;
+  if(!currentWorkoutDraft.restored)currentWorkoutDraft.lastInputAt=Date.now();
   saveWorkoutDraft();
   updateSetVisualState(exIdx,setIdx);
   // FIX: Sobald in dieser Übung etwas eingetragen wird, Pause-Timer ANDERER Übungen stoppen
@@ -2076,6 +2206,14 @@ let sessionTimerId=null;
 //   sessionPauseStart – Unix-ms, wann die aktuell laufende Pause begann (null = läuft)
 function getSessionElapsedSec(){
   if(!currentWorkoutDraft||!currentWorkoutDraft.sessionStartTime)return 0;
+  // Nachträglich geöffnetes Training: Dauer bis zur letzten Eingabe, nicht bis jetzt
+  if(currentWorkoutDraft.restored){
+    const d=currentWorkoutDraft;
+    if(!d.lastInputAt)return 0;
+    const pausedR=(d.sessionPausedMs||0)+(d.sessionPauseStart&&d.sessionPauseStart<d.lastInputAt?(d.lastInputAt-d.sessionPauseStart):0);
+    const v=Math.floor((d.lastInputAt-d.sessionStartTime-pausedR)/1000);
+    return v>0&&v<6*3600?v:0;
+  }
   const paused=currentWorkoutDraft.sessionPausedMs||0;
   const activePause=currentWorkoutDraft.sessionPauseStart?(Date.now()-currentWorkoutDraft.sessionPauseStart):0;
   return Math.floor((Date.now()-currentWorkoutDraft.sessionStartTime-paused-activePause)/1000);
@@ -3697,7 +3835,7 @@ function renderTrainingLog(){
     });
     items+=`<details class="log-day">
       <summary class="log-day-head"><span class="log-day-date">${fmtDate(day.date)}</span><span class="log-day-meta">${day.exercises.length} Übungen${planTxt}${durTxt}</span></summary>
-      <div class="log-day-body">${body}</div>
+      <div class="log-day-body">${body}<button class="btn btn-ghost btn-small" style="margin-top:8px;" onclick="showMoveDayModal('${day.date}')">📅 Datum ändern</button></div>
     </details>`;
   });
   const more=log.length>_logLimit?`<button class="btn btn-secondary btn-small" style="margin-top:10px;width:100%;" onclick="_logLimit+=15;renderStats();">Mehr laden (${log.length-_logLimit} weitere)</button>`:'';
