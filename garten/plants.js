@@ -1158,6 +1158,22 @@ P("prunus","Steinobst (Prunus, Art unbekannt)","Prunus spec.","obst","🍒",
  "K|5-8||Auf Monilia achten: welke Triebspitzen und Fruchtmumien entfernen und in den Restmüll geben."],
 {r:0.6, baum:1});
 
+P("weissdorn","Weißdorn","Crataegus monogyna / laevigata","gehoelz","🤍",
+"Heimischer, dorniger Strauch für Hecken. Weiße Blüten im Mai, rote Früchte im Herbst, wertvoll für Insekten und Vögel. Weißdorn ist Wirtspflanze des Feuerbrands, der auch Apfel, Birne und Quitte befällt.",
+["S|6-7|1|Formschnitt nach der Brutzeit, vorher auf Nester prüfen.",
+ "K|5-7||Auf Feuerbrand achten: Triebspitzen, die wie verbrannt aussehen und sich hakenförmig krümmen, großzügig ins gesunde Holz zurückschneiden, Schnittgut in den Restmüll, Schere desinfizieren. Bei Verdacht die Fachberatung informieren."],
+{r:0.6,hecke:1});
+P("zaubernuss","Zaubernuss","Hamamelis × intermedia / mollis","gehoelz","💛",
+"Ziergehölz, das mitten im Winter blüht: gelbe bis rote, fadenförmige, duftende Blüten von Dezember bis März. Langsam wachsend, sonnig bis halbschattig, humoser Boden. Erlaubt als Ziergehölz, Höhe laut GO 8 bis 2 m halten.",
+["S|3-4|1|Kaum schneiden: nur nach der Blüte störende oder abgestorbene Zweige entfernen. Wildtriebe aus der Unterlage am Boden abreißen."],
+{r:0.8});
+P("strandflieder","Strandflieder (Meerlavendel)","Limonium latifolium","zier","💜",
+"Mehrjährige Staude mit großen, luftigen Rispen aus kleinen lavendelblauen Blüten von Juli bis September. Volle Sonne, durchlässiger, eher trockener Boden, gut im Kübel. Die Blüten lassen sich gut trocknen.",
+["E|7-8||Blütenrispen zum Trocknen schneiden, wenn die meisten Blüten offen sind, und kopfüber aufhängen.",
+ "S|3|2|Alte Blütenstände und braune Blätter im Frühjahr entfernen.",
+ "W|11-3||Im Kübel: an eine geschützte Wand stellen, auf Holzfüße setzen und vor Winternässe schützen."],
+{r:0.3});
+
 P("maibeere","Maibeere (Kamtschatka-Heckenkirsche)","Lonicera kamtschatica (L. caerulea)","beeren","🫐",
 "Sehr frostharter Beerenstrauch, etwa 1 bis 1,5 m hoch. Die länglichen, blauen Beeren reifen schon im Mai und Juni, als erstes Beerenobst im Jahr, und schmecken süß-säuerlich wie Heidelbeeren. Sonnig bis halbschattig, frischer Boden. Für guten Fruchtansatz braucht sie eine zweite, gleichzeitig blühende Sorte in der Nähe.",
 ["E|5-6||Ernten, wenn die Beeren innen ganz dunkel sind und nicht mehr bitter schmecken. Vor Amseln schützen (Netz).",

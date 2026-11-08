@@ -100,7 +100,7 @@ function defaultState() {
       o("gemuese1","nutz",10.6,0.6,3.9,4.6,"Gemüsebeet oben (Blattsenf, Möhren)"),
       o("pergola","pergola",8.5,9.6,1.8,6.0,"Pergola (6 Holzbögen über dem Rasenweg)",{note:"Laubengang aus Holzbögen mit Rankgittern, unten Rasenweg. Daran Weinreben (links) und Kletterrosen (rechts). Holz teils vergraut und schwarz: auf Fäulnis an den Pfostenfüßen prüfen.",tasks:["A|4-5||Pergola prüfen: Pfostenfüße und Verbindungen auf Fäulnis und Festigkeit kontrollieren, lockere Teile nachschrauben, bei Bedarf mit Holzschutz streichen.|e"]}),
       o("kompost","kompost",16.9,20.15,0.9,0.9,"Komposter (Drahtgestell, 90 × 90 × 75 cm)",{note:"Drahtkomposter am Plattenweg zur Außentür, oben mit Stroh abgedeckt.",tasks:["K|3-11||Kompost befüllen: Grünes (Rasenschnitt, Küchenreste) und Braunes (Laub, Stroh, Häcksel) im Wechsel schichten, bei Trockenheit leicht anfeuchten. Keine kranken Pflanzen, Samenunkräuter oder Wurzelunkräuter wie Giersch hinein (GO 9.5).|m","K|11||Kompost für den Winter mit Laub oder Stroh abdecken, damit er nicht auskühlt und nicht ausgewaschen wird.","K|3-4,9-10||Kompost umsetzen: Gitter abheben, daneben wieder aufstellen und das Material umgeschichtet einfüllen. Unten liegt nach etwa einem Jahr reifer Kompost: sieben und auf Beete und Baumscheiben verteilen."]}),
-      o("wasserschacht","wasser",3.06,20.02,1.0,0.9,"Wasserschacht mit Uhr"),
+      o("wasserschacht","wasser",7.4,1.0,0.6,0.7,"Wasserschacht mit Uhr",{note:"Am rechten Ende vom Weg oben, dort wo er auf den Nordweg trifft."}),
       o("standrohr","wasser",3.06,0.47,0.4,0.4,"Standrohr mit Absperrhahn"),
       o("rasen1","rasen",8.2,7.7,2.4,7.6,"Rasenweg durch die Pergola"),
       o("rasen2","rasen",10.6,15.2,7.9,6.2,"Rasen unten rechts (Obstbäume)"),
@@ -132,7 +132,7 @@ function defaultState() {
       o("weg-himbeer","weg",14.6,0.12,3.9,0.58,"Gehweg oben rechts (über dem Himbeerfeld)",{note:"Schmaler Weg zwischen Zaun und Himbeerfeld, so breit wie das Himbeerfeld. Tiefe geschätzt: bitte nachmessen."}),
       o("gemuese-mitte","nutz",10.6,5.3,7.9,5.1,"Gemüsefeld Mitte (Blattsenf, Mais, Amarant, Lauch, Kohl)",{note:"Auf den Fotos viel roter und grüner Blattsenf, Fenchel oder Dill, Möhren, Lauch und dazwischen viele Brennnesseln.",tasks:["K|11-3||Brennnesseln mit Wurzeln aus dem Gemüsefeld ziehen (Handschuhe). Tipp: nicht wegwerfen, sondern als Brennnesseljauche ansetzen, das ist ein guter Dünger für Tomaten.|e","K|11||Abgeerntetes Mais- und Amarantstroh abschneiden und kompostieren, Samenstände vom Amarant vorher entsorgen."]}),
       o("beet-kante","nutz",12.7,10.6,5.1,4.4,"Beet mit Kantensteinen (Mangold, Rote Bete)"),
-      o("hecke-rechts","tor",18.55,0.3,0.4,21.0,"Hecke an der rechten Grenze (zur Straße)",{note:"Dichte, kleinblättrige Hecke, dahinter Häuser. Brombeeren ranken hinein. GO 5.4 verbietet Hecken als Abgrenzung zu Nachbargärten. Klären, ob die Hecke zum Garten gehört oder eine Außengrenze der Anlage ist.",tasks:["S|6-7|1|Hecke an der Gartenseite in Form schneiden, vorher auf Vogelnester prüfen.","S|11-2|2|Wilde Brombeeren aus der Hecke mit Wurzeln entfernen.|e"]}),
+      o("hecke-rechts","tor",18.55,0.3,0.4,21.0,"Ligusterhecke an der rechten Grenze (zur Straße)",{note:"Hecke aus Ovalblättrigem Liguster (Ligustrum ovalifolium), mehrfach durchsetzt von Haselnuss oder Zaubernuss, Efeu, Eibe und Weißdorn. Brombeeren ranken hinein. Haselnuss und Eibe (Nadelgehölz) sind laut GO 9.1 nicht erlaubt. GO 5.4 verbietet Hecken als Abgrenzung zu Nachbargärten: klären, ob die Hecke zum Garten gehört oder eine Außengrenze der Anlage ist.",tasks:["S|6-7|1|Hecke an der Gartenseite in Form schneiden, vorher auf Vogelnester prüfen.","S|11-2|2|Wilde Brombeeren aus der Hecke mit Wurzeln entfernen.|e"]}),
       o("aussentuer","tor",18.55,22.3,0.4,1.1,"Außentür (grünes Tor)",{tasks:["A|4-9||Außentür prüfen: Scharniere ölen, Schloss gängig halten, Efeu am Rahmen zurückschneiden."]}),
       o("reisig","sonst",10.7,4.3,1.2,0.9,"Reisighaufen (Biotop)",{note:"Unterschlupf für Igel und Insekten (GO 9.7). Nicht verbrennen (GO 9.6)."}),
       o("vogeltraenke","sonst",13.7,15.8,0.5,0.5,"Vogeltränke",{tasks:["K|4-10||Vogeltränke alle 2 bis 3 Tage reinigen und frisch füllen.|m"]}),
@@ -143,7 +143,7 @@ function defaultState() {
       o("schachtdeckel","wasser",7.4,7.0,0.6,0.7,"Dunkle Platte im Plattenweg (Schacht?)",{note:"Große dunkle Platte am Übergang zum Nordweg. Vielleicht ein Schachtdeckel (Wasserleitung, Absperrung) oder nur eine Ersatzplatte: bitte klären."}),
       o("zaun-oben","tor",0.3,0,18.5,0.12,"Maschendrahtzaun zum Anlagenweg"),
       o("zapfstelle","wasser",12.4,19.6,0.5,0.5,"Wasserzapfstelle (Säule mit Hahn)",{note:"Rote Betonsäule mit Wasserhahn auf dem Rasen vor der Laube.",tasks:["A|10-11||Zapfstelle winterfest machen: Hahn öffnen und offen lassen, nachdem die Leitung entleert ist (GO 4.2). Hahn bei Bedarf mit Dämmung umwickeln.|e","A|3-4||Zapfstelle beim Wasser-Anstellen auf Dichtheit prüfen."]}),
-      o("beet-lavendel","zier",10.5,13.5,2.0,2.0,"Kreisbeet rechts der Pergola (Randsteine, Ø ca. 2 m)",{round:1,note:"Rundes, mit Randsteinen eingefasstes Beet rechts neben der Pergola, Lage nach Luftbild. Darin Sonnwend-Wolfsmilch, Lavendel und Kalifornischer Mohn: alles Pflanzen für Sonne und eher mageren, durchlässigen Boden. Wenig oder gar nicht düngen.",tasks:["K|4-9||Randsteine freihalten: Rasen, der in das Kreisbeet wächst, an der Kante abstechen.|m"]}),
+      o("beet-lavendel","zier",10.5,13.5,2.0,2.0,"Kreisbeet rechts der Pergola (Randsteine, Ø ca. 2 m)",{round:1,note:"Rundes, mit Randsteinen eingefasstes Beet rechts neben der Pergola, Lage nach Luftbild. Bepflanzt mit Lavendel und Sonnenhut (Echinacea, im November 2026 neu gesetzt): beide mögen Sonne und durchlässigen Boden. Wenig düngen, Staunässe vermeiden.",tasks:["K|4-9||Randsteine freihalten: Rasen, der in das Kreisbeet wächst, an der Kante abstechen.|m"]}),
       o("weg-nord","weg",7.4,0.35,0.6,7.3,"Plattenweg Nord (Pergola-Ende bis Gartentor-Weg)"),
       o("beet-nord","nutz",3.1,2.9,4.3,3.95,"Beet nördlich vom Querweg (Pfirsich, Solarleuchten)"),
       o("beet-ost-nord","rasen",8.0,1.4,2.5,5.45,"Rasen östlich vom Nordweg"),
@@ -171,7 +171,7 @@ function defaultState() {
       p("p2","apfel",17.3,16.6,{label:"Apfel 'Weißer Klarapfel'",form:"halb",r:1.3,note:"Laut Etikett: Weißer Klarapfel. Sehr früher Sommerapfel, reif ab Ende Juli. Erntereif, wenn die Schale von grün nach hellgelb wechselt. Nicht lagerfähig und schnell mehlig: rasch essen oder zu Apfelmus verarbeiten. Neigt zu Ertragswechsel, deshalb bei starkem Behang ausdünnen."}),
       p("p6","pflaume",0,0,{unplaced:1,label:"Pflaume (Halbstamm)",form:"halb",note:""}),
       p("p7","pflaume",0,0,{unplaced:1,label:"Pflaume (Halbstamm)",form:"halb",note:""}),
-      p("p8","pflaume",7.15,7.7,{label:"Pflaume 'Bleue'",form:"halb",r:0.8,note:"Laut Etikett: Prunus domestica 'Bleue', vermutlich 'Bleue de Belgique' (blaue Pflaume, gilt als selbstfruchtbar, Ernte etwa August bis September). Junger Baum mit weißem Stamm direkt östlich vom Gewächshaus am Plattenweg. In der Wertermittlung stand vermutlich „Kirsche-Halbstamm, Mirabelle“: bitte mit dem Vorstand abgleichen."}),
+      p("p8","pflaume",6.75,2.4,{label:"Pflaume 'Bleue'",form:"halb",r:0.8,note:"Laut Etikett: Prunus domestica 'Bleue', vermutlich 'Bleue de Belgique' (blaue Pflaume, gilt als selbstfruchtbar, Ernte etwa August bis September). Junger Baum mit weißem Stamm am rechten Ende vom Blumenbeet am Gartentor. In der Wertermittlung stand vermutlich „Kirsche-Halbstamm, Mirabelle“: bitte mit dem Vorstand abgleichen."}),
       p("p10","pflaume",1.1,2.6,{label:"Zwergpflaume 'Nano'",form:"busch",r:1.0,note:"Laut Etikett: Prunus domestica 'Nano', eine Zwergpflaume. Bleibt klein (etwa 1,5 bis 2 m), gilt als selbstfruchtbar, Ernte etwa August bis September. Mehrstämmig mit Pfählen, Stamm geweißelt. Steht im Beet links vom Hauptweg direkt am Gartentor. Anbindestrick prüfen, damit er nicht einschneidet."}),
       p("p11","reneklode",14.3,16.4,{label:"Reneklode",form:"busch",note:"In der Wertermittlung die Zeile „Pflaume Busch“ mit Bemerkung „Reneklode, zu tief gepflanzt, Pflegerückstand“ (Renekloden gehören zu den Pflaumen). Zu tief gepflanzt heißt: Veredlungsstelle unter der Erde (siehe Anleitung „Obstbaum richtig pflanzen“). Wurzelausläufer konsequent entfernen."}),
       p("p12","pfirsich",11.3,16.2,{label:"Pfirsich 'Rubira'",form:"busch",r:1.3,note:"Rotfleischige Sorte (Weinbergpfirsich-Typ), reif etwa Ende August bis September. Gilt als vergleichsweise robust gegen die Kräuselkrankheit, trotzdem im Winter vor Regen schützen, wenn möglich. Steht oben links auf der Baumfläche unten rechts. In der Wertermittlung vermutlich der Eintrag „Pfirsich Busch“."}),
@@ -229,7 +229,7 @@ function defaultState() {
       p("p18","suesskirsche",14.0,21.0,{label:"Kirsche (zwischen Flieder und Gerätehaus)",form:"busch",r:0.9,note:"Steht vor dem Flieder in Richtung Gerätehaus. Lage und Kronengröße geschätzt. Ob Süß- oder Sauerkirsche, bitte prüfen: Sauerkirschen tragen am einjährigen Holz und werden anders geschnitten."}),
       p("p19","prunus",18.1,19.8,{label:"Prunus, vermutlich Kirsche (klein, an der rechten Hecke)",form:"busch",r:0.45,note:"Kleines Steinobst rechts neben der kleinen Feige, fast an der Hecke. Gattung vermutlich Prunus, die Art ist unsicher: Kirsche, Pflaume, Mirabelle, Kirschpflaume oder Zierkirsche sind möglich. Bestimmen lässt es sich am besten im Frühjahr an Blüte und Blatt, im Sommer an der Frucht. Kirschrinde hat oft waagerechte Korkstreifen (Lentizellen). Ist sie immergrün mit ledrigen Blättern, wäre es Kirschlorbeer: darauf soll laut GO 8 verzichtet werden. Bitte prüfen."}),
       p("z40","holunder",17.35,19.7,{label:"Schwarzer Holunder (über dem Komposter)",r:0.8,note:"Schwarzer Holunder knapp über dem Komposter. Laut GO 9.1 ist Holunder nur kleinwüchsig erlaubt. Die normale Art wird mehrere Meter hoch: durch Auslichten jedes Winter klein halten und mit dem Vorstand klären, ob er bleiben darf. Beeren nur gekocht verwenden."}),
-      p("b12","maibeere",15.6,23.2,{label:"Maibeere 'Aurora' (Ecke vor dem Geräteschuppen)",note:"Lonicera kamtschatica 'Aurora', laut Angabe unten links an der Ecke vor dem Geräteschuppen. Lage geschätzt, bitte auf der Karte verschieben."}),
+            p("b12","maibeere",11.0,20.9,{label:"Maibeere 'Aurora'",note:"Lonicera kamtschatica 'Aurora', am unteren linken Rand der Rasenfläche mit den Obstbäumen."}),
       p("v3","haselnuss",18.0,20.3,{label:"Verdacht: Haselnuss (oder Zaubernuss)",r:1.3,flag:"verdacht",note:"Großer Strauch hinter dem Komposter an der Hecke mit breiten, gesägten, im Herbst gelben Blättern. Das passt zu Haselnuss (laut GO 9.1 nicht erlaubt) oder zu Zaubernuss (Hamamelis, erlaubt). Unterscheidung: Haselnuss hat viele Bodentriebe, im Februar gelbe Würstchen-Kätzchen und im Herbst Nüsse. Zaubernuss blüht im Winter mit gelben oder roten, fädigen Blüten."}),
       p("z23","strauchrose",8.4,15.6,{label:"Rose im Kübel (links am Pergola-Eingang)",note:"Weißer Kübel. Im Winter Kübel mit Vlies oder Jute einpacken und auf Holzfüße stellen."}),
       p("z24","strauchrose",10.4,15.6,{label:"Rose im Kübel (rechts am Pergola-Eingang)",note:"Weißer Kübel mit Stäben. Im Winter Kübel einpacken."}),
@@ -241,8 +241,14 @@ function defaultState() {
       p("z28","rhaphiolepis",10.75,15.85,{label:"Indischer Weißdorn 'Springtime' (Kübel)",note:"Laut Etikett: Rhaphiolepis indica 'Springtime'. Steht im weißen Kübel am Pergola-Ende Richtung Laube. Nur bedingt winterhart: Kübel einpacken, bei Dauerfrost in den Wintergarten stellen."}),
       p("p16","nashi",12.7,15.6,{label:"Nashi-Birne",form:"busch",r:0.9,note:"Laut Etikett „Nashi“. Junger Baum mit Pfahl auf dem Rasen unten rechts, Lage geschätzt. Möglicherweise ist das die „Birne (Viertelstamm)“ aus der Wertermittlung: bitte prüfen."}),
       p("g28","lavendel",11.9,14.2,{label:"Lavendel (Kreisbeet)"}),
-      p("kb-wm","sonnwend-wolfsmilch",11.0,14.65,{label:"Sonnwend-Wolfsmilch (Kreisbeet)"}),
-      p("kb-mohn","goldmohn",11.75,15.0,{label:"Kalifornischer Mohn (Kreisbeet)"}),
+      p("kb-sh","sonnenhut",11.0,14.75,{label:"Sonnenhut (Echinacea, Kreisbeet)",qty:"mehrere",planted:"2026-11-08"}),
+      p("zierahorn1","zierahorn",3.55,20.45,{label:"Zierahorn (neu gepflanzt)",planted:"2026-11-08",note:"Neu gepflanzt an der Stelle, wo vorher der Wasserschacht eingezeichnet war. Höhe laut GO 8 bis 2 m halten."}),
+      p("strandflieder1","strandflieder",8.3,14.9,{label:"Strandflieder im Kübel (Pergola links unten)",note:"Steht im Kübel unten an der linken Seite der Pergola. Art laut Etikett prüfen: meist Limonium latifolium (winterhart, mehrjährig) oder die einjährige Statice (Limonium sinuatum)."}),
+      p("h-lig","liguster",18.75,11.0,{label:"Liguster (Ligustrum ovalifolium), Hauptart der Hecke",note:"Ovalblättriger Liguster: hält das Laub in milden Wintern lange (wintergrün). Formschnitt im Sommer nach der Brutzeit."}),
+      p("h-hasel","haselnuss",18.75,4.0,{label:"Haselnuss oder Zaubernuss in der Hecke",flag:"verdacht",note:"Lage geschätzt. Unterscheidung: Die Zaubernuss (Hamamelis, erlaubt) blüht im Winter mit gelben bis roten, fadenförmigen Blütenblättern, ihre Blätter sind glatter. Die Haselnuss (nicht erlaubt, GO 9.1) hat weich behaarte, doppelt gesägte Blätter und hängende Kätzchen ab Februar. Im Januar und Februar ansehen, dann ist es eindeutig."}),
+      p("h-eibe","eibe",18.75,7.5,{label:"Eibe in der Hecke",note:"Lage geschätzt. Nadelgehölz, laut GO 9.1 nicht erlaubt. Stark giftig."}),
+      p("h-efeu","efeu",18.75,14.5,{label:"Efeu in der Hecke",note:"Lage geschätzt."}),
+      p("h-weissdorn","weissdorn",18.75,18.0,{label:"Weißdorn in der Hecke",note:"Lage geschätzt."}),
       p("wr-duo","weinrebe",10.15,9.85,{label:"Bio Duo-Weinrebe (oben rechts an der Pergola)",note:"Laut Etikett: Bio-Duo-Weinrebe mit einer blauen und einer weißen Sorte, süß-säuerlich, mehltautolerant, selbstfruchtbar, Standort Sonne, Ernte September bis Oktober. Bei Duo-Reben sind meist zwei Pflanzen zusammen gesetzt: Sind zwei Stämme erkennbar, beim Winterschnitt beide erhalten, damit beide Sorten weiter tragen."}),
       p("z29","strauchrose",10.35,14.2,{label:"Rose mit Hagebutten (Pergola-Ende)",note:"Ungefüllte Blüten und viele Hagebutten: Hagebutten über den Winter für die Vögel hängen lassen."}),
 ,
@@ -254,7 +260,7 @@ function defaultState() {
 
 /* ============ Speicher ============ */
 const KEY = "kleingarten-v1";
-const MAPV = 21;
+const MAPV = 22;
 let S;
 let STORAGE_OK = true;
 function load() {
@@ -321,8 +327,32 @@ function status(ok, task, m) {
   if (task.ms.has(nextM(m))) return "soon";
   return task.rep === "e" ? "open" : "off";
 }
+/* Pflanzdatum und Anwachsphase */
+function plantAge(pl) {
+  if (!pl.planted) return null;
+  const d = new Date(pl.planted + "T12:00:00"); if (isNaN(d)) return null;
+  const days = Math.floor((now() - d) / 864e5);
+  return { d, days, year: Math.max(1, Math.floor(days / 365) + 1) };
+}
+function isWoody(L) { return !!(L.baum || L.cat === "gehoelz" || L.cat === "beeren" || L.cat === "obst"); }
+function youngTasks(pl) {
+  const a = plantAge(pl); if (!a || a.days < 0) return [];
+  const L = lib(pl), out = [];
+  const woody = isWoody(L), limit = woody ? 3 : 1;
+  if (a.year > limit) return out;
+  out.push(parseTask(`K|4-9||Anwachsphase (${woody ? "1. bis 3." : "1."} Standjahr): bei Trockenheit lieber einmal pro Woche durchdringend gießen${woody ? " (bei Gehölzen etwa 10 bis 20 Liter)" : ""} als täglich wenig. Wurzelbereich unkrautfrei halten und mulchen.|m`, "Y1"));
+  if (woody) out.push(parseTask("K|3-4||Nach dem Winter die Pflanzung prüfen: Frost kann frisch gesetzte Pflanzen anheben, dann Erde andrücken. Pfahl und Bindung kontrollieren und lockern, damit nichts einschnürt.", "Y2"));
+  if (L.baum) out.push(parseTask("S|2-3|2|Erziehungsschnitt in den ersten Standjahren: Mitteltrieb und 3 bis 4 gut verteilte Leitäste aufbauen, Konkurrenztriebe entfernen. Siehe Anleitung zum Obstbaumschnitt.", "Y3"));
+  return out;
+}
+function plantedHTML(pl) {
+  const a = plantAge(pl); if (!a) return "";
+  const L = lib(pl), woody = isWoody(L);
+  const young = a.days >= 0 && a.year <= (woody ? 3 : 1);
+  return `<p class="note">🗓️ Gepflanzt am ${a.d.toLocaleDateString("de-DE")} · ${a.days < 0 ? "Pflanzung geplant" : a.year + ". Standjahr"}${young ? `<br>🌱 Anwachsphase: Gießen bei Trockenheit ist jetzt besonders wichtig${L.baum ? ", in den ersten Jahren wird der Baum mit dem Erziehungsschnitt aufgebaut" : ""}. Die passenden Aufgaben stehen im Kalender.` : ""}</p>`;
+}
 function ownerTasks(kind, item) {
-  if (kind === "p") return lib(item).T.concat((item.tasks || []).map((s, i) => parseTask(s, "C" + i)));
+  if (kind === "p") return lib(item).T.concat((item.tasks || []).map((s, i) => parseTask(s, "C" + i)), youngTasks(item));
   if (kind === "o") {
     const T = TYPES[item.type] || {};
     let arr = T.lib && LIBM[T.lib] ? LIBM[T.lib].T.slice() : [];
@@ -909,6 +939,7 @@ function plantSheet(pl) {
   ${pl.unplaced ? `<div class="warnbox">📋 Steht in der Wertermittlung, wurde aber noch nicht im Garten gefunden. <button class="btn sm" onclick="A.placeExisting('${pl.id}')">📍 Auf Karte setzen</button></div>` : ""}
   ${pl.flag === "verdacht" ? `<div class="warnbox">🔎 Nur ein Verdacht aus den Fotos. Bitte vor Ort prüfen.</div>` : ""}
   ${pl.note ? `<p class="note">📝 ${esc(pl.note)}</p>` : ""}
+  ${plantedHTML(pl)}
   ${yearBand(T)}
   ${guideButtons(pl.lib, ok)}
   <h3>Aufgaben</h3>${taskList(ok, T, true)}
@@ -920,6 +951,7 @@ function plantSheet(pl) {
   ${SAMPLE ? `<details><summary>💬 Claude fragen zu dieser Pflanze</summary><textarea id="askq" rows="2" placeholder="z. B. Wie stark darf ich diesen Baum jetzt schneiden?"></textarea><button class="btn" onclick="A.ask('${ok}')">Fragen</button><div id="askres" class="answer"></div></details>` : ""}
   <details class="editbox"><summary>✏️ Bearbeiten</summary><div class="form">
     <label>Name <input value="${esc(pl.label || "")}" placeholder="${esc(L.name)}" onchange="A.setP('${pl.id}','label',this.value)"></label>
+    <label>Pflanzdatum <input type="date" value="${esc(pl.planted || "")}" onchange="A.setP('${pl.id}','planted',this.value)"></label>
     <label>Menge <input value="${esc(pl.qty || "")}" placeholder="z. B. 3 oder 4 lfm" onchange="A.setP('${pl.id}','qty',this.value)"></label>
     <label>Pflanzenart <select onchange="A.setP('${pl.id}','lib',this.value)">${LIB.slice().sort((a, b) => a.name.localeCompare(b.name, "de")).map(x => `<option value="${x.id}" ${x.id === pl.lib ? "selected" : ""}>${x.name}</option>`).join("")}</select></label>
     ${L.baum ? `<label>Wuchsform <select onchange="A.setP('${pl.id}','form',this.value)">${forms.map(([k, n]) => `<option value="${k}" ${(pl.form || "") === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>` : ""}
