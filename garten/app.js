@@ -504,6 +504,7 @@ function vKarte() {
   ${!edit && UI.pf !== "keine" ? `<div class="legend">${legend}</div>` : ""}
   <div id="mapwrap" class="${edit ? "edit" : ""} ${edit && (UI.tool === "area" || UI.tool === "bau") ? "draw" : ""}">${mapSVG()}</div>
   ${unplacedHTML()}
+  ${nbCardHTML()}
   <p class="hint small">Maßstab ungefähr: Garten ${fmt(S.W)} × ${fmt(S.H)} m. Laube unten, Gartentor oben links. Linke Seite nach Fotos, Rest geschätzt: im Bearbeiten-Modus anpassen.</p>`;
 }
 function mapSVG() {
@@ -562,6 +563,56 @@ function unplacedHTML() {
   return `<details class="sec card" ${UI.pf === "pruefen" ? "open" : ""}><summary><h2>📋 Noch nicht verortet <span class="cnt">${u.length}</span></h2></summary>
   <p class="hint">Aus der Wertermittlung, aber auf den Fotos noch nicht gefunden. Pflegeaufgaben laufen trotzdem im Kalender mit. Gefunden? „Setzen“ antippen und dann auf die Karte tippen. Gibt es die Pflanze nicht mehr: öffnen und löschen.</p>
   ${u.map(pl => `<div class="li"><span class="thumb" onclick="A.openOwner('p:${pl.id}')">${lib(pl).emoji}</span><div class="lit" onclick="A.openOwner('p:${pl.id}')"><b>${esc(pname(pl))}</b>${pl.qty ? ` <span class="muted">(${esc(pl.qty)})</span>` : ""}<small>${esc(lib(pl).name)}</small></div><button class="btn sm" onclick="A.placeExisting('${pl.id}')">📍 Setzen</button></div>`).join("")}</details>`;
+}
+/* ============ Pflanz-Nachbarn (Mischkultur) ============ */
+const NEAR = 1.5;
+function nbOK() { return typeof window.NEIGH === "object"; }
+function nbChip(id, kind, from) {
+  const L = LIBM[id]; if (!L) return "";
+  const w = from ? NEIGH.why(from, id) : "";
+  return `<span class="nb ${kind}" onclick="A.openLib('${id}')" ${w ? `title="${esc(w)}"` : ""}>${L.emoji} ${esc(L.name)}</span>`;
+}
+function nbLibHTML(L) {
+  if (!nbOK()) return "";
+  const r = NEIGH.of(L.id); if (!r.g.length && !r.b.length) return "";
+  const why = r.b.map(id => NEIGH.why(L.id, id) ? `<li><b>${esc(LIBM[id] ? LIBM[id].name : id)}:</b> ${esc(NEIGH.why(L.id, id))}</li>` : "").join("");
+  return `<h3>🤝 Pflanz-Nachbarn</h3>
+  ${r.g.length ? `<p class="small"><b>Gute Nachbarn:</b></p><div class="nbs">${r.g.map(id => nbChip(id, "g", L.id)).join("")}</div>` : ""}
+  ${r.b.length ? `<p class="small"><b>Lieber nicht daneben:</b></p><div class="nbs">${r.b.map(id => nbChip(id, "b", L.id)).join("")}</div>` : ""}
+  ${why ? `<ul class="small nbwhy">${why}</ul>` : ""}
+  <p class="hint small">Erfahrungswerte aus der Mischkultur nach der Tabelle des BUND, wissenschaftlich nur teilweise belegt. Gilt vor allem für Gemüse und Kräuter im selben Beet.</p>`;
+}
+function nbNearby(pl) {
+  if (!nbOK() || pl.unplaced) return [];
+  return S.plants.filter(q => q !== pl && !q.unplaced && Math.hypot(q.x - pl.x, q.y - pl.y) <= NEAR)
+    .map(q => ({ q, r: NEIGH.rel(pl.lib, q.lib) })).filter(o => o.r);
+}
+function nbPlantHTML(pl) {
+  const n = nbNearby(pl);
+  const near = n.length ? `<p class="small"><b>Auf deiner Karte in der Nähe (bis ${fmt(NEAR)} m):</b></p>${n.map(({ q, r }) => {
+    const w = NEIGH.why(pl.lib, q.lib);
+    return `<div class="li nbli ${r}" onclick="A.openOwner('p:${q.id}')"><span class="thumb">${lib(q).emoji}</span><div class="lit"><b>${r === "g" ? "✅" : "⚠️"} ${esc(pname(q))}</b><small>${r === "g" ? "guter Nachbar" : "ungünstiger Nachbar"}${w ? ": " + esc(w) : ""}</small></div></div>`;
+  }).join("")}` : "";
+  const libPart = nbLibHTML(lib(pl));
+  if (!libPart && !near) return "";
+  return (libPart || `<h3>🤝 Pflanz-Nachbarn</h3>`) + near;
+}
+function nbPairs() {
+  if (!nbOK()) return { b: [], g: 0 };
+  const P = S.plants.filter(p => !p.unplaced), b = []; let g = 0;
+  for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
+    const a = P[i], c = P[j]; if (Math.hypot(a.x - c.x, a.y - c.y) > NEAR) continue;
+    const r = NEIGH.rel(a.lib, c.lib); if (r === "b") b.push([a, c]); else if (r === "g") g++;
+  }
+  return { b, g };
+}
+function nbCardHTML() {
+  if (!nbOK()) return "";
+  const { b, g } = nbPairs();
+  return `<details class="sec card"><summary><h2>🤝 Nachbarschaft prüfen <span class="cnt">${b.length}</span></h2></summary>
+  <p class="hint">Pflanzen, die auf der Karte höchstens ${fmt(NEAR)} m auseinander stehen. ${g ? `${g} gute Nachbarschaft${g === 1 ? "" : "en"} gefunden.` : ""}</p>
+  ${b.length ? b.map(([a, c]) => { const w = NEIGH.why(a.lib, c.lib); return `<div class="li nbli b"><span class="thumb">${lib(a).emoji}${lib(c).emoji}</span><div class="lit"><b>⚠️ <a href="#" onclick="event.preventDefault();A.openOwner('p:${a.id}')">${esc(pname(a))}</a> neben <a href="#" onclick="event.preventDefault();A.openOwner('p:${c.id}')">${esc(pname(c))}</a></b><small>${w ? esc(w) : "Gilt in der Mischkultur als ungünstige Kombination."}</small></div></div>`; }).join("") : `<p class="hint">Keine ungünstigen Nachbarn auf der Karte gefunden.</p>`}
+  <p class="hint small">Grundlage: <a href="${NEIGH.url}" target="_blank" rel="noopener">${esc(NEIGH.source)}</a>. Erfahrungswissen, wissenschaftlich nur teilweise belegt. Bei Bäumen und Sträuchern zählt vor allem genug Abstand und Licht.</p></details>`;
 }
 function shortLabel(t, n) { n = n || 26; t = String(t); return t.length > n ? t.slice(0, n - 1) + "…" : t; }
 
@@ -862,6 +913,7 @@ function plantSheet(pl) {
   ${guideButtons(pl.lib, ok)}
   <h3>Aufgaben</h3>${taskList(ok, T, true)}
   <h3>Steckbrief</h3><p>${esc(L.info)}</p>
+  ${nbPlantHTML(pl)}
   <p><a href="${commonsLink(L)}" target="_blank" rel="noopener">🖼️ Bilder auf Wikimedia Commons ansehen</a></p>
   <h3>Meine Fotos</h3>${photoBlock(ok)}
   <h3>Notiz</h3><textarea rows="3" onchange="A.setP('${pl.id}','note',this.value)">${esc(pl.note || "")}</textarea>
@@ -908,6 +960,7 @@ function libSheet(L) {
   <p>${esc(L.info)}</p>
   <p><a href="${commonsLink(L)}" target="_blank" rel="noopener">🖼️ Bilder auf Wikimedia Commons ansehen</a></p>
   ${yearBand(L.T)}${guideButtons(L.id, "lib:" + L.id)}<h3>Pflegekalender</h3>${taskList(null, L.T, false)}
+  ${nbLibHTML(L)}
   <h3>Fotos</h3>${photoBlock("lib:" + L.id)}
   ${n.length ? `<h3>In deinem Garten</h3>${n.map(pl => `<div class="li" onclick="A.openOwner('p:${pl.id}')"><span class="thumb">${L.emoji}</span><div class="lit"><b>${esc(pname(pl))}</b></div></div>`).join("")}` : ""}
   ${!L.verboten ? `<button class="btn primary" onclick="A.placeFromLib('${L.id}')">🌱 In den Garten setzen</button>` : ""}`;
