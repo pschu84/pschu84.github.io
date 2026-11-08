@@ -128,7 +128,8 @@ function defaultState() {
       o("terrasse","terrasse",3.06,18.44,7.88,2.93,"Terrasse vor Laube und Wintergarten (Platten)"),
       o("weg-laube-rechts","weg",11.5,21.6,1.3,2.0,"Platten neben der Laube"),
       o("weg-oben-rechts","weg",12.2,0.6,0.45,9.8,"Plattenweg durch die rechte Hälfte"),
-      o("himbeerfeld","beeren",14.6,0.6,3.9,7.4,"Himbeerfeld an der rechten Hecke"),
+      o("himbeerfeld","beeren",14.6,0.7,3.9,7.3,"Himbeerfeld an der rechten Hecke"),
+      o("weg-himbeer","weg",14.6,0.12,3.9,0.58,"Gehweg oben rechts (über dem Himbeerfeld)",{note:"Schmaler Weg zwischen Zaun und Himbeerfeld, so breit wie das Himbeerfeld. Tiefe geschätzt: bitte nachmessen."}),
       o("gemuese-mitte","nutz",10.6,5.3,7.9,5.1,"Gemüsefeld Mitte (Blattsenf, Mais, Amarant, Lauch, Kohl)",{note:"Auf den Fotos viel roter und grüner Blattsenf, Fenchel oder Dill, Möhren, Lauch und dazwischen viele Brennnesseln.",tasks:["K|11-3||Brennnesseln mit Wurzeln aus dem Gemüsefeld ziehen (Handschuhe). Tipp: nicht wegwerfen, sondern als Brennnesseljauche ansetzen, das ist ein guter Dünger für Tomaten.|e","K|11||Abgeerntetes Mais- und Amarantstroh abschneiden und kompostieren, Samenstände vom Amarant vorher entsorgen."]}),
       o("beet-kante","nutz",12.7,10.6,5.1,4.4,"Beet mit Kantensteinen (Mangold, Rote Bete)"),
       o("hecke-rechts","tor",18.55,0.3,0.4,21.0,"Hecke an der rechten Grenze (zur Straße)",{note:"Dichte, kleinblättrige Hecke, dahinter Häuser. Brombeeren ranken hinein. GO 5.4 verbietet Hecken als Abgrenzung zu Nachbargärten. Klären, ob die Hecke zum Garten gehört oder eine Außengrenze der Anlage ist.",tasks:["S|6-7|1|Hecke an der Gartenseite in Form schneiden, vorher auf Vogelnester prüfen.","S|11-2|2|Wilde Brombeeren aus der Hecke mit Wurzeln entfernen.|e"]}),
@@ -223,6 +224,8 @@ function defaultState() {
       p("g25","beinwell",16.4,14.6,{label:"Beinwell?",flag:"verdacht",note:"Große, raue, gewellte Blätter neben der Heidelbeere. Sieht nach Beinwell aus, Borretsch ist auch möglich."}),
       p("z21","steinkraut",15.4,5.6,{label:"Steinkraut (weiß)"}),
       p("z22","flieder",14.3,20.2,{label:"Flieder (klein)",r:0.6}),
+      p("p18","suesskirsche",14.0,21.0,{label:"Kirsche (zwischen Flieder und Gerätehaus)",form:"busch",r:0.9,note:"Steht vor dem Flieder in Richtung Gerätehaus. Lage und Kronengröße geschätzt. Ob Süß- oder Sauerkirsche, bitte prüfen: Sauerkirschen tragen am einjährigen Holz und werden anders geschnitten."}),
+      p("p19","suesskirsche",18.1,19.8,{label:"Kirsche (klein, an der rechten Hecke)",form:"busch",r:0.45,note:"Kleine Kirsche rechts neben der kleinen Feige, fast an der Hecke. Lage geschätzt. Ob Süß- oder Sauerkirsche, bitte prüfen. Genug Abstand zur Hecke halten, damit die Krone Licht bekommt."}),
       p("v3","haselnuss",18.0,20.3,{label:"Verdacht: Haselnuss (oder Zaubernuss)",r:1.3,flag:"verdacht",note:"Großer Strauch hinter dem Komposter an der Hecke mit breiten, gesägten, im Herbst gelben Blättern. Das passt zu Haselnuss (laut GO 9.1 nicht erlaubt) oder zu Zaubernuss (Hamamelis, erlaubt). Unterscheidung: Haselnuss hat viele Bodentriebe, im Februar gelbe Würstchen-Kätzchen und im Herbst Nüsse. Zaubernuss blüht im Winter mit gelben oder roten, fädigen Blüten."}),
       p("z23","strauchrose",8.4,15.6,{label:"Rose im Kübel (links am Pergola-Eingang)",note:"Weißer Kübel. Im Winter Kübel mit Vlies oder Jute einpacken und auf Holzfüße stellen."}),
       p("z24","strauchrose",10.4,15.6,{label:"Rose im Kübel (rechts am Pergola-Eingang)",note:"Weißer Kübel mit Stäben. Im Winter Kübel einpacken."}),
@@ -236,7 +239,7 @@ function defaultState() {
       p("g28","lavendel",11.9,14.2,{label:"Lavendel (Kreisbeet)"}),
       p("kb-wm","sonnwend-wolfsmilch",11.0,14.65,{label:"Sonnwend-Wolfsmilch (Kreisbeet)"}),
       p("kb-mohn","goldmohn",11.75,15.0,{label:"Kalifornischer Mohn (Kreisbeet)"}),
-      p("wr-duo","weinrebe",10.15,15.3,{label:"Bio Duo-Weinrebe (rechts am Pergola-Ende)",note:"Laut Etikett: Bio-Duo-Weinrebe mit einer blauen und einer weißen Sorte, süß-säuerlich, mehltautolerant, selbstfruchtbar, Standort Sonne, Ernte September bis Oktober. Bei Duo-Reben sind meist zwei Pflanzen zusammen gesetzt: Sind zwei Stämme erkennbar, beim Winterschnitt beide erhalten, damit beide Sorten weiter tragen."}),
+      p("wr-duo","weinrebe",10.15,9.85,{label:"Bio Duo-Weinrebe (oben rechts an der Pergola)",note:"Laut Etikett: Bio-Duo-Weinrebe mit einer blauen und einer weißen Sorte, süß-säuerlich, mehltautolerant, selbstfruchtbar, Standort Sonne, Ernte September bis Oktober. Bei Duo-Reben sind meist zwei Pflanzen zusammen gesetzt: Sind zwei Stämme erkennbar, beim Winterschnitt beide erhalten, damit beide Sorten weiter tragen."}),
       p("z29","strauchrose",10.35,14.2,{label:"Rose mit Hagebutten (Pergola-Ende)",note:"Ungefüllte Blüten und viele Hagebutten: Hagebutten über den Winter für die Vögel hängen lassen."}),
 ,
       p("p17","feige",15.6,20.6,{label:"Feige (klein, jung)",form:"busch",r:0.4,note:"Kleine Feigenpflanze mitten auf dem Rasen mit den Obstbäumen, etwa auf Höhe des Komposters. Die zweite Feige aus der Wertermittlung. Junge Feigen im Winter am Fuß mit Laub mulchen und bei starkem Frost mit Vlies schützen."})
@@ -247,7 +250,7 @@ function defaultState() {
 
 /* ============ Speicher ============ */
 const KEY = "kleingarten-v1";
-const MAPV = 19;
+const MAPV = 20;
 let S;
 let STORAGE_OK = true;
 function load() {
