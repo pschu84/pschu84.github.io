@@ -130,7 +130,7 @@ function defaultState() {
       o("weg-oben-rechts","weg",12.2,0.6,0.45,9.8,"Plattenweg durch die rechte Hälfte"),
       o("himbeerfeld","beeren",14.6,0.6,3.9,7.4,"Himbeerfeld an der rechten Hecke"),
       o("gemuese-mitte","nutz",10.6,5.3,7.9,5.1,"Gemüsefeld Mitte (Blattsenf, Mais, Amarant, Lauch, Kohl)",{note:"Auf den Fotos viel roter und grüner Blattsenf, Fenchel oder Dill, Möhren, Lauch und dazwischen viele Brennnesseln.",tasks:["K|11-3||Brennnesseln mit Wurzeln aus dem Gemüsefeld ziehen (Handschuhe). Tipp: nicht wegwerfen, sondern als Brennnesseljauche ansetzen, das ist ein guter Dünger für Tomaten.|e","K|11||Abgeerntetes Mais- und Amarantstroh abschneiden und kompostieren, Samenstände vom Amarant vorher entsorgen."]}),
-      o("beet-kante","nutz",11.3,10.6,6.5,4.4,"Beet mit Kantensteinen (Mangold, Rote Bete)"),
+      o("beet-kante","nutz",12.7,10.6,5.1,4.4,"Beet mit Kantensteinen (Mangold, Rote Bete)"),
       o("hecke-rechts","tor",18.55,0.3,0.4,21.0,"Hecke an der rechten Grenze (zur Straße)",{note:"Dichte, kleinblättrige Hecke, dahinter Häuser. Brombeeren ranken hinein. GO 5.4 verbietet Hecken als Abgrenzung zu Nachbargärten. Klären, ob die Hecke zum Garten gehört oder eine Außengrenze der Anlage ist.",tasks:["S|6-7|1|Hecke an der Gartenseite in Form schneiden, vorher auf Vogelnester prüfen.","S|11-2|2|Wilde Brombeeren aus der Hecke mit Wurzeln entfernen.|e"]}),
       o("aussentuer","tor",18.55,22.3,0.4,1.1,"Außentür (grünes Tor)",{tasks:["A|4-9||Außentür prüfen: Scharniere ölen, Schloss gängig halten, Efeu am Rahmen zurückschneiden."]}),
       o("reisig","sonst",10.7,4.3,1.2,0.9,"Reisighaufen (Biotop)",{note:"Unterschlupf für Igel und Insekten (GO 9.7). Nicht verbrennen (GO 9.6)."}),
@@ -142,7 +142,7 @@ function defaultState() {
       o("schachtdeckel","wasser",7.4,7.0,0.6,0.7,"Dunkle Platte im Plattenweg (Schacht?)",{note:"Große dunkle Platte am Übergang zum Nordweg. Vielleicht ein Schachtdeckel (Wasserleitung, Absperrung) oder nur eine Ersatzplatte: bitte klären."}),
       o("zaun-oben","tor",0.3,0,18.5,0.12,"Maschendrahtzaun zum Anlagenweg"),
       o("zapfstelle","wasser",12.4,19.6,0.5,0.5,"Wasserzapfstelle (Säule mit Hahn)",{note:"Rote Betonsäule mit Wasserhahn auf dem Rasen vor der Laube.",tasks:["A|10-11||Zapfstelle winterfest machen: Hahn öffnen und offen lassen, nachdem die Leitung entleert ist (GO 4.2). Hahn bei Bedarf mit Dämmung umwickeln.|e","A|3-4||Zapfstelle beim Wasser-Anstellen auf Dichtheit prüfen."]}),
-      o("beet-lavendel","zier",10.7,15.25,2.5,1.2,"Beet am Pergola-Ende (Lavendel, Wolfsmilch)"),
+      o("beet-lavendel","zier",10.5,13.5,2.0,2.0,"Kreisbeet rechts der Pergola (Randsteine, Ø ca. 2 m)",{round:1,note:"Rundes, mit Randsteinen eingefasstes Beet rechts neben der Pergola, Lage nach Luftbild. Darin Sonnwend-Wolfsmilch, Lavendel und Kalifornischer Mohn: alles Pflanzen für Sonne und eher mageren, durchlässigen Boden. Wenig oder gar nicht düngen.",tasks:["K|4-9||Randsteine freihalten: Rasen, der in das Kreisbeet wächst, an der Kante abstechen.|m"]}),
       o("weg-nord","weg",7.4,0.35,0.6,7.3,"Plattenweg Nord (Pergola-Ende bis Gartentor-Weg)"),
       o("beet-nord","nutz",3.1,2.9,4.3,3.95,"Beet nördlich vom Querweg (Pfirsich, Solarleuchten)"),
       o("beet-ost-nord","rasen",8.0,1.4,2.5,5.45,"Rasen östlich vom Nordweg"),
@@ -231,9 +231,12 @@ function defaultState() {
       p("z26","sommerflieder",7.4,8.4,{label:"Strauch mit vielen dünnen Ruten (neben Gewächshaus)",r:0.8,flag:"verdacht",note:"Horst aus vielen langen, dünnen braunen Ruten, teils umgekippt, neben dem Gewächshaus. Könnte ein Schmetterlingsflieder, ein Spierstrauch oder eine hohe Staude sein. Bei Schmetterlingsflieder im März auf 30 bis 50 cm zurückschneiden. Bitte im Frühjahr beim Austrieb bestimmen."}),
       p("g27","beinwell",5.8,7.4,{label:"Beinwell oder Borretsch (am Plattenweg)",flag:"verdacht",note:"Viele raue, längliche Blattrosetten am Plattenweg nördlich vom Gewächshaus."}),
       p("z27","bartblume",1.1,1.1,{label:"Bartblume (3 Stück am Gartentor)",qty:"3",r:0.8,note:"Laut Etiketten: Caryopteris. Drei Büsche vorne im Beet am Zaun, direkt neben dem Gartentor. Im April kräftig zurückschneiden."}),
-      p("z28","rhaphiolepis",10.75,15.1,{label:"Indischer Weißdorn 'Springtime' (Kübel)",note:"Laut Etikett: Rhaphiolepis indica 'Springtime'. Steht im weißen Kübel am Pergola-Ende Richtung Laube. Nur bedingt winterhart: Kübel einpacken, bei Dauerfrost in den Wintergarten stellen."}),
+      p("z28","rhaphiolepis",10.75,15.85,{label:"Indischer Weißdorn 'Springtime' (Kübel)",note:"Laut Etikett: Rhaphiolepis indica 'Springtime'. Steht im weißen Kübel am Pergola-Ende Richtung Laube. Nur bedingt winterhart: Kübel einpacken, bei Dauerfrost in den Wintergarten stellen."}),
       p("p16","nashi",12.7,15.6,{label:"Nashi-Birne",form:"busch",r:0.9,note:"Laut Etikett „Nashi“. Junger Baum mit Pfahl auf dem Rasen unten rechts, Lage geschätzt. Möglicherweise ist das die „Birne (Viertelstamm)“ aus der Wertermittlung: bitte prüfen."}),
-      p("g28","lavendel",11.4,15.8,{label:"Lavendel (Beet am Pergola-Ende)"}),
+      p("g28","lavendel",11.9,14.2,{label:"Lavendel (Kreisbeet)"}),
+      p("kb-wm","sonnwend-wolfsmilch",11.0,14.65,{label:"Sonnwend-Wolfsmilch (Kreisbeet)"}),
+      p("kb-mohn","goldmohn",11.75,15.0,{label:"Kalifornischer Mohn (Kreisbeet)"}),
+      p("wr-duo","weinrebe",10.15,15.3,{label:"Bio Duo-Weinrebe (rechts am Pergola-Ende)",note:"Laut Etikett: Bio-Duo-Weinrebe mit einer blauen und einer weißen Sorte, süß-säuerlich, mehltautolerant, selbstfruchtbar, Standort Sonne, Ernte September bis Oktober. Bei Duo-Reben sind meist zwei Pflanzen zusammen gesetzt: Sind zwei Stämme erkennbar, beim Winterschnitt beide erhalten, damit beide Sorten weiter tragen."}),
       p("z29","strauchrose",10.35,14.2,{label:"Rose mit Hagebutten (Pergola-Ende)",note:"Ungefüllte Blüten und viele Hagebutten: Hagebutten über den Winter für die Vögel hängen lassen."}),
 ,
       p("p17","feige",15.6,20.6,{label:"Feige (klein, jung)",form:"busch",r:0.4,note:"Kleine Feigenpflanze mitten auf dem Rasen mit den Obstbäumen, etwa auf Höhe des Komposters. Die zweite Feige aus der Wertermittlung. Junge Feigen im Winter am Fuß mit Laub mulchen und bei starkem Frost mit Vlies schützen."})
@@ -244,7 +247,7 @@ function defaultState() {
 
 /* ============ Speicher ============ */
 const KEY = "kleingarten-v1";
-const MAPV = 18;
+const MAPV = 19;
 let S;
 let STORAGE_OK = true;
 function load() {
@@ -287,6 +290,7 @@ function nextM(m) { return m % 12 + 1; }
 function monthsText(t) {
   return t.m.split(",").map(part => { const [a, b] = part.split("-").map(Number); return b ? MON[a-1] + " bis " + MON[b-1] : MONL[a-1]; }).join(", ");
 }
+function oArea(ob) { return ob.round ? Math.PI / 4 * ob.w * ob.h : ob.w * ob.h; }
 function fmt(n) { return (Math.round(n * 10) / 10).toLocaleString("de-DE"); }
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 3200); }
 function lib(pl) { return LIBM[pl.lib] || { name: pl.lib, emoji: "🌱", cat: "sonst", T: [], info: "", latin: "" }; }
@@ -512,9 +516,9 @@ function mapSVG() {
     const fs = Math.max(0.22, Math.min(0.5, Math.min(ob.w, ob.h) / 3, span * 0.92 / (txt.length * 0.56)));
     const lbl = (Math.max(ob.w, ob.h) >= 1.6 && (UI.labels || T.bau || ob.w * ob.h > 6)) ? `<text x="${ob.x + ob.w / 2}" y="${ob.y + ob.h / 2}" font-size="${fs}" class="olab" ${vert ? `transform="rotate(-90 ${ob.x + ob.w / 2} ${ob.y + ob.h / 2})"` : ""}>${esc(txt)}</text>` : "";
     s += `<g data-k="o" data-id="${ob.id}" class="obj ${due ? "due" : ""} t-${ob.type}" style="--c:${due ? TT[due.t].c : "transparent"}">
-      <rect x="${ob.x}" y="${ob.y}" width="${ob.w}" height="${ob.h}" fill="${T.f}" ${T.bau ? `stroke="#4a4a4a" stroke-width="0.05"` : `stroke="#00000022" stroke-width="0.03"`} rx="${T.bau ? 0.05 : 0.15}"/>${pat}${lbl}
+      <rect x="${ob.x}" y="${ob.y}" width="${ob.w}" height="${ob.h}" fill="${T.f}" ${T.bau ? `stroke="#4a4a4a" stroke-width="0.05"` : ob.round ? `stroke="#9a9286" stroke-width="0.09" stroke-dasharray="0.22 0.05"` : `stroke="#00000022" stroke-width="0.03"`} rx="${ob.round ? ob.w / 2 : T.bau ? 0.05 : 0.15}" ry="${ob.round ? ob.h / 2 : T.bau ? 0.05 : 0.15}"/>${pat}${lbl}
       ${!lbl && T.bau ? `<text x="${ob.x + ob.w / 2}" y="${ob.y + ob.h / 2 + Math.min(ob.w, ob.h) * 0.22}" font-size="${Math.max(0.3, Math.min(0.8, Math.min(ob.w, ob.h) * 0.62))}" text-anchor="middle" pointer-events="none">${objIcon(ob)}</text>` : ""}
-      ${due ? `<rect class="dueframe" x="${ob.x}" y="${ob.y}" width="${ob.w}" height="${ob.h}" fill="none" rx="0.1"/><text x="${ob.x + ob.w - 0.05}" y="${ob.y + 0.45}" font-size="0.45" text-anchor="end">${TT[due.t].i}</text>` : ""}
+      ${due ? `<rect class="dueframe" x="${ob.x}" y="${ob.y}" width="${ob.w}" height="${ob.h}" fill="none" rx="${ob.round ? ob.w / 2 : 0.1}" ry="${ob.round ? ob.h / 2 : 0.1}"/><text x="${ob.x + ob.w - 0.05}" y="${ob.y + 0.45}" font-size="0.45" text-anchor="end">${TT[due.t].i}</text>` : ""}
     </g>`;
   });
   const pls = S.plants.slice().sort((a, b) => crownR(b) - crownR(a));
@@ -722,7 +726,7 @@ function checks() {
   if (kl.length) out.push({ st: "warn", t: "Kirschlorbeer", x: "Auf Kirschlorbeer soll künftig verzichtet werden.", s: "GO 8" });
   const hk = S.plants.filter(pl => lib(pl).hecke);
   if (hk.length) out.push({ st: "warn", t: "Hecken", x: "Abgrenzungen zu Nachbargärten mit Hecken sind nicht gestattet. Erlaubt ist engmaschiger Draht bis 1 m.", s: "GO 5.3, 5.4" });
-  const sum = types => S.objs.filter(ob => types.includes(ob.type)).reduce((a, ob) => a + ob.w * ob.h, 0);
+  const sum = types => S.objs.filter(ob => types.includes(ob.type)).reduce((a, ob) => a + oArea(ob), 0);
   const laube = sum(["laube", "anbau", "ueberdacht"]);
   out.push({ st: laube <= 24.05 ? "ok" : "bad", t: "Laube mit überdachtem Freisitz", x: `${fmt(laube)} m² (Laube, Anbau, überdachte Terrasse). Erlaubt sind 24 m² einschließlich überdachtem Freisitz. Laut Wertermittlung geht die überbaute Fläche über § 3 Abs. 2 BKleingG hinaus.`, s: "GO 7.2" });
   const gh = S.objs.filter(ob => ob.type === "gewaechshaus" || ob.type === "tunnel");
@@ -737,14 +741,14 @@ function checks() {
   if (hb.length) { const a = hb.reduce((x, ob) => x + ob.w * ob.h, 0); out.push({ st: hb.length <= 5 && a <= 10 ? "ok" : "bad", t: "Hochbeete", x: `${hb.length} Hochbeete mit ${fmt(a)} m². Erlaubt: max. 5, zusammen max. 10 m², max. 1 m hoch, ohne Fundament, mit Erdkontakt.`, s: "GO 7.7" }); }
   const perg = S.objs.filter(ob => ob.type === "pergola").reduce((a, ob) => a + Math.max(ob.w, ob.h), 0);
   if (perg) out.push({ st: perg <= 12 ? "ok" : "bad", t: "Pergola", x: `ca. ${fmt(perg)} laufende Meter, erlaubt bis 12 lfm.`, s: "GO 7.6" });
-  const pond = S.objs.filter(ob => ob.type === "teich").reduce((a, ob) => a + ob.w * ob.h, 0);
+  const pond = S.objs.filter(ob => ob.type === "teich").reduce((a, ob) => a + oArea(ob), 0);
   if (pond) out.push({ st: pond <= 6 ? "ok" : "bad", t: "Feuchtbiotop", x: `${fmt(pond)} m² Wasserfläche, erlaubt bis 6 m².`, s: "GO 7.11" });
   out.push({ st: S.objs.some(ob => ob.type === "kompost") ? "ok" : "bad", t: "Kompost", x: "In jedem Garten muss eine Kompostiereinrichtung vorhanden sein.", s: "GO 9.5" });
   return out;
 }
 function thirds() {
   const a = { anb: 0, erh: 0, bau: 0 };
-  S.objs.forEach(ob => { const g = TYPES[ob.type] && TYPES[ob.type].g; if (a[g] != null) a[g] += ob.w * ob.h; });
+  S.objs.forEach(ob => { const g = TYPES[ob.type] && TYPES[ob.type].g; if (a[g] != null) a[g] += oArea(ob); });
   return a;
 }
 function faqHTML() {
@@ -877,7 +881,7 @@ function ownTaskForm(kind, item) {
 }
 function objSheet(ob) {
   const T0 = TYPES[ob.type] || TYPES.sonst, ok = "o:" + ob.id, T = ownerTasks("o", ob);
-  return `<div class="shead"><span class="big">${objIcon(ob)}</span><div><h2>${esc(ob.label || T0.n)}</h2><div class="muted">${T0.n} · ${fmt(ob.w)} × ${fmt(ob.h)} m = ${fmt(ob.w * ob.h)} m²</div></div></div>
+  return `<div class="shead"><span class="big">${objIcon(ob)}</span><div><h2>${esc(ob.label || T0.n)}</h2><div class="muted">${T0.n} · ${ob.round && ob.w === ob.h ? `rund, Ø ${fmt(ob.w)} m` : `${ob.round ? "oval, " : ""}${fmt(ob.w)} × ${fmt(ob.h)} m`} = ${fmt(oArea(ob))} m²</div></div></div>
   ${ob.note ? `<p class="note">📝 ${esc(ob.note)}</p>` : ""}
   ${T.length ? yearBand(T) + `<h3>Aufgaben</h3>` + taskList(ok, T, true) : `<p class="hint">Keine Aufgaben hinterlegt.</p>`}
   <h3>Meine Fotos</h3>${photoBlock(ok)}
@@ -887,6 +891,7 @@ function objSheet(ob) {
     <label>Art <select onchange="A.setO('${ob.id}','type',this.value)">${Object.keys(TYPES).map(k => `<option value="${k}" ${k === ob.type ? "selected" : ""}>${TYPES[k].n}</option>`).join("")}</select></label>
     <label>Breite / Länge (m) <span class="row"><input type="number" step="0.1" min="0.1" value="${ob.w}" onchange="A.setO('${ob.id}','w',+this.value)"><input type="number" step="0.1" min="0.1" value="${ob.h}" onchange="A.setO('${ob.id}','h',+this.value)"></span></label>
     <label>Position x / y (m) <span class="row"><input type="number" step="0.1" value="${ob.x}" onchange="A.setO('${ob.id}','x',+this.value)"><input type="number" step="0.1" value="${ob.y}" onchange="A.setO('${ob.id}','y',+this.value)"></span></label>
+    <label class="row"><input type="checkbox" ${ob.round ? "checked" : ""} onchange="A.setO('${ob.id}','round',this.checked ? 1 : 0)"> Runde Form (Kreis oder Oval)</label>
   </div>${ownTaskForm("o", ob)}<div class="row wrap"><button class="btn" onclick="A.dupO('${ob.id}')">Duplizieren</button><button class="btn danger" onclick="A.delO('${ob.id}')">Löschen</button></div></details>`;
 }
 function libSheet(L) {

@@ -1141,6 +1141,16 @@ P("schleifenblume","Immergrüne Schleifenblume","Iberis sempervirens","zier","�
 "Immergrüner Halbstrauch mit weißen Blütenkissen im April und Mai, für Mauerkronen und Steingarten.",
 ["S|5-6|2|Nach der Blüte um ein Drittel zurückschneiden, nicht ins alte Holz."],{r:0.25});
 
+P("sonnwend-wolfsmilch","Sonnwend-Wolfsmilch","Euphorbia helioscopia","zier","💛",
+"Einjähriges Wildkraut, das vor allem auf Äckern und in Gärten mit nährstoffreichem, lehmigem Boden wächst. Bis etwa 30 cm hoch, gelbgrüne Blütenstände von April bis Oktober, die sich nach der Sonne ausrichten. Stirbt spätestens mit dem ersten Bodenfrost ab und sät sich reichlich selbst aus.",
+["K|5-9||Selbstaussaat im Blick behalten: Pflanzen, die stören, vor der Samenreife mit Wurzel ausziehen. Dabei Handschuhe tragen.",
+ "K|11||Abgestorbene Pflanzen nach dem Frost aus dem Beet nehmen."],
+{r:0.2, warn:"Wie alle Wolfsmilcharten sehr giftig: Der Milchsaft reizt Haut und Augen. Vorsicht, wenn Kinder oder Haustiere im Garten sind."});
+P("goldmohn","Kalifornischer Mohn (Goldmohn)","Eschscholzia californica","zier","🧡",
+"Meist einjährig gezogen, seidige orange bis gelbe Schalenblüten von Juni bis in den Herbst, die sich nur bei Sonne öffnen. Liebt volle Sonne und mageren, durchlässigen Boden und passt gut zu Lavendel. Sät sich selbst aus. Bildet eine Pfahlwurzel und verträgt deshalb kein Umpflanzen.",
+["P|3-5||Direkt an Ort und Stelle säen, Samen nur dünn bedecken. Zu dicht stehende Sämlinge ausdünnen.",
+ "S|7-9|1|Verblühtes regelmäßig abzupfen, das verlängert die Blüte. Einige Samenkapseln für die Selbstaussaat stehen lassen."],{r:0.2});
+
 if (window.EXTRA_GUIDE_LINKS) {
   const X = window.EXTRA_GUIDE_LINKS;
   X.zwiebeln = (X.zwiebeln || []).concat(["tulpe", "narzisse", "traubenhyazinthe", "hyazinthe", "krokus", "schneegloeckchen", "blaustern", "winterling", "zierlauch", "kaiserkrone"]);
