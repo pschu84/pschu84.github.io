@@ -1151,6 +1151,20 @@ P("goldmohn","Kalifornischer Mohn (Goldmohn)","Eschscholzia californica","zier",
 ["P|3-5||Direkt an Ort und Stelle säen, Samen nur dünn bedecken. Zu dicht stehende Sämlinge ausdünnen.",
  "S|7-9|1|Verblühtes regelmäßig abzupfen, das verlängert die Blüte. Einige Samenkapseln für die Selbstaussaat stehen lassen."],{r:0.2});
 
+P("prunus","Steinobst (Prunus, Art unbekannt)","Prunus spec.","obst","🍒",
+"Platzhalter für Steinobst, dessen Art noch nicht bestimmt ist (Kirsche, Pflaume, Mirabelle, Kirschpflaume, Zierkirsche). Steinobst schneidet man bevorzugt im Sommer nach der Ernte, weil die Wunden dann schneller heilen und weniger Gummifluss entsteht.",
+["K|4-5||Art bestimmen: Blüte, Blätter und später die Früchte ansehen und fotografieren.",
+ "S|7-8|1|Nach der Ernte auslichten: nach innen wachsende, sich kreuzende und abgestorbene Triebe entfernen.",
+ "K|5-8||Auf Monilia achten: welke Triebspitzen und Fruchtmumien entfernen und in den Restmüll geben."],
+{r:0.6, baum:1});
+
+P("maibeere","Maibeere (Kamtschatka-Heckenkirsche)","Lonicera kamtschatica (L. caerulea)","beeren","🫐",
+"Sehr frostharter Beerenstrauch, etwa 1 bis 1,5 m hoch. Die länglichen, blauen Beeren reifen schon im Mai und Juni, als erstes Beerenobst im Jahr, und schmecken süß-säuerlich wie Heidelbeeren. Sonnig bis halbschattig, frischer Boden. Für guten Fruchtansatz braucht sie eine zweite, gleichzeitig blühende Sorte in der Nähe.",
+["E|5-6||Ernten, wenn die Beeren innen ganz dunkel sind und nicht mehr bitter schmecken. Vor Amseln schützen (Netz).",
+ "S|7-8,11-2|1|Nach der Ernte oder im Winter auslichten: einige der ältesten Triebe bodennah entfernen, sonst wenig schneiden.",
+ "K|4||Prüfen, ob eine zweite Maibeeren-Sorte als Befruchter in der Nähe steht, sonst eine nachpflanzen."],
+{r:0.6});
+
 if (window.EXTRA_GUIDE_LINKS) {
   const X = window.EXTRA_GUIDE_LINKS;
   X.zwiebeln = (X.zwiebeln || []).concat(["tulpe", "narzisse", "traubenhyazinthe", "hyazinthe", "krokus", "schneegloeckchen", "blaustern", "winterling", "zierlauch", "kaiserkrone"]);

@@ -181,7 +181,9 @@ function defaultState() {
       p("b3","stachelbeere",0,0,{unplaced:1,note:""}),
       p("b4","himbeere-herbst",16.5,2.8,{label:"Himbeeren (großes Feld)",r:1.8,note:"Großes Himbeerfeld oben rechts, dazwischen Tomaten-Spiralstäbe und Amarant. Weil im November noch Früchte hängen, sind es vermutlich Herbsthimbeeren: dann im Winter alle Ruten bodennah abschneiden. Falls es Sommerhimbeeren sind, die Art im Bearbeiten-Menü ändern."}),
       p("b5","heidelbeere",4.26,17.71,{label:"Kulturheidelbeeren (Drilling)",qty:"5",note:"Laut Etikett „Heidelbeer-Drilling“: drei Sorten in einem Topf, das verbessert die Befruchtung. Saurer Boden nötig, nur mit Regenwasser gießen."}),
-      p("b6","weinrebe",8.55,12.4,{label:"Weinreben an der Pergola (linke Seite)",qty:"7",note:"Laut Wertermittlung zu tief gepflanzt, Pflegerückstand. Ranken an den Gittern der linken Pergolaseite, jetzt mit Herbstlaub. Winterschnitt bis Ende Februar (siehe Anleitung „Weinrebe“)."}),
+      p("b10","weinrebe",8.55,10.0,{label:"Weinrebe 'Regina dei Vigneti' (oben links an der Pergola)",note:"Vitis vinifera 'Regina dei Vigneti' (deutsch auch „Königin der Weingärten“): alte ungarische Tafeltraube von 1916 mit großen, gelbgrünen Beeren und Muskataroma. Keine pilzwiderstandsfähige Sorte: auf Echten und Falschen Mehltau achten, Laub luftig halten, Trauben teilweise freistellen. Laut Wertermittlung stehen die Reben an der Pergola zu tief und haben Pflegerückstand."}),
+      p("b11","weinrebe",8.55,12.4,{label:"Weinrebe 'Regent' (Mitte links an der Pergola)",note:"Rebsorte 'Regent': blaue, pilzwiderstandsfähige Sorte (PiWi) aus der Rebenzüchtung Geilweilerhof, gute Toleranz gegen Mehltau. Reif etwa Mitte bis Ende September. Wird als Wein- und als Tafeltraube genutzt."}),
+      p("b6","weinrebe",8.55,14.6,{label:"Weitere Weinreben (linke Seite, Sorte unbekannt)",note:"Laut Wertermittlung stehen links an der Pergola mehrere Reben (insgesamt 7), zu tief gepflanzt, Pflegerückstand. Zwei Sorten sind bekannt ('Regina dei Vigneti' oben, 'Regent' in der Mitte). Sorten der übrigen bitte prüfen. Winterschnitt bis Ende Februar (siehe Anleitung „Weinrebe“)."}),
       p("b7","sanddorn",0.83,8.7,{note:"Auf den Fotos im Kräuterbeet vor dem Maschendrahtzaun, hinter dem das Gewächshaus des Nachbarn steht."}),
       p("g1","rhabarber",0,0,{unplaced:1,note:""}),
       p("g2","tomate",6.02,11.42,{label:"Tomaten (im Folientunnel)",qty:"2"}),
@@ -225,7 +227,9 @@ function defaultState() {
       p("z21","steinkraut",15.4,5.6,{label:"Steinkraut (weiß)"}),
       p("z22","flieder",14.3,20.2,{label:"Flieder (klein)",r:0.6}),
       p("p18","suesskirsche",14.0,21.0,{label:"Kirsche (zwischen Flieder und Gerätehaus)",form:"busch",r:0.9,note:"Steht vor dem Flieder in Richtung Gerätehaus. Lage und Kronengröße geschätzt. Ob Süß- oder Sauerkirsche, bitte prüfen: Sauerkirschen tragen am einjährigen Holz und werden anders geschnitten."}),
-      p("p19","suesskirsche",18.1,19.8,{label:"Kirsche (klein, an der rechten Hecke)",form:"busch",r:0.45,note:"Kleine Kirsche rechts neben der kleinen Feige, fast an der Hecke. Lage geschätzt. Ob Süß- oder Sauerkirsche, bitte prüfen. Genug Abstand zur Hecke halten, damit die Krone Licht bekommt."}),
+      p("p19","prunus",18.1,19.8,{label:"Prunus, vermutlich Kirsche (klein, an der rechten Hecke)",form:"busch",r:0.45,note:"Kleines Steinobst rechts neben der kleinen Feige, fast an der Hecke. Gattung vermutlich Prunus, die Art ist unsicher: Kirsche, Pflaume, Mirabelle, Kirschpflaume oder Zierkirsche sind möglich. Bestimmen lässt es sich am besten im Frühjahr an Blüte und Blatt, im Sommer an der Frucht. Kirschrinde hat oft waagerechte Korkstreifen (Lentizellen). Ist sie immergrün mit ledrigen Blättern, wäre es Kirschlorbeer: darauf soll laut GO 8 verzichtet werden. Bitte prüfen."}),
+      p("z40","holunder",17.35,19.7,{label:"Schwarzer Holunder (über dem Komposter)",r:0.8,note:"Schwarzer Holunder knapp über dem Komposter. Laut GO 9.1 ist Holunder nur kleinwüchsig erlaubt. Die normale Art wird mehrere Meter hoch: durch Auslichten jedes Winter klein halten und mit dem Vorstand klären, ob er bleiben darf. Beeren nur gekocht verwenden."}),
+      p("b12","maibeere",15.6,23.2,{label:"Maibeere 'Aurora' (Ecke vor dem Geräteschuppen)",note:"Lonicera kamtschatica 'Aurora', laut Angabe unten links an der Ecke vor dem Geräteschuppen. Lage geschätzt, bitte auf der Karte verschieben."}),
       p("v3","haselnuss",18.0,20.3,{label:"Verdacht: Haselnuss (oder Zaubernuss)",r:1.3,flag:"verdacht",note:"Großer Strauch hinter dem Komposter an der Hecke mit breiten, gesägten, im Herbst gelben Blättern. Das passt zu Haselnuss (laut GO 9.1 nicht erlaubt) oder zu Zaubernuss (Hamamelis, erlaubt). Unterscheidung: Haselnuss hat viele Bodentriebe, im Februar gelbe Würstchen-Kätzchen und im Herbst Nüsse. Zaubernuss blüht im Winter mit gelben oder roten, fädigen Blüten."}),
       p("z23","strauchrose",8.4,15.6,{label:"Rose im Kübel (links am Pergola-Eingang)",note:"Weißer Kübel. Im Winter Kübel mit Vlies oder Jute einpacken und auf Holzfüße stellen."}),
       p("z24","strauchrose",10.4,15.6,{label:"Rose im Kübel (rechts am Pergola-Eingang)",note:"Weißer Kübel mit Stäben. Im Winter Kübel einpacken."}),
@@ -250,7 +254,7 @@ function defaultState() {
 
 /* ============ Speicher ============ */
 const KEY = "kleingarten-v1";
-const MAPV = 20;
+const MAPV = 21;
 let S;
 let STORAGE_OK = true;
 function load() {
