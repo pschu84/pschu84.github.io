@@ -251,7 +251,6 @@ function defaultState() {
       p("h-weissdorn","weissdorn",18.75,18.0,{label:"Weißdorn in der Hecke",note:"Lage geschätzt."}),
       p("wr-duo","weinrebe",10.15,9.85,{label:"Bio Duo-Weinrebe (oben rechts an der Pergola)",note:"Laut Etikett: Bio-Duo-Weinrebe mit einer blauen und einer weißen Sorte, süß-säuerlich, mehltautolerant, selbstfruchtbar, Standort Sonne, Ernte September bis Oktober. Bei Duo-Reben sind meist zwei Pflanzen zusammen gesetzt: Sind zwei Stämme erkennbar, beim Winterschnitt beide erhalten, damit beide Sorten weiter tragen."}),
       p("z29","strauchrose",10.35,14.2,{label:"Rose mit Hagebutten (Pergola-Ende)",note:"Ungefüllte Blüten und viele Hagebutten: Hagebutten über den Winter für die Vögel hängen lassen."}),
-,
       p("p17","feige",15.6,20.6,{label:"Feige (klein, jung)",form:"busch",r:0.4,note:"Kleine Feigenpflanze mitten auf dem Rasen mit den Obstbäumen, etwa auf Höhe des Komposters. Die zweite Feige aus der Wertermittlung. Junge Feigen im Winter am Fuß mit Laub mulchen und bei starkem Frost mit Vlies schützen."})
     ],
     done: {}, notes: "", hours: { target: 0, log: [] }, bgOpacity: 0.5, uid: 100, mapv: MAPV
@@ -263,8 +262,15 @@ const KEY = "kleingarten-v1";
 const MAPV = 22;
 let S;
 let STORAGE_OK = true;
+function repair(s) {
+  if (!s || typeof s !== "object") return defaultState();
+  ["plants", "objs"].forEach(k => { s[k] = Array.isArray(s[k]) ? s[k].filter(x => x && typeof x === "object" && x.id) : []; });
+  if (!s.done || typeof s.done !== "object") s.done = {};
+  if (!s.hours || !Array.isArray(s.hours.log)) s.hours = { target: 0, log: [] };
+  return s;
+}
 function load() {
-  try { const t = localStorage.getItem(KEY); if (t) return JSON.parse(t); } catch (e) { STORAGE_OK = false; }
+  try { const t = localStorage.getItem(KEY); if (t) return repair(JSON.parse(t)); } catch (e) { STORAGE_OK = false; }
   return defaultState();
 }
 let UNDO = [], LAST = null;
@@ -421,6 +427,14 @@ const UI = { fq: "", rtab: "faq", ps: "", pf: "alle", view: "heute", edit: false
 function go(v) { if (!VIEWS.includes(v)) v = "heute"; UI.view = v; if (location.hash !== "#" + v) history.replaceState(null, "", "#" + v); render(); window.scrollTo(0, 0); }
 window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (v !== UI.view && VIEWS.includes(v)) go(v); });
 function render() {
+  try { renderInner(); } catch (e) { showCrash(e); }
+}
+function showCrash(e) {
+  const V = $("#view"); if (!V) return;
+  V.innerHTML = `<div class="card warnbox bad"><b>Diese Ansicht konnte nicht angezeigt werden.</b><p>Deine Daten sind noch gespeichert. Bitte zuerst sichern, dann die Seite neu laden. Hilft das nicht, kann die Karte neu geladen werden: Häkchen, Stunden und Notizen bleiben erhalten.</p><div class="row"><button class="btn primary" onclick="A.exportData()">💾 Daten sichern</button><button class="btn" onclick="location.reload()">🔄 Neu laden</button><button class="btn danger" onclick="A.rescueMap()">🗺️ Karte neu laden</button></div><p class="hint small">Fehler: ${esc(e && e.message || e)}</p></div>`;
+  console.error(e);
+}
+function renderInner() {
   document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.v === UI.view));
   const V = $("#view");
   if (UI.view === "heute") V.innerHTML = vHeute();
@@ -1073,7 +1087,7 @@ const A = {
   edit() { UI.edit = !UI.edit; if (!UI.edit) { UI.tool = "sel"; } render(); },
   tool(t) { UI.tool = t; UI.placeId = null; render(); if (t === "plant" && !UI.placeLib) A.pickLib(); },
   hi() { UI.hi = !UI.hi; render(); },
-  undo() { if (!UNDO.length) return; S = JSON.parse(UNDO.pop()); LAST = JSON.stringify(S); try { localStorage.setItem(KEY, LAST); } catch (e) {} closeSheet(); render(); toast("Letzte Änderung rückgängig gemacht"); },
+  undo() { if (!UNDO.length) return; S = repair(JSON.parse(UNDO.pop())); LAST = JSON.stringify(S); try { localStorage.setItem(KEY, LAST); } catch (e) {} closeSheet(); render(); toast("Letzte Änderung rückgängig gemacht"); },
   lockObj() { UI.lockObj = !UI.lockObj; render(); toast(UI.lockObj ? "Flächen und Bauwerke sind gesperrt, nur Pflanzen lassen sich verschieben." : "Flächen sind wieder verschiebbar."); },
   rtab(k) { UI.rtab = k; render(); },
   fq(q, set) { UI.fq = q; if (set) { const i = document.querySelector('#view input.search'); if (i) i.value = q; } $("#faqlist").innerHTML = faqHTML(); },
@@ -1130,6 +1144,7 @@ const A = {
   copyExp() { const t = $("#exptxt"); navigator.clipboard.writeText(t.value).then(() => toast("Kopiert"), () => { t.select(); toast("Bitte manuell kopieren"); }); },
   importFile(input) { const f = input.files && input.files[0]; if (!f) return; f.text().then(importText); },
   importPaste() { $("#expbox").innerHTML = `<textarea rows="4" id="imptxt" placeholder="Exportierten Text hier einfügen"></textarea><button class="btn primary" onclick="importText($('#imptxt').value)">Importieren</button>`; },
+  rescueMap() { confirmBox("Karte und Pflanzen neu laden? Eigene Änderungen an der Karte gehen verloren, Häkchen, Stunden und Notizen bleiben erhalten.", () => { const d = defaultState(); S = repair(S); S.objs = d.objs; S.plants = d.plants; S.W = d.W; S.H = d.H; S.mapv = MAPV; S.uid = Math.max(S.uid || 100, d.uid); save(); render(); toast("Karte neu geladen"); }); },
   takeMap() { confirmBox("Neue Karte übernehmen? Deine eigenen Änderungen an Karte und Pflanzen werden ersetzt.", () => { const d = defaultState(); S.objs = d.objs; S.plants = d.plants; S.W = d.W; S.H = d.H; S.mapv = MAPV; S.uid = Math.max(S.uid || 100, d.uid); save(); render(); toast("Neue Karte übernommen"); }); },
   reset() { confirmBox("Alle Änderungen, Häkchen und Notizen verwerfen und den Startzustand laden? Vorher am besten exportieren.", () => { S = defaultState(); save(); render(); toast("Zurückgesetzt"); }); },
   async identify(input) {
